@@ -1,0 +1,230 @@
+@import "tailwindcss";
+@import "./gestalt.css";
+
+@theme {
+  --color-brand: #e60023;
+  --color-brand-hover: #ad081b;
+  --color-brand-active: #800014;
+  --color-brand-subtle: #ffebed;
+  
+  --font-sans: var(--font-sans), system-ui, -apple-system, sans-serif;
+  --font-serif: var(--font-serif), Georgia, serif;
+  --font-sinhala: var(--font-sinhala), "Noto Serif Sinhala", "Iskoola Pota", serif;
+}
+
+:root {
+  --bg-main: #ffffff;
+  --bg-surface: #ffffff;
+  --bg-wash: #f8f8f8;
+  --bg-card: #ffffff;
+  --bg-hover: #f0f0f0;
+  --bg-input: #ebebeb;
+  --bg-badge: #111111;
+  --text-main: #111111;
+  --text-muted: #666666;
+  --text-dim: #888888;
+  --border-subtle: #e5e5e5;
+  --border-focus: #111111;
+  --pill-bg: #eeeeee;
+  --pill-hover: #e2e2e2;
+  --pill-active-bg: #111111;
+  --pill-active-text: #ffffff;
+  --card-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+  --card-shadow-hover: 0 16px 36px rgba(0, 0, 0, 0.14);
+}
+
+[data-theme="dark"] {
+  --bg-main: #0e0e11;
+  --bg-surface: #16161a;
+  --bg-wash: #121215;
+  --bg-card: #1c1c21;
+  --bg-hover: #27272f;
+  --bg-input: #232329;
+  --bg-badge: #f4f4f5;
+  --text-main: #f4f4f5;
+  --text-muted: #a1a1aa;
+  --text-dim: #71717a;
+  --border-subtle: #26262d;
+  --border-focus: #f4f4f5;
+  --pill-bg: #222228;
+  --pill-hover: #33333d;
+  --pill-active-bg: #f4f4f5;
+  --pill-active-text: #111111;
+  --card-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+  --card-shadow-hover: 0 16px 40px rgba(0, 0, 0, 0.6);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: var(--font-sans);
+  background-color: var(--bg-main);
+  color: var(--text-main);
+}
+
+.font-sinhala {
+  font-family: var(--font-sinhala);
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 7px;
+  height: 7px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg-main);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border-subtle);
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-dim);
+}
+
+/* Masonry layout columns - Responsive across all viewports */
+.book-masonry {
+  column-gap: 12px;
+  column-count: 2;
+}
+
+@media (min-width: 640px) {
+  .book-masonry {
+    column-count: 3;
+    column-gap: 16px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .book-masonry {
+    column-count: 4;
+    column-gap: 20px;
+  }
+}
+
+@media (min-width: 1280px) {
+  .book-masonry {
+    column-count: 5;
+    column-gap: 22px;
+  }
+}
+
+@media (min-width: 1600px) {
+  .book-masonry {
+    column-count: 6;
+    column-gap: 24px;
+  }
+}
+
+.masonry-item {
+  break-inside: avoid;
+  margin-bottom: 14px;
+  transform: translateZ(0);
+}
+
+@media (min-width: 640px) {
+  .masonry-item {
+    margin-bottom: 22px;
+  }
+}
+
+/* Hide scrollbars while allowing touch scrolling */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Gold/Foil Shimmer */
+.gold-shimmer {
+  background: linear-gradient(
+    115deg,
+    transparent 0%,
+    rgba(255, 215, 0, 0.2) 25%,
+    rgba(255, 255, 255, 0.35) 50%,
+    rgba(255, 215, 0, 0.2) 75%,
+    transparent 100%
+  );
+  background-size: 200% 200%;
+  animation: shimmer 6s ease-in-out infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+/* Pill bounce & micro-interactions */
+.pill-btn {
+  border-radius: 9999px;
+  transition: transform 0.15s cubic-bezier(0.2, 0, 0, 1), background-color 0.15s ease;
+}
+
+.pill-btn:active {
+  transform: scale(0.96);
+}
+
+.save-pill-btn {
+  background-color: #e60023;
+  color: #ffffff;
+  border-radius: 9999px;
+  font-weight: 700;
+  transition: all 0.2s cubic-bezier(0.3, 0, 0, 1);
+}
+
+.save-pill-btn:hover {
+  background-color: #ad081b;
+  transform: scale(1.04);
+}
+
+.save-pill-btn:active {
+  background-color: #800014;
+  transform: scale(0.96);
+}
+
+.book-card-container {
+  border-radius: 20px;
+  background-color: var(--bg-card);
+  transition: transform 0.25s cubic-bezier(0.3, 0, 0, 1), box-shadow 0.25s cubic-bezier(0.3, 0, 0, 1);
+}
+
+.book-card-container:hover {
+  box-shadow: var(--card-shadow-hover);
+}
+
+/* Smooth modal backdrop fade */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.2s ease-out forwards;
+}
+
+.animate-slide-up {
+  animation: slideUp 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
