@@ -9,6 +9,7 @@ import BookCard from '../../components/BookCard';
 import BookCover from '../../components/BookCover';
 import { useApp } from '../../context/AppContext';
 import { BOOKS } from '../../data/books';
+import { IconCheck, IconHeart, IconBookmark, IconBook, IconClose, IconShare } from '../../components/Icons';
 
 export default function ProfilePage() {
   const {
@@ -45,25 +46,25 @@ export default function ProfilePage() {
 
       <main className="max-w-[1720px] mx-auto px-4 sm:px-6 py-8 sm:py-12">
         
-        {/* Pinterest Profile Header Section */}
+        {/* Profile Header Section */}
         <div className="max-w-2xl mx-auto text-center space-y-4 pb-10 border-b border-[var(--border-subtle)]">
           
-          {/* Avatar with gradient & verified badge */}
+          {/* Avatar with verified badge */}
           <div className="relative inline-block">
-            <div className="w-28 h-28 sm:w-32 sm:h-32 rounded-full bg-gradient-to-tr from-amber-600 via-[#e60023] to-rose-600 text-white font-bold text-4xl flex items-center justify-center shadow-xl mx-auto ring-4 ring-[var(--bg-surface)]">
+            <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-full bg-neutral-900 text-white font-bold text-3xl flex items-center justify-center shadow-md mx-auto ring-4 ring-[var(--bg-surface)]">
               SB
             </div>
-            <div className="absolute bottom-1 right-1 w-8 h-8 rounded-full bg-[#e60023] text-white flex items-center justify-center text-sm shadow-md font-bold">
-              ✓
+            <div className="absolute bottom-0 right-0 w-7 h-7 rounded-full bg-[#e60023] text-white flex items-center justify-center shadow-xs">
+              <IconCheck size={14} />
             </div>
           </div>
 
           {/* User Details */}
           <div className="space-y-1">
-            <h1 className="font-serif font-black text-2xl sm:text-3xl text-[var(--text-main)]">
+            <h1 className="font-serif font-bold text-2xl sm:text-3xl text-[var(--text-main)]">
               Dr. Senaka Bandara
             </h1>
-            <p className="font-sinhala text-sm text-[#e60023] font-semibold">
+            <p className="font-sinhala text-xs sm:text-sm text-[#a66523] dark:text-amber-400 font-semibold">
               සම්මානිත ආචාර්ය සේනක බණ්ඩාර • ශ්‍රී ලංකා පුරාවිද්‍යා සංගමය
             </p>
             <p className="text-xs sm:text-sm text-[var(--text-muted)] max-w-lg mx-auto pt-1 leading-relaxed">
@@ -72,7 +73,7 @@ export default function ProfilePage() {
           </div>
 
           {/* Metrics */}
-          <div className="flex items-center justify-center gap-4 text-xs font-bold text-[var(--text-muted)] pt-1">
+          <div className="flex items-center justify-center gap-4 text-xs font-semibold text-[var(--text-muted)] pt-1">
             <span>{boards.length} Boards</span>
             <span>•</span>
             <span>{allSavedBooks.length} Saved Treatises</span>
@@ -82,21 +83,22 @@ export default function ProfilePage() {
             <span>{orders.length} Dispatches</span>
           </div>
 
-          {/* Actions: Share & Create Board (Pinterest Pill Buttons) */}
+          {/* Actions: Share & Create Board */}
           <div className="flex items-center justify-center gap-3 pt-2">
             <button
               onClick={() => {
                 navigator.clipboard?.writeText(window.location.href);
                 showToast('Profile link copied to clipboard!');
               }}
-              className="px-5 py-2.5 rounded-full bg-[var(--bg-input)] hover:bg-[var(--bg-hover)] text-[var(--text-main)] font-bold text-xs pill-btn cursor-pointer transition-all hover:scale-105"
+              className="px-4 py-2 rounded-full bg-[var(--bg-input)] hover:bg-[var(--bg-hover)] text-[var(--text-main)] font-semibold text-xs cursor-pointer transition-colors flex items-center gap-1.5"
             >
-              Share Profile
+              <IconShare size={14} />
+              <span>Share Profile</span>
             </button>
 
             <button
               onClick={() => setIsCreateBoardOpen(true)}
-              className="px-5 py-2.5 rounded-full bg-[#e60023] hover:bg-[#ad081b] text-white font-bold text-xs pill-btn cursor-pointer shadow-md transition-all hover:scale-105 flex items-center gap-1.5"
+              className="px-5 py-2 rounded-full bg-[#e60023] hover:bg-[#ad081b] text-white font-semibold text-xs cursor-pointer shadow-xs transition-colors flex items-center gap-1.5"
             >
               <span>+ Create Board</span>
             </button>
@@ -104,13 +106,13 @@ export default function ProfilePage() {
 
         </div>
 
-        {/* Pinterest Profile Tabs (Saved Boards / All Pins / Likes) */}
-        <div className="flex items-center justify-center gap-2 sm:gap-6 pt-6 pb-8 border-b border-[var(--border-subtle)] text-sm font-bold">
+        {/* Profile Tabs (Saved Boards / All Pins / Likes) */}
+        <div className="flex items-center justify-center gap-2 sm:gap-4 pt-6 pb-8 border-b border-[var(--border-subtle)] text-xs sm:text-sm font-semibold">
           <button
             onClick={() => setActiveTab('boards')}
-            className={`px-4 py-2 rounded-full cursor-pointer transition-all ${
+            className={`px-4 py-2 rounded-full cursor-pointer transition-colors ${
               activeTab === 'boards'
-                ? 'bg-[var(--text-main)] text-[var(--bg-main)] shadow-sm'
+                ? 'bg-[#222222] dark:bg-neutral-100 text-white dark:text-neutral-900 shadow-xs'
                 : 'text-[var(--text-muted)] hover:text-[var(--text-main)]'
             }`}
           >
@@ -119,9 +121,9 @@ export default function ProfilePage() {
 
           <button
             onClick={() => setActiveTab('all-pins')}
-            className={`px-4 py-2 rounded-full cursor-pointer transition-all ${
+            className={`px-4 py-2 rounded-full cursor-pointer transition-colors ${
               activeTab === 'all-pins'
-                ? 'bg-[var(--text-main)] text-[var(--bg-main)] shadow-sm'
+                ? 'bg-[#222222] dark:bg-neutral-100 text-white dark:text-neutral-900 shadow-xs'
                 : 'text-[var(--text-muted)] hover:text-[var(--text-main)]'
             }`}
           >
@@ -130,30 +132,31 @@ export default function ProfilePage() {
 
           <button
             onClick={() => setActiveTab('likes')}
-            className={`px-4 py-2 rounded-full cursor-pointer transition-all ${
+            className={`px-4 py-2 rounded-full cursor-pointer transition-colors flex items-center gap-1.5 ${
               activeTab === 'likes'
-                ? 'bg-[var(--text-main)] text-[var(--bg-main)] shadow-sm'
+                ? 'bg-[#222222] dark:bg-neutral-100 text-white dark:text-neutral-900 shadow-xs'
                 : 'text-[var(--text-muted)] hover:text-[var(--text-main)]'
             }`}
           >
-            Liked ❤️ ({likedBooks.length})
+            <IconHeart size={14} fill={activeTab === 'likes'} />
+            <span>Liked ({likedBooks.length})</span>
           </button>
         </div>
 
-        {/* Tab 1: Pinterest Board Collage Cards */}
+        {/* Tab 1: Board Collage Cards */}
         {activeTab === 'boards' && (
-          <div className="pt-8">
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          <div className="pt-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
               
               {/* Create Board Prompt Card */}
               <div
                 onClick={() => setIsCreateBoardOpen(true)}
-                className="h-80 rounded-3xl border-2 border-dashed border-[var(--border-subtle)] hover:border-[#e60023] bg-[var(--bg-wash)] flex flex-col items-center justify-center p-6 text-center cursor-pointer transition-all group"
+                className="h-72 rounded-2xl border-2 border-dashed border-[var(--border-subtle)] hover:border-[#e60023] bg-[var(--bg-wash)] flex flex-col items-center justify-center p-6 text-center cursor-pointer transition-colors group"
               >
-                <div className="w-14 h-14 rounded-full bg-[var(--bg-input)] group-hover:bg-[#e60023] group-hover:text-white flex items-center justify-center text-2xl font-bold transition-colors mb-3">
+                <div className="w-12 h-12 rounded-full bg-[var(--bg-input)] group-hover:bg-[#e60023] group-hover:text-white flex items-center justify-center text-xl font-bold transition-colors mb-3">
                   +
                 </div>
-                <h3 className="font-serif font-black text-base text-[var(--text-main)]">
+                <h3 className="font-serif font-bold text-base text-[var(--text-main)]">
                   Create New Board
                 </h3>
                 <p className="text-xs text-[var(--text-muted)] mt-1">
@@ -172,34 +175,34 @@ export default function ProfilePage() {
                   <Link
                     key={board.id}
                     href={`/profile/boards/${board.id}`}
-                    className="group block space-y-2.5 cursor-pointer"
+                    className="group block space-y-2 cursor-pointer"
                   >
-                    {/* Pinterest Board Collage (1 large cover + 2 small covers) */}
-                    <div className="h-64 rounded-3xl overflow-hidden bg-[var(--bg-input)] border border-[var(--border-subtle)] p-1.5 grid grid-cols-3 gap-1.5 group-hover:shadow-xl transition-shadow">
+                    {/* Pinterest Board Collage (1 large cover + 2 small covers) with real photographs */}
+                    <div className="h-60 rounded-2xl overflow-hidden bg-[var(--bg-input)] border border-[var(--border-subtle)] p-1.5 grid grid-cols-3 gap-1.5 group-hover:shadow-md transition-shadow">
                       
                       {/* Main Cover (Span 2 cols) */}
-                      <div className="col-span-2 h-full rounded-2xl overflow-hidden shadow-xs relative">
+                      <div className="col-span-2 h-full rounded-xl overflow-hidden bg-neutral-100 relative">
                         {mainBook ? (
-                          <BookCover book={mainBook} size="md" className="h-full w-full object-cover" />
+                          <img src={mainBook.coverImage} alt={mainBook.title} className="w-full h-full object-cover" />
                         ) : (
-                          <div className="h-full w-full bg-[var(--bg-wash)] flex items-center justify-center text-2xl">
-                            📖
+                          <div className="h-full w-full bg-[var(--bg-wash)] flex items-center justify-center text-[#a66523]">
+                            <IconBook size={24} />
                           </div>
                         )}
                       </div>
 
                       {/* 2 Small Thumbnail Covers */}
                       <div className="col-span-1 h-full flex flex-col gap-1.5">
-                        <div className="flex-1 rounded-xl overflow-hidden bg-[var(--bg-wash)]">
+                        <div className="flex-1 rounded-lg overflow-hidden bg-neutral-100">
                           {subBook1 ? (
-                            <BookCover book={subBook1} size="sm" className="h-full w-full" />
+                            <img src={subBook1.coverImage} alt={subBook1.title} className="w-full h-full object-cover" />
                           ) : (
                             <div className="h-full w-full bg-[var(--bg-surface)]" />
                           )}
                         </div>
-                        <div className="flex-1 rounded-xl overflow-hidden bg-[var(--bg-wash)]">
+                        <div className="flex-1 rounded-lg overflow-hidden bg-neutral-100">
                           {subBook2 ? (
-                            <BookCover book={subBook2} size="sm" className="h-full w-full" />
+                            <img src={subBook2.coverImage} alt={subBook2.title} className="w-full h-full object-cover" />
                           ) : (
                             <div className="h-full w-full bg-[var(--bg-surface)]" />
                           )}
@@ -211,10 +214,10 @@ export default function ProfilePage() {
                     {/* Board Info */}
                     <div className="px-1">
                       <div className="flex items-center justify-between">
-                        <h3 className="font-serif font-black text-base text-[var(--text-main)] group-hover:text-[#e60023] transition-colors truncate">
+                        <h3 className="font-serif font-bold text-sm text-[var(--text-main)] group-hover:text-[#e60023] transition-colors truncate">
                           {board.name}
                         </h3>
-                        <span className="text-[11px] font-bold text-[var(--text-muted)]">
+                        <span className="text-[11px] font-semibold text-[var(--text-muted)]">
                           {board.bookIds.length} Pins
                         </span>
                       </div>
@@ -233,15 +236,17 @@ export default function ProfilePage() {
 
         {/* Tab 2: All Saved Pins Masonry Feed */}
         {activeTab === 'all-pins' && (
-          <div className="pt-8">
+          <div className="pt-6">
             {allSavedBooks.length === 0 ? (
               <div className="py-20 text-center space-y-3">
-                <div className="text-4xl">📌</div>
+                <div className="w-16 h-16 rounded-full bg-[var(--bg-input)] text-[#a66523] flex items-center justify-center mx-auto">
+                  <IconBookmark size={28} />
+                </div>
                 <h3 className="font-serif font-bold text-xl text-[var(--text-main)]">
                   No Saved Pins Yet
                 </h3>
                 <p className="text-xs text-[var(--text-muted)]">
-                  Click the red &ldquo;Save&rdquo; button on any book card to store it here.
+                  Click &ldquo;Save&rdquo; on any book card to store it here.
                 </p>
               </div>
             ) : (
@@ -256,15 +261,17 @@ export default function ProfilePage() {
 
         {/* Tab 3: Liked Treatises Feed */}
         {activeTab === 'likes' && (
-          <div className="pt-8">
+          <div className="pt-6">
             {likedBooks.length === 0 ? (
               <div className="py-20 text-center space-y-3">
-                <div className="text-4xl">🤍</div>
+                <div className="w-16 h-16 rounded-full bg-[var(--bg-input)] text-neutral-400 flex items-center justify-center mx-auto">
+                  <IconHeart size={28} />
+                </div>
                 <h3 className="font-serif font-bold text-xl text-[var(--text-main)]">
                   No Liked Treatises Yet
                 </h3>
                 <p className="text-xs text-[var(--text-muted)]">
-                  Tap the heart on any book page to save your favorite manuscripts.
+                  Tap the heart on any book to save your favorite manuscripts.
                 </p>
               </div>
             ) : (
@@ -280,46 +287,46 @@ export default function ProfilePage() {
         {/* Create Board Modal */}
         {isCreateBoardOpen && (
           <div
-            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in"
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-fade-in"
             onClick={() => setIsCreateBoardOpen(false)}
           >
             <div
               onClick={(e) => e.stopPropagation()}
-              className="w-full max-w-md bg-[var(--bg-card)] rounded-3xl p-6 sm:p-8 shadow-2xl border border-[var(--border-subtle)] space-y-5 animate-slide-up"
+              className="w-full max-w-md bg-white dark:bg-[#1c1c21] rounded-2xl p-6 shadow-2xl border border-[var(--border-subtle)] space-y-4 animate-slide-up"
             >
               <div className="flex items-center justify-between pb-3 border-b border-[var(--border-subtle)]">
-                <h3 className="font-serif font-black text-xl text-[var(--text-main)]">
+                <h3 className="font-serif font-bold text-lg text-[var(--text-main)]">
                   Create Board
                 </h3>
                 <button
                   onClick={() => setIsCreateBoardOpen(false)}
-                  className="w-8 h-8 rounded-full hover:bg-[var(--bg-hover)] flex items-center justify-center font-bold text-sm cursor-pointer"
+                  className="w-8 h-8 rounded-full hover:bg-[var(--bg-hover)] flex items-center justify-center cursor-pointer"
                 >
-                  ✕
+                  <IconClose size={14} />
                 </button>
               </div>
 
-              <form onSubmit={handleCreateBoard} className="space-y-4">
+              <form onSubmit={handleCreateBoard} className="space-y-3.5">
                 <div className="space-y-1">
-                  <label className="text-xs font-bold text-[var(--text-muted)]">Board Name *</label>
+                  <label className="text-xs font-semibold text-[var(--text-muted)]">Board Name *</label>
                   <input
                     type="text"
                     placeholder="e.g. Royal Inscriptions of Anuradhapura"
                     value={newBoardName}
                     onChange={(e) => setNewBoardName(e.target.value)}
-                    className="w-full px-4 py-2.5 rounded-xl bg-[var(--bg-surface)] border border-[var(--border-subtle)] text-sm outline-none focus:border-[#e60023]"
+                    className="w-full px-3.5 py-2 rounded-lg bg-[var(--bg-input)] border border-[var(--border-subtle)] text-xs sm:text-sm outline-none focus:border-[#e60023]"
                     required
                   />
                 </div>
 
                 <div className="space-y-1">
-                  <label className="text-xs font-bold text-[var(--text-muted)]">Description (Optional)</label>
+                  <label className="text-xs font-semibold text-[var(--text-muted)]">Description (Optional)</label>
                   <textarea
                     rows={2}
                     placeholder="What is this collection about?"
                     value={newBoardDesc}
                     onChange={(e) => setNewBoardDesc(e.target.value)}
-                    className="w-full px-4 py-2.5 rounded-xl bg-[var(--bg-surface)] border border-[var(--border-subtle)] text-sm outline-none resize-none focus:border-[#e60023]"
+                    className="w-full px-3.5 py-2 rounded-lg bg-[var(--bg-input)] border border-[var(--border-subtle)] text-xs sm:text-sm outline-none resize-none focus:border-[#e60023]"
                   />
                 </div>
 
@@ -327,13 +334,13 @@ export default function ProfilePage() {
                   <button
                     type="button"
                     onClick={() => setIsCreateBoardOpen(false)}
-                    className="px-5 py-2.5 rounded-full bg-[var(--bg-input)] text-[var(--text-main)] text-xs font-bold pill-btn cursor-pointer"
+                    className="px-4 py-2 rounded-full bg-[var(--bg-input)] text-[var(--text-main)] text-xs font-semibold cursor-pointer"
                   >
                     Cancel
                   </button>
                   <button
                     type="submit"
-                    className="px-6 py-2.5 rounded-full bg-[#e60023] hover:bg-[#ad081b] text-white text-xs font-bold pill-btn cursor-pointer shadow-md"
+                    className="px-5 py-2 rounded-full bg-[#e60023] hover:bg-[#ad081b] text-white text-xs font-semibold cursor-pointer shadow-xs"
                   >
                     Create
                   </button>

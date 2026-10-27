@@ -18,19 +18,24 @@
   --bg-wash: #f8f8f8;
   --bg-card: #ffffff;
   --bg-hover: #f0f0f0;
-  --bg-input: #ebebeb;
-  --bg-badge: #111111;
-  --text-main: #111111;
-  --text-muted: #666666;
-  --text-dim: #888888;
-  --border-subtle: #e5e5e5;
-  --border-focus: #111111;
-  --pill-bg: #eeeeee;
-  --pill-hover: #e2e2e2;
-  --pill-active-bg: #111111;
+  --bg-input: #f3f3f3;
+  --bg-badge: #222222;
+  --text-main: #222222;
+  --text-body: #3f3f3f;
+  --text-muted: #595959;
+  --text-dim: #757575;
+  --border-subtle: #e6e6e6;
+  --border-strong: #bdbdbd;
+  --border-focus: #222222;
+  --surface-cream: #fdf6e8;
+  --surface-cream-strong: #f5e8c8;
+  --brand-brown: #a66523;
+  --pill-bg: #f3f3f3;
+  --pill-hover: #e6e6e6;
+  --pill-active-bg: #222222;
   --pill-active-text: #ffffff;
-  --card-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
-  --card-shadow-hover: 0 16px 36px rgba(0, 0, 0, 0.14);
+  --card-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+  --card-shadow-hover: 0 4px 14px rgba(0, 0, 0, 0.09);
 }
 
 [data-theme="dark"] {
@@ -42,10 +47,15 @@
   --bg-input: #232329;
   --bg-badge: #f4f4f5;
   --text-main: #f4f4f5;
+  --text-body: #d4d4d8;
   --text-muted: #a1a1aa;
   --text-dim: #71717a;
   --border-subtle: #26262d;
+  --border-strong: #3f3f46;
   --border-focus: #f4f4f5;
+  --surface-cream: #2a2216;
+  --surface-cream-strong: #3d301f;
+  --brand-brown: #d9964a;
   --pill-bg: #222228;
   --pill-hover: #33333d;
   --pill-active-bg: #f4f4f5;

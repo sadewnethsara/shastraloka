@@ -19,7 +19,8 @@
       }
     ],
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      "@/gestalt/*": ["./src/components/gestalt/*"]
     }
   },
   "include": [

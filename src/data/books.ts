@@ -10,6 +10,8 @@ export interface Book {
   rating: number;
   reviewsCount: number;
   heightRatio: number; // for staggered masonry layout
+  coverImage: string; // real photographic book cover URL
+  galleryImages?: string[]; // additional archival plates & manuscript folios
   themeColor: string;
   accentColor: string;
   bgGradient: string;
@@ -51,12 +53,18 @@ export const BOOKS: Book[] = [
     originalPrice: 4950,
     rating: 4.98,
     reviewsCount: 1640,
-    heightRatio: 1.58,
-    themeColor: '#7b1113',
-    accentColor: '#f1c40f',
-    bgGradient: 'linear-gradient(145deg, #3d0507 0%, #750e12 55%, #1f0103 100%)',
+    heightRatio: 1.48,
+    coverImage: 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?auto=format&fit=crop&w=800&q=80',
+    galleryImages: [
+      'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?auto=format&fit=crop&w=1200&q=80',
+      'https://images.unsplash.com/photo-1457369804613-52c61a468e7d?auto=format&fit=crop&w=1200&q=80',
+      'https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?auto=format&fit=crop&w=1200&q=80'
+    ],
+    themeColor: '#2b231f',
+    accentColor: '#d4af37',
+    bgGradient: 'linear-gradient(145deg, #1f1a17 0%, #3a302a 60%, #15110e 100%)',
     embossPattern: 'lion-crest',
-    symbol: '🦁',
+    symbol: 'ශ්‍රී',
     description: 'The monumental historical poem documenting the unbroken 2,500-year history of Sri Lanka, detailing the advent of Vijaya, King Devanampiya Tissa, the arrival of the Sacred Bodhi Tree, and King Dutugemunu.',
     versesSnippet: {
       original: 'නමෝ තස්ස භගවතෝ අරහතෝ සම්මා සම්බුද්ධස්ස। මහාවංසං පවක්ඛාමි නානාචක්කේහි විත්ථතං॥',
@@ -80,12 +88,17 @@ export const BOOKS: Book[] = [
     originalPrice: 5800,
     rating: 4.99,
     reviewsCount: 1280,
-    heightRatio: 1.65,
-    themeColor: '#1a365d',
-    accentColor: '#ecc94b',
-    bgGradient: 'linear-gradient(145deg, #091a33 0%, #173866 60%, #040c1a 100%)',
+    heightRatio: 1.55,
+    coverImage: 'https://images.unsplash.com/photo-1457369804613-52c61a468e7d?auto=format&fit=crop&w=800&q=80',
+    galleryImages: [
+      'https://images.unsplash.com/photo-1457369804613-52c61a468e7d?auto=format&fit=crop&w=1200&q=80',
+      'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?auto=format&fit=crop&w=1200&q=80'
+    ],
+    themeColor: '#1c2430',
+    accentColor: '#c5a059',
+    bgGradient: 'linear-gradient(145deg, #131922 0%, #202b3a 60%, #0d1118 100%)',
     embossPattern: 'dhamma-wheel',
-    symbol: '☸',
+    symbol: 'ධ',
     description: 'The quintessential master treatise of Theravada Buddhist doctrine composed at the Mahavihara of Anuradhapura. Exhaustively details Sila (Morality), Samadhi (Concentration), and Panna (Wisdom).',
     versesSnippet: {
       original: 'සීලේ පතිට්ඨාය නරෝ සපඤ්ඤෝ චිත්තං පඤ්ඤඤ්ච භාවයං। ආතාපී නිපකෝ භික්ඛු සෝ ඉමං විජටයේ ජටං॥',
@@ -109,12 +122,17 @@ export const BOOKS: Book[] = [
     originalPrice: 2800,
     rating: 4.96,
     reviewsCount: 2150,
-    heightRatio: 1.35,
-    themeColor: '#703816',
-    accentColor: '#fbd38d',
-    bgGradient: 'linear-gradient(145deg, #3d1b08 0%, #632e0f 55%, #1f0b02 100%)',
+    heightRatio: 1.38,
+    coverImage: 'https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&w=800&q=80',
+    galleryImages: [
+      'https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&w=1200&q=80',
+      'https://images.unsplash.com/photo-1544947950-fa07a98d237f?auto=format&fit=crop&w=1200&q=80'
+    ],
+    themeColor: '#34261d',
+    accentColor: '#d4af37',
+    bgGradient: 'linear-gradient(145deg, #221812 0%, #423024 60%, #17100b 100%)',
     embossPattern: 'lotus-radiance',
-    symbol: '🪷',
+    symbol: 'ප',
     description: '423 timeless ethical verses on mindfulness, karma, speech, tranquility, and awakening, presented with word-by-word Sinhala roots, Pali chants, and poetic English commentary.',
     versesSnippet: {
       original: 'මනෝපුබ්බංගමා ධම්මා මනෝසෙට්ඨා මනෝමයා। මනසා චේ පදුට්ඨේන භාසති වා කරෝති වා තතෝ නං දුක්ඛමන්වේති॥',
@@ -138,12 +156,16 @@ export const BOOKS: Book[] = [
     originalPrice: 2400,
     rating: 4.93,
     reviewsCount: 420,
-    heightRatio: 1.48,
-    themeColor: '#1c4532',
-    accentColor: '#68d391',
-    bgGradient: 'linear-gradient(145deg, #0e2a1d 0%, #1e543c 55%, #081710 100%)',
+    heightRatio: 1.44,
+    coverImage: 'https://images.unsplash.com/photo-1544947950-fa07a98d237f?auto=format&fit=crop&w=800&q=80',
+    galleryImages: [
+      'https://images.unsplash.com/photo-1544947950-fa07a98d237f?auto=format&fit=crop&w=1200&q=80'
+    ],
+    themeColor: '#1d2c23',
+    accentColor: '#96c496',
+    bgGradient: 'linear-gradient(145deg, #131d17 0%, #293d31 60%, #0d140f 100%)',
     embossPattern: 'bird-flight-flora',
-    symbol: '🕊',
+    symbol: 'ස',
     description: 'The golden jewel of Kotte-period messenger poetry. Written to dispatch a starling bird to Lord Vibhishana at the Kelaniya Temple praying for a male heir to King Parakramabahu VI.',
     versesSnippet: {
       original: 'සරසවියක් ලැඳි සුවඳැති තුඩ මුවිනී। කරණිය සව් සත වෙත සිරි සඟසඳිනී॥',
@@ -166,12 +188,16 @@ export const BOOKS: Book[] = [
     originalPrice: 2200,
     rating: 4.91,
     reviewsCount: 380,
-    heightRatio: 1.38,
-    themeColor: '#702459',
-    accentColor: '#f687b3',
-    bgGradient: 'linear-gradient(145deg, #3d0c2e 0%, #66184f 55%, #1d0315 100%)',
+    heightRatio: 1.4,
+    coverImage: 'https://images.unsplash.com/photo-1476275466078-4007374efbbe?auto=format&fit=crop&w=800&q=80',
+    galleryImages: [
+      'https://images.unsplash.com/photo-1476275466078-4007374efbbe?auto=format&fit=crop&w=1200&q=80'
+    ],
+    themeColor: '#302029',
+    accentColor: '#d6a5b8',
+    bgGradient: 'linear-gradient(145deg, #1d1318 0%, #3d2934 60%, #140d10 100%)',
     embossPattern: 'veena-melody',
-    symbol: '🎻',
+    symbol: 'ග',
     description: 'The poignant musical epic celebrating the contest between the noble maestro Guttila and his ungrateful student Musila. Revered for its intoxicating rhythmic meter (Matra vrutta).',
     versesSnippet: {
       original: 'සියපිනෙන් පෑදූ සියපත් සියක් ගැබ සැපැමිණි රොන් කෙළින බිඟු රොද සෙයින් විජයග්‍රහණ පානා॥',
@@ -194,12 +220,16 @@ export const BOOKS: Book[] = [
     originalPrice: 4500,
     rating: 4.97,
     reviewsCount: 710,
-    heightRatio: 1.54,
-    themeColor: '#1d4044',
-    accentColor: '#4fd1c5',
-    bgGradient: 'linear-gradient(145deg, #0d2123 0%, #1e4b50 60%, #061112 100%)',
+    heightRatio: 1.52,
+    coverImage: 'https://images.unsplash.com/photo-1471107340929-a87cd0f5b5f3?auto=format&fit=crop&w=800&q=80',
+    galleryImages: [
+      'https://images.unsplash.com/photo-1471107340929-a87cd0f5b5f3?auto=format&fit=crop&w=1200&q=80'
+    ],
+    themeColor: '#242e2b',
+    accentColor: '#7fb8a4',
+    bgGradient: 'linear-gradient(145deg, #171d1b 0%, #303c38 60%, #0f1311 100%)',
     embossPattern: 'rare-ceylon-herbs',
-    symbol: '🌿',
+    symbol: 'වෙ',
     description: 'Comprehensive compendium of Sri Lanka\'s secret indigenous medical traditions (Deshiya Wedakama), Hela Wedakama, fracture healing (Kadum-Bindum), venom therapy, and Ceylon herbal elixirs.',
     versesSnippet: {
       original: 'ඖෂධං සර්ව රෝගාණාං ස්වභාව ධර්ම ශක්තිතෝ। ආයුරාරෝග්‍ය සම්පත්තිං දෙස්සෙයං සුජන හිතේ॥',
@@ -222,12 +252,17 @@ export const BOOKS: Book[] = [
     originalPrice: 4800,
     rating: 4.92,
     reviewsCount: 520,
-    heightRatio: 1.6,
-    themeColor: '#4a2810',
-    accentColor: '#d69e2e',
-    bgGradient: 'linear-gradient(145deg, #2c1607 0%, #5c3214 60%, #1a0b02 100%)',
+    heightRatio: 1.58,
+    coverImage: 'https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?auto=format&fit=crop&w=800&q=80',
+    galleryImages: [
+      'https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?auto=format&fit=crop&w=1200&q=80',
+      'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?auto=format&fit=crop&w=1200&q=80'
+    ],
+    themeColor: '#30261f',
+    accentColor: '#cda869',
+    bgGradient: 'linear-gradient(145deg, #201914 0%, #3e3229 60%, #15100c 100%)',
     embossPattern: 'polonnaruwa-pillar',
-    symbol: '🏛',
+    symbol: 'චූ',
     description: 'The monumental historical sequel continuing the Mahavamsa narrative from King Mahasena to the Polonnaruwa, Dambadeniya, Yapahuwa, Gampola, and Kingdom of Kandy eras.',
     versesSnippet: {
       original: 'පරාක්‍රමභුජෝ රාජා ලංකාදීපේ නරේශ්වරෝ। වැවක් තනා සරුසාර කෙත් කරවී සියලු රට॥',
@@ -251,12 +286,16 @@ export const BOOKS: Book[] = [
     originalPrice: 6500,
     rating: 4.99,
     reviewsCount: 1980,
-    heightRatio: 1.7,
-    themeColor: '#7b1113',
-    accentColor: '#fbd38d',
-    bgGradient: 'linear-gradient(145deg, #44080a 0%, #7b1113 55%, #240203 100%)',
+    heightRatio: 1.62,
+    coverImage: 'https://images.unsplash.com/photo-1516979187457-637abb4f9353?auto=format&fit=crop&w=800&q=80',
+    galleryImages: [
+      'https://images.unsplash.com/photo-1516979187457-637abb4f9353?auto=format&fit=crop&w=1200&q=80'
+    ],
+    themeColor: '#2b1f20',
+    accentColor: '#d8ab76',
+    bgGradient: 'linear-gradient(145deg, #1b1314 0%, #392a2b 60%, #110b0c 100%)',
     embossPattern: 'bodhisattva-sun',
-    symbol: '☀️',
+    symbol: 'ජා',
     description: 'The treasure-house of Sinhala moral narrative and cultural heritage recounting the 550 previous existences of Gautama Buddha perfecting Paramitas across aeons.',
     versesSnippet: {
       original: 'සසර සැරිසරන බෝසත් සිරි පිරූ පෙරුමන් මහිමයෙන්। සකල සත වෙත පතළ මෙත් ගුණ සදා දිනේ ලෝ තලේ॥',
@@ -280,12 +319,16 @@ export const BOOKS: Book[] = [
     originalPrice: 1950,
     rating: 4.94,
     reviewsCount: 610,
-    heightRatio: 1.3,
-    themeColor: '#234e52',
-    accentColor: '#4fd1c5',
-    bgGradient: 'linear-gradient(145deg, #0e2729 0%, #1a4347 60%, #061314 100%)',
+    heightRatio: 1.35,
+    coverImage: 'https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?auto=format&fit=crop&w=800&q=80',
+    galleryImages: [
+      'https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?auto=format&fit=crop&w=1200&q=80'
+    ],
+    themeColor: '#20282b',
+    accentColor: '#89b4be',
+    bgGradient: 'linear-gradient(145deg, #141a1c 0%, #2a3438 60%, #0d1112 100%)',
     embossPattern: 'gem-facets',
-    symbol: '💎',
+    symbol: 'සු',
     description: '100 scintillating moral epigrams offering unshakeable guidance on friendship, virtue, discernment, deceitful company, humility, and the impermanence of worldly vanity.',
     versesSnippet: {
       original: 'පඬිවරුන් සමග එක්ව විසීම යහපති। මෝඩයන් හා ඇසුර විපතට හේතු වෙයි॥',
@@ -308,12 +351,16 @@ export const BOOKS: Book[] = [
     originalPrice: 4200,
     rating: 4.95,
     reviewsCount: 540,
-    heightRatio: 1.5,
-    themeColor: '#553c9a',
-    accentColor: '#b794f4',
-    bgGradient: 'linear-gradient(145deg, #271447 0%, #442372 60%, #15092a 100%)',
+    heightRatio: 1.48,
+    coverImage: 'https://images.unsplash.com/photo-1497633762265-9d179a990aa6?auto=format&fit=crop&w=800&q=80',
+    galleryImages: [
+      'https://images.unsplash.com/photo-1497633762265-9d179a990aa6?auto=format&fit=crop&w=1200&q=80'
+    ],
+    themeColor: '#27202d',
+    accentColor: '#bfa0cc',
+    bgGradient: 'linear-gradient(145deg, #19141d 0%, #352b3d 60%, #100d13 100%)',
     embossPattern: 'dambadeniya-lotus',
-    symbol: '📿',
+    symbol: 'ර',
     description: 'A masterpiece of vivid medieval Sinhala storytelling adapting the Dhammapada commentary. Renowned for its lively idiomatic dialogue, humor, domestic insight, and profound Buddhist psychology.',
     versesSnippet: {
       original: 'ධර්මය නම් වූ අමෘතය පානය කළ තැනැත්තේ මේ ලොවද පරලොවද සුවපත් වන්නේය॥',
@@ -337,11 +384,15 @@ export const BOOKS: Book[] = [
     rating: 4.93,
     reviewsCount: 390,
     heightRatio: 1.42,
-    themeColor: '#285e61',
-    accentColor: '#81e6d9',
-    bgGradient: 'linear-gradient(145deg, #102e30 0%, #225255 55%, #081718 100%)',
+    coverImage: 'https://images.unsplash.com/photo-1495446815901-a7297e633e8d?auto=format&fit=crop&w=800&q=80',
+    galleryImages: [
+      'https://images.unsplash.com/photo-1495446815901-a7297e633e8d?auto=format&fit=crop&w=1200&q=80'
+    ],
+    themeColor: '#232b2b',
+    accentColor: '#8ec3c3',
+    bgGradient: 'linear-gradient(145deg, #161c1c 0%, #2f3a3a 60%, #0e1212 100%)',
     embossPattern: 'nectar-stream',
-    symbol: '🌊',
+    symbol: 'අ',
     description: 'The monumental classical prose work elaborating on the Buddha’s attribute "Purisadhamma Sarathi" (Tamer of untamed beings). Celebrated for its pristine, unornamented pure Sinhala vocabulary (Elu).',
     versesSnippet: {
       original: 'දමනය කළ නොහී මුරණ්ඩු සත්ත්වයන් කරුණා ගුණයෙන් හා ප්‍රඥාවෙන් හික්මවූ සේක॥',
@@ -364,12 +415,16 @@ export const BOOKS: Book[] = [
     originalPrice: 6200,
     rating: 4.97,
     reviewsCount: 480,
-    heightRatio: 1.62,
-    themeColor: '#7b341e',
-    accentColor: '#f6ad55',
-    bgGradient: 'linear-gradient(145deg, #3c1408 0%, #752811 55%, #1f0802 100%)',
+    heightRatio: 1.6,
+    coverImage: 'https://images.unsplash.com/photo-1506880018603-83d5b814b5a6?auto=format&fit=crop&w=800&q=80',
+    galleryImages: [
+      'https://images.unsplash.com/photo-1506880018603-83d5b814b5a6?auto=format&fit=crop&w=1200&q=80'
+    ],
+    themeColor: '#34261e',
+    accentColor: '#d69e2e',
+    bgGradient: 'linear-gradient(145deg, #221812 0%, #443227 60%, #150f0b 100%)',
     embossPattern: 'dagoba-dome',
-    symbol: '🛕',
+    symbol: 'වා',
     description: 'An exhaustive architectural analysis of the giant brick stupas of Ruwanwelisaya, Jetavanaramaya (the tallest brick monument of the ancient world), moonstones (Sandakada Pahana), and hydraulic stone dams.',
     versesSnippet: {
       original: 'රුවන්වැලි සෑ විස්මිත නිර්මාණය ලක්දිව වාස්තු ශිල්පීන්ගේ සදාතනික කූටප්‍රාප්තියයි॥',
@@ -392,12 +447,16 @@ export const BOOKS: Book[] = [
     originalPrice: 6000,
     rating: 4.96,
     reviewsCount: 310,
-    heightRatio: 1.56,
-    themeColor: '#2d3748',
-    accentColor: '#cbd5e0',
-    bgGradient: 'linear-gradient(145deg, #161b24 0%, #293444 60%, #0d1017 100%)',
+    heightRatio: 1.54,
+    coverImage: 'https://images.unsplash.com/photo-1505664194779-8beaceb93744?auto=format&fit=crop&w=800&q=80',
+    galleryImages: [
+      'https://images.unsplash.com/photo-1505664194779-8beaceb93744?auto=format&fit=crop&w=1200&q=80'
+    ],
+    themeColor: '#24272c',
+    accentColor: '#a0aab8',
+    bgGradient: 'linear-gradient(145deg, #17191d 0%, #30353c 60%, #0f1013 100%)',
     embossPattern: 'ancient-brahmi-rock',
-    symbol: '📜',
+    symbol: 'ශි',
     description: 'The authoritative multi-volume compilation of rock and pillar inscriptions from Mihintale, Sigiriya, Polonnaruwa, and Badulla, deciphering ancient Sinhala script and royal edicts.',
     versesSnippet: {
       original: 'ගලක කෙටූ අකුරු කලක් නොමැකී පවතින්නාක් මෙන් ධර්මිෂ්ඨ රජුගේ නාමය සදා බැබළෙන්නේය॥',
@@ -421,11 +480,15 @@ export const BOOKS: Book[] = [
     rating: 4.91,
     reviewsCount: 470,
     heightRatio: 1.45,
-    themeColor: '#703816',
-    accentColor: '#fbd38d',
-    bgGradient: 'linear-gradient(145deg, #381b0a 0%, #613012 55%, #1c0a03 100%)',
+    coverImage: 'https://images.unsplash.com/photo-1521587760476-6c12a4b040da?auto=format&fit=crop&w=800&q=80',
+    galleryImages: [
+      'https://images.unsplash.com/photo-1521587760476-6c12a4b040da?auto=format&fit=crop&w=1200&q=80'
+    ],
+    themeColor: '#32251d',
+    accentColor: '#d6a365',
+    bgGradient: 'linear-gradient(145deg, #201712 0%, #433227 60%, #150f0b 100%)',
     embossPattern: 'jasmine-garland',
-    symbol: '🌸',
+    symbol: 'පූ',
     description: 'Written during the reign of King Parakramabahu II at Dambadeniya, this devotional masterpiece praises the Buddha as "Araham" (Worthy of supreme veneration) with captivating cultural narratives.',
     versesSnippet: {
       original: 'සියලු ලෝවැසියන්ගේ හිතසුව පිණිස සම්බුදු ගුණ සුවඳ විහිදුවන පූජාවලී රත්නය සකස් විය॥',
@@ -448,12 +511,16 @@ export const BOOKS: Book[] = [
     originalPrice: 2600,
     rating: 4.94,
     reviewsCount: 340,
-    heightRatio: 1.36,
-    themeColor: '#5c3d11',
-    accentColor: '#ecc94b',
-    bgGradient: 'linear-gradient(145deg, #2b1c06 0%, #52370e 55%, #150c02 100%)',
+    heightRatio: 1.38,
+    coverImage: 'https://images.unsplash.com/photo-1519682337058-a94d519337bc?auto=format&fit=crop&w=800&q=80',
+    galleryImages: [
+      'https://images.unsplash.com/photo-1519682337058-a94d519337bc?auto=format&fit=crop&w=1200&q=80'
+    ],
+    themeColor: '#2b2317',
+    accentColor: '#cfa950',
+    bgGradient: 'linear-gradient(145deg, #1c160e 0%, #3a2f1f 60%, #120e09 100%)',
     embossPattern: 'royal-diadem',
-    symbol: '👑',
+    symbol: 'කා',
     description: 'The Mahakavya (Great Epic) of classical Sinhala verse versifying the Sattubhassa Jataka in 15 cantos, commissioned by Queen Ulakudaya Devi of Kotte. Filled with advice on education and filial piety.',
     versesSnippet: {
       original: 'පොතපත බැලීමෙන් නුවණැස පෑදෙන්නේය। උගතුන් ඇසුරින් ලොව බැබළෙන්නේය॥',
@@ -466,3 +533,4 @@ export const BOOKS: Book[] = [
     tags: ['Sri Rahula', 'Kotte Kingdom', 'Mahakavya', 'Sattubhassa Jataka', 'Crown Jewel'],
   }
 ];
+

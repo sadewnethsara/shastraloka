@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Plus_Jakarta_Sans, Playfair_Display, Noto_Serif_Sinhala } from "next/font/google";
 import "./globals.css";
+import "gestalt/dist/gestalt.css";
 
 const jakarta = Plus_Jakarta_Sans({
   variable: "--font-sans",

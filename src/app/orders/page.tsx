@@ -4,8 +4,8 @@ import React from 'react';
 import Link from 'next/link';
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
-import BookCover from '../../components/BookCover';
 import { useApp } from '../../context/AppContext';
+import { IconTruck, IconArrowLeft } from '../../components/Icons';
 
 export default function OrdersPage() {
   const { orders } = useApp();
@@ -20,54 +20,55 @@ export default function OrdersPage() {
         <div className="flex flex-wrap items-center justify-between gap-4 pb-6 border-b border-[var(--border-subtle)] mb-8">
           <div>
             <div className="flex items-center gap-2">
-              <span className="text-xs font-bold text-emerald-600 bg-emerald-500/10 px-2.5 py-0.5 rounded-full">
+              <span className="text-xs font-semibold text-emerald-700 bg-emerald-50 dark:bg-emerald-950/40 dark:text-emerald-300 px-2.5 py-0.5 rounded-full">
                 Island-wide Courier
               </span>
               <span className="text-xs text-[var(--text-muted)]">• Shastraloka Dispatch</span>
             </div>
-            <h1 className="font-serif font-black text-2xl sm:text-3xl text-[var(--text-main)] mt-1">
+            <h1 className="font-serif font-bold text-2xl sm:text-3xl text-[var(--text-main)] mt-1">
               My Orders & Dispatches
             </h1>
           </div>
 
           <Link
             href="/"
-            className="px-5 py-2.5 rounded-full bg-[var(--bg-input)] hover:bg-[var(--bg-hover)] text-[var(--text-main)] font-bold text-xs pill-btn"
+            className="px-4 py-2 rounded-full bg-[var(--bg-input)] hover:bg-[var(--bg-hover)] text-[var(--text-main)] font-semibold text-xs transition-colors flex items-center gap-1.5"
           >
-            ← Back to Feed
+            <IconArrowLeft size={13} />
+            <span>Back to Feed</span>
           </Link>
         </div>
 
         {/* Orders List */}
         {orders.length === 0 ? (
           <div className="py-20 text-center space-y-4">
-            <div className="w-16 h-16 rounded-full bg-[var(--bg-input)] flex items-center justify-center text-3xl mx-auto">
-              📦
+            <div className="w-16 h-16 rounded-full bg-[var(--bg-input)] text-[#a66523] flex items-center justify-center mx-auto">
+              <IconTruck size={28} />
             </div>
             <h3 className="font-serif font-bold text-xl text-[var(--text-main)]">
               No Orders Registered Yet
             </h3>
-            <p className="text-xs text-[var(--text-muted)] max-w-sm mx-auto">
+            <p className="text-xs text-[var(--text-muted)] max-w-sm mx-auto leading-relaxed">
               Your registered manuscript orders will appear here with live tracking, delivery dates, and archival invoices.
             </p>
             <Link
               href="/"
-              className="inline-block px-6 py-3 rounded-full bg-[#e60023] text-white font-bold text-sm pill-btn cursor-pointer shadow-md"
+              className="inline-block px-5 py-2.5 rounded-full bg-[#e60023] hover:bg-[#ad081b] text-white font-semibold text-xs shadow-xs transition-colors"
             >
               Explore Treatises
             </Link>
           </div>
         ) : (
-          <div className="space-y-6">
+          <div className="space-y-5">
             {orders.map((order) => {
               const totalItems = order.items.reduce((a, b) => a + b.quantity, 0);
 
               const statusColor =
                 order.status === 'delivered'
-                  ? 'bg-emerald-500/10 text-emerald-600 border-emerald-500/20'
+                  ? 'bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-300 dark:border-emerald-800'
                   : order.status === 'dispatched'
-                  ? 'bg-blue-500/10 text-blue-600 border-blue-500/20'
-                  : 'bg-amber-500/10 text-amber-600 border-amber-500/20';
+                  ? 'bg-blue-50 text-blue-700 border-blue-200 dark:bg-blue-950/40 dark:text-blue-300 dark:border-blue-800'
+                  : 'bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-950/40 dark:text-amber-300 dark:border-amber-800';
 
               const statusLabel =
                 order.status === 'delivered'
@@ -79,20 +80,20 @@ export default function OrdersPage() {
               return (
                 <div
                   key={order.id}
-                  className="p-6 rounded-3xl bg-[var(--bg-card)] border border-[var(--border-subtle)] shadow-xl space-y-5 transition-all hover:border-[var(--text-muted)]"
+                  className="p-5 sm:p-6 rounded-2xl bg-white dark:bg-[#1c1c21] border border-[var(--border-subtle)] shadow-xs space-y-4 transition-all hover:border-[var(--text-muted)]"
                 >
                   {/* Top Bar: Order ID, Date & Status */}
-                  <div className="flex flex-wrap items-center justify-between gap-3 pb-4 border-b border-[var(--border-subtle)]">
+                  <div className="flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-[var(--border-subtle)]">
                     <div>
                       <div className="flex items-center gap-2">
                         <span className="font-mono font-bold text-sm text-[var(--text-main)]">
                           Order #{order.id}
                         </span>
-                        <span className={`text-[11px] font-bold px-2.5 py-0.5 rounded-full border ${statusColor}`}>
+                        <span className={`text-[11px] font-semibold px-2.5 py-0.5 rounded-full border ${statusColor}`}>
                           {statusLabel}
                         </span>
                       </div>
-                      <span className="text-[11px] text-[var(--text-muted)]">
+                      <span className="text-[11px] text-[var(--text-muted)] mt-0.5 block">
                         Placed on {new Date(order.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
                       </span>
                     </div>
@@ -100,9 +101,9 @@ export default function OrdersPage() {
                     <div className="flex items-center gap-2">
                       <Link
                         href={`/orders/${order.id}`}
-                        className="px-4 py-2 rounded-full bg-[#e60023] hover:bg-[#ad081b] text-white font-bold text-xs pill-btn shadow-md transition-all"
+                        className="px-4 py-2 rounded-full bg-[#e60023] hover:bg-[#ad081b] text-white font-semibold text-xs shadow-xs transition-colors"
                       >
-                        Live Tracking & Invoice →
+                        Live Tracking & Invoice &rarr;
                       </Link>
                     </div>
                   </div>
@@ -110,19 +111,19 @@ export default function OrdersPage() {
                   {/* Body: Item Thumbnails and Summary */}
                   <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-center">
                     
-                    {/* Item Previews */}
+                    {/* Item Previews with Real Photographs */}
                     <div className="md:col-span-8 flex items-center gap-3 overflow-x-auto py-1">
                       {order.items.map((item, idx) => (
                         <div
                           key={`${item.book.id}-${idx}`}
-                          className="flex items-center gap-2.5 p-2 rounded-2xl bg-[var(--bg-wash)] border border-[var(--border-subtle)] shrink-0 max-w-[240px]"
+                          className="flex items-center gap-2.5 p-2 rounded-xl bg-[var(--bg-wash)] border border-[var(--border-subtle)] shrink-0 max-w-[240px]"
                         >
-                          <div className="w-10 shrink-0 rounded overflow-hidden shadow-xs">
-                            <BookCover book={item.book} size="sm" />
+                          <div className="w-10 h-14 shrink-0 rounded-md overflow-hidden bg-neutral-100 shadow-2xs">
+                            <img src={item.book.coverImage} alt={item.book.title} className="w-full h-full object-cover" />
                           </div>
                           <div className="text-xs truncate">
-                            <p className="font-bold text-[var(--text-main)] truncate">{item.book.title}</p>
-                            <span className="text-[10px] text-[var(--text-muted)]">
+                            <p className="font-serif font-bold text-[var(--text-main)] truncate">{item.book.title}</p>
+                            <span className="text-[10px] text-[var(--text-muted)] block">
                               Qty: {item.quantity} • {item.binding}
                             </span>
                           </div>
@@ -135,10 +136,10 @@ export default function OrdersPage() {
                       <div className="text-[var(--text-muted)]">
                         Total Amount ({totalItems} items):
                       </div>
-                      <div className="font-serif font-black text-xl text-[var(--text-main)]">
+                      <div className="font-serif font-bold text-lg sm:text-xl text-[var(--text-main)]">
                         Rs. {order.total.toLocaleString()}
                       </div>
-                      <div className="text-[11px] text-emerald-600 font-semibold">
+                      <div className="text-[11px] text-emerald-700 dark:text-emerald-400 font-semibold">
                         Estimated: {order.estimatedDelivery} ({order.customer.district})
                       </div>
                     </div>

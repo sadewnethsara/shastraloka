@@ -2,13 +2,13 @@
 
 import React, { Suspense } from 'react';
 import Link from 'next/link';
-import { useRouter, useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import Header from '../../../../components/Header';
-import SearchGuides from '../../../../components/SearchGuides';
 import Footer from '../../../../components/Footer';
 import BookCard from '../../../../components/BookCard';
 import { useApp } from '../../../../context/AppContext';
 import { BOOKS } from '../../../../data/books';
+import { IconArrowLeft, IconShare, IconBag, IconBook } from '../../../../components/Icons';
 
 function BoardDetailContent() {
   const params = useParams();
@@ -17,45 +17,52 @@ function BoardDetailContent() {
 
   const boardId = (params?.id as string) || '';
   const board = boards.find((b) => b.id === boardId) || boards[0];
-  const boardBooks = BOOKS.filter((b) => board.bookIds.includes(b.id));
+
+  const boardBooks = BOOKS.filter((book) => board.bookIds.includes(book.id));
 
   const handleAddAllToCart = () => {
     boardBooks.forEach((book) => {
-      addToCart(book);
+      addToCart(book, book.binding, 1);
     });
-    showToast(`Added ${boardBooks.length} treatises from "${board.name}" to your bag!`);
+    showToast(`Added ${boardBooks.length} treatises to your shopping bag!`);
   };
 
   return (
     <div className="min-h-screen bg-[var(--bg-main)] text-[var(--text-main)]">
       <Header />
-      <SearchGuides />
 
-      <main className="max-w-[1720px] mx-auto px-4 sm:px-6 py-8 sm:py-12">
+      <main className="max-w-[1720px] mx-auto px-4 sm:px-6 py-8">
         
-        {/* Board Header Section */}
-        <div className="max-w-2xl mx-auto text-center space-y-3 pb-8 border-b border-[var(--border-subtle)]">
-          
-          <div className="flex items-center justify-center gap-2 text-xs text-[var(--text-muted)]">
-            <Link href="/profile" className="hover:underline">
-              Profile
-            </Link>
-            <span>/</span>
-            <span>Saved Boards</span>
-          </div>
+        {/* Navigation Breadcrumb */}
+        <div className="mb-6 flex items-center justify-between text-xs text-[var(--text-muted)]">
+          <Link
+            href="/profile"
+            className="flex items-center gap-1.5 font-semibold hover:text-[var(--text-main)] cursor-pointer px-3 py-1.5 rounded-full hover:bg-[var(--bg-hover)] transition-colors"
+          >
+            <IconArrowLeft size={13} />
+            <span>Back to Profile & Boards</span>
+          </Link>
 
-          <h1 className="font-serif font-black text-3xl sm:text-4xl text-[var(--text-main)]">
+          <div className="flex items-center gap-2">
+            <span>Reading Board</span>
+            <span>/</span>
+            <span className="font-semibold text-[var(--text-main)]">{board.name}</span>
+          </div>
+        </div>
+
+        {/* Board Header Section */}
+        <div className="text-center max-w-xl mx-auto space-y-3 py-6">
+          <h1 className="font-serif font-bold text-3xl sm:text-4xl text-[var(--text-main)]">
             {board.name}
           </h1>
+          <p className="text-xs sm:text-sm text-[var(--text-muted)] leading-relaxed">
+            {board.description || 'Custom collection of ancient Sri Lankan classical treatises and historical manuscripts.'}
+          </p>
 
-          {board.description && (
-            <p className="text-xs sm:text-sm text-[var(--text-muted)] leading-relaxed">
-              {board.description}
-            </p>
-          )}
-
-          <div className="text-xs font-bold text-[#e60023]">
-            {boardBooks.length} Treatises in Collection
+          <div className="flex items-center justify-center gap-2 text-xs font-semibold text-[var(--text-muted)] pt-1">
+            <span>{boardBooks.length} Treatises Saved</span>
+            <span>•</span>
+            <span>Private Collection</span>
           </div>
 
           {/* Action Buttons */}
@@ -65,17 +72,19 @@ function BoardDetailContent() {
                 navigator.clipboard?.writeText(window.location.href);
                 showToast('Board collection link copied to clipboard!');
               }}
-              className="px-5 py-2.5 rounded-full bg-[var(--bg-input)] hover:bg-[var(--bg-hover)] text-[var(--text-main)] font-bold text-xs pill-btn cursor-pointer transition-all hover:scale-105"
+              className="px-4 py-2 rounded-full bg-[var(--bg-input)] hover:bg-[var(--bg-hover)] text-[var(--text-main)] font-semibold text-xs cursor-pointer transition-colors flex items-center gap-1.5"
             >
-              Share Board ↗
+              <IconShare size={14} />
+              <span>Share Board</span>
             </button>
 
             {boardBooks.length > 0 && (
               <button
                 onClick={handleAddAllToCart}
-                className="px-6 py-2.5 rounded-full bg-[#e60023] hover:bg-[#ad081b] text-white font-bold text-xs pill-btn cursor-pointer shadow-md transition-all hover:scale-105 flex items-center gap-1.5"
+                className="px-5 py-2 rounded-full bg-[#e60023] hover:bg-[#ad081b] text-white font-semibold text-xs cursor-pointer shadow-xs transition-colors flex items-center gap-1.5"
               >
-                <span>🛍️ Order All in Collection ({boardBooks.length})</span>
+                <IconBag size={14} />
+                <span>Order All in Collection ({boardBooks.length})</span>
               </button>
             )}
           </div>
@@ -83,10 +92,12 @@ function BoardDetailContent() {
         </div>
 
         {/* Board Items Masonry Grid */}
-        <section className="pt-8">
+        <section className="pt-6">
           {boardBooks.length === 0 ? (
             <div className="py-20 text-center space-y-3">
-              <div className="text-4xl">📚</div>
+              <div className="w-16 h-16 rounded-full bg-[var(--bg-input)] text-[#a66523] flex items-center justify-center mx-auto">
+                <IconBook size={28} />
+              </div>
               <h3 className="font-serif font-bold text-xl text-[var(--text-main)]">
                 This Board is Empty
               </h3>
@@ -95,7 +106,7 @@ function BoardDetailContent() {
               </p>
               <Link
                 href="/"
-                className="inline-block px-6 py-3 rounded-full bg-[#e60023] text-white font-bold text-sm pill-btn cursor-pointer shadow-md"
+                className="inline-block px-5 py-2 rounded-full bg-[#e60023] hover:bg-[#ad081b] text-white font-semibold text-xs shadow-xs transition-colors"
               >
                 Explore Treatises
               </Link>
@@ -118,7 +129,7 @@ function BoardDetailContent() {
 
 export default function BoardDetailPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen bg-[var(--bg-main)] flex items-center justify-center font-bold">Loading Collection...</div>}>
+    <Suspense fallback={<div className="min-h-screen bg-[var(--bg-main)] flex items-center justify-center font-bold">Loading Board Collection...</div>}>
       <BoardDetailContent />
     </Suspense>
   );

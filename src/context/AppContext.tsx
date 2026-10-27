@@ -26,6 +26,7 @@ export interface OrderCustomer {
   district: string;
   postalCode: string;
   notes?: string;
+  deliveryNotes?: string;
 }
 
 export interface Order {
@@ -100,6 +101,7 @@ interface AppContextType {
     paymentMethod: 'cod' | 'card' | 'bank';
     discount?: number;
     shippingFee?: number;
+    shippingDistrict?: string;
   }) => Order;
   getOrder: (id: string) => Order | undefined;
 
@@ -426,7 +428,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         showToast('Removed from liked treatises');
         return prev.filter((id) => id !== bookId);
       } else {
-        showToast('Saved to your liked treatises ❤️');
+        showToast('Saved to your liked treatises');
         return [...prev, bookId];
       }
     });
@@ -440,11 +442,13 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     paymentMethod,
     discount = 0,
     shippingFee = 350,
+    shippingDistrict,
   }: {
     customer: OrderCustomer;
     paymentMethod: 'cod' | 'card' | 'bank';
     discount?: number;
     shippingFee?: number;
+    shippingDistrict?: string;
   }): Order => {
     const randomNum = Math.floor(100000 + Math.random() * 900000);
     const orderId = `LK-${randomNum}`;
