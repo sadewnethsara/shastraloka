@@ -1,0 +1,328 @@
+import { ReactElement, ReactNode } from 'react';
+import { Indexable } from './zIndex';
+type AlignItems = 'start' | 'end' | 'center' | 'baseline' | 'stretch';
+type Column = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12;
+type Dimension = number | string;
+type Direction = 'row' | 'column';
+type Display = 'none' | 'flex' | 'block' | 'inlineBlock' | 'visuallyHidden';
+type Margin = -16 | -15 | -14 | -13 | -12 | -11 | -10 | -9 | -8 | -7 | -6 | -5 | -4 | -3 | -2 | -1.5 | -1 | -0.5 | -0.25 | 0 | 0.25 | 0.5 | 1 | 1.5 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15 | 16 | 'auto';
+type Padding = 0 | 0.25 | 0.5 | 1 | 1.5 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15 | 16;
+type BoxPassthroughProps = Omit<React.ComponentProps<'div'>, 'onClick' | 'className' | 'style' | 'ref'> & React.RefAttributes<HTMLDivElement>;
+type Props = BoxPassthroughProps & {
+    /**
+     *
+     */
+    children?: ReactNode;
+    /**
+     * An "escape hatch" used to apply styles not otherwise available on Box.
+     */
+    dangerouslySetInlineStyle?: {
+        __style: {
+            [key: string]: string | number | undefined;
+        };
+    };
+    /**
+     * Aligns a flex container's lines within when there is extra space in the cross-axis, similar to how justify-content aligns individual items within the main-axis.
+     *
+     * Learn more about Flexbox layouts on [MDN](https://developer.mozilla.org/en-US/docs/Learn/CSS/CSS_layout/Flexbox). If you're using Box strictly for Flexbox layouts, check out [Flex](https://gestalt.pinterest.systems/web/flex)!
+     * Default: 'stretch'
+     */
+    alignContent?: 'start' | 'end' | 'center' | 'between' | 'around' | 'evenly' | 'stretch';
+    /**
+     * Defines the default behaviour for how flex items are laid out along the cross-axis on the current line. Think of it as the justify-content version for the cross-axis (perpendicular to the main-axis).
+     *
+     * Learn more about Flexbox layouts on [MDN](https://developer.mozilla.org/en-US/docs/Learn/CSS/CSS_layout/Flexbox). If you're using Box strictly for Flexbox layouts, check out [Flex](https://gestalt.pinterest.systems/web/flex)!
+     * Default: 'stretch'
+     *
+     * Also available in responsive sizes: `smAlignItems`, `mdAlignItems`, `lgAlignItems`, `xlAlignItems`, `xxlAlignItems`, `xxxlAlignItems`. See the [Screen size page](https://gestalt.pinterest.systems/foundations/screen_sizes#Web-(px)) to learn more about viewport breakpoints in web.
+     */
+    alignItems?: AlignItems;
+    smAlignItems?: AlignItems;
+    mdAlignItems?: AlignItems;
+    lgAlignItems?: AlignItems;
+    xlAlignItems?: AlignItems;
+    xxlAlignItems?: AlignItems;
+    xxxlAlignItems?: AlignItems;
+    /**
+     * Allows the default alignment (or the one specified by align-items) to be overridden for individual flex items.
+     *
+     * Learn more about Flexbox layouts on [MDN](https://developer.mozilla.org/en-US/docs/Learn/CSS/CSS_layout/Flexbox). If you're using Box strictly for Flexbox layouts, check out [Flex](https://gestalt.pinterest.systems/web/flex)!
+     * Default: 'stretch'
+     */
+    alignSelf?: 'auto' | 'start' | 'end' | 'center' | 'baseline' | 'stretch';
+    /**
+     * Changes the underlying DOM element when needed for accessibility or SEO reasons. Note that currently only block-level elements are available.
+     * Default: 'div'
+     */
+    as?: 'article' | 'aside' | 'caption' | 'details' | 'div' | 'figcaption' | 'figure' | 'footer' | 'header' | 'main' | 'nav' | 'p' | 'section' | 'summary';
+    /**
+     * Specify a border style for the box. For sizes, "sm" is 1px and "lg" is 2px. Setting a size will always default the border style to solid and color to lightGray. See the [borders](https://gestalt.pinterest.systems/web/box#Borders) variant for more details.
+     * Default: 'none'
+     */
+    borderStyle?: 'sm' | 'lg' | 'shadow' | 'raisedTopShadow' | 'raisedBottomShadow' | 'none';
+    /**
+     * Helper to specify location when using absolute positioning. See the [absolute positioning](https://gestalt.pinterest.systems/web/box#Absolute-positioning) variant for more info.
+     * Default: false
+     */
+    bottom?: boolean;
+    /**
+     * See the [color](https://gestalt.pinterest.systems/web/box#Colors) variant for more info.
+     * Default: 'transparent'
+     */
+    color?: 'darkWash' | 'lightWash' | 'transparent' | 'transparentDarkGray' | 'default' | 'infoBase' | 'infoWeak' | 'errorBase' | 'errorWeak' | 'warningBase' | 'warningWeak' | 'successBase' | 'successWeak' | 'recommendationBase' | 'recommendationWeak' | 'shopping' | 'primary' | 'secondary' | 'tertiary' | 'selected' | 'inverse' | 'brand' | 'education' | 'elevationAccent' | 'elevationFloating' | 'elevationRaised' | 'dark' | 'light';
+    /**
+     * See the [column layout](https://gestalt.pinterest.systems/web/box#Column-layout) variant for more info.
+     *
+     * Also available in responsive sizes: `smColumn`, `mdColumn`, `lgColumn`, `xlColumn`, `xxlColumn`, `xxxlColumn`
+     */
+    column?: Column;
+    smColumn?: Column;
+    mdColumn?: Column;
+    lgColumn?: Column;
+    xlColumn?: Column;
+    xxlColumn?: Column;
+    xxxlColumn?: Column;
+    /**
+     * Establishes the main-axis, thus defining the direction flex items are placed in the flex container.
+     *
+     * Learn more about Flexbox layouts on [MDN](https://developer.mozilla.org/en-US/docs/Learn/CSS/CSS_layout/Flexbox). If you're using Box strictly for Flexbox layouts, check out [Flex](https://gestalt.pinterest.systems/web/flex)!
+     *
+     * Also available in responsive sizes: `smDirection`, `mdDirection`, `lgDirection`, `xlDirection`, `xxlDirection`, `xxxlDirection`
+     * Default: 'row'
+     */
+    direction?: Direction;
+    smDirection?: Direction;
+    mdDirection?: Direction;
+    lgDirection?: Direction;
+    xlDirection?: Direction;
+    xxlDirection?: Direction;
+    xxxlDirection?: Direction;
+    /**
+     * The display style. See the [Accessibility guidelines](https://gestalt.pinterest.systems/web/box#Visually-hidden-content) to learn more about using \`visuallyHidden\`.
+     *
+     * Also available in responsive sizes: `smDisplay`, `mdDisplay`, `lgDisplay`, `xlDisplay`, `xxlDisplay`, `xxxlDisplay`
+     * Default: 'block'
+     */
+    display?: Display;
+    smDisplay?: Display;
+    mdDisplay?: Display;
+    lgDisplay?: Display;
+    xlDisplay?: Display;
+    xxlDisplay?: Display;
+    xxxlDisplay?: Display;
+    /**
+     * Sets the max-width of the Box to 100%. See the [sizing](https://gestalt.pinterest.systems/web/box#Sizing) variant for more info.
+     * Default: false
+     */
+    fit?: boolean;
+    /**
+     * Defines how a flex item will be sized. "grow", equivalent to "flex: 1 1 auto", will size the Box relative to its parent, growing and shrinking based on available space. "shrink", equivalent to "flex: 0 1 auto" (the browser default), allows the Box to shrink if compressed but not grow if given extra space. Finally, "none", equivalent to "flex: 0 0 auto", preserves the Box's size based on child content regardless of its container's size.
+     *
+     * Learn more about Flexbox layouts on [MDN](https://developer.mozilla.org/en-US/docs/Learn/CSS/CSS_layout/Flexbox). If you're using Box strictly for Flexbox layouts, check out [Flex](https://gestalt.pinterest.systems/web/flex)!
+     * Default: 'shrink'
+     */
+    flex?: 'grow' | 'shrink' | 'none';
+    /**
+     * Use numbers for pixels: height={100} and strings for percentages: height="100%". See the [sizing](https://gestalt.pinterest.systems/web/box#Sizing) variant for more info.
+     */
+    height?: Dimension;
+    /**
+     * Defines the alignment along the main axis. It helps distribute extra free space left over when either all the flex items on a line are inflexible, or are flexible but have reached their maximum size. It also exerts some control over the alignment of items when they overflow the line.
+     *
+     * Learn more about Flexbox layouts on [MDN](https://developer.mozilla.org/en-US/docs/Learn/CSS/CSS_layout/Flexbox). If you're using Box strictly for Flexbox layouts, check out [Flex](https://gestalt.pinterest.systems/web/flex)!
+     * Default: 'start'
+     */
+    justifyContent?: 'start' | 'end' | 'center' | 'between' | 'around' | 'evenly';
+    /**
+     * Helper to specify location when using absolute positioning. See the [absolute positioning](https://gestalt.pinterest.systems/web/box#Absolute-positioning) variant for more info.
+     * Default: false
+     */
+    left?: boolean;
+    /**
+     * Scale is in 4px increments so a `margin` of 2 is 8px.
+     *
+     * Also available in responsive sizes: `smMargin`, `mdMargin`, `lgMargin`, `xlMargin`, `xxlMargin`, `xxxlMargin`
+     * Default: 0
+     */
+    margin?: Margin;
+    smMargin?: Margin;
+    mdMargin?: Margin;
+    lgMargin?: Margin;
+    xlMargin?: Margin;
+    xxlMargin?: Margin;
+    xxxlMargin?: Margin;
+    /**
+     * Scale is in 4px increments so a `marginTop` of 2 is 8px.
+     *
+     * Also available in responsive sizes: `smMarginTop`, `mdMarginTop`, `lgMarginTop`, `xlMarginTop`, `xxlMarginTop`, `xxxlMarginTop`
+     * Default: 0
+     */
+    marginTop?: Margin;
+    smMarginTop?: Margin;
+    mdMarginTop?: Margin;
+    lgMarginTop?: Margin;
+    xlMarginTop?: Margin;
+    xxlMarginTop?: Margin;
+    xxxlMarginTop?: Margin;
+    /**
+     * Scale is in 4px increments so a `marginBottom` of 2 is 8px.
+     *
+     * Also available in responsive sizes: `smMarginBottom`, `mdMarginBottom`, `lgMarginBottom`, `xlMarginBottom`, `xxlMarginBottom`, `xxxlMarginBottom`
+     * Default: 0
+     */
+    marginBottom?: Margin;
+    smMarginBottom?: Margin;
+    mdMarginBottom?: Margin;
+    lgMarginBottom?: Margin;
+    xlMarginBottom?: Margin;
+    xxlMarginBottom?: Margin;
+    xxxlMarginBottom?: Margin;
+    /**
+     * Applies margin to the left in left-to-right languages, and to the right in right-to-left languages. See the [Localization guidelines](https://gestalt.pinterest.systems/web/box#Page-direction) to learn more about using `marginStart`.
+     * Scale is in 4px increments so a `marginStart` of 2 is 8px.
+     *
+     * Also available in responsive sizes: `smMarginStart`, `mdMarginStart`, `lgMarginStart`, `xlMarginStart`, `xxlMarginStart`, `xxxlMarginStart`
+     * Default: 0
+     */
+    marginStart?: Margin;
+    smMarginStart?: Margin;
+    mdMarginStart?: Margin;
+    lgMarginStart?: Margin;
+    xlMarginStart?: Margin;
+    xxlMarginStart?: Margin;
+    xxxlMarginStart?: Margin;
+    /**
+     * Applies margin to the right in left-to-right languages, and to the left in right-to-left languages. See the [Localization guidelines](https://gestalt.pinterest.systems/web/box#Page-direction) to learn more about using `marginEnd`.
+     * Scale is in 4px increments so a marginEnd of 2 is 8px.
+     *
+     * Also available in responsive sizes: `smMarginEnd`, `mdMarginEnd`, `lgMarginEnd`, `xlMarginEnd`, `xxlMarginEnd`, `xxxlMarginEnd`
+     * Default: 0
+     */
+    marginEnd?: Margin;
+    smMarginEnd?: Margin;
+    mdMarginEnd?: Margin;
+    lgMarginEnd?: Margin;
+    xlMarginEnd?: Margin;
+    xxlMarginEnd?: Margin;
+    xxxlMarginEnd?: Margin;
+    /**
+     * Use numbers for pixels: maxHeight={100} and strings for percentages: maxHeight="100%". See the [sizing](https://gestalt.pinterest.systems/web/box#Sizing) variant for more info.
+     */
+    maxHeight?: Dimension;
+    /**
+     * Use numbers for pixels: maxWidth={100} and strings for percentages: maxWidth="100%". See the [sizing](https://gestalt.pinterest.systems/web/box#Sizing) variant for more info.
+     */
+    maxWidth?: Dimension;
+    /**
+     * Use numbers for pixels: minHeight={100} and strings for percentages: minHeight="100%". See the [sizing](https://gestalt.pinterest.systems/web/box#Sizing) variant for more info.
+     */
+    minHeight?: Dimension;
+    /**
+     * Use numbers for pixels: minWidth={100} and strings for percentages: minWidth="100%". See the [sizing](https://gestalt.pinterest.systems/web/box#Sizing) variant for more info.
+     */
+    minWidth?: Dimension;
+    /**
+     * See the [opacity](https://gestalt.pinterest.systems/web/box#Opacity) variant for more info.
+     */
+    opacity?: 0 | 0.1 | 0.2 | 0.3 | 0.4 | 0.5 | 0.6 | 0.7 | 0.8 | 0.9 | 1;
+    /**
+     * See the [overflow](https://gestalt.pinterest.systems/web/box#Overflow) variant for more info.
+     * Default: 'visible'
+     */
+    overflow?: 'visible' | 'hidden' | 'scroll' | 'scrollX' | 'scrollY' | 'auto';
+    /**
+     * Supports 3 responsive breakpoints: sm, md, lg. Each sets the padding from that breakpoint and up. See the [responsive padding](https://gestalt.pinterest.systems/web/box#Responsive-padding) variant for more info.
+     *
+     * Also available in responsive sizes: `smPadding`, `mdPadding`, `lgPadding`, `xlPadding`, `xxlPadding`, `xxxlPadding`
+     * Default: 0
+     */
+    padding?: Padding;
+    smPadding?: Padding;
+    mdPadding?: Padding;
+    lgPadding?: Padding;
+    xlPadding?: Padding;
+    xxlPadding?: Padding;
+    xxxlPadding?: Padding;
+    /**
+     * Horizontal padding (left/right).
+     *
+     * Also available in responsive sizes: `smPaddingX`, `mdPaddingX`, `lgPaddingX`, `xlPaddingX`, `xxlPaddingX`, `xxxlPaddingX`
+     * Default: 0
+     */
+    paddingX?: Padding;
+    smPaddingX?: Padding;
+    mdPaddingX?: Padding;
+    lgPaddingX?: Padding;
+    xlPaddingX?: Padding;
+    xxlPaddingX?: Padding;
+    xxxlPaddingX?: Padding;
+    /**
+     * Vertical padding (top/bottom).
+     *
+     * Also available in responsive sizes: `smPaddingY`, `mdPaddingY`, `lgPaddingY`, `xlPaddingY`, `xxlPaddingY`, `xxxlPaddingY`
+     * Default: 0
+     */
+    paddingY?: Padding;
+    smPaddingY?: Padding;
+    mdPaddingY?: Padding;
+    lgPaddingY?: Padding;
+    xlPaddingY?: Padding;
+    xxlPaddingY?: Padding;
+    xxxlPaddingY?: Padding;
+    /**
+     * See the [absolute positioning](https://gestalt.pinterest.systems/web/box#Absolute-positioning) variant for more info.
+     * Default: 'static'
+     */
+    position?: 'static' | 'absolute' | 'relative' | 'fixed';
+    /**
+     * Ref that is forwarded to the underlying input element. See the [using as a ref](https://gestalt.pinterest.systems/web/box#Using-as-a-ref) variant for more info.
+     */
+    ref?: HTMLDivElement | ReactElement;
+    /**
+     * Helper to specify location when using absolute positioning. See the [absolute positioning](https://gestalt.pinterest.systems/web/box#Absolute-positioning) variant for more info.
+     * Default: false
+     */
+    right?: boolean;
+    /**
+     * Used to designate the Box as a type of element or landmark using ARIA roles. See the [Accessibility guidelines](https://gestalt.pinterest.systems/web/box#Using-role) to learn more about using `role`.
+     */
+    role?: string;
+    /**
+     * See the [rounding](https://gestalt.pinterest.systems/web/box#Rounding) variant for more info.
+     */
+    rounding?: 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 'circle' | 'pill';
+    /**
+     * Helper to specify location when using absolute positioning. See the [absolute positioning](https://gestalt.pinterest.systems/web/box#Absolute-positioning) variant for more info.
+     * Default: false
+     */
+    top?: boolean;
+    /**
+     * Controls whether or not user can select text.
+     * Default: 'auto'
+     */
+    userSelect?: 'auto' | 'none';
+    /**
+     * Use numbers for pixels: width={100} and strings for percentages: width="100%". See the [sizing](https://gestalt.pinterest.systems/web/box#Sizing) variant for more info.
+     */
+    width?: Dimension;
+    /**
+     * By default, flex items will all try to fit onto one line. You can change that and allow the items to wrap onto multiple lines, from top to bottom.
+     *
+     * Learn more about Flexbox layouts on [MDN](https://developer.mozilla.org/en-US/docs/Learn/CSS/CSS_layout/Flexbox). If you're using Box strictly for Flexbox layouts, check out [Flex](https://gestalt.pinterest.systems/web/flex)!
+     * Default: false
+     */
+    wrap?: boolean;
+    /**
+     * An object representing the zIndex value of the Box. See the [Z-Index](https://gestalt.pinterest.systems/web/box#Z-Index) variant for more info.
+     */
+    zIndex?: Indexable;
+};
+/**
+ * [Box](https://gestalt.pinterest.systems/web/box) is a component primitive that can be used to build the foundation of pretty much any other component. It keeps details like spacing, borders and colors consistent with the rest of Gestalt, while allowing the developer to focus on the content.
+ *
+ * ![Box light mode](https://raw.githubusercontent.com/pinterest/gestalt/master/playwright/visual-test/Box.spec.ts-snapshots/Box-chromium-darwin.png)
+ * ![Box dark mode](https://raw.githubusercontent.com/pinterest/gestalt/master/playwright/visual-test/Box-dark.spec.ts-snapshots/Box-dark-chromium-darwin.png)
+ *
+ */
+declare const BoxWithForwardRef: import("react").ForwardRefExoticComponent<Omit<Props, "ref"> & import("react").RefAttributes<HTMLElement>>;
+export default BoxWithForwardRef;

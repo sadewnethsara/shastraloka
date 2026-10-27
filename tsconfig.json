@@ -20,7 +20,9 @@
     ],
     "paths": {
       "@/*": ["./src/*"],
-      "@/gestalt/*": ["./src/components/gestalt/*"]
+      "@/gestalt/*": ["./src/components/ui/gestalt/*"],
+      "gestalt": ["./src/components/ui/gestalt/gestalt.es.js"],
+      "gestalt/*": ["./src/components/ui/gestalt/*"]
     }
   },
   "include": [

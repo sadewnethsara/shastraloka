@@ -1,0 +1,8 @@
+{
+  "name": "gestalt",
+  "version": "177.0.13",
+  "main": "./gestalt.js",
+  "module": "./gestalt.es.js",
+  "types": "./index.d.ts",
+  "type": "module"
+}

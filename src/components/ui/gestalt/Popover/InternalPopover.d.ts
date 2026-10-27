@@ -1,0 +1,32 @@
+import { ReactNode } from 'react';
+import { Overflow } from '../boxTypes';
+type Color = 'blue' | 'white' | 'darkGray';
+type Size = 'xs' | 'sm' | 'md' | 'lg' | 'xl' | 'flexible' | number;
+type Role = 'dialog' | 'listbox' | 'menu' | 'tooltip';
+type Props = {
+    accessibilityLabel?: string;
+    accessibilityDismissButtonLabel?: string;
+    anchor: HTMLElement | null | undefined;
+    children?: ReactNode;
+    color?: Color;
+    onKeyDown?: (arg1: {
+        event: React.KeyboardEvent<HTMLElement>;
+    }) => void;
+    id?: string;
+    idealDirection?: 'up' | 'right' | 'down' | 'left';
+    forceDirection?: boolean;
+    onDismiss: () => void;
+    role?: Role;
+    shouldFocus?: boolean;
+    showCaret?: boolean;
+    showDismissButton?: boolean;
+    size?: Size;
+    disablePortal?: boolean;
+    scrollBoundary?: HTMLElement;
+    hideWhenReferenceHidden?: boolean;
+    onPositioned?: () => void;
+    disableFocusTrap?: boolean;
+    overflow?: Extract<Overflow, 'auto' | 'hidden' | 'visible'>;
+};
+export default function InternalPopover({ accessibilityLabel, accessibilityDismissButtonLabel, anchor, children, showDismissButton, onKeyDown, id, idealDirection, forceDirection, onDismiss, color, role, shouldFocus, showCaret, size, disablePortal, scrollBoundary, hideWhenReferenceHidden, onPositioned, disableFocusTrap, overflow, }: Props): import("react/jsx-runtime").JSX.Element | null;
+export {};
