@@ -3,7 +3,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { Book, BOOKS } from '../data/books';
 
-export interface CartItem {
+export interface BagItem {
   book: Book;
   quantity: number;
   binding: string;
@@ -32,7 +32,7 @@ export interface OrderCustomer {
 export interface Order {
   id: string; // e.g. "LK-847291"
   createdAt: string;
-  items: CartItem[];
+  items: BagItem[];
   subtotal: number;
   discount: number;
   shipping: number;
@@ -69,7 +69,18 @@ interface AppContextType {
   closeBookModal: () => void;
 
   // Shopping Bag
-  cart: CartItem[];
+  bag: BagItem[];
+  addToBag: (book: Book, binding?: string, quantity?: number) => void;
+  removeFromBag: (bookId: string) => void;
+  updateBagQuantity: (bookId: string, delta: number) => void;
+  clearBag: () => void;
+  isBagOpen: boolean;
+  setIsBagOpen: (open: boolean) => void;
+  bagCount: number;
+  bagTotal: number;
+
+  // Compatibility Cart Aliases
+  cart: BagItem[];
   addToCart: (book: Book, binding?: string, quantity?: number) => void;
   removeFromCart: (bookId: string) => void;
   updateQuantity: (bookId: string, delta: number) => void;
@@ -219,9 +230,9 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const [selectedCategory, setSelectedCategory] = useState('All Treatises');
   const [selectedBook, setSelectedBook] = useState<Book | null>(null);
 
-  // Cart
-  const [cart, setCart] = useState<CartItem[]>([]);
-  const [isCartOpen, setIsCartOpen] = useState(false);
+  // Bag
+  const [bag, setBag] = useState<BagItem[]>([]);
+  const [isBagOpen, setIsBagOpen] = useState(false);
 
   // Boards
   const [boards, setBoards] = useState<Board[]>(DEFAULT_BOARDS);
@@ -252,66 +263,67 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       document.documentElement.removeAttribute('data-theme');
     }
 
-    // Cart
+    // Bag
     try {
-      const savedCart = localStorage.getItem('shastraloka-cart');
-      if (savedCart) setCart(JSON.parse(savedCart));
-    } catch {}
+      const savedBag = localStorage.getItem('shastraloka-bag') || localStorage.getItem('shastraloka-cart');
+      if (savedBag) setBag(JSON.parse(savedBag));
+    } catch { }
 
     // Boards
     try {
       const savedBoards = localStorage.getItem('shastraloka-boards');
       if (savedBoards) setBoards(JSON.parse(savedBoards));
-    } catch {}
+    } catch { }
 
     // Likes
     try {
       const savedLikes = localStorage.getItem('shastraloka-likes');
       if (savedLikes) setLikedBookIds(JSON.parse(savedLikes));
-    } catch {}
+    } catch { }
 
     // Orders
     try {
       const savedOrders = localStorage.getItem('shastraloka-orders');
       if (savedOrders) setOrders(JSON.parse(savedOrders));
-    } catch {}
+    } catch { }
 
     // Reviews
     try {
       const savedReviews = localStorage.getItem('shastraloka-reviews');
       if (savedReviews) setBookReviews(JSON.parse(savedReviews));
-    } catch {}
+    } catch { }
   }, []);
 
   // Sync state to LocalStorage
   useEffect(() => {
     try {
-      localStorage.setItem('shastraloka-cart', JSON.stringify(cart));
-    } catch {}
-  }, [cart]);
+      localStorage.setItem('shastraloka-bag', JSON.stringify(bag));
+      localStorage.setItem('shastraloka-cart', JSON.stringify(bag));
+    } catch { }
+  }, [bag]);
 
   useEffect(() => {
     try {
       localStorage.setItem('shastraloka-boards', JSON.stringify(boards));
-    } catch {}
+    } catch { }
   }, [boards]);
 
   useEffect(() => {
     try {
       localStorage.setItem('shastraloka-likes', JSON.stringify(likedBookIds));
-    } catch {}
+    } catch { }
   }, [likedBookIds]);
 
   useEffect(() => {
     try {
       localStorage.setItem('shastraloka-orders', JSON.stringify(orders));
-    } catch {}
+    } catch { }
   }, [orders]);
 
   useEffect(() => {
     try {
       localStorage.setItem('shastraloka-reviews', JSON.stringify(bookReviews));
-    } catch {}
+    } catch { }
   }, [bookReviews]);
 
   const toggleTheme = () => {
@@ -338,10 +350,10 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const openBookModal = (book: Book) => setSelectedBook(book);
   const closeBookModal = () => setSelectedBook(null);
 
-  // Cart Handlers
-  const addToCart = (book: Book, binding?: string, quantity = 1) => {
+  // Bag Handlers
+  const addToBag = (book: Book, binding?: string, quantity = 1) => {
     const selectedBinding = binding || book.binding;
-    setCart((prev) => {
+    setBag((prev) => {
       const existing = prev.find((item) => item.book.id === book.id && item.binding === selectedBinding);
       if (existing) {
         return prev.map((item) =>
@@ -355,12 +367,12 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     showToast(`Added ${quantity > 1 ? `${quantity}x ` : ''}"${book.title}" to Bag`);
   };
 
-  const removeFromCart = (bookId: string) => {
-    setCart((prev) => prev.filter((item) => item.book.id !== bookId));
+  const removeFromBag = (bookId: string) => {
+    setBag((prev) => prev.filter((item) => item.book.id !== bookId));
   };
 
-  const updateQuantity = (bookId: string, delta: number) => {
-    setCart((prev) =>
+  const updateBagQuantity = (bookId: string, delta: number) => {
+    setBag((prev) =>
       prev
         .map((item) => {
           if (item.book.id === bookId) {
@@ -369,14 +381,25 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
           }
           return item;
         })
-        .filter(Boolean) as CartItem[]
+        .filter(Boolean) as BagItem[]
     );
   };
 
-  const clearCart = () => setCart([]);
+  const clearBag = () => setBag([]);
 
-  const cartCount = cart.reduce((acc, item) => acc + item.quantity, 0);
-  const cartTotal = cart.reduce((acc, item) => acc + item.book.price * item.quantity, 0);
+  const bagCount = bag.reduce((acc, item) => acc + item.quantity, 0);
+  const bagTotal = bag.reduce((acc, item) => acc + item.book.price * item.quantity, 0);
+
+  // Backward-compatible Cart Aliases
+  const addToCart = addToBag;
+  const removeFromCart = removeFromBag;
+  const updateQuantity = updateBagQuantity;
+  const clearCart = clearBag;
+  const cart = bag;
+  const cartCount = bagCount;
+  const cartTotal = bagTotal;
+  const isCartOpen = isBagOpen;
+  const setIsCartOpen = setIsBagOpen;
 
   // Boards Handlers
   const saveToBoard = (bookId: string, targetBoardId?: string) => {
@@ -452,7 +475,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   }): Order => {
     const randomNum = Math.floor(100000 + Math.random() * 900000);
     const orderId = `LK-${randomNum}`;
-    const subtotal = cartTotal;
+    const subtotal = bagTotal;
     const finalTotal = subtotal - discount + shippingFee;
 
     const estimatedDays = customer.district.toLowerCase() === 'colombo' ? 2 : 3;
@@ -467,7 +490,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     const newOrder: Order = {
       id: orderId,
       createdAt: new Date().toISOString(),
-      items: [...cart],
+      items: [...bag],
       subtotal,
       discount,
       shipping: shippingFee,
@@ -480,7 +503,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     };
 
     setOrders((prev) => [newOrder, ...prev]);
-    clearCart();
+    clearBag();
     showToast(`Order #${orderId} confirmed successfully!`);
     return newOrder;
   };
@@ -521,6 +544,15 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         selectedBook,
         openBookModal,
         closeBookModal,
+        bag,
+        addToBag,
+        removeFromBag,
+        updateBagQuantity,
+        clearBag,
+        isBagOpen,
+        setIsBagOpen,
+        bagCount,
+        bagTotal,
         cart,
         addToCart,
         removeFromCart,

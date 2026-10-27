@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { AppProvider } from '../context/AppContext';
-import CartDrawer from './CartDrawer';
+import BagDrawer from './BagDrawer';
 import BoardsModal from './BoardsModal';
 import BookModal from './BookModal';
 import Toast from './Toast';
@@ -12,7 +12,7 @@ export default function Providers({ children }: { children: React.ReactNode }) {
     <AppProvider>
       {children}
       <BookModal />
-      <CartDrawer />
+      <BagDrawer />
       <BoardsModal />
       <Toast />
     </AppProvider>

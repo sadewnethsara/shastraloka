@@ -3,17 +3,21 @@
 import React, { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import {
+  Menu,
+  ChevronDown,
+  ChevronRight,
+  Sun,
+  Moon,
+  User,
+  Heart,
+  Gift,
+  Handbag,
+  X,
+} from 'lucide-react';
 import { useApp } from '../context/AppContext';
 import { CATEGORIES } from '../data/books';
 import { SearchField } from './ui/SearchField';
-import {
-  IconSearch,
-  IconHeart,
-  IconBag,
-  IconSun,
-  IconMoon,
-  IconUser,
-} from './Icons';
 
 export const NAV_LINKS = [
   { label: 'Gifts', hasIcon: true, query: 'Gifts' },
@@ -36,8 +40,8 @@ export default function Header({ isSticky = false }: HeaderProps = {}) {
     toggleTheme,
     searchQuery,
     setSearchQuery,
-    cartCount,
-    setIsCartOpen,
+    bagCount,
+    setIsBagOpen,
     boards,
     setIsBoardsModalOpen,
     setSelectedCategory,
@@ -95,11 +99,10 @@ export default function Header({ isSticky = false }: HeaderProps = {}) {
   return (
     <>
       <header
-        className={`${
-          isSticky
+        className={`${isSticky
             ? 'sticky top-0 backdrop-blur-md bg-white/95 dark:bg-[#151518]/95'
             : 'relative bg-white dark:bg-[#151518]'
-        } z-40 border-b border-neutral-200 dark:border-neutral-800 transition-colors duration-200`}
+          } z-40 border-b border-neutral-200 dark:border-neutral-800 transition-colors duration-200`}
       >
         <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8">
           {/* =====================================================================
@@ -135,33 +138,12 @@ export default function Header({ isSticky = false }: HeaderProps = {}) {
                 onClick={() => setCategoriesOpen(!categoriesOpen)}
                 className="flex items-center gap-2 px-3.5 py-2 rounded-full text-sm font-medium text-neutral-800 dark:text-neutral-200 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition cursor-pointer"
               >
-                <svg
-                  className="w-4 h-4 text-neutral-800 dark:text-neutral-200"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <line x1="3" y1="12" x2="21" y2="12" />
-                  <line x1="3" y1="6" x2="21" y2="6" />
-                  <line x1="3" y1="18" x2="21" y2="18" />
-                </svg>
+                <Menu className="w-4 h-4 text-neutral-800 dark:text-neutral-200" />
                 <span>Categories</span>
-                <svg
-                  className={`w-3.5 h-3.5 text-neutral-500 transition-transform ${
-                    categoriesOpen ? 'rotate-180' : ''
-                  }`}
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <polyline points="6 9 12 15 18 9" />
-                </svg>
+                <ChevronDown
+                  className={`w-3.5 h-3.5 text-neutral-500 transition-transform ${categoriesOpen ? 'rotate-180' : ''
+                    }`}
+                />
               </button>
 
               {/* Categories Menu */}
@@ -178,17 +160,7 @@ export default function Header({ isSticky = false }: HeaderProps = {}) {
                       className="w-full text-left px-4 py-2 text-sm text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800 flex items-center justify-between transition cursor-pointer"
                     >
                       <span className="truncate">{cat}</span>
-                      <svg
-                        className="w-3.5 h-3.5 text-neutral-400 shrink-0 ml-2"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      >
-                        <polyline points="9 18 15 12 9 6" />
-                      </svg>
+                      <ChevronRight className="w-3.5 h-3.5 text-neutral-400 shrink-0 ml-2" />
                     </button>
                   ))}
                 </div>
@@ -209,7 +181,7 @@ export default function Header({ isSticky = false }: HeaderProps = {}) {
             </div>
 
             {/* Right User Actions */}
-            <div className="flex items-center gap-1.5 shrink-0">
+            <div className="flex items-center gap-2 shrink-0">
               {/* Theme Toggle */}
               <button
                 type="button"
@@ -218,13 +190,17 @@ export default function Header({ isSticky = false }: HeaderProps = {}) {
                 className="p-2.5 rounded-full hover:bg-neutral-100 dark:hover:bg-neutral-800 text-neutral-700 dark:text-neutral-300 transition cursor-pointer"
                 title={isDark ? 'Light Mode' : 'Dark Mode'}
               >
-                {isDark ? <IconSun size={19} /> : <IconMoon size={19} />}
+                {isDark ? (
+                  <Sun className="w-5 h-5 text-amber-300" />
+                ) : (
+                  <Moon className="w-5 h-5 text-neutral-700 dark:text-neutral-300" />
+                )}
               </button>
 
               {/* Sign in link */}
               <Link
                 href="/profile"
-                className="px-3.5 py-2 rounded-full text-sm font-medium text-neutral-800 dark:text-neutral-200 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition"
+                className="px-3 py-1.5 rounded-full text-sm font-medium text-neutral-800 dark:text-neutral-200 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition"
               >
                 Sign in
               </Link>
@@ -236,7 +212,7 @@ export default function Header({ isSticky = false }: HeaderProps = {}) {
                 className="p-2.5 rounded-full hover:bg-neutral-100 dark:hover:bg-neutral-800 text-neutral-800 dark:text-neutral-200 transition cursor-pointer"
                 title="Account & Profile"
               >
-                <IconUser size={20} />
+                <User className="w-5 h-5" />
               </Link>
 
               {/* Favorites / Saved Boards */}
@@ -247,7 +223,7 @@ export default function Header({ isSticky = false }: HeaderProps = {}) {
                 className="relative p-2.5 rounded-full hover:bg-neutral-100 dark:hover:bg-neutral-800 text-neutral-800 dark:text-neutral-200 transition cursor-pointer"
                 title="Saved Treatises"
               >
-                <IconHeart size={20} />
+                <Heart className="w-5 h-5" />
                 {totalFavorites > 0 && (
                   <span className="absolute top-1 right-1 min-w-[16px] h-4 px-1 rounded-full bg-[#F1641E] text-white text-[10px] font-bold flex items-center justify-center leading-none">
                     {totalFavorites}
@@ -262,37 +238,28 @@ export default function Header({ isSticky = false }: HeaderProps = {}) {
                 className="p-2.5 rounded-full hover:bg-neutral-100 dark:hover:bg-neutral-800 text-neutral-800 dark:text-neutral-200 transition"
                 title="Gift Sets"
               >
-                <svg
-                  className="w-5 h-5"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <polyline points="20 12 20 22 4 22 4 12" />
-                  <rect x="2" y="7" width="20" height="5" />
-                  <line x1="12" y1="22" x2="12" y2="7" />
-                  <path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z" />
-                  <path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z" />
-                </svg>
+                <Gift className="w-5 h-5 text-neutral-800 dark:text-neutral-200" />
               </Link>
 
-              {/* Shopping Bag Drawer Trigger */}
+              {/* Highlighted Shopping Bag Button with "Bag" Text */}
               <button
                 type="button"
-                onClick={() => setIsCartOpen(true)}
+                onClick={() => setIsBagOpen(true)}
                 aria-label="Shopping Bag"
-                className="relative p-2.5 rounded-full hover:bg-neutral-100 dark:hover:bg-neutral-800 text-neutral-800 dark:text-neutral-200 transition cursor-pointer"
-                title="Shopping Bag"
+                className="relative flex items-center gap-2 h-10 px-3.5 sm:px-4 rounded-full font-bold text-sm bg-neutral-100 dark:bg-neutral-800 hover:bg-[#F1641E]/10 border-2 border-[#F1641E]/40 hover:border-[#F1641E] text-neutral-900 dark:text-neutral-100 transition-all duration-150 cursor-pointer shadow-xs active:scale-95 group"
+                title="View Shopping Bag"
               >
-                <IconBag size={21} />
-                {cartCount > 0 && (
-                  <span className="absolute top-1 right-1 min-w-[16px] h-4 px-1 rounded-full bg-[#F1641E] text-white text-[10px] font-bold flex items-center justify-center leading-none">
-                    {cartCount}
-                  </span>
-                )}
+                <div className="relative flex items-center justify-center">
+                  <Handbag className="w-5 h-5 text-neutral-900 dark:text-neutral-100 group-hover:text-[#F1641E] transition-colors" />
+                  {bagCount > 0 && (
+                    <span className="absolute -top-1.5 -right-2 min-w-4 h-4 px-1 rounded-full bg-[#e60023] text-white text-[10px] font-bold flex items-center justify-center shadow-xs leading-none">
+                      {bagCount}
+                    </span>
+                  )}
+                </div>
+                <span className="font-bold text-sm tracking-tight text-neutral-900 dark:text-neutral-100 group-hover:text-[#F1641E] transition-colors">
+                  Bag
+                </span>
               </button>
             </div>
           </div>
@@ -309,21 +276,7 @@ export default function Header({ isSticky = false }: HeaderProps = {}) {
                 className="flex items-center gap-1.5 px-3 py-1 rounded-full hover:bg-neutral-100 dark:hover:bg-neutral-800 transition cursor-pointer"
               >
                 {item.hasIcon && (
-                  <svg
-                    className="w-3.5 h-3.5 text-[#F1641E]"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2.5"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <polyline points="20 12 20 22 4 22 4 12" />
-                    <rect x="2" y="7" width="20" height="5" />
-                    <line x1="12" y1="22" x2="12" y2="7" />
-                    <path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z" />
-                    <path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z" />
-                  </svg>
+                  <Gift className="w-3.5 h-3.5 text-[#F1641E]" />
                 )}
                 <span>{item.label}</span>
               </button>
@@ -350,19 +303,23 @@ export default function Header({ isSticky = false }: HeaderProps = {}) {
                 Shastraloka
               </Link>
 
-              <div className="flex items-center gap-1">
+              <div className="flex items-center gap-1.5">
                 <button
                   type="button"
                   onClick={toggleTheme}
                   aria-label="Toggle theme"
                   className="p-2 rounded-full hover:bg-neutral-100 dark:hover:bg-neutral-800 text-neutral-800 dark:text-neutral-200"
                 >
-                  {isDark ? <IconSun size={17} /> : <IconMoon size={17} />}
+                  {isDark ? (
+                    <Sun className="w-4 h-4 text-amber-300" />
+                  ) : (
+                    <Moon className="w-4 h-4 text-neutral-700 dark:text-neutral-300" />
+                  )}
                 </button>
 
                 <Link
                   href="/profile"
-                  className="px-2.5 py-1 rounded-full text-xs font-semibold text-neutral-800 dark:text-neutral-200 hover:bg-neutral-100 dark:hover:bg-neutral-800"
+                  className="px-2 py-1 rounded-full text-xs font-semibold text-neutral-800 dark:text-neutral-200 hover:bg-neutral-100 dark:hover:bg-neutral-800"
                 >
                   Sign in
                 </Link>
@@ -373,7 +330,7 @@ export default function Header({ isSticky = false }: HeaderProps = {}) {
                   className="p-1.5 rounded-full hover:bg-neutral-100 dark:hover:bg-neutral-800 text-neutral-800 dark:text-neutral-200"
                   title="Profile"
                 >
-                  <IconUser size={18} />
+                  <User className="w-4.5 h-4.5" />
                 </Link>
 
                 <button
@@ -382,7 +339,7 @@ export default function Header({ isSticky = false }: HeaderProps = {}) {
                   aria-label="Favorites"
                   className="relative p-2 rounded-full hover:bg-neutral-100 dark:hover:bg-neutral-800 text-neutral-800 dark:text-neutral-200"
                 >
-                  <IconHeart size={18} />
+                  <Heart className="w-4.5 h-4.5" />
                   {totalFavorites > 0 && (
                     <span className="absolute top-0.5 right-0.5 w-3.5 h-3.5 rounded-full bg-[#F1641E] text-white text-[9px] font-bold flex items-center justify-center">
                       {totalFavorites}
@@ -390,19 +347,23 @@ export default function Header({ isSticky = false }: HeaderProps = {}) {
                   )}
                 </button>
 
+                {/* Highlighted Mobile Shopping Bag Button with "Bag" Text */}
                 <button
                   type="button"
-                  onClick={() => setIsCartOpen(true)}
+                  onClick={() => setIsBagOpen(true)}
                   aria-label="Shopping Bag"
-                  className="relative p-2 rounded-full hover:bg-neutral-100 dark:hover:bg-neutral-800 text-neutral-800 dark:text-neutral-200"
+                  className="h-9 px-2.5 sm:px-3 rounded-full flex items-center gap-1.5 bg-neutral-100 dark:bg-neutral-800 border-2 border-[#F1641E]/40 text-neutral-900 dark:text-neutral-100 font-bold text-xs shadow-xs active:scale-95 transition cursor-pointer"
                   title="Shopping Bag"
                 >
-                  <IconBag size={19} />
-                  {cartCount > 0 && (
-                    <span className="absolute top-0.5 right-0.5 w-3.5 h-3.5 rounded-full bg-[#F1641E] text-white text-[9px] font-bold flex items-center justify-center">
-                      {cartCount}
-                    </span>
-                  )}
+                  <div className="relative flex items-center justify-center">
+                    <Handbag className="w-4 h-4" />
+                    {bagCount > 0 && (
+                      <span className="absolute -top-1.5 -right-2 min-w-3.5 h-3.5 px-0.5 rounded-full bg-[#e60023] text-white text-[9px] font-bold flex items-center justify-center leading-none">
+                        {bagCount}
+                      </span>
+                    )}
+                  </div>
+                  <span className="font-bold text-xs">Bag</span>
                 </button>
               </div>
             </div>
@@ -415,19 +376,7 @@ export default function Header({ isSticky = false }: HeaderProps = {}) {
                 aria-label="Open mobile navigation menu"
                 className="p-2 rounded-full hover:bg-neutral-100 dark:hover:bg-neutral-800 text-neutral-800 dark:text-neutral-200 shrink-0 cursor-pointer"
               >
-                <svg
-                  className="w-5 h-5"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <line x1="3" y1="12" x2="21" y2="12" />
-                  <line x1="3" y1="6" x2="21" y2="6" />
-                  <line x1="3" y1="18" x2="21" y2="18" />
-                </svg>
+                <Menu className="w-5 h-5" />
               </button>
 
               <div className="flex-1">
@@ -469,18 +418,7 @@ export default function Header({ isSticky = false }: HeaderProps = {}) {
                 aria-label="Close menu"
                 className="p-1.5 rounded-full hover:bg-neutral-100 dark:hover:bg-neutral-800 text-neutral-500"
               >
-                <svg
-                  className="w-5 h-5"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <line x1="18" y1="6" x2="6" y2="18" />
-                  <line x1="6" y1="6" x2="18" y2="18" />
-                </svg>
+                <X className="w-5 h-5" />
               </button>
             </div>
 
@@ -496,17 +434,7 @@ export default function Header({ isSticky = false }: HeaderProps = {}) {
                   className="w-full text-left px-5 py-2.5 text-sm font-medium text-neutral-800 dark:text-neutral-200 hover:bg-neutral-100 dark:hover:bg-neutral-800 flex items-center gap-2.5 transition"
                 >
                   {link.hasIcon && (
-                    <svg
-                      className="w-4 h-4 text-[#F1641E]"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                    >
-                      <polyline points="20 12 20 22 4 22 4 12" />
-                      <rect x="2" y="7" width="20" height="5" />
-                      <line x1="12" y1="22" x2="12" y2="7" />
-                    </svg>
+                    <Gift className="w-4 h-4 text-[#F1641E]" />
                   )}
                   <span>{link.label}</span>
                 </button>
@@ -523,15 +451,7 @@ export default function Header({ isSticky = false }: HeaderProps = {}) {
                   className="w-full text-left px-5 py-2.5 text-sm text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800 flex items-center justify-between transition"
                 >
                   <span className="truncate">{cat}</span>
-                  <svg
-                    className="w-4 h-4 text-neutral-400 shrink-0"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                  >
-                    <polyline points="9 18 15 12 9 6" />
-                  </svg>
+                  <ChevronRight className="w-4 h-4 text-neutral-400 shrink-0" />
                 </button>
               ))}
             </div>

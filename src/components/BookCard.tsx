@@ -5,13 +5,14 @@ import { Book } from '../data/books';
 import { useApp } from '../context/AppContext';
 import BookCover from './BookCover';
 import { IconHeart, IconStar, IconCheck, IconChevronDown, IconZoomIn } from './Icons';
+import { Handbag } from 'lucide-react';
 
 interface BookCardProps {
   book: Book;
 }
 
 export default function BookCard({ book }: BookCardProps) {
-  const { openBookModal, addToCart, saveToBoard, isBookSaved, boards } = useApp();
+  const { openBookModal, addToBag, saveToBoard, isBookSaved, boards } = useApp();
   const [isHovered, setIsHovered] = useState(false);
   const [isBoardDropdownOpen, setIsBoardDropdownOpen] = useState(false);
 
@@ -192,10 +193,11 @@ export default function BookCard({ book }: BookCardProps) {
 
         {/* Add to Bag Button */}
         <button
-          onClick={() => addToCart(book)}
-          className="w-full mt-2 py-1.5 px-3 rounded-full text-xs font-semibold bg-[var(--bg-input)] hover:bg-[#e60023] hover:text-white text-[var(--text-main)] transition-colors duration-150 cursor-pointer flex items-center justify-center gap-1.5"
+          onClick={() => addToBag(book)}
+          className="w-full mt-2 py-1.5 px-3 rounded-full text-xs font-semibold bg-[var(--bg-input)] hover:bg-[#F1641E] hover:text-white text-[var(--text-main)] transition-colors duration-150 cursor-pointer flex items-center justify-center gap-1.5"
         >
-          <span>+ Add to Bag</span>
+          <Handbag size={13} />
+          <span>Add to Bag</span>
         </button>
       </div>
     </div>

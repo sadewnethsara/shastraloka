@@ -16,10 +16,11 @@ import {
   IconBookmark,
   IconZoomIn,
 } from './Icons';
+import { Handbag } from 'lucide-react';
 
 export default function BookModal() {
   const router = useRouter();
-  const { selectedBook, closeBookModal, addToCart, saveToBoard, isBookSaved, boards, showToast } = useApp();
+  const { selectedBook, closeBookModal, addToBag, saveToBoard, isBookSaved, boards, showToast } = useApp();
 
   const [selectedBinding, setSelectedBinding] = useState<string>('Deluxe Gold Embossed');
   const [isPlayingChant, setIsPlayingChant] = useState(false);
@@ -369,21 +370,22 @@ export default function BookModal() {
 
               <button
                 onClick={() => {
-                  addToCart(selectedBook, selectedBinding);
+                  addToBag(selectedBook, selectedBinding);
                   closeBookModal();
                 }}
                 className="flex-1 py-2.5 px-4 rounded-full text-xs sm:text-sm font-semibold bg-[var(--bg-input)] hover:bg-[var(--bg-hover)] text-[var(--text-main)] cursor-pointer flex items-center justify-center gap-1.5 border border-[var(--border-subtle)]"
               >
+                <Handbag size={15} />
                 <span>Add to Bag</span>
               </button>
 
               <button
                 onClick={() => {
-                  addToCart(selectedBook, selectedBinding);
+                  addToBag(selectedBook, selectedBinding);
                   closeBookModal();
                   router.push('/checkout');
                 }}
-                className="flex-1 py-2.5 px-4 rounded-full text-xs sm:text-sm font-bold bg-[#e60023] hover:bg-[#ad081b] text-white cursor-pointer shadow-sm flex items-center justify-center gap-1.5"
+                className="flex-1 py-2.5 px-4 rounded-full text-xs sm:text-sm font-bold bg-[#F1641E] hover:bg-[#d45314] text-white cursor-pointer shadow-sm flex items-center justify-center gap-1.5"
               >
                 <span>Buy Now (Rs. {selectedBook.price.toLocaleString()})</span>
               </button>

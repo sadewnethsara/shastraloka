@@ -44,7 +44,7 @@ const SRI_LANKA_DISTRICTS = [
 
 export default function CheckoutPage() {
   const router = useRouter();
-  const { cart, cartTotal, placeOrder, showToast } = useApp();
+  const { bag, bagTotal, placeOrder, showToast } = useApp();
 
   const [step, setStep] = useState<1 | 2 | 3>(1);
 
@@ -71,10 +71,10 @@ export default function CheckoutPage() {
 
   // Calculate Shipping & Discount
   const selectedDistrictData = SRI_LANKA_DISTRICTS.find((d) => d.name === district) || SRI_LANKA_DISTRICTS[0];
-  const isFreeShipping = cartTotal >= 5000;
+  const isFreeShipping = bagTotal >= 5000;
   const shippingFee = isFreeShipping ? 0 : selectedDistrictData.rate;
-  const discountAmount = Math.round((cartTotal * discountPercent) / 100);
-  const finalTotal = Math.max(0, cartTotal - discountAmount) + shippingFee;
+  const discountAmount = Math.round((bagTotal * discountPercent) / 100);
+  const finalTotal = Math.max(0, bagTotal - discountAmount) + shippingFee;
 
   const handleApplyCoupon = (e: React.FormEvent) => {
     e.preventDefault();
@@ -122,12 +122,12 @@ export default function CheckoutPage() {
     router.push(`/orders/${order.id}`);
   };
 
-  if (cart.length === 0) {
+  if (bag.length === 0) {
     return (
       <div className="min-h-screen bg-[var(--bg-main)] text-[var(--text-main)]">
         <Header />
         <div className="max-w-md mx-auto py-24 px-6 text-center space-y-4">
-          <div className="w-16 h-16 rounded-full bg-[var(--bg-input)] flex items-center justify-center text-[#a66523] mx-auto">
+          <div className="w-16 h-16 rounded-full bg-[var(--bg-input)] flex items-center justify-center text-[#F1641E] mx-auto">
             <IconBag size={32} />
           </div>
           <h2 className="font-serif font-bold text-2xl">Your Bag is Empty</h2>
@@ -607,16 +607,16 @@ export default function CheckoutPage() {
               
               <div className="flex items-center justify-between pb-3 border-b border-[var(--border-subtle)]">
                 <h3 className="font-serif font-bold text-base text-[var(--text-main)]">
-                  Order Summary ({cart.reduce((a, b) => a + b.quantity, 0)} Items)
+                  Bag Summary ({bag.reduce((a, b) => a + b.quantity, 0)} Items)
                 </h3>
-                <Link href="/" className="text-xs text-[#e60023] font-semibold hover:underline">
+                <Link href="/" className="text-xs text-[#F1641E] font-semibold hover:underline">
                   + Add More Books
                 </Link>
               </div>
 
               {/* Items List with Real Photographic Thumbnails */}
               <div className="max-h-80 overflow-y-auto divide-y divide-[var(--border-subtle)] pr-1 space-y-3">
-                {cart.map((item) => (
+                {bag.map((item) => (
                   <div key={`${item.book.id}-${item.binding}`} className="pt-3 first:pt-0 flex items-start gap-3">
                     <div className="w-12 h-16 rounded-md overflow-hidden bg-neutral-100 shrink-0 shadow-2xs">
                       <img
@@ -660,7 +660,7 @@ export default function CheckoutPage() {
               <div className="space-y-2 text-xs text-[var(--text-muted)] pt-3 border-t border-[var(--border-subtle)]">
                 <div className="flex justify-between">
                   <span>Subtotal</span>
-                  <span className="font-medium text-[var(--text-main)]">Rs. {cartTotal.toLocaleString()}</span>
+                  <span className="font-medium text-[var(--text-main)]">Rs. {bagTotal.toLocaleString()}</span>
                 </div>
                 {discountAmount > 0 && (
                   <div className="flex justify-between text-emerald-700 dark:text-emerald-400 font-semibold">

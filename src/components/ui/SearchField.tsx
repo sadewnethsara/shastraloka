@@ -1,6 +1,7 @@
 'use client';
 
 import React, { forwardRef, useState } from 'react';
+import { Search, X } from 'lucide-react';
 
 export interface SearchFieldProps {
   id?: string;
@@ -108,18 +109,7 @@ export const SearchField = forwardRef<HTMLInputElement, SearchFieldProps>(
               showSubmitButton ? 'right-12 sm:right-14' : 'right-3'
             }`}
           >
-            <svg
-              className="w-4 h-4"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2.5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <line x1="18" y1="6" x2="6" y2="18" />
-              <line x1="6" y1="6" x2="18" y2="18" />
-            </svg>
+            <X className="w-4 h-4" />
           </button>
         )}
 
@@ -131,17 +121,7 @@ export const SearchField = forwardRef<HTMLInputElement, SearchFieldProps>(
             aria-label="Submit search"
             className={`absolute rounded-full flex items-center justify-center transition-transform active:scale-90 shadow-xs cursor-pointer ${sizeClasses.button} ${submitColorClasses}`}
           >
-            <svg
-              className="w-4 h-4 stroke-[2.5]"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <circle cx="11" cy="11" r="8" />
-              <line x1="21" y1="21" x2="16.65" y2="16.65" />
-            </svg>
+            <Search className="w-4 h-4" />
           </button>
         )}
       </div>

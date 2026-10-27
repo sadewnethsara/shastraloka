@@ -8,21 +8,22 @@ import Footer from '../../../../components/Footer';
 import BookCard from '../../../../components/BookCard';
 import { useApp } from '../../../../context/AppContext';
 import { BOOKS } from '../../../../data/books';
-import { IconArrowLeft, IconShare, IconBag, IconBook } from '../../../../components/Icons';
+import { IconArrowLeft, IconShare, IconBook } from '../../../../components/Icons';
+import { Handbag } from 'lucide-react';
 
 function BoardDetailContent() {
   const params = useParams();
   const router = useRouter();
-  const { boards, addToCart, showToast } = useApp();
+  const { boards, addToBag, showToast } = useApp();
 
   const boardId = (params?.id as string) || '';
   const board = boards.find((b) => b.id === boardId) || boards[0];
 
   const boardBooks = BOOKS.filter((book) => board.bookIds.includes(book.id));
 
-  const handleAddAllToCart = () => {
+  const handleAddAllToBag = () => {
     boardBooks.forEach((book) => {
-      addToCart(book, book.binding, 1);
+      addToBag(book, book.binding, 1);
     });
     showToast(`Added ${boardBooks.length} treatises to your shopping bag!`);
   };
@@ -80,11 +81,11 @@ function BoardDetailContent() {
 
             {boardBooks.length > 0 && (
               <button
-                onClick={handleAddAllToCart}
-                className="px-5 py-2 rounded-full bg-[#e60023] hover:bg-[#ad081b] text-white font-semibold text-xs cursor-pointer shadow-xs transition-colors flex items-center gap-1.5"
+                onClick={handleAddAllToBag}
+                className="px-5 py-2 rounded-full bg-[#F1641E] hover:bg-[#d45314] text-white font-semibold text-xs cursor-pointer shadow-xs transition-colors flex items-center gap-1.5"
               >
-                <IconBag size={14} />
-                <span>Order All in Collection ({boardBooks.length})</span>
+                <Handbag size={14} />
+                <span>Add All to Bag ({boardBooks.length})</span>
               </button>
             )}
           </div>

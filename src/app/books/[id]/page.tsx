@@ -6,7 +6,7 @@ import { useParams, useRouter } from 'next/navigation';
 import {
   Search,
   Heart,
-  ShoppingCart,
+  Handbag,
   BookOpen,
   Headphones,
   Share2,
@@ -37,7 +37,6 @@ import {
   Volume2,
   X,
   Plus,
-  ShoppingBag,
   Filter,
   Camera,
   CheckCircle2,
@@ -49,7 +48,7 @@ import {
 
 import Header from '../../../components/Header';
 import Footer from '../../../components/Footer';
-import CartDrawer from '../../../components/CartDrawer';
+import BagDrawer from '../../../components/BagDrawer';
 import BoardsModal from '../../../components/BoardsModal';
 import { BOOKS, Book } from '../../../data/books';
 import { useApp } from '../../../context/AppContext';
@@ -147,7 +146,7 @@ const DEFAULT_BOOK_FORMATS: BookFormatOption[] = [
     sublabel: 'Linen Collector Edition',
     price: 3850,
     originalPrice: 4950,
-    stockText: 'Only 7 Linen Collector copies left — in 24+ carts',
+    stockText: 'Only 7 Linen Collector copies left — in 24+ bags',
     deliveryText: 'FREE delivery Friday, Oct 30 on orders over LKR 3,500',
     badge: 'Most Popular',
   },
@@ -549,12 +548,12 @@ function ProductDetailContent() {
   const params = useParams();
   const router = useRouter();
   const {
-    addToCart,
+    addToBag,
     saveToBoard,
     isBookSaved,
     boards,
     setIsBoardsModalOpen,
-    setIsCartOpen,
+    setIsBagOpen,
     searchQuery: globalSearchQuery,
     setSearchQuery: setGlobalSearchQuery,
   } = useApp();
@@ -631,7 +630,7 @@ function ProductDetailContent() {
     },
   ]);
 
-  // Saved pins & Cart notification toast
+  // Saved pins & Bag notification toast
   const [savedPinIds, setSavedPinIds] = useState<Record<string, boolean>>({
     'mahawamsa-great-chronicle': true,
     'visuddhimagga-path-purification': true,
@@ -695,7 +694,7 @@ function ProductDetailContent() {
         sublabel: 'Linen Collector Edition',
         price: activeBook.price,
         originalPrice: activeBook.originalPrice,
-        stockText: 'Only 7 Linen Collector copies left — in 24+ carts',
+        stockText: 'Only 7 Linen Collector copies left — in 24+ bags',
         deliveryText: 'FREE delivery Friday on orders over LKR 3,500',
         badge: 'Most Popular',
       },
@@ -746,13 +745,13 @@ function ProductDetailContent() {
   const finalBundlePrice = Math.round(rawBundleTotal - bundleDiscount);
 
   // Handlers
-  const handleAddToCart = (customTitle?: string, countToAdd = 1) => {
+  const handleAddToBag = (customTitle?: string, countToAdd = 1) => {
     // Find matching book in BOOKS or use matchedBook
     const target = BOOKS.find((b) => b.id === activeBook.id) || matchedBook;
-    addToCart(target, currentFormatObj.label, countToAdd);
-    setIsCartOpen(true);
+    addToBag(target, currentFormatObj.label, countToAdd);
+    setIsBagOpen(true);
     triggerToast(
-      `Added "${customTitle || activeBook.title}" (${currentFormatObj.label}) to your Cart`
+      `Added "${customTitle || activeBook.title}" (${currentFormatObj.label}) to your Bag`
     );
   };
 
@@ -1329,9 +1328,9 @@ function ProductDetailContent() {
                       variant="orange"
                       size="sm"
                       disabled={activeBundleBooks.length === 0}
-                      text={`Add all ${activeBundleBooks.length} to Cart`}
+                      text={`Add all ${activeBundleBooks.length} to Bag`}
                       onClick={() =>
-                        handleAddToCart(
+                        handleAddToBag(
                           `${activeBundleBooks.length}-Book Classical Bundle`,
                           activeBundleBooks.length
                         )
@@ -1495,7 +1494,7 @@ function ProductDetailContent() {
               {/* Urgency Callout */}
               <div className="flex items-center justify-between gap-2">
                 <span className="inline-flex items-center gap-1.5 text-xs font-bold text-[#F1641E] bg-[#F1641E]/10 px-3 py-1 rounded-full">
-                  <Sparkles className="w-3.5 h-3.5" /> In 24+ readers&apos; carts right now
+                  <Sparkles className="w-3.5 h-3.5" /> In 24+ readers&apos; bags right now
                 </span>
                 <span className="text-xs font-medium text-neutral-500">
                   {activeBook.series}
@@ -1655,9 +1654,9 @@ function ProductDetailContent() {
                   variant="primary"
                   size="lg"
                   fullWidth
-                  iconStart={<ShoppingBag className="w-4 h-4" />}
-                  text={`Add ${currentFormatObj.label} to Cart — LKR ${(currentFormatObj.price * quantity).toLocaleString()}`}
-                  onClick={() => handleAddToCart(undefined, quantity)}
+                  iconStart={<Handbag className="w-4 h-4" />}
+                  text={`Add ${currentFormatObj.label} to Bag — LKR ${(currentFormatObj.price * quantity).toLocaleString()}`}
+                  onClick={() => handleAddToBag(undefined, quantity)}
                 />
 
                 <div className="grid grid-cols-2 gap-2.5">
@@ -1666,7 +1665,7 @@ function ProductDetailContent() {
                     size="md"
                     text="Buy Now (1-Click)"
                     onClick={() => {
-                      handleAddToCart(undefined, quantity);
+                      handleAddToBag(undefined, quantity);
                       router.push('/checkout');
                     }}
                   />
@@ -2105,9 +2104,9 @@ function ProductDetailContent() {
                       type="button"
                       onClick={(e) => {
                         e.stopPropagation();
-                        handleAddToCart(pin.title, 1);
+                        handleAddToBag(pin.title, 1);
                       }}
-                      title="Quick Add to Cart"
+                      title="Quick Add to Bag"
                       className="absolute bottom-2.5 right-2.5 z-10 w-8 h-8 rounded-full bg-white/95 dark:bg-neutral-800 hover:bg-[#23382C] text-neutral-900 dark:text-white hover:text-white shadow-md flex items-center justify-center opacity-95 sm:opacity-0 sm:group-hover:opacity-100 transition"
                     >
                       <Plus className="w-4 h-4 stroke-[2.5]" />
@@ -2330,7 +2329,7 @@ function ProductDetailContent() {
                 text={`Buy Full Edition — LKR ${currentFormatObj.price.toLocaleString()}`}
                 onClick={() => {
                   setIsLookInsideOpen(false);
-                  handleAddToCart();
+                  handleAddToBag();
                 }}
               />
             </div>
@@ -2348,7 +2347,7 @@ function ProductDetailContent() {
       )}
 
       {/* Global Modals & Drawers */}
-      <CartDrawer />
+      <BagDrawer />
       <BoardsModal />
       <Footer />
     </div>

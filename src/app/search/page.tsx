@@ -6,7 +6,7 @@ import Header from '../../components/Header';
 import Footer from '../../components/Footer';
 import BookCard from '../../components/BookCard';
 import BookModal from '../../components/BookModal';
-import CartDrawer from '../../components/CartDrawer';
+import BagDrawer from '../../components/BagDrawer';
 import BoardsModal from '../../components/BoardsModal';
 import Toast from '../../components/Toast';
 import { BOOKS, CATEGORIES } from '../../data/books';
@@ -152,7 +152,7 @@ function SearchContent() {
 
       <Footer />
       <BookModal />
-      <CartDrawer />
+      <BagDrawer />
       <BoardsModal />
       <Toast />
     </div>

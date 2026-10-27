@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import Header from '../components/Header';
 import BookModal from '../components/BookModal';
-import CartDrawer from '../components/CartDrawer';
+import BagDrawer from '../components/BagDrawer';
 import BoardsModal from '../components/BoardsModal';
 import Footer from '../components/Footer';
 import Toast from '../components/Toast';
@@ -1089,7 +1089,7 @@ export default function LandingPage() {
 
       {/* Global Interactive Modals & Drawers */}
       <BookModal />
-      <CartDrawer />
+      <BagDrawer />
       <BoardsModal />
       <Toast />
     </div>
