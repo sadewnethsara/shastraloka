@@ -25,7 +25,11 @@ export const NAV_LINKS = [
   { label: 'Best Sellers', hasIcon: false, query: 'Mahavamsa' },
 ];
 
-export default function Header() {
+export interface HeaderProps {
+  isSticky?: boolean;
+}
+
+export default function Header({ isSticky = false }: HeaderProps = {}) {
   const router = useRouter();
   const {
     isDark,
@@ -90,7 +94,13 @@ export default function Header() {
 
   return (
     <>
-      <header className="sticky top-0 z-40 bg-white/95 dark:bg-[#151518]/95 backdrop-blur-md border-b border-neutral-200 dark:border-neutral-800 transition-colors duration-200">
+      <header
+        className={`${
+          isSticky
+            ? 'sticky top-0 backdrop-blur-md bg-white/95 dark:bg-[#151518]/95'
+            : 'relative bg-white dark:bg-[#151518]'
+        } z-40 border-b border-neutral-200 dark:border-neutral-800 transition-colors duration-200`}
+      >
         <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8">
           {/* =====================================================================
               DESKTOP HEADER ROW (lg and up)
@@ -211,12 +221,22 @@ export default function Header() {
                 {isDark ? <IconSun size={19} /> : <IconMoon size={19} />}
               </button>
 
-              {/* Sign in / Profile link */}
+              {/* Sign in link */}
               <Link
                 href="/profile"
                 className="px-3.5 py-2 rounded-full text-sm font-medium text-neutral-800 dark:text-neutral-200 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition"
               >
                 Sign in
+              </Link>
+
+              {/* Profile Icon Link */}
+              <Link
+                href="/profile"
+                aria-label="User Profile"
+                className="p-2.5 rounded-full hover:bg-neutral-100 dark:hover:bg-neutral-800 text-neutral-800 dark:text-neutral-200 transition cursor-pointer"
+                title="Account & Profile"
+              >
+                <IconUser size={20} />
               </Link>
 
               {/* Favorites / Saved Boards */}
@@ -259,15 +279,15 @@ export default function Header() {
                 </svg>
               </Link>
 
-              {/* Cart Drawer Trigger */}
+              {/* Shopping Bag Drawer Trigger */}
               <button
                 type="button"
                 onClick={() => setIsCartOpen(true)}
-                aria-label="Cart"
+                aria-label="Shopping Bag"
                 className="relative p-2.5 rounded-full hover:bg-neutral-100 dark:hover:bg-neutral-800 text-neutral-800 dark:text-neutral-200 transition cursor-pointer"
-                title="Your Cart"
+                title="Shopping Bag"
               >
-                <IconBag size={20} />
+                <IconBag size={21} />
                 {cartCount > 0 && (
                   <span className="absolute top-1 right-1 min-w-[16px] h-4 px-1 rounded-full bg-[#F1641E] text-white text-[10px] font-bold flex items-center justify-center leading-none">
                     {cartCount}
@@ -347,6 +367,15 @@ export default function Header() {
                   Sign in
                 </Link>
 
+                <Link
+                  href="/profile"
+                  aria-label="Profile"
+                  className="p-1.5 rounded-full hover:bg-neutral-100 dark:hover:bg-neutral-800 text-neutral-800 dark:text-neutral-200"
+                  title="Profile"
+                >
+                  <IconUser size={18} />
+                </Link>
+
                 <button
                   type="button"
                   onClick={() => setIsBoardsModalOpen(true)}
@@ -364,10 +393,11 @@ export default function Header() {
                 <button
                   type="button"
                   onClick={() => setIsCartOpen(true)}
-                  aria-label="Cart"
+                  aria-label="Shopping Bag"
                   className="relative p-2 rounded-full hover:bg-neutral-100 dark:hover:bg-neutral-800 text-neutral-800 dark:text-neutral-200"
+                  title="Shopping Bag"
                 >
-                  <IconBag size={18} />
+                  <IconBag size={19} />
                   {cartCount > 0 && (
                     <span className="absolute top-0.5 right-0.5 w-3.5 h-3.5 rounded-full bg-[#F1641E] text-white text-[9px] font-bold flex items-center justify-center">
                       {cartCount}

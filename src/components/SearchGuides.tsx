@@ -88,14 +88,20 @@ const SEARCH_GUIDES: GuideChip[] = [
   },
 ];
 
-export default function SearchGuides() {
+export interface SearchGuidesProps {
+  onSelectGuide?: (query: string) => void;
+  className?: string;
+}
+
+export default function SearchGuides({ onSelectGuide, className = '' }: SearchGuidesProps = {}) {
   const { searchQuery, setSearchQuery } = useApp();
 
   return (
-    <div className="w-full bg-[var(--bg-surface)] border-b border-[var(--border-subtle)] py-2.5 px-4 sm:px-6 overflow-hidden">
+    <div className={`w-full bg-[var(--bg-surface)] border-b border-[var(--border-subtle)] py-2.5 px-4 sm:px-6 overflow-hidden ${className}`}>
       <div className="max-w-[1720px] mx-auto flex items-center gap-2 overflow-x-auto no-scrollbar scroll-smooth">
-        <span className="text-xs font-semibold text-[var(--text-muted)] shrink-0 mr-1">
-          Explore:
+        <span className="text-xs font-bold text-[var(--text-muted)] shrink-0 mr-1 flex items-center gap-1.5">
+          <IconSparkle size={13} className="text-[#F1641E]" />
+          <span>Explore:</span>
         </span>
 
         {SEARCH_GUIDES.map((chip) => {
@@ -108,13 +114,13 @@ export default function SearchGuides() {
             <button
               key={chip.id}
               onClick={() => {
-                if (isActive && chip.query !== '') {
-                  setSearchQuery('');
-                } else {
-                  setSearchQuery(chip.query);
+                const nextQuery = isActive && chip.query !== '' ? '' : chip.query;
+                setSearchQuery(nextQuery);
+                if (onSelectGuide) {
+                  onSelectGuide(nextQuery);
                 }
               }}
-              className={`shrink-0 h-9 px-3.5 rounded-full text-xs font-medium border transition-colors duration-150 cursor-pointer flex items-center gap-1.5 ${
+              className={`shrink-0 h-9 px-3.5 rounded-full text-xs font-semibold border transition-all duration-150 cursor-pointer flex items-center gap-1.5 ${
                 isActive
                   ? 'bg-[#222222] dark:bg-neutral-100 text-white dark:text-neutral-900 border-[#222222] dark:border-neutral-100 shadow-xs'
                   : 'bg-[var(--bg-input)] hover:bg-[var(--bg-hover)] text-[var(--text-main)] border-transparent'
@@ -135,7 +141,12 @@ export default function SearchGuides() {
 
         {searchQuery && (
           <button
-            onClick={() => setSearchQuery('')}
+            onClick={() => {
+              setSearchQuery('');
+              if (onSelectGuide) {
+                onSelectGuide('');
+              }
+            }}
             className="shrink-0 h-9 px-3 rounded-full text-xs font-medium bg-[var(--bg-input)] hover:bg-[var(--bg-hover)] text-[var(--text-main)] cursor-pointer transition-colors flex items-center gap-1"
           >
             <IconClose size={12} />
