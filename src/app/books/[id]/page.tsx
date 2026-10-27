@@ -48,7 +48,6 @@ import {
 
 import Header from '../../../components/Header';
 import Footer from '../../../components/Footer';
-import BagDrawer from '../../../components/BagDrawer';
 import BoardsModal from '../../../components/BoardsModal';
 import { BOOKS, Book } from '../../../data/books';
 import { useApp } from '../../../context/AppContext';
@@ -749,7 +748,6 @@ function ProductDetailContent() {
     // Find matching book in BOOKS or use matchedBook
     const target = BOOKS.find((b) => b.id === activeBook.id) || matchedBook;
     addToBag(target, currentFormatObj.label, countToAdd);
-    setIsBagOpen(true);
     triggerToast(
       `Added "${customTitle || activeBook.title}" (${currentFormatObj.label}) to your Bag`
     );
@@ -2346,8 +2344,7 @@ function ProductDetailContent() {
         />
       )}
 
-      {/* Global Modals & Drawers */}
-      <BagDrawer />
+      {/* Global Modals */}
       <BoardsModal />
       <Footer />
     </div>

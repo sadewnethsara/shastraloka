@@ -28,6 +28,14 @@ export interface Book {
   binding: 'Clothbound Hardcover' | 'Deluxe Gold Embossed' | 'Ola Leaf Collector Box' | 'Royal Silkbound Edition';
   tags: string[];
   featured?: boolean;
+  usdPrice?: number;
+  originalUsdPrice?: number;
+  urgencyText?: string;
+  sellerName?: string;
+  sellerAvatar?: string;
+  sellerRating?: number;
+  sellerReviews?: string;
+  isDigital?: boolean;
 }
 
 export const CATEGORIES = [

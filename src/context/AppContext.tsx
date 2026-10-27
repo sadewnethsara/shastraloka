@@ -78,6 +78,7 @@ interface AppContextType {
   setIsBagOpen: (open: boolean) => void;
   bagCount: number;
   bagTotal: number;
+  usdBagTotal: number;
 
   // Compatibility Cart Aliases
   cart: BagItem[];
@@ -222,6 +223,129 @@ const DEFAULT_SAMPLE_ORDER: Order = {
   estimatedDelivery: 'Oct 28, 2026',
 };
 
+export const INITIAL_SAMPLE_BAG: BagItem[] = [
+  {
+    book: {
+      id: 'custom-beaded-keychain',
+      title: 'Custom Beaded Keychain, Pastel Flower Wristlet, Cute Gift',
+      sinhalaTitle: 'අත්කම් යතුරු රඳවනය',
+      author: 'AirilGiftsShop',
+      category: 'Gifts & Accessories',
+      price: 1250,
+      originalPrice: 1950,
+      usdPrice: 4.15,
+      originalUsdPrice: 6.39,
+      urgencyText: 'In 835 carts, 37 bought in the past 24 hours',
+      sellerName: 'AirilGiftsShop',
+      sellerAvatar: 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?auto=format&fit=crop&w=120&q=80',
+      sellerRating: 4.9,
+      sellerReviews: '6.4k',
+      rating: 4.9,
+      reviewsCount: 6400,
+      heightRatio: 1.2,
+      coverImage: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=400&q=80',
+      themeColor: '#d4af37',
+      accentColor: '#F1641E',
+      bgGradient: 'linear-gradient(145deg, #fdfbf7 0%, #f7f1e5 100%)',
+      embossPattern: 'flower',
+      symbol: 'ය',
+      description: 'Handmade customized beaded flower keychain and phone wristlet strap.',
+      versesSnippet: {
+        original: 'මල් මාලාවක් මෙන් සුන්දරයි',
+        transliteration: 'mal mālāvak men sundarayi',
+        english: 'As delicate and vibrant as a hand-strung garland of jasmine flowers.',
+      },
+      pages: 1,
+      language: 'English',
+      binding: 'Deluxe Gold Embossed',
+      tags: ['Keychain', 'Gifts', 'Handmade'],
+      isDigital: false,
+    },
+    quantity: 1,
+    binding: 'Custom Pastel Flower Wristlet',
+  },
+  {
+    book: {
+      id: 'slim-leather-wallet',
+      title: 'Minimalist Slim Cardholder & Travel Wallet',
+      sinhalaTitle: 'සම්පත් පසුම්බිය',
+      author: 'LeatherCraftLK',
+      category: 'Leather Crafts',
+      price: 1350,
+      originalPrice: 2550,
+      usdPrice: 4.42,
+      originalUsdPrice: 8.50,
+      urgencyText: 'In 267 carts, 23 bought in the past 24 hours',
+      sellerName: 'LeatherCraftLK',
+      sellerAvatar: 'https://images.unsplash.com/photo-1507842217343-583bb7270b66?auto=format&fit=crop&w=120&q=80',
+      sellerRating: 4.8,
+      sellerReviews: '1.2k',
+      rating: 4.8,
+      reviewsCount: 1200,
+      heightRatio: 1.2,
+      coverImage: 'https://images.unsplash.com/photo-1627123424574-724758594e93?auto=format&fit=crop&w=400&q=80',
+      themeColor: '#8B5A2B',
+      accentColor: '#D2691E',
+      bgGradient: 'linear-gradient(145deg, #f8f6f0 0%, #ece5d8 100%)',
+      embossPattern: 'leather-grain',
+      symbol: 'ප',
+      description: 'Hand-stitched full-grain leather pocket wallet and RFID-blocking cardholder.',
+      versesSnippet: {
+        original: 'ධනය ආරක්ෂා කරන සුවිශේෂී නිර්මාණය',
+        transliteration: 'dhanaya ārakṣā karana suviśēṣī nirmāṇaya',
+        english: 'Crafted with timeless precision to carry your treasured daily essentials.',
+      },
+      pages: 1,
+      language: 'English',
+      binding: 'Clothbound Hardcover',
+      tags: ['Wallet', 'Leather', 'Cardholder'],
+      isDigital: false,
+    },
+    quantity: 1,
+    binding: 'Multicolor Cardholder',
+  },
+  {
+    book: {
+      id: 'spooky-flora-coloring',
+      title: 'Cozy Flora & Spooky Moments: 6 Coloring Pages PDF',
+      sinhalaTitle: 'වනපෙත වර්ණ ගැන්වුම',
+      author: 'CocoWyo Archive',
+      category: 'Coloring Folios',
+      price: 450,
+      originalPrice: 1200,
+      usdPrice: 1.49,
+      originalUsdPrice: 3.99,
+      urgencyText: 'In 85 carts, 4 bought in the past 24 hours',
+      sellerName: 'CocoWyoColoring',
+      sellerAvatar: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=120&q=80',
+      sellerRating: 4.8,
+      sellerReviews: '5.1k',
+      rating: 4.9,
+      reviewsCount: 5100,
+      heightRatio: 1.2,
+      coverImage: 'https://images.unsplash.com/photo-1532012197267-da84d127e765?auto=format&fit=crop&w=400&q=80',
+      themeColor: '#4A5568',
+      accentColor: '#E2E8F0',
+      bgGradient: 'linear-gradient(145deg, #f7fafc 0%, #edf2f7 100%)',
+      embossPattern: 'botanical',
+      symbol: 'ව',
+      description: 'Therapeutic and soothing printable line-art coloring folios featuring cozy flora.',
+      versesSnippet: {
+        original: 'සිත නිවන නිර්මාණශීලී වර්ණ රටා',
+        transliteration: 'sita nivana nirmāṇaśīlī varṇa raṭā',
+        english: 'Mindful coloring pages designed for serene creative meditation and relaxation.',
+      },
+      pages: 6,
+      language: 'English & Sinhala',
+      binding: 'Royal Silkbound Edition',
+      tags: ['Coloring', 'Digital', 'Flora'],
+      isDigital: true,
+    },
+    quantity: 1,
+    binding: 'Instant PDF Download',
+  },
+];
+
 const AppContext = createContext<AppContextType | undefined>(undefined);
 
 export function AppProvider({ children }: { children: React.ReactNode }) {
@@ -231,7 +355,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const [selectedBook, setSelectedBook] = useState<Book | null>(null);
 
   // Bag
-  const [bag, setBag] = useState<BagItem[]>([]);
+  const [bag, setBag] = useState<BagItem[]>(INITIAL_SAMPLE_BAG);
   const [isBagOpen, setIsBagOpen] = useState(false);
 
   // Boards
@@ -389,6 +513,13 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
 
   const bagCount = bag.reduce((acc, item) => acc + item.quantity, 0);
   const bagTotal = bag.reduce((acc, item) => acc + item.book.price * item.quantity, 0);
+  const usdBagTotal = bag.reduce(
+    (acc, item) =>
+      acc +
+      (item.book.usdPrice ?? Number((item.book.price / 300).toFixed(2))) *
+        item.quantity,
+    0
+  );
 
   // Backward-compatible Cart Aliases
   const addToCart = addToBag;
@@ -553,6 +684,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         setIsBagOpen,
         bagCount,
         bagTotal,
+        usdBagTotal,
         cart,
         addToCart,
         removeFromCart,
