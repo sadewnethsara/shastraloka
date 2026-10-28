@@ -17,6 +17,9 @@ import {
   Search,
   Star,
   ArrowUpRight,
+  RotateCcw,
+  BookOpen,
+  Sparkles,
 } from 'lucide-react';
 import { useApp } from '../context/AppContext';
 import { CATEGORIES, BOOKS } from '../data/books';
@@ -32,6 +35,40 @@ export const NAV_LINKS = [
   { label: 'Ayurvedic Texts', hasIcon: false, query: 'Ayurveda' },
   { label: 'Palm Leaf Collections', hasIcon: false, query: 'Manuscript' },
   { label: 'Best Sellers', hasIcon: false, query: 'Mahavamsa' },
+];
+
+export interface RecentSearchData {
+  id: string;
+  label: string;
+  image?: string;
+}
+
+export const INITIAL_RECENT_SEARCHES: RecentSearchData[] = [
+  {
+    id: 'rs-1',
+    label: 'Mahavamsa Great Chronicle',
+    image: 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?auto=format&fit=crop&w=120&q=80',
+  },
+  {
+    id: 'rs-2',
+    label: 'Theravada Buddhist Philosophy',
+    image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=120&q=80',
+  },
+  {
+    id: 'rs-3',
+    label: 'Indigenous Ayurvedic Herbs',
+    image: 'https://images.unsplash.com/photo-1559181567-c3190ca9959b?auto=format&fit=crop&w=120&q=80',
+  },
+  {
+    id: 'rs-4',
+    label: 'Ola Leaf Manuscripts',
+    image: 'https://images.unsplash.com/photo-1457369804613-52c61a468e7d?auto=format&fit=crop&w=120&q=80',
+  },
+  {
+    id: 'rs-5',
+    label: 'Dhammapada Pali Verses',
+    image: 'https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&w=120&q=80',
+  },
 ];
 
 export interface HeaderProps {
@@ -60,6 +97,7 @@ export default function Header({ isSticky = false }: HeaderProps = {}) {
   const [localSearch, setLocalSearch] = useState(searchQuery || '');
   const [prevSearchQuery, setPrevSearchQuery] = useState(searchQuery);
   const [suggestionsOpen, setSuggestionsOpen] = useState(false);
+  const [recentSearches, setRecentSearches] = useState<RecentSearchData[]>(INITIAL_RECENT_SEARCHES);
 
   if (searchQuery !== prevSearchQuery) {
     setPrevSearchQuery(searchQuery);
@@ -104,9 +142,17 @@ export default function Header({ isSticky = false }: HeaderProps = {}) {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
+  const handleSearchFocus = () => {
+    setSuggestionsOpen(true);
+  };
+
   const handleSearchInputChange = (val: string) => {
     setLocalSearch(val);
-    setSuggestionsOpen(val.trim().length > 0);
+    setSuggestionsOpen(true);
+  };
+
+  const handleRemoveRecent = (id: string) => {
+    setRecentSearches((prev) => prev.filter((r) => r.id !== id));
   };
 
   const handleBookSuggestionClick = (bookId: string, title: string) => {
@@ -120,6 +166,7 @@ export default function Header({ isSticky = false }: HeaderProps = {}) {
   const handleSearchSubmit = (queryText: string) => {
     const q = queryText.trim();
     setSearchQuery(q);
+    setLocalSearch(q);
     setSuggestionsOpen(false);
     setMobileMenuOpen(false);
     triggerNavigation(); // Trigger navigation detection
@@ -143,7 +190,131 @@ export default function Header({ isSticky = false }: HeaderProps = {}) {
   };
 
   const renderAutocompleteDropdown = () => {
-    if (!suggestionsOpen || !localSearch.trim()) return null;
+    if (!suggestionsOpen) return null;
+
+    // STATE A: Empty Search Query -> Show Recent Searches & Trending Topics on Click
+    if (!localSearch.trim()) {
+      return (
+        <div
+          data-testid="search-autocomplete-dropdown"
+          className="absolute left-0 right-0 top-full mt-2 bg-[var(--header-dropdown-bg)] text-[var(--header-text)] rounded-2xl shadow-2xl border border-[var(--header-dropdown-border)] overflow-hidden z-50 animate-fade-in max-h-[78vh] overflow-y-auto"
+        >
+          {/* Recent Searches */}
+          <div className="p-3.5 sm:p-4 border-b border-[var(--header-border)]">
+            <div className="flex items-center justify-between mb-3 px-1">
+              <span className="text-xs font-bold uppercase tracking-wider text-[var(--header-text-muted)] flex items-center gap-1.5">
+                <RotateCcw className="w-3.5 h-3.5 text-[var(--color-primary)]" />
+                <span>Recent Searches</span>
+              </span>
+              <div className="flex items-center gap-3">
+                {recentSearches.length < INITIAL_RECENT_SEARCHES.length && (
+                  <button
+                    type="button"
+                    onClick={() => setRecentSearches(INITIAL_RECENT_SEARCHES)}
+                    className="text-xs font-semibold text-[var(--color-primary)] hover:underline cursor-pointer"
+                  >
+                    Restore
+                  </button>
+                )}
+                {recentSearches.length > 0 && (
+                  <button
+                    type="button"
+                    onClick={() => setRecentSearches([])}
+                    className="text-xs font-semibold text-[var(--text-muted)] hover:text-[var(--text-main)] cursor-pointer"
+                  >
+                    Clear all
+                  </button>
+                )}
+                <button
+                  type="button"
+                  onClick={() => setSuggestionsOpen(false)}
+                  className="text-xs font-semibold text-[var(--text-muted)] hover:text-[var(--text-main)] cursor-pointer"
+                >
+                  Close
+                </button>
+              </div>
+            </div>
+
+            {recentSearches.length === 0 ? (
+              <p className="text-xs text-[var(--text-muted)] py-3 text-center">
+                No recent searches. Type above or explore trending topics below.
+              </p>
+            ) : (
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                {recentSearches.map((item) => (
+                  <div
+                    key={item.id}
+                    onClick={() => handleSearchSubmit(item.label)}
+                    className="group flex items-center justify-between p-1.5 pr-2 rounded-xl bg-[var(--bg-wash)] hover:bg-[var(--header-hover-bg)] border border-transparent hover:border-[var(--header-dropdown-border)] transition cursor-pointer"
+                  >
+                    <div className="flex items-center gap-2.5 min-w-0">
+                      <div className="w-9 h-9 rounded-lg overflow-hidden shrink-0 border border-black/5 bg-stone-200 dark:bg-stone-800">
+                        {item.image ? (
+                          <img
+                            src={item.image}
+                            alt=""
+                            className="w-full h-full object-cover"
+                          />
+                        ) : (
+                          <div className="w-full h-full bg-[var(--color-primary-subtle)] flex items-center justify-center text-[var(--color-primary)]">
+                            <BookOpen className="w-4 h-4" />
+                          </div>
+                        )}
+                      </div>
+                      <span className="text-xs sm:text-sm font-medium text-[var(--text-main)] truncate">
+                        {item.label}
+                      </span>
+                    </div>
+
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleRemoveRecent(item.id);
+                      }}
+                      title="Remove"
+                      aria-label={`Remove ${item.label}`}
+                      className="p-1 rounded-full text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--header-hover-bg)] opacity-70 group-hover:opacity-100 transition cursor-pointer"
+                    >
+                      <X className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* Trending Treatises & Topics */}
+          <div className="p-3.5 sm:p-4 bg-[var(--bg-wash)]/40">
+            <div className="text-[10px] font-bold uppercase tracking-wider text-[var(--header-text-muted)] mb-2 px-1 flex items-center gap-1.5">
+              <Sparkles className="w-3 h-3 text-amber-500" />
+              <span>Trending Classical Treatises</span>
+            </div>
+            <div className="flex flex-wrap gap-1.5">
+              {[
+                'Mahavamsa Great Chronicle',
+                'Gajaga Wannama',
+                'Indigenous Ayurveda',
+                'Visuddhimagga',
+                'Ola Leaf Manuscripts',
+                'Classical Sinhala Poetry',
+              ].map((term) => (
+                <button
+                  key={term}
+                  type="button"
+                  onClick={() => handleSearchSubmit(term)}
+                  className="px-2.5 py-1 rounded-full text-xs font-medium bg-[var(--bg-card)] border border-[var(--border-subtle)] hover:border-[var(--color-primary)] text-[var(--text-main)] hover:text-[var(--color-primary)] transition cursor-pointer shadow-2xs"
+                >
+                  {term}
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    // STATE B: Search Query Typed -> Show Dynamic Predictions, Categories & Book Matches
     return (
       <div
         data-testid="search-autocomplete-dropdown"
@@ -331,9 +502,8 @@ export default function Header({ isSticky = false }: HeaderProps = {}) {
             <div
               className="relative flex-1 max-w-2xl"
               ref={desktopSearchRef}
-              onFocusCapture={() => {
-                if (localSearch.trim().length > 0) setSuggestionsOpen(true);
-              }}
+              onClick={handleSearchFocus}
+              onFocusCapture={handleSearchFocus}
             >
               <SearchField
                 value={localSearch}
@@ -341,8 +511,10 @@ export default function Header({ isSticky = false }: HeaderProps = {}) {
                 onSubmit={handleSearchSubmit}
                 onClear={() => {
                   setLocalSearch('');
-                  setSuggestionsOpen(false);
+                  setSuggestionsOpen(true);
                 }}
+                onFocus={handleSearchFocus}
+                onClick={handleSearchFocus}
                 onImageSearchClick={() => setIsVisualSearchOpen(true)}
                 placeholder="Search sacred manuscripts, Gajaga, Mahavamsa, Ayurveda..."
                 accessibilityLabel="Search sacred manuscripts"
@@ -539,9 +711,8 @@ export default function Header({ isSticky = false }: HeaderProps = {}) {
               <div
                 className="relative flex-1"
                 ref={mobileSearchRef}
-                onFocusCapture={() => {
-                  if (localSearch.trim().length > 0) setSuggestionsOpen(true);
-                }}
+                onClick={handleSearchFocus}
+                onFocusCapture={handleSearchFocus}
               >
                 <SearchField
                   value={localSearch}
@@ -549,8 +720,10 @@ export default function Header({ isSticky = false }: HeaderProps = {}) {
                   onSubmit={handleSearchSubmit}
                   onClear={() => {
                     setLocalSearch('');
-                    setSuggestionsOpen(false);
+                    setSuggestionsOpen(true);
                   }}
+                  onFocus={handleSearchFocus}
+                  onClick={handleSearchFocus}
                   onImageSearchClick={() => setIsVisualSearchOpen(true)}
                   placeholder="Search Gajaga, Mahavamsa, Ayurveda..."
                   accessibilityLabel="Search manuscripts"

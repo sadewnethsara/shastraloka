@@ -9,6 +9,8 @@ export interface SearchFieldProps {
   onChange: (value: string) => void;
   onSubmit?: (value: string) => void;
   onClear?: () => void;
+  onFocus?: () => void;
+  onClick?: () => void;
   onImageSearchClick?: () => void;
   placeholder?: string;
   accessibilityLabel: string;
@@ -27,6 +29,8 @@ export const SearchField = forwardRef<HTMLInputElement, SearchFieldProps>(
       onChange,
       onSubmit,
       onClear,
+      onFocus,
+      onClick,
       onImageSearchClick,
       placeholder = 'Search for anything...',
       accessibilityLabel,
@@ -88,7 +92,8 @@ export const SearchField = forwardRef<HTMLInputElement, SearchFieldProps>(
 
     return (
       <div
-        className={`relative flex items-center w-full transition-all duration-150 ${sizeClasses.container} ${className}`}
+        onClick={onClick}
+        className={`relative flex items-center w-full transition-all duration-150 cursor-text ${sizeClasses.container} ${className}`}
       >
         <input
           ref={ref}
@@ -97,7 +102,14 @@ export const SearchField = forwardRef<HTMLInputElement, SearchFieldProps>(
           value={value}
           onChange={(e) => onChange(e.target.value)}
           onKeyDown={handleKeyDown}
-          onFocus={() => setIsFocused(true)}
+          onFocus={() => {
+            setIsFocused(true);
+            onFocus?.();
+          }}
+          onClick={(e) => {
+            e.stopPropagation();
+            onClick?.();
+          }}
           onBlur={() => setIsFocused(false)}
           placeholder={placeholder}
           aria-label={accessibilityLabel}
@@ -113,7 +125,10 @@ export const SearchField = forwardRef<HTMLInputElement, SearchFieldProps>(
         {value.length > 0 && (
           <button
             type="button"
-            onClick={handleClear}
+            onClick={(e) => {
+              e.stopPropagation();
+              handleClear();
+            }}
             aria-label="Clear search input"
             className={`absolute flex items-center justify-center p-1 rounded-full text-[var(--text-dim)] hover:text-[var(--text-main)] hover:bg-[var(--header-hover-bg)] transition ${
               onImageSearchClick
@@ -148,7 +163,10 @@ export const SearchField = forwardRef<HTMLInputElement, SearchFieldProps>(
         {showSubmitButton && (
           <button
             type="button"
-            onClick={() => onSubmit?.(value)}
+            onClick={(e) => {
+              e.stopPropagation();
+              onSubmit?.(value);
+            }}
             aria-label="Submit search"
             className={`absolute rounded-full flex items-center justify-center transition-transform active:scale-90 shadow-xs cursor-pointer ${sizeClasses.button} ${submitColorClasses}`}
           >
