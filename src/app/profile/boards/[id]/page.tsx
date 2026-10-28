@@ -53,7 +53,7 @@ function BoardDetailContent() {
 
         {/* Board Header Section */}
         <div className="text-center max-w-xl mx-auto space-y-3 py-6">
-          <h1 className="font-serif font-bold text-3xl sm:text-4xl text-[var(--text-main)]">
+          <h1 className="font-heading font-bold text-3xl sm:text-4xl text-[var(--text-main)]">
             {board.name}
           </h1>
           <p className="text-xs sm:text-sm text-[var(--text-muted)] leading-relaxed">
@@ -99,7 +99,7 @@ function BoardDetailContent() {
               <div className="w-16 h-16 rounded-full bg-[var(--bg-input)] text-[#a66523] flex items-center justify-center mx-auto">
                 <IconBook size={28} />
               </div>
-              <h3 className="font-serif font-bold text-xl text-[var(--text-main)]">
+              <h3 className="font-heading font-bold text-xl text-[var(--text-main)]">
                 This Board is Empty
               </h3>
               <p className="text-xs text-[var(--text-muted)] max-w-sm mx-auto">

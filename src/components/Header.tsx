@@ -454,7 +454,7 @@ export default function Header({ isSticky = false }: HeaderProps = {}) {
               className="group flex flex-col shrink-0 pr-1 select-none"
             >
               <span
-                className="text-[var(--color-primary)] text-[34px] leading-none font-bold tracking-tight transition-transform group-hover:scale-102 font-serif"
+                className="text-[var(--color-primary)] text-[34px] leading-none font-bold tracking-tight transition-transform group-hover:scale-102 font-heading"
               >
                 Shastraloka
               </span>
@@ -624,7 +624,7 @@ export default function Header({ isSticky = false }: HeaderProps = {}) {
                   setSearchQuery('');
                   setLocalSearch('');
                 }}
-                className="text-[var(--color-primary)] text-[24px] sm:text-[26px] leading-none font-bold tracking-tight select-none font-serif shrink-0"
+                className="text-[var(--color-primary)] text-[24px] sm:text-[26px] leading-none font-bold tracking-tight select-none font-heading shrink-0"
               >
                 Shastraloka
               </Link>
@@ -740,7 +740,7 @@ export default function Header({ isSticky = false }: HeaderProps = {}) {
           <div className="relative w-80 max-w-[85vw] bg-[var(--header-mobile-drawer-bg)] text-[var(--header-text)] h-full z-10 flex flex-col shadow-2xl animate-slide-up border-r border-[var(--header-border)]">
             <div className="flex items-center justify-between px-5 py-4 border-b border-[var(--header-border)]">
               <span
-                className="text-[var(--color-primary)] text-2xl font-bold font-serif"
+                className="text-[var(--color-primary)] text-2xl font-bold font-heading"
               >
                 Browse Shastraloka
               </span>

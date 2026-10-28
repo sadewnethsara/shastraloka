@@ -25,7 +25,8 @@
   --color-bag-btn-text: var(--bag-btn-text);
 
   --font-sans: var(--font-sans), system-ui, -apple-system, sans-serif;
-  --font-serif: var(--font-serif), Georgia, serif;
+  --font-heading: var(--font-heading), var(--font-sans), system-ui, -apple-system, sans-serif;
+  --font-serif: var(--font-heading), var(--font-sans), system-ui, -apple-system, sans-serif;
   --font-sinhala: var(--font-sinhala), "Noto Serif Sinhala", "Iskoola Pota", serif;
 }
 
@@ -37,6 +38,10 @@ body {
   font-family: var(--font-sans);
   background-color: var(--bg-main);
   color: var(--text-main);
+}
+
+.font-heading {
+  font-family: var(--font-heading);
 }
 
 .font-sinhala {

@@ -183,7 +183,7 @@ export default function BookModal() {
                 </h2>
 
                 {/* English Title in Classic Literary Serif */}
-                <h3 className="font-serif font-bold text-base sm:text-lg text-[var(--text-muted)] mt-1 leading-snug">
+                <h3 className="font-heading font-bold text-base sm:text-lg text-[var(--text-muted)] mt-1 leading-snug">
                   {selectedBook.title}
                 </h3>
 
@@ -311,7 +311,7 @@ export default function BookModal() {
 
               {activeTab === 'verses' && (
                 <div className="p-3.5 rounded-xl bg-[#fdf6e8] dark:bg-[#201a14] border border-[#f5e8c8] dark:border-[#3a2e22] text-center space-y-2">
-                  <div className="font-serif italic font-semibold text-base text-[#a66523] dark:text-amber-300 leading-relaxed">
+                  <div className="font-heading italic font-semibold text-base text-[#a66523] dark:text-amber-300 leading-relaxed">
                     &ldquo;{selectedBook.versesSnippet.english}&rdquo;
                   </div>
                   <div className="text-[11px] font-mono text-[var(--text-muted)] italic">

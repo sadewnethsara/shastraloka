@@ -323,7 +323,7 @@ export default function PublishersPage() {
                 >
                   <div className="flex items-start sm:items-center gap-4 sm:gap-5">
                     <div
-                      className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl flex items-center justify-center font-serif font-bold text-2xl sm:text-3xl shadow-md shrink-0 border-2"
+                      className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl flex items-center justify-center font-heading font-bold text-2xl sm:text-3xl shadow-md shrink-0 border-2"
                       style={{
                         backgroundColor: 'rgba(255,255,255,0.1)',
                         borderColor: pub.accentColor,

@@ -335,7 +335,7 @@ function PinterestBookPin({ item, index, activeQuery }: PinterestBookPinProps) {
         <div className="flex items-start justify-between gap-1.5">
           <Link
             href={`/books/${book.id}`}
-            className="font-serif font-bold text-xs sm:text-[13px] text-[var(--text-main)] hover:text-[#F1641E] transition-colors line-clamp-2 leading-snug"
+            className="font-heading font-bold text-xs sm:text-[13px] text-[var(--text-main)] hover:text-[#F1641E] transition-colors line-clamp-2 leading-snug"
           >
             {book.title}
           </Link>

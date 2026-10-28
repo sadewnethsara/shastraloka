@@ -654,7 +654,7 @@ const BookCoverArtwork: React.FC<{
 
                 {/* Title Header */}
                 <div className="text-center pt-0.5">
-                    <div className="text-[10px] font-black tracking-tight text-stone-800 uppercase leading-none font-serif">
+                    <div className="text-[10px] font-black tracking-tight text-stone-800 uppercase leading-none font-heading">
                         {cfg.header}
                     </div>
                     <div className="text-[6.5px] font-bold text-stone-600 tracking-tight mt-0.5">
@@ -949,11 +949,11 @@ const BookCoverArtwork: React.FC<{
                     className="w-14 h-20 rounded-md shadow-md border border-black/10 flex flex-col items-center justify-between p-1.5 -rotate-6 transition-transform group-hover:rotate-0"
                 >
                     <div className="w-full flex justify-between items-center opacity-40">
-                        <span className="text-[6px] font-serif">FOLIO</span>
+                        <span className="text-[6px] font-heading">FOLIO</span>
                         <span className="text-[6px]">I</span>
                     </div>
                     <div className="text-base leading-none">{bStyle.flower}</div>
-                    <span className="text-[7px] font-serif italic text-stone-800 font-semibold text-center leading-tight line-clamp-1">
+                    <span className="text-[7px] font-heading italic text-stone-800 font-semibold text-center leading-tight line-clamp-1">
                         {bStyle.name1}
                     </span>
                 </div>
@@ -964,11 +964,11 @@ const BookCoverArtwork: React.FC<{
                     className="w-14 h-20 rounded-md shadow-md border border-black/10 flex flex-col items-center justify-between p-1.5 rotate-6 translate-y-1 transition-transform group-hover:rotate-0"
                 >
                     <div className="w-full flex justify-between items-center opacity-40">
-                        <span className="text-[6px] font-serif">EDITION</span>
+                        <span className="text-[6px] font-heading">EDITION</span>
                         <span className="text-[6px]">II</span>
                     </div>
                     <div className="text-base leading-none">{bStyle.flower}</div>
-                    <span className="text-[7px] font-serif italic text-stone-800 font-semibold text-center leading-tight line-clamp-1">
+                    <span className="text-[7px] font-heading italic text-stone-800 font-semibold text-center leading-tight line-clamp-1">
                         {bStyle.name2}
                     </span>
                 </div>

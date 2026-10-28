@@ -7,7 +7,7 @@
 ## 1. Project Overview & Tech Stack
 - **Framework:** Next.js 16.4+ (App Router, Turbopack, React 19)
 - **Styling:** Tailwind CSS v4, CSS Custom Properties (`src/app/globals.css`, `src/app/gestalt.css`)
-- **Typography:** Serif (Playfair Display / Georgia for titles) + Sans (Plus Jakarta Sans for UI body) + Sinhala (`Noto Serif Sinhala`)
+- **Typography:** Professional Display (Outfit `--font-heading` for titles, headers, brand logo) + Sans (Plus Jakarta Sans `--font-sans` for UI body, badges, labels)
 - **Icons:** `lucide-react` (Primary icon library)
 - **State Management:** React Context in [`src/context/AppContext.tsx`](src/context/AppContext.tsx) + `localStorage` persistence
 
@@ -33,7 +33,7 @@
 
 ### Rule 3: Header Structure & Standards
 - Desktop Header contains:
-  1. Serif Logo (`Shastraloka` in Georgia/Playfair serif with leaf/manuscript accent)
+  1. Brand Logo (`Shastraloka` in bold Outfit display typography with leaf/manuscript accent)
   2. Categories dropdown menu
   3. Pill search field (`SearchField`) with clear button and orange search button (`#F1641E`)
   4. Quick links (Gifts, Favorites/Boards count)
@@ -62,8 +62,8 @@
 - **New Books & Routes:** Whenever new books or routes are added to `src/data/books.ts`, ensure they include `price` (LKR), `originalPrice` (LKR), `sinhalaTitle`, and `tags` so `sitemap.ts`, `searchEngine.ts`, and `seoConfig.ts` automatically index them with LKR price & offer percentage badges.
 - **External SEO Documentation:** Keep [`guide.md`](guide.md) in the root directory updated when SEO routes or schemas change.
 
-### Rule 7: Strict English UI (Pinterest + Etsy Aesthetic, No Sinhala Script in UI)
-- **Visual Aesthetic:** Strictly follow high-end Pinterest (clean geometric sans `--font-sans` for UI body, labels, badges, buttons) and Etsy (refined classical serif `--font-serif` for titles, headers, and editorial accents).
+### Rule 7: Strict English UI & Modern Professional Pinterest Typography (No Serif, No Sinhala Script in UI)
+- **Visual Aesthetic:** Strictly follow high-end Pinterest design aesthetics with clean modern typography. Headings, titles, brand logo, and modals use modern geometric display font **Outfit** (`--font-heading`, `font-heading`). UI body, labels, badges, and controls use **Plus Jakarta Sans** (`--font-sans`, `font-sans`). Traditional serif fonts (`Playfair Display`, `Georgia`, `font-serif`) are strictly eliminated in favor of clean, professional, high-end design.
 - **No Sinhala Script in User-Facing UI:** All user-facing UI labels, modal headers, card subtitles, badges, search autocomplete entries, and navigation text must be rendered strictly in English. Never display Sinhala script text in visible UI components (e.g. `VisualSearchModal`, `Header`, `BookCard`, `HeroBanner`, `BookModal`, `Footer`, etc.).
 - *(Note: Dual-domain SEO indexing for `https://ශාස්ත්රාලෝක.ලංකා` and catalog data fields such as `book.sinhalaTitle` remain in metadata, sitemaps, and search engines for domain resolution and SEO, but MUST NOT be rendered directly on user-facing UI elements).*
 
@@ -147,3 +147,4 @@ pnpm build
 | **2026-10-28** | Added full SEO, Dual Domains (`shastraloka.lk` & `ශාස්ත්රාලෝක.ලංකා`), `llms.txt` & `guide.md` | Configured Schema.org `@graph`, `sitemap.ts`, `robots.ts`, competitive bookstore SEO keywords, and external Search Console guide. |
 | **2026-10-28** | Removed Sinhala text from App UI & Standardized Pinterest/Etsy fonts | Enforced English Pinterest + Etsy aesthetic across all components & removed Sinhala script from UI. |
 | **2026-10-28** | Standardized Universal PageContainer across all routes | Applied `page-container` and `PageContainer` (1440px + px-4 sm:px-6 lg:px-8) across all app routes. |
+| **2026-10-28** | Eliminated `font-serif` & Replaced with Professional `Outfit` | Removed traditional serif (Playfair/Georgia) across all 17 component and page files; introduced modern `Outfit` (`--font-heading`, `font-heading`) paired with `Plus Jakarta Sans`. |

@@ -173,7 +173,7 @@ export default function BookCard({ book }: BookCardProps) {
         {/* English Title in Disciplined Literary Serif */}
         <h4
           onClick={() => openBookModal(book)}
-          className="font-serif font-bold text-sm sm:text-base text-[var(--text-main)] hover:text-[#e60023] transition-colors line-clamp-1 cursor-pointer leading-snug"
+          className="font-heading font-bold text-sm sm:text-base text-[var(--text-main)] hover:text-[#e60023] transition-colors line-clamp-1 cursor-pointer leading-snug"
         >
           {book.title}
         </h4>

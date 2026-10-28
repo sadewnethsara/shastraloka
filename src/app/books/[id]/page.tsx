@@ -1053,13 +1053,13 @@ function ProductDetailContent() {
                           </h2>
                           <div className="w-8 h-[1px] bg-[#EAE5D9]/50 mx-auto" />
                         </div>
-                        <div className="text-[10px] tracking-widest opacity-90 italic font-serif">
+                        <div className="text-[10px] tracking-widest opacity-90 italic font-heading">
                           — ❖ —
                         </div>
                       </div>
 
                       <div className="pt-2.5 flex items-end justify-between text-[#2D2C29] px-1">
-                        <p className="text-[9px] leading-tight italic font-serif max-w-[65%] line-clamp-2">
+                        <p className="text-[9px] leading-tight italic font-heading max-w-[65%] line-clamp-2">
                           {activeBook.subtitle}
                         </p>
                         <span className="text-[8px] uppercase tracking-wider font-bold text-neutral-600 truncate max-w-[30%]">
@@ -1859,7 +1859,7 @@ function ProductDetailContent() {
                 <span>Scriptorium Epigraph</span>
               </div>
               <blockquote
-                className="text-base sm:text-lg font-serif italic leading-relaxed text-[#F5F2EB]"
+                className="text-base sm:text-lg font-heading italic leading-relaxed text-[#F5F2EB]"
                 style={{ fontFamily: 'Georgia, Cambria, "Times New Roman", Times, serif' }}
               >
                 &ldquo;Composed for the serene joy and spiritual elevation of the pious, tracing the deep springs of sacred wisdom through centuries of chronicle.&rdquo;
@@ -2294,7 +2294,7 @@ function ProductDetailContent() {
                 </div>
 
                 <div
-                  className={`font-serif leading-relaxed whitespace-pre-line ${
+                  className={`font-heading leading-relaxed whitespace-pre-line ${
                     readerFontSize === 'sm'
                       ? 'text-sm'
                       : readerFontSize === 'md'

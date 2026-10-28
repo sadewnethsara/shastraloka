@@ -170,7 +170,7 @@ export default function Footer() {
         <div className="lg:hidden space-y-5 pb-6">
           <div className="w-12 h-12 rounded-xl bg-[#F1641E] text-white flex items-center justify-center shadow-xs">
             <span
-              className="font-serif text-2xl font-bold"
+              className="font-heading text-2xl font-bold"
               style={{ fontFamily: 'Georgia, Cambria, "Times New Roman", Times, serif' }}
             >
               S

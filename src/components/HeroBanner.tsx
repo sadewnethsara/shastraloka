@@ -34,12 +34,12 @@ export default function HeroBanner() {
           <div className="lg:col-span-7 flex flex-col gap-3.5">
             {/* National Classical Archive Badge */}
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#f5e8c8] dark:bg-[#34271a] text-[#a66523] dark:text-amber-300 text-xs font-semibold tracking-wide w-fit">
-              <span className="font-serif font-bold text-sm tracking-tight">SL</span>
+              <span className="font-heading font-bold text-sm tracking-tight">SL</span>
               <span>National Classical Archive • National Heritage Collection</span>
             </div>
 
             {/* Display Headline (Etsy Display-XL: 32px / 600 weight) */}
-            <h1 className="text-2xl sm:text-3xl lg:text-[32px] font-serif font-bold tracking-tight text-[#222222] dark:text-white leading-snug">
+            <h1 className="text-2xl sm:text-3xl lg:text-[32px] font-heading font-bold tracking-tight text-[#222222] dark:text-white leading-snug">
               Treasury of Classical <span className="text-[#a66523] dark:text-amber-400">Sri Lankan Chronicles</span> & Ancient Treatises
             </h1>
 
@@ -100,7 +100,7 @@ export default function HeroBanner() {
                 <p className="text-xs text-[#a66523] dark:text-amber-400 font-medium truncate">
                   {visuddhimagga.category}
                 </p>
-                <p className="font-serif font-bold text-xs text-[#222222] dark:text-white truncate mt-0.5">
+                <p className="font-heading font-bold text-xs text-[#222222] dark:text-white truncate mt-0.5">
                   {visuddhimagga.title}
                 </p>
                 <p className="text-xs font-bold text-[#222222] dark:text-white mt-1">
@@ -132,7 +132,7 @@ export default function HeroBanner() {
                 <p className="text-xs text-[#a66523] dark:text-amber-400 font-medium truncate">
                   {mahawamsa.category}
                 </p>
-                <p className="font-serif font-bold text-xs sm:text-sm text-[#222222] dark:text-white line-clamp-1 mt-0.5">
+                <p className="font-heading font-bold text-xs sm:text-sm text-[#222222] dark:text-white line-clamp-1 mt-0.5">
                   {mahawamsa.title}
                 </p>
                 <div className="flex items-center justify-between mt-1">

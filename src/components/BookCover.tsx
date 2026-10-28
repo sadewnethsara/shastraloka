@@ -47,14 +47,14 @@ export default function BookCover({
           className="w-full h-full flex flex-col justify-between p-4 text-center items-center"
           style={{ background: book.bgGradient || book.themeColor }}
         >
-          <div className="w-10 h-10 rounded-full border border-amber-300/40 bg-black/40 flex items-center justify-center font-serif font-bold text-amber-200 text-sm mt-3">
+          <div className="w-10 h-10 rounded-full border border-amber-300/40 bg-black/40 flex items-center justify-center font-heading font-bold text-amber-200 text-sm mt-3">
             SL
           </div>
           <div>
-            <p className="font-serif font-bold text-amber-100 text-sm leading-snug">
+            <p className="font-heading font-bold text-amber-100 text-sm leading-snug">
               {book.category}
             </p>
-            <p className="font-serif font-bold text-white/90 text-xs mt-1 line-clamp-2">
+            <p className="font-heading font-bold text-white/90 text-xs mt-1 line-clamp-2">
               {book.title}
             </p>
           </div>
@@ -77,7 +77,7 @@ export default function BookCover({
           <p className="text-[10px] font-bold text-amber-300 uppercase tracking-wider truncate">
             {book.category}
           </p>
-          <p className="font-serif font-semibold text-xs text-white truncate">
+          <p className="font-heading font-semibold text-xs text-white truncate">
             {book.title}
           </p>
         </div>

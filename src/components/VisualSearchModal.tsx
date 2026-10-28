@@ -237,7 +237,7 @@ export default function VisualSearchModal({ isOpen, onClose }: VisualSearchModal
               <Camera className="w-5 h-5 stroke-[2.2]" />
             </div>
             <div>
-              <h2 className="text-base sm:text-lg font-bold font-serif text-[var(--text-main)] leading-tight tracking-tight">
+              <h2 className="text-base sm:text-lg font-bold font-heading text-[var(--text-main)] leading-tight tracking-tight">
                 Visual Manuscript Search
               </h2>
               <p className="text-[11px] sm:text-xs text-[var(--text-muted)] font-medium tracking-normal mt-0.5">
@@ -444,7 +444,7 @@ export default function VisualSearchModal({ isOpen, onClose }: VisualSearchModal
                     <span className="inline-block px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider rounded-md bg-[var(--color-primary-subtle)] text-[var(--color-primary)] mb-1.5">
                       {matchedBook.category}
                     </span>
-                    <h4 className="text-base sm:text-lg font-bold font-serif text-[var(--text-main)] leading-snug">
+                    <h4 className="text-base sm:text-lg font-bold font-heading text-[var(--text-main)] leading-snug">
                       {matchedBook.title}
                     </h4>
                     <p className="text-xs text-[var(--text-muted)] font-medium mt-0.5">

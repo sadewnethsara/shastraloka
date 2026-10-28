@@ -34,7 +34,7 @@ function OrderDetailContent() {
           <div className="w-16 h-16 rounded-full bg-[var(--bg-input)] text-[var(--text-muted)] flex items-center justify-center mx-auto mb-3">
             <IconTruck size={28} />
           </div>
-          <h2 className="font-serif font-bold text-2xl">Order Not Found</h2>
+          <h2 className="font-heading font-bold text-2xl">Order Not Found</h2>
           <p className="text-xs text-[var(--text-muted)] mt-1">
             Tracking identifier &ldquo;{orderId}&rdquo; was not found in our dispatch records.
           </p>
@@ -110,7 +110,7 @@ function OrderDetailContent() {
               <span className="text-xs text-[var(--text-muted)]">/</span>
               <span className="text-xs font-semibold text-[#e60023]">Tracking #{order.id}</span>
             </div>
-            <h1 className="font-serif font-bold text-2xl sm:text-3xl text-[var(--text-main)] mt-1 flex items-center gap-2.5">
+            <h1 className="font-heading font-bold text-2xl sm:text-3xl text-[var(--text-main)] mt-1 flex items-center gap-2.5">
               <span>Order Delivery Timeline</span>
               <span className="text-xs font-mono font-semibold px-3 py-1 rounded-full bg-[var(--bg-input)]">
                 {order.trackingNumber}
@@ -148,7 +148,7 @@ function OrderDetailContent() {
                 <IconTruck size={20} />
               </div>
               <div>
-                <p className="font-serif font-bold text-base sm:text-lg text-[var(--text-main)]">
+                <p className="font-heading font-bold text-base sm:text-lg text-[var(--text-main)]">
                   Sri Lanka Certified Express Courier
                 </p>
                 <p className="text-xs text-[var(--text-muted)]">
@@ -203,7 +203,7 @@ function OrderDetailContent() {
           <div className="lg:col-span-5 space-y-6">
             
             <div className="p-6 rounded-2xl bg-white dark:bg-[#1c1c21] border border-[var(--border-subtle)] shadow-xs space-y-4">
-              <h3 className="font-serif font-bold text-base text-[var(--text-main)] border-b border-[var(--border-subtle)] pb-3">
+              <h3 className="font-heading font-bold text-base text-[var(--text-main)] border-b border-[var(--border-subtle)] pb-3">
                 Recipient & Delivery
               </h3>
 
@@ -238,7 +238,7 @@ function OrderDetailContent() {
             </div>
 
             <div className="p-6 rounded-2xl bg-white dark:bg-[#1c1c21] border border-[var(--border-subtle)] shadow-xs space-y-4">
-              <h3 className="font-serif font-bold text-base text-[var(--text-main)] border-b border-[var(--border-subtle)] pb-3">
+              <h3 className="font-heading font-bold text-base text-[var(--text-main)] border-b border-[var(--border-subtle)] pb-3">
                 Payment Verification
               </h3>
 
@@ -272,7 +272,7 @@ function OrderDetailContent() {
           <div className="lg:col-span-7 space-y-6">
             
             <div className="p-6 rounded-2xl bg-white dark:bg-[#1c1c21] border border-[var(--border-subtle)] shadow-xs space-y-5">
-              <h3 className="font-serif font-bold text-base text-[var(--text-main)] border-b border-[var(--border-subtle)] pb-3">
+              <h3 className="font-heading font-bold text-base text-[var(--text-main)] border-b border-[var(--border-subtle)] pb-3">
                 Archival Invoice Manifest
               </h3>
 
@@ -284,7 +284,7 @@ function OrderDetailContent() {
                       <img src={item.book.coverImage} alt={item.book.title} className="w-full h-full object-cover" />
                     </div>
                     <div className="flex-1 text-xs">
-                      <h4 className="font-serif font-bold text-sm text-[var(--text-main)]">{item.book.title}</h4>
+                      <h4 className="font-heading font-bold text-sm text-[var(--text-main)]">{item.book.title}</h4>
                       {item.book.category && (
                         <p className="text-[var(--color-primary)] font-medium">{item.book.category}</p>
                       )}

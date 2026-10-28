@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Plus_Jakarta_Sans, Playfair_Display, Noto_Serif_Sinhala } from "next/font/google";
+import { Plus_Jakarta_Sans, Outfit, Noto_Serif_Sinhala } from "next/font/google";
 import "./globals.css";
 import Providers from "../components/Providers";
 import { SEO_BRAND, SEO_KEYWORDS, buildGlobalSchemaGraph } from "../utils/seoConfig";
@@ -12,12 +12,12 @@ const jakarta = Plus_Jakarta_Sans({
   fallback: ["system-ui", "-apple-system", "sans-serif"],
 });
 
-const playfair = Playfair_Display({
-  variable: "--font-serif",
+const outfit = Outfit({
+  variable: "--font-heading",
   subsets: ["latin"],
   display: "swap",
-  weight: ["500", "600", "700", "800", "900"],
-  fallback: ["Georgia", "serif"],
+  weight: ["400", "500", "600", "700", "800", "900"],
+  fallback: ["system-ui", "-apple-system", "sans-serif"],
 });
 
 const notoSerifSinhala = Noto_Serif_Sinhala({
@@ -116,7 +116,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${jakarta.variable} ${playfair.variable} ${notoSerifSinhala.variable} scroll-smooth`}
+      className={`${jakarta.variable} ${outfit.variable} ${notoSerifSinhala.variable} scroll-smooth`}
       suppressHydrationWarning
     >
       <head>

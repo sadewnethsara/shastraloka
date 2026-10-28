@@ -100,7 +100,7 @@ export default function PublisherDetailPage() {
                     <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
                         <div className="flex items-start sm:items-center gap-5">
                             <div
-                                className="w-20 h-20 sm:w-24 sm:h-24 rounded-3xl flex items-center justify-center font-serif font-bold text-3xl sm:text-4xl shadow-lg border-2 shrink-0"
+                                className="w-20 h-20 sm:w-24 sm:h-24 rounded-3xl flex items-center justify-center font-heading font-bold text-3xl sm:text-4xl shadow-lg border-2 shrink-0"
                                 style={{
                                     backgroundColor: 'rgba(255,255,255,0.1)',
                                     borderColor: publisher.accentColor,
@@ -284,7 +284,7 @@ export default function PublisherDetailPage() {
                             >
                                 <div className="flex items-center gap-3">
                                     <div
-                                        className="w-10 h-10 rounded-xl flex items-center justify-center font-serif font-bold text-sm text-white shrink-0"
+                                        className="w-10 h-10 rounded-xl flex items-center justify-center font-heading font-bold text-sm text-white shrink-0"
                                         style={{ background: other.bannerGradient }}
                                     >
                                         {other.avatarText}

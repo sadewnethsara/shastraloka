@@ -61,7 +61,7 @@ export default function ProfilePage() {
 
           {/* User Details */}
           <div className="space-y-1">
-            <h1 className="font-serif font-bold text-2xl sm:text-3xl text-[var(--text-main)]">
+            <h1 className="font-heading font-bold text-2xl sm:text-3xl text-[var(--text-main)]">
               Dr. Senaka Bandara
             </h1>
             <p className="text-xs sm:text-sm text-[#a66523] dark:text-amber-400 font-semibold">
@@ -156,7 +156,7 @@ export default function ProfilePage() {
                 <div className="w-12 h-12 rounded-full bg-[var(--bg-input)] group-hover:bg-[#e60023] group-hover:text-white flex items-center justify-center text-xl font-bold transition-colors mb-3">
                   +
                 </div>
-                <h3 className="font-serif font-bold text-base text-[var(--text-main)]">
+                <h3 className="font-heading font-bold text-base text-[var(--text-main)]">
                   Create New Board
                 </h3>
                 <p className="text-xs text-[var(--text-muted)] mt-1">
@@ -214,7 +214,7 @@ export default function ProfilePage() {
                     {/* Board Info */}
                     <div className="px-1">
                       <div className="flex items-center justify-between">
-                        <h3 className="font-serif font-bold text-sm text-[var(--text-main)] group-hover:text-[#e60023] transition-colors truncate">
+                        <h3 className="font-heading font-bold text-sm text-[var(--text-main)] group-hover:text-[#e60023] transition-colors truncate">
                           {board.name}
                         </h3>
                         <span className="text-[11px] font-semibold text-[var(--text-muted)]">
@@ -242,7 +242,7 @@ export default function ProfilePage() {
                 <div className="w-16 h-16 rounded-full bg-[var(--bg-input)] text-[#a66523] flex items-center justify-center mx-auto">
                   <IconBookmark size={28} />
                 </div>
-                <h3 className="font-serif font-bold text-xl text-[var(--text-main)]">
+                <h3 className="font-heading font-bold text-xl text-[var(--text-main)]">
                   No Saved Pins Yet
                 </h3>
                 <p className="text-xs text-[var(--text-muted)]">
@@ -267,7 +267,7 @@ export default function ProfilePage() {
                 <div className="w-16 h-16 rounded-full bg-[var(--bg-input)] text-neutral-400 flex items-center justify-center mx-auto">
                   <IconHeart size={28} />
                 </div>
-                <h3 className="font-serif font-bold text-xl text-[var(--text-main)]">
+                <h3 className="font-heading font-bold text-xl text-[var(--text-main)]">
                   No Liked Treatises Yet
                 </h3>
                 <p className="text-xs text-[var(--text-muted)]">
@@ -295,7 +295,7 @@ export default function ProfilePage() {
               className="w-full max-w-md bg-white dark:bg-[#1c1c21] rounded-2xl p-6 shadow-2xl border border-[var(--border-subtle)] space-y-4 animate-slide-up"
             >
               <div className="flex items-center justify-between pb-3 border-b border-[var(--border-subtle)]">
-                <h3 className="font-serif font-bold text-lg text-[var(--text-main)]">
+                <h3 className="font-heading font-bold text-lg text-[var(--text-main)]">
                   Create Board
                 </h3>
                 <button

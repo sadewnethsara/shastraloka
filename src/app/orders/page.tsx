@@ -25,7 +25,7 @@ export default function OrdersPage() {
               </span>
               <span className="text-xs text-[var(--text-muted)]">• Shastraloka Dispatch</span>
             </div>
-            <h1 className="font-serif font-bold text-2xl sm:text-3xl text-[var(--text-main)] mt-1">
+            <h1 className="font-heading font-bold text-2xl sm:text-3xl text-[var(--text-main)] mt-1">
               My Orders & Dispatches
             </h1>
           </div>
@@ -45,7 +45,7 @@ export default function OrdersPage() {
             <div className="w-16 h-16 rounded-full bg-[var(--bg-input)] text-[#a66523] flex items-center justify-center mx-auto">
               <IconTruck size={28} />
             </div>
-            <h3 className="font-serif font-bold text-xl text-[var(--text-main)]">
+            <h3 className="font-heading font-bold text-xl text-[var(--text-main)]">
               No Orders Registered Yet
             </h3>
             <p className="text-xs text-[var(--text-muted)] max-w-sm mx-auto leading-relaxed">
@@ -122,7 +122,7 @@ export default function OrdersPage() {
                             <img src={item.book.coverImage} alt={item.book.title} className="w-full h-full object-cover" />
                           </div>
                           <div className="text-xs truncate">
-                            <p className="font-serif font-bold text-[var(--text-main)] truncate">{item.book.title}</p>
+                            <p className="font-heading font-bold text-[var(--text-main)] truncate">{item.book.title}</p>
                             <span className="text-[10px] text-[var(--text-muted)] block">
                               Qty: {item.quantity} • {item.binding}
                             </span>
@@ -136,7 +136,7 @@ export default function OrdersPage() {
                       <div className="text-[var(--text-muted)]">
                         Total Amount ({totalItems} items):
                       </div>
-                      <div className="font-serif font-bold text-lg sm:text-xl text-[var(--text-main)]">
+                      <div className="font-heading font-bold text-lg sm:text-xl text-[var(--text-main)]">
                         Rs. {order.total.toLocaleString()}
                       </div>
                       <div className="text-[11px] text-emerald-700 dark:text-emerald-400 font-semibold">

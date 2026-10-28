@@ -52,7 +52,7 @@ export default function BoardsModal() {
         <div className="flex items-center justify-between pb-4 border-b border-[var(--border-subtle)]">
           <div className="flex items-center gap-2">
             <IconBookmark size={18} className="text-[#a66523]" />
-            <h3 className="font-serif font-bold text-xl sm:text-2xl">
+            <h3 className="font-heading font-bold text-xl sm:text-2xl">
               {selectedBoardId && currentBoard ? currentBoard.name : 'Your Saved Reading Boards'}
             </h3>
           </div>
@@ -121,7 +121,7 @@ export default function BoardsModal() {
                       />
                     </div>
                     <div className="pt-2">
-                      <h4 className="text-xs font-serif font-bold truncate text-[var(--text-main)]">
+                      <h4 className="text-xs font-heading font-bold truncate text-[var(--text-main)]">
                         {book.title}
                       </h4>
                       <p className="text-[10px] text-[var(--text-muted)] truncate">{book.author}</p>
@@ -186,7 +186,7 @@ export default function BoardsModal() {
                   className="p-3.5 rounded-xl bg-[var(--bg-wash)] hover:bg-[var(--bg-hover)] border border-[var(--border-subtle)] cursor-pointer transition-colors flex items-center justify-between"
                 >
                   <div>
-                    <h4 className="font-serif font-bold text-sm text-[var(--text-main)]">
+                    <h4 className="font-heading font-bold text-sm text-[var(--text-main)]">
                       {board.name}
                     </h4>
                     <p className="text-xs text-[var(--text-muted)] line-clamp-1 mt-0.5">
