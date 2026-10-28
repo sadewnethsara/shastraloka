@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Search, Camera, Mic, X } from 'lucide-react';
+import { Search, Camera, X } from 'lucide-react';
 
 export interface RecentSearchItem {
     id: string;
@@ -14,8 +14,8 @@ interface SearchBarProps {
     recentSearches: RecentSearchItem[];
     onRemoveRecent?: (id: string) => void;
     onRestoreRecent?: () => void;
+    onImageSearchClick?: () => void;
     onCameraClick?: () => void;
-    onMicClick?: () => void;
     placeholder?: string;
 }
 
@@ -26,13 +26,21 @@ export function SearchBar({
     recentSearches,
     onRemoveRecent,
     onRestoreRecent,
+    onImageSearchClick,
     onCameraClick,
-    onMicClick,
     placeholder = 'Search sacred manuscripts, Mahavamsa, Ayurveda...',
 }: SearchBarProps) {
     const [isOpen, setIsOpen] = useState(false);
     const wrapperRef = useRef<HTMLDivElement>(null);
     const inputRef = useRef<HTMLInputElement>(null);
+
+    const triggerImageSearch = () => {
+        if (onImageSearchClick) {
+            onImageSearchClick();
+        } else if (onCameraClick) {
+            onCameraClick();
+        }
+    };
 
     // Close on outside click / touch
     useEffect(() => {
@@ -125,34 +133,19 @@ export function SearchBar({
                 )}
 
                 <div className="flex items-center gap-0.5 sm:gap-1 pr-1.5 sm:pr-2 shrink-0">
-                    {/* Camera: hidden on very small screens */}
+                    {/* Visual manuscript / image search button (camera icon) */}
                     <button
                         type="button"
                         onClick={(e) => {
                             e.stopPropagation();
-                            setIsOpen(true);
-                            onCameraClick?.();
+                            triggerImageSearch();
                         }}
-                        title="Visual manuscript search"
-                        aria-label="Visual manuscript search"
-                        className="hidden min-[400px]:flex relative p-2 rounded-full text-[var(--header-text)] hover:bg-[var(--header-hover-bg)] transition-colors cursor-pointer"
+                        title="Search manuscripts by image (Drag & Drop or Upload)"
+                        aria-label="Search manuscripts by image"
+                        className="relative p-2 rounded-full text-[var(--header-text)] hover:text-[var(--color-primary)] hover:bg-[var(--header-hover-bg)] transition-colors cursor-pointer group"
                     >
-                        <Camera className="w-[18px] h-[18px] sm:w-[20px] sm:h-[20px] stroke-[2]" />
-                        <span className="w-1.5 h-1.5 rounded-full bg-[var(--color-primary)] absolute bottom-2 right-1.5" />
-                    </button>
-
-                    <button
-                        type="button"
-                        onClick={(e) => {
-                            e.stopPropagation();
-                            setIsOpen(true);
-                            onMicClick?.();
-                        }}
-                        title="Voice search"
-                        aria-label="Voice search"
-                        className="p-1.5 sm:p-2 rounded-full text-[var(--header-text)] hover:bg-[var(--header-hover-bg)] transition-colors cursor-pointer"
-                    >
-                        <Mic className="w-[18px] h-[18px] sm:w-[20px] sm:h-[20px] stroke-[2]" />
+                        <Camera className="w-[18px] h-[18px] sm:w-[20px] sm:h-[20px] stroke-[2] group-hover:scale-110 transition-transform" />
+                        <span className="w-1.5 h-1.5 rounded-full bg-[var(--color-primary)] absolute bottom-2 right-1.5 ring-1 ring-[var(--bg-input)]" />
                     </button>
 
                     {/* Orange search button - Always visible */}

@@ -210,6 +210,33 @@ body {
   animation: slideUp 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
+/* Visual Manuscript Scanner Animations */
+@keyframes laserScan {
+  0% {
+    top: 2%;
+    opacity: 0.85;
+  }
+  50% {
+    top: 94%;
+    opacity: 1;
+  }
+  100% {
+    top: 2%;
+    opacity: 0.85;
+  }
+}
+
+.animate-laser-scan {
+  animation: laserScan 2.4s ease-in-out infinite;
+}
+
+.scanner-grid-pattern {
+  background-size: 24px 24px;
+  background-image: 
+    linear-gradient(to right, rgba(241, 100, 30, 0.08) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(241, 100, 30, 0.08) 1px, transparent 1px);
+}
+
 /* =========================================================================
    HEADER THEME COMPONENT UTILITIES
    Ensures Header elements map directly to global CSS variables

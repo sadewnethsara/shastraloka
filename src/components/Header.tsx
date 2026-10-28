@@ -19,6 +19,7 @@ import {
 import { useApp } from '../context/AppContext';
 import { CATEGORIES } from '../data/books';
 import { SearchBar } from './SearchBar';
+import VisualSearchModal from './VisualSearchModal';
 
 export interface RecentSearchData {
   id: string;
@@ -110,6 +111,7 @@ export default function Header({ isSticky = false }: HeaderProps = {}) {
 
   const [categoriesOpen, setCategoriesOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [isVisualSearchOpen, setIsVisualSearchOpen] = useState(false);
   const [localSearch, setLocalSearch] = useState(searchQuery || '');
   const [recentSearches, setRecentSearches] = useState<RecentSearchData[]>(INITIAL_RECENT_SEARCHES);
 
@@ -252,8 +254,7 @@ export default function Header({ isSticky = false }: HeaderProps = {}) {
                   setRecentSearches((prev: RecentSearchData[]) => prev.filter((r: RecentSearchData) => r.id !== id))
                 }
                 onRestoreRecent={() => setRecentSearches(INITIAL_RECENT_SEARCHES)}
-                onCameraClick={() => showToast('Visual Manuscript Search is ready!')}
-                onMicClick={() => showToast('Voice search listening for classical treatises...')}
+                onImageSearchClick={() => setIsVisualSearchOpen(true)}
               />
             </div>
 
@@ -456,8 +457,7 @@ export default function Header({ isSticky = false }: HeaderProps = {}) {
                     setRecentSearches((prev: RecentSearchData[]) => prev.filter((r: RecentSearchData) => r.id !== id))
                   }
                   onRestoreRecent={() => setRecentSearches(INITIAL_RECENT_SEARCHES)}
-                  onCameraClick={() => showToast('Visual Manuscript Search is ready!')}
-                  onMicClick={() => showToast('Voice search listening for classical treatises...')}
+                  onImageSearchClick={() => setIsVisualSearchOpen(true)}
                 />
               </div>
             </div>
@@ -527,6 +527,7 @@ export default function Header({ isSticky = false }: HeaderProps = {}) {
           </div>
         </div>
       )}
+      <VisualSearchModal isOpen={isVisualSearchOpen} onClose={() => setIsVisualSearchOpen(false)} />
     </>
   );
 }
