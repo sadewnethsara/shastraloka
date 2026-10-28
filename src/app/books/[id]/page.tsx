@@ -659,16 +659,25 @@ function ProductDetailContent() {
     bookstore: false,
   });
 
-  // Top Announcement Bar state
-  const [isAnnouncementVisible, setIsAnnouncementVisible] = useState<boolean>(true);
-  const [isAnnouncementClosing, setIsAnnouncementClosing] = useState<boolean>(false);
+  // Top Announcement Bar state: hides on scroll down or when dismissed
+  const [isAnnouncementDismissed, setIsAnnouncementDismissed] = useState<boolean>(false);
+  const [isScrolled, setIsScrolled] = useState<boolean>(false);
 
-  const handleCloseAnnouncement = () => {
-    setIsAnnouncementClosing(true);
-    setTimeout(() => {
-      setIsAnnouncementVisible(false);
-    }, 300);
-  };
+  useEffect(() => {
+    let ticking = false;
+    const handleScroll = () => {
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          setIsScrolled(window.scrollY > 20);
+          ticking = false;
+        });
+        ticking = true;
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   // Filter States
   const [selectedReviewTag, setSelectedReviewTag] = useState<string>('All');
@@ -834,37 +843,36 @@ function ProductDetailContent() {
   return (
     <div className="min-h-screen bg-[#FAF8F5] dark:bg-[#121215] text-[#1E1E1C] dark:text-neutral-100 font-sans antialiased selection:bg-[#F1641E]/20 transition-colors duration-200">
       {/* 1. Global Announcement Bar */}
-      {isAnnouncementVisible && (
-        <div
-          className={`bg-[#1E3327] text-[#F5F2EB] border-b border-[#2D4737] overflow-hidden transition-all duration-300 ease-in-out ${
-            isAnnouncementClosing
-              ? 'max-h-0 opacity-0 py-0 -translate-y-2'
-              : 'max-h-16 opacity-100 py-2 sm:py-2.5 translate-y-0'
-          }`}
-        >
-          <div className="max-w-[1440px] mx-auto px-4 sm:px-6 flex items-center justify-between gap-3 text-xs">
-            <div className="flex items-center gap-2.5 mx-auto sm:mx-0">
-              <span className="flex items-center justify-center w-5 h-5 rounded-full bg-emerald-500/20 text-[#E8B059] shrink-0">
-                <Truck className="w-3 h-3" />
-              </span>
-              <span className="font-medium tracking-tight">
-                <span className="font-semibold text-white">Free Islandwide Delivery</span> on Orders Over LKR 3,500
-                <span className="hidden sm:inline mx-2 text-[#D7E2DC]/40">•</span>
-                <span className="hidden sm:inline text-[#D7E2DC]">Cash on Delivery Available</span>
-              </span>
-            </div>
-
-            <button
-              type="button"
-              onClick={handleCloseAnnouncement}
-              aria-label="Close announcement"
-              className="p-1 rounded-full text-[#D7E2DC]/70 hover:text-white hover:bg-white/10 transition cursor-pointer shrink-0"
-            >
-              <X className="w-3.5 h-3.5" />
-            </button>
+      <aside
+        aria-label="Shipping announcement"
+        className={`bg-[#1E3327] text-[#F5F2EB] overflow-hidden transition-all duration-300 ease-in-out ${
+          isAnnouncementDismissed || isScrolled
+            ? 'max-h-0 opacity-0 -translate-y-full border-b-0 pointer-events-none'
+            : 'max-h-16 opacity-100 translate-y-0 border-b border-[#2D4737]'
+        }`}
+      >
+        <div className="max-w-[1440px] mx-auto px-4 sm:px-6 py-2 sm:py-2.5 flex items-center justify-between gap-3 text-xs">
+          <div className="flex items-center gap-2.5 mx-auto sm:mx-0">
+            <span className="flex items-center justify-center w-5 h-5 rounded-full bg-emerald-500/20 text-[#E8B059] shrink-0">
+              <Truck className="w-3 h-3" />
+            </span>
+            <span className="font-medium tracking-tight">
+              <span className="font-semibold text-white">Free Islandwide Delivery</span> on Orders Over LKR 3,500
+              <span className="hidden sm:inline mx-2 text-[#D7E2DC]/40">•</span>
+              <span className="hidden sm:inline text-[#D7E2DC]">Cash on Delivery Available</span>
+            </span>
           </div>
+
+          <button
+            type="button"
+            onClick={() => setIsAnnouncementDismissed(true)}
+            aria-label="Close announcement"
+            className="p-1 rounded-full text-[#D7E2DC]/70 hover:text-white hover:bg-white/10 transition cursor-pointer shrink-0"
+          >
+            <X className="w-3.5 h-3.5" />
+          </button>
         </div>
-      )}
+      </aside>
 
       {/* 2. Global Header */}
       <Header />

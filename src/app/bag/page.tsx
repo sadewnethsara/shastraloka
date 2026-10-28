@@ -1414,9 +1414,9 @@ export default function Bag() {
                         {/* FLOATING TOP-RIGHT URGENCY NOTIFICATION POPOVER (From Screenshots) */}
                         {/* --------------------------------------------------------------- */}
                         {showFloatingUrgency && bagItems.length > 0 && (
-                            <div className="hidden md:flex items-center gap-3.5 absolute right-4 top-[54px] z-40 w-[348px] bg-white rounded-2xl shadow-[0_10px_32px_rgba(0,0,0,0.16)] border border-stone-200/90 p-3 animate-in fade-in slide-in-from-top-2 duration-200">
+                            <div className="hidden md:flex items-center gap-3.5 absolute right-4 top-[54px] z-40 w-[356px] bg-white rounded-2xl shadow-[0_10px_32px_rgba(0,0,0,0.16)] border border-stone-200/90 p-4 animate-in fade-in slide-in-from-top-2 duration-200">
                                 {/* Thumbnail with Blue Bag Badge */}
-                                <div className="relative w-[74px] h-[74px] rounded-xl overflow-hidden shrink-0 border border-stone-200 bg-stone-50">
+                                <div className="relative w-[72px] h-[72px] rounded-xl overflow-hidden shrink-0 border border-stone-200 bg-stone-50">
                                     <BookCoverArtwork
                                         variant={
                                             activePreset === 'screenshot-2'
@@ -1425,24 +1425,26 @@ export default function Bag() {
                                         }
                                     />
                                     {/* Blue corner circle with bag icon matching screenshot */}
-                                    <div className="absolute -bottom-1 -left-1 w-7 h-7 rounded-tr-xl bg-[#1e3a8a] text-white flex items-center justify-center shadow">
+                                    <div className="absolute -bottom-1 -left-1 w-6 h-6 rounded-tr-xl bg-[#1e3a8a] text-white flex items-center justify-center shadow">
                                         <Handbag className="w-3.5 h-3.5" />
                                     </div>
                                 </div>
 
                                 {/* Content */}
-                                <div className="flex-1 min-w-0 pr-4">
-                                    <p className="text-[12.5px] font-bold text-[#222222] leading-snug">
-                                        Hurry! Shop this one while it lasts!
-                                    </p>
-                                    <p className="text-[11.5px] font-bold text-[#a61a2e] mt-0.5">
-                                        {activePreset === 'screenshot-1'
-                                            ? '23 sold in the past 24 hours'
-                                            : '4 sold in the past 24 hours'}
-                                    </p>
+                                <div className="flex-1 min-w-0">
+                                    <div className="pr-6">
+                                        <p className="text-[12.5px] font-bold text-[#222222] leading-snug">
+                                            Hurry! Shop this one while it lasts!
+                                        </p>
+                                        <p className="text-[11.5px] font-bold text-[#a61a2e] mt-0.5">
+                                            {activePreset === 'screenshot-1'
+                                                ? '23 sold in the past 24 hours'
+                                                : '4 sold in the past 24 hours'}
+                                        </p>
+                                    </div>
                                     <button
                                         onClick={() => router.push('/checkout')}
-                                        className="mt-2 w-full py-1.5 px-3 rounded-full bg-[#222222] hover:bg-stone-800 text-white text-[12px] font-semibold flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
+                                        className="mt-2.5 w-full py-1.5 px-3 rounded-full bg-[#222222] hover:bg-stone-800 text-white text-[12px] font-semibold flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
                                     >
                                         <span>Proceed to checkout</span>
                                         <ArrowRight className="w-3.5 h-3.5" />
@@ -1453,7 +1455,7 @@ export default function Bag() {
                                 <button
                                     onClick={() => setShowFloatingUrgency(false)}
                                     aria-label="Dismiss notification"
-                                    className="absolute top-2.5 right-2.5 p-1 text-stone-500 hover:text-stone-900 rounded-full hover:bg-stone-100"
+                                    className="absolute top-3 right-3 p-1 text-stone-500 hover:text-stone-900 rounded-full hover:bg-stone-100"
                                 >
                                     <X className="w-4 h-4" />
                                 </button>

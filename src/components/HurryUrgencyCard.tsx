@@ -46,7 +46,7 @@ function HurryUrgencyCardContent() {
   return (
     <aside
       aria-label="Demand notification"
-      className={`hidden md:flex fixed top-24 right-4 sm:right-6 z-40 w-[340px] sm:w-[356px] bg-white dark:bg-[#1a1a20] rounded-2xl shadow-[0_12px_36px_rgba(0,0,0,0.18)] dark:shadow-[0_12px_36px_rgba(0,0,0,0.5)] border border-[var(--border-subtle)] p-3.5 items-center gap-3.5 transition-all duration-350 ease-in-out ${
+      className={`hidden md:flex fixed top-24 right-4 sm:right-6 z-40 w-[356px] bg-white dark:bg-[#1a1a20] rounded-2xl shadow-[0_12px_36px_rgba(0,0,0,0.18)] dark:shadow-[0_12px_36px_rgba(0,0,0,0.5)] border border-[var(--border-subtle)] p-4 items-center gap-3.5 transition-all duration-350 ease-in-out ${
         isClosing
           ? 'translate-x-[140%] opacity-0 pointer-events-none'
           : 'translate-x-0 opacity-100 animate-slide-up'
@@ -66,16 +66,18 @@ function HurryUrgencyCardContent() {
       </div>
 
       {/* Content */}
-      <div className="flex-1 min-w-0 pr-4">
-        <p className="text-[12.5px] font-bold text-[var(--text-main)] leading-snug">
-          Hurry! Shop this one while it lasts!
-        </p>
-        <p className="text-[11.5px] font-bold text-[#a61a2e] dark:text-[#ff6b6b] mt-0.5 truncate">
-          {urgency}
-        </p>
+      <div className="flex-1 min-w-0">
+        <div className="pr-6">
+          <p className="text-[12.5px] font-bold text-[var(--text-main)] leading-snug">
+            Hurry! Shop this one while it lasts!
+          </p>
+          <p className="text-[11.5px] font-bold text-[#a61a2e] dark:text-[#ff6b6b] mt-0.5 truncate">
+            {urgency}
+          </p>
+        </div>
         <Link
           href="/checkout"
-          className="mt-2 w-full py-1.5 px-3 rounded-full bg-[var(--color-primary)] hover:bg-[var(--color-primary-hover)] text-white text-[12px] font-semibold flex items-center justify-center gap-1.5 transition-all cursor-pointer shadow-xs active:scale-98"
+          className="mt-2.5 w-full py-1.5 px-3 rounded-full bg-[var(--color-primary)] hover:bg-[var(--color-primary-hover)] text-white text-[12px] font-semibold flex items-center justify-center gap-1.5 transition-all cursor-pointer shadow-xs active:scale-98"
         >
           <span>Proceed to checkout</span>
           <ArrowRight className="w-3.5 h-3.5" />
@@ -87,7 +89,7 @@ function HurryUrgencyCardContent() {
         type="button"
         onClick={handleClose}
         aria-label="Dismiss notification"
-        className="absolute top-2.5 right-2.5 p-1 text-[var(--text-dim)] hover:text-[var(--text-main)] rounded-full hover:bg-[var(--header-hover-bg)] transition cursor-pointer"
+        className="absolute top-3 right-3 p-1 text-[var(--text-dim)] hover:text-[var(--text-main)] rounded-full hover:bg-[var(--header-hover-bg)] transition cursor-pointer"
         title="Dismiss notification"
       >
         <X className="w-4 h-4" />
