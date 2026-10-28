@@ -371,7 +371,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const [theme, setThemeState] = useState<string>('emerald');
   const [isDark, setIsDark] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState('All Treatises');
+  const [selectedCategory, setSelectedCategory] = useState('All Books');
   const [selectedBook, setSelectedBook] = useState<Book | null>(null);
 
   // Bag

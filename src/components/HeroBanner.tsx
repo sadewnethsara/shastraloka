@@ -58,7 +58,7 @@ export default function HeroBanner() {
               </button>
 
               <button
-                onClick={() => setSelectedCategory('Buddhist Philosophy (Abhidhamma)')}
+                onClick={() => setSelectedCategory('Buddhism, Philosophy & Classical Heritage')}
                 className="h-11 px-5 rounded-full bg-white dark:bg-neutral-800 text-[#222222] dark:text-white font-semibold text-sm border border-[#e6e6e6] dark:border-neutral-700 hover:bg-neutral-50 dark:hover:bg-neutral-700 transition-colors cursor-pointer"
               >
                 Explore Buddhist Philosophy

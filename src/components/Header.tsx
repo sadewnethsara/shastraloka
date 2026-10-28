@@ -29,12 +29,13 @@ import VisualSearchModal from './VisualSearchModal';
 
 export const NAV_LINKS = [
   { label: 'Gifts', hasIcon: true, query: 'Gifts' },
-  { label: 'Ancient Chronicles', hasIcon: false, query: 'Chronicles' },
-  { label: 'Buddhist Philosophy', hasIcon: false, query: 'Buddhist' },
-  { label: 'Sinhala Poetry', hasIcon: false, query: 'Poetry' },
-  { label: 'Ayurvedic Texts', hasIcon: false, query: 'Ayurveda' },
-  { label: 'Palm Leaf Collections', hasIcon: false, query: 'Manuscript' },
-  { label: 'Best Sellers', hasIcon: false, query: 'Mahavamsa' },
+  { label: 'Best Sellers', hasIcon: false, query: 'Best Sellers' },
+  { label: 'New Arrivals', hasIcon: false, query: 'New Arrivals' },
+  { label: 'Novels & Fiction (Sinhala & English)', hasIcon: false, query: 'Novels & Fiction' },
+  { label: 'Translations (පරිවර්තන)', hasIcon: false, query: 'Translations' },
+  { label: 'A/L & O/L Books (Textbooks, Past Papers & Revision Guides)', hasIcon: false, query: 'Past Papers' },
+  { label: "Children's Books", hasIcon: false, query: "Children's Books" },
+  { label: 'Sri Lankan Classics (Mahavamsa, Buddhism & Heritage)', hasIcon: false, query: 'Sri Lankan Classics' },
 ];
 
 export interface RecentSearchData {
@@ -481,7 +482,7 @@ export default function Header({ isSticky = false }: HeaderProps = {}) {
               {categoriesOpen && (
                 <div className="absolute left-0 mt-2 w-72 max-h-96 overflow-y-auto bg-[var(--header-dropdown-bg)] text-[var(--header-text)] rounded-2xl shadow-xl border border-[var(--header-dropdown-border)] py-2 z-50 animate-fade-in">
                   <div className="px-4 py-1.5 text-[11px] font-bold uppercase tracking-wider text-[var(--header-text-muted)]">
-                    All Categories
+                    Browse Categories
                   </div>
                   {CATEGORIES.map((cat) => (
                     <button
@@ -595,13 +596,13 @@ export default function Header({ isSticky = false }: HeaderProps = {}) {
           {/* =====================================================================
               DESKTOP SUB-NAVIGATION ROW
              ===================================================================== */}
-          <nav className="hidden lg:flex items-center justify-center gap-7 pb-2.5 pt-0.5 text-[13px] font-medium text-[var(--header-text)]">
+          <nav className="hidden lg:flex items-center justify-start xl:justify-center gap-1.5 xl:gap-3.5 pb-2.5 pt-0.5 text-[12px] xl:text-[13px] font-medium text-[var(--header-text)] overflow-x-auto no-scrollbar">
             {NAV_LINKS.map((item) => (
               <button
                 key={item.label}
                 type="button"
                 onClick={() => handleSearchSubmit(item.query)}
-                className="flex items-center gap-1.5 px-3 py-1 rounded-full hover:bg-[var(--header-hover-bg)] text-[var(--header-text)] transition cursor-pointer"
+                className="flex items-center gap-1.5 px-3 py-1 rounded-full hover:bg-[var(--header-hover-bg)] text-[var(--header-text)] transition cursor-pointer whitespace-nowrap shrink-0"
               >
                 {item.hasIcon && (
                   <Gift className="w-3.5 h-3.5 text-[var(--color-primary)]" />
@@ -772,7 +773,7 @@ export default function Header({ isSticky = false }: HeaderProps = {}) {
               ))}
 
               <div className="px-5 pt-5 pb-2 text-xs font-semibold uppercase tracking-wider text-[var(--header-text-muted)]">
-                All Sacred Categories
+                Browse Categories
               </div>
               {CATEGORIES.map((cat) => (
                 <button

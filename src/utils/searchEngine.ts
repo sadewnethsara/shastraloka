@@ -258,7 +258,7 @@ export function getAutocompleteSuggestions(
     dynamicQueries.add('gajaga hasti shastraya');
   }
 
-  const categoryMatches = CATEGORIES.filter((cat) => cat !== 'All Treatises' && cat.toLowerCase().includes(qLower));
+  const categoryMatches = CATEGORIES.filter((cat) => cat !== 'All Books' && cat.toLowerCase().includes(qLower));
   return {
     bookSuggestions,
     bookMatches: bookSuggestions.map((s) => s.book),
@@ -267,18 +267,113 @@ export function getAutocompleteSuggestions(
   };
 }
 
+export function isAllCategory(cat?: string): boolean {
+  return !cat || cat === 'All Books' || cat === 'All Treatises';
+}
+
 /**
  * Searches, filters, and ranks books for the Pinterest Search & Category Discovery body.
  * - First card(s) are the closest / similar matching books.
  * - Remaining cards are suggested books so the masonry grid is always rich and complete.
  */
+export function isBookMatchingCategory(book: Book, category: string): boolean {
+  if (!category || category === 'All Books' || category === 'All Treatises') {
+    return true;
+  }
+  if (book.category === category) return true;
+
+  const catLower = category.toLowerCase();
+  const bookCatLower = (book.category || '').toLowerCase();
+  const bookTags = (book.tags || []).map((t) => t.toLowerCase());
+  const bookTitleLower = (book.title || '').toLowerCase();
+
+  // Novels & Fiction (නවකතා)
+  if (catLower.includes('novel') || catLower.includes('fiction') || catLower.includes('නවකතා')) {
+    return (
+      bookCatLower.includes('poetry') ||
+      bookCatLower.includes('kavya') ||
+      bookCatLower.includes('jataka') ||
+      bookCatLower.includes('verse') ||
+      bookTags.some((t) => t.includes('poetry') || t.includes('jataka') || t.includes('literature'))
+    );
+  }
+
+  // Translations (පරිවර්තන)
+  if (catLower.includes('translation') || catLower.includes('පරිවර්තන')) {
+    return (
+      !!book.translator ||
+      (book.language && book.language.toLowerCase().includes('english')) ||
+      bookTags.some((t) => t.includes('translation') || t.includes('pali') || t.includes('chronicle'))
+    );
+  }
+
+  // G.C.E. A/L & O/L Textbooks & Past Papers
+  if (catLower.includes('textbook') || catLower.includes('past paper') || catLower.includes('a/l') || catLower.includes('o/l')) {
+    return (
+      bookCatLower.includes('itihasa') ||
+      bookCatLower.includes('chronicle') ||
+      bookCatLower.includes('poetry') ||
+      bookTags.some((t) => t.includes('history') || t.includes('chronicle') || t.includes('grammar') || t.includes('pali'))
+    );
+  }
+
+  // International School Books (Cambridge / Edexcel)
+  if (catLower.includes('international') || catLower.includes('cambridge') || catLower.includes('edexcel')) {
+    return (
+      (book.language && book.language.toLowerCase().includes('english')) ||
+      bookTags.some((t) => t.includes('history') || t.includes('english'))
+    );
+  }
+
+  // Children's & Activity Books (ළමා පොත්)
+  if (catLower.includes('children') || catLower.includes('activity') || catLower.includes('ළමා')) {
+    return (
+      bookCatLower.includes('jataka') ||
+      bookCatLower.includes('poetry') ||
+      bookTags.some((t) => t.includes('jataka') || t.includes('coloring') || t.includes('folk')) ||
+      bookTitleLower.includes('jataka') ||
+      bookTitleLower.includes('coloring')
+    );
+  }
+
+  // Business, Self-Help & Non-Fiction
+  if (catLower.includes('business') || catLower.includes('self-help') || catLower.includes('non-fiction')) {
+    return (
+      bookCatLower.includes('ayurveda') ||
+      bookCatLower.includes('vastu') ||
+      bookCatLower.includes('architecture') ||
+      bookCatLower.includes('inscriptions') ||
+      bookTags.some((t) => t.includes('ayurveda') || t.includes('wisdom') || t.includes('ethics') || t.includes('medicine'))
+    );
+  }
+
+  // Buddhism, Philosophy & Classical Heritage
+  if (catLower.includes('buddhism') || catLower.includes('philosophy') || catLower.includes('heritage') || catLower.includes('classic')) {
+    return (
+      bookCatLower.includes('buddhist') ||
+      bookCatLower.includes('abhidhamma') ||
+      bookCatLower.includes('chronicle') ||
+      bookCatLower.includes('itihasa') ||
+      bookCatLower.includes('ayurveda') ||
+      bookCatLower.includes('poetry') ||
+      bookTags.some((t) => t.includes('buddhist') || t.includes('theravada') || t.includes('pali') || t.includes('chronicle'))
+    );
+  }
+
+  return (
+    bookCatLower.includes(catLower) ||
+    bookTags.some((t) => t.includes(catLower)) ||
+    bookTitleLower.includes(catLower)
+  );
+}
+
 export function searchAndRankBooks(
   options: SearchFilterOptions,
   books: Book[] = BOOKS
 ): SearchEngineOutput {
   const {
     query = '',
-    category = 'All Treatises',
+    category = 'All Books',
     bindingFormat = 'All',
     priceBracket = 'all',
     minDiscount = 0,
@@ -291,17 +386,17 @@ export function searchAndRankBooks(
   // Check if the query itself matches one of our category names
   const matchedCategoryFromQuery = CATEGORIES.find(
     (c) =>
-      c !== 'All Treatises' &&
+      c !== 'All Books' &&
       (c.toLowerCase() === trimmedQuery.toLowerCase() ||
         c.toLowerCase().includes(trimmedQuery.toLowerCase()))
   );
 
   const effectiveCategory =
-    category && category !== 'All Treatises'
+    !isAllCategory(category)
       ? category
       : matchedCategoryFromQuery && trimmedQuery.length > 5
       ? matchedCategoryFromQuery
-      : 'All Treatises';
+      : 'All Books';
 
   // Step 1: Apply hard attribute filters (Binding, Price Bracket, Discount, Rating)
   const attributeFiltered = books.filter((book) => {
@@ -325,15 +420,15 @@ export function searchAndRankBooks(
 
     // If user selected a category without a specific non-category keyword query
     if (
-      effectiveCategory !== 'All Treatises' &&
+      !isAllCategory(effectiveCategory) &&
       (!trimmedQuery ||
         effectiveCategory.toLowerCase().includes(trimmedQuery.toLowerCase()))
     ) {
-      const inCategory = book.category === effectiveCategory;
+      const inCategory = isBookMatchingCategory(book, effectiveCategory);
       return {
         book,
         matchTier: inCategory ? 'category_match' : 'suggested',
-        matchLabel: inCategory ? effectiveCategory.split(' (')[0] : 'Suggested Treatise',
+        matchLabel: inCategory ? effectiveCategory.split(' (')[0] : 'Suggested Book',
         score: inCategory ? 90 + (book.featured ? 5 : 0) : 25 + (book.featured ? 5 : 0),
         discountPercent,
       };
@@ -342,7 +437,7 @@ export function searchAndRankBooks(
     // Otherwise score against the search query
     const scored = scoreBookAgainstQuery(book, trimmedQuery);
     const categoryBonus =
-      effectiveCategory !== 'All Treatises' && book.category === effectiveCategory ? 20 : 0;
+      !isAllCategory(effectiveCategory) && isBookMatchingCategory(book, effectiveCategory) ? 20 : 0;
 
     return {
       book,

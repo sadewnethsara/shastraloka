@@ -58,7 +58,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   }));
 
   const categorySearchPages: MetadataRoute.Sitemap = CATEGORIES.filter(
-    (c) => c !== 'All Treatises'
+    (c) => c !== 'All Books'
   ).map((cat) => ({
     url: `${SEO_BRAND.primaryUrl}/search?category=${encodeURIComponent(cat)}`,
     lastModified: now,

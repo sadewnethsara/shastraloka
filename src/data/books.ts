@@ -39,14 +39,14 @@ export interface Book {
 }
 
 export const CATEGORIES = [
-  'All Treatises',
-  'Ancient Chronicles (Itihasa)',
-  'Buddhist Philosophy (Abhidhamma)',
-  'Classical Sinhala Poetry (Kavya)',
-  'Indigenous Ayurveda (Deshiya Wedakama)',
-  'Jataka Stories & Folk Wisdom',
-  'Temple Architecture & Vastu',
-  'Ancient Inscriptions & Culture',
+  'All Books',
+  'Novels & Fiction (නවකතා)',
+  'Translations (පරිවර්තන)',
+  'G.C.E. A/L & O/L Textbooks & Past Papers',
+  'International School Books (Cambridge / Edexcel)',
+  "Children's & Activity Books (ළමා පොත්)",
+  'Business, Self-Help & Non-Fiction',
+  'Buddhism, Philosophy & Classical Heritage',
 ] as const;
 
 export const BOOKS: Book[] = [

@@ -3,78 +3,65 @@
 import React from 'react';
 import { useApp } from '../context/AppContext';
 import {
-  IconSparkle,
-  IconBook,
-  IconScroll,
-  IconLeaf,
-  IconFeather,
-  IconCrown,
-  IconAudioWave,
-  IconCompass,
-  IconClose,
-} from './Icons';
+  Compass,
+  BookOpen,
+  GraduationCap,
+  Languages,
+  Sparkles,
+  Smile,
+  Library,
+  X as IconClose,
+} from 'lucide-react';
 
 interface GuideChip {
   id: string;
   label: string;
-    query: string;
+  query: string;
   icon: React.ReactNode;
 }
 
 const SEARCH_GUIDES: GuideChip[] = [
   {
     id: 'all',
-    label: 'All Treatises',
-        query: '',
-    icon: <IconCompass size={15} />,
+    label: 'All Books',
+    query: '',
+    icon: <Compass className="w-4 h-4" />,
   },
   {
-    id: 'chronicles',
-    label: 'Mahavamsa & Chronicles',
-        query: 'Mahavamsa',
-    icon: <IconBook size={15} />,
+    id: 'novels',
+    label: 'Novels',
+    query: 'Novels',
+    icon: <BookOpen className="w-4 h-4" />,
   },
   {
-    id: 'buddhism',
-    label: 'Theravada Philosophy',
-        query: 'Buddhist',
-    icon: <IconScroll size={15} />,
+    id: 'past-papers',
+    label: 'A/L Past Papers',
+    query: 'Past Papers',
+    icon: <GraduationCap className="w-4 h-4" />,
   },
   {
-    id: 'ayurveda',
-    label: 'Ayurveda & Healing',
-        query: 'Ayurveda',
-    icon: <IconLeaf size={15} />,
+    id: 'translations',
+    label: 'Translations',
+    query: 'Translations',
+    icon: <Languages className="w-4 h-4" />,
   },
   {
-    id: 'poetry',
-    label: 'Classical Poetry (Kavya)',
-        query: 'Poetry',
-    icon: <IconFeather size={15} />,
+    id: 'self-help',
+    label: 'Self-Help',
+    query: 'Self-Help',
+    icon: <Sparkles className="w-4 h-4" />,
   },
   {
-    id: 'ola-leaf',
-    label: 'Ola Leaf Replicas',
-        query: 'Ola Leaf',
-    icon: <IconScroll size={15} />,
+    id: 'children',
+    label: "Children's",
+    query: 'Children',
+    icon: <Smile className="w-4 h-4" />,
   },
   {
-    id: 'gold-embossed',
-    label: 'Gold Foil Deluxe',
-        query: 'Gold',
-    icon: <IconCrown size={15} />,
-  },
-  {
-    id: 'audiobooks',
-    label: 'Recitations & Audio',
-        query: 'chanting',
-    icon: <IconAudioWave size={15} />,
-  },
-  {
-    id: 'aesthetic',
-    label: 'Archival Curations',
-        query: 'aesthetic',
-    icon: <IconSparkle size={15} />,
+    id: 'classics',
+    label: 'Classics',
+    query: 'Classics',
+    icon: <Library className="w-4 h-4" />,
   },
 ];
 
@@ -88,9 +75,9 @@ export default function SearchGuides({ onSelectGuide, className = '' }: SearchGu
 
   return (
     <div className={`w-full bg-[var(--bg-surface)] border-b border-[var(--border-subtle)] py-2.5 px-4 sm:px-6 overflow-hidden ${className}`}>
-      <div className="max-w-[1720px] mx-auto flex items-center gap-2 overflow-x-auto no-scrollbar scroll-smooth">
+      <div className="page-container flex items-center gap-2 overflow-x-auto no-scrollbar scroll-smooth">
         <span className="text-xs font-bold text-[var(--text-muted)] shrink-0 mr-1 flex items-center gap-1.5">
-          <IconSparkle size={13} className="text-[#F1641E]" />
+          <Sparkles className="w-3.5 h-3.5 text-[#F1641E]" />
           <span>Explore:</span>
         </span>
 
@@ -120,7 +107,6 @@ export default function SearchGuides({ onSelectGuide, className = '' }: SearchGu
                 {chip.icon}
               </span>
               <span>{chip.label}</span>
-              
             </button>
           );
         })}
@@ -135,7 +121,7 @@ export default function SearchGuides({ onSelectGuide, className = '' }: SearchGu
             }}
             className="shrink-0 h-9 px-3 rounded-full text-xs font-medium bg-[var(--bg-input)] hover:bg-[var(--bg-hover)] text-[var(--text-main)] cursor-pointer transition-colors flex items-center gap-1"
           >
-            <IconClose size={12} />
+            <IconClose className="w-3.5 h-3.5" />
             <span>Clear</span>
           </button>
         )}

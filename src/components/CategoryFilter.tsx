@@ -8,7 +8,7 @@ export default function CategoryFilter() {
   const { selectedCategory, setSelectedCategory, activeBoardFilter, setActiveBoardFilter } = useApp();
 
   return (
-    <div className="w-full max-w-[1720px] mx-auto px-4 sm:px-6 pt-5 pb-3">
+    <div className="page-container pt-5 pb-3">
       {/* If a board filter is currently active, show a badge with Clear option */}
       {activeBoardFilter && (
         <div className="mb-4 flex items-center justify-between p-3.5 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-amber-600 dark:text-amber-400">

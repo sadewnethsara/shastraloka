@@ -485,14 +485,14 @@ function SearchContent() {
   // Determine effective query & category from URL params or global context
   const matchedCatFromUrl = CATEGORIES.find(
     (c) =>
-      c !== 'All Treatises' &&
+      c !== 'All Books' &&
       (c.toLowerCase() === categoryParam.toLowerCase() ||
         c.toLowerCase() === queryParam.toLowerCase())
   );
 
   const effectiveCategory =
     matchedCatFromUrl ||
-    (selectedCategory && selectedCategory !== 'All Treatises' ? selectedCategory : 'All Treatises');
+    (selectedCategory && selectedCategory !== 'All Books' && (selectedCategory as string) !== 'All Treatises' ? selectedCategory : 'All Books');
 
   const activeQuery =
     matchedCatFromUrl && queryParam.toLowerCase() === matchedCatFromUrl.toLowerCase()
@@ -674,7 +674,7 @@ function SearchContent() {
                 onClick={() =>
                   guide.isCategory
                     ? handleApplyQueryOrCategory('', guide.query)
-                    : handleApplyQueryOrCategory(guide.query, 'All Treatises')
+                    : handleApplyQueryOrCategory(guide.query, 'All Books')
                 }
                 style={{ backgroundColor: guide.bg }}
                 className={`h-11 pl-1.5 pr-4 rounded-2xl flex items-center gap-2.5 text-white font-bold text-xs whitespace-nowrap shrink-0 transition-transform active:scale-95 cursor-pointer shadow-xs hover:brightness-110 ${
