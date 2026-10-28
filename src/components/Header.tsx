@@ -74,6 +74,7 @@ export const INITIAL_RECENT_SEARCHES: RecentSearchData[] = [
   },
 ];
 
+
 export interface HeaderProps {
   isSticky?: boolean;
 }
@@ -598,11 +599,11 @@ export default function Header({ isSticky = false }: HeaderProps = {}) {
           {/* =====================================================================
               DESKTOP SUB-NAVIGATION ROW
              ===================================================================== */}
-          <nav className="hidden lg:flex items-center justify-start xl:justify-center gap-1.5 xl:gap-3.5 pb-2.5 pt-0.5 text-[12px] xl:text-[13px] font-medium text-[var(--header-text)] overflow-x-auto no-scrollbar">
+<nav className="hidden lg:flex items-center justify-start xl:justify-center gap-2 xl:gap-4 pb-2.5 pt-0.5 text-[12px] xl:text-[13px] font-medium text-[var(--header-text)] overflow-x-auto no-scrollbar">
             {NAV_LINKS.map((item) => (
               <Link
                 key={item.label}
-                href={item.href}
+href={item.href}
                 className="flex items-center gap-1.5 px-3 py-1 rounded-full hover:bg-[var(--header-hover-bg)] text-[var(--header-text)] transition cursor-pointer whitespace-nowrap shrink-0"
               >
                 {item.hasIcon && (
@@ -762,7 +763,7 @@ export default function Header({ isSticky = false }: HeaderProps = {}) {
               {NAV_LINKS.map((link) => (
                 <Link
                   key={link.label}
-                  href={link.href}
+href={link.href}
                   onClick={() => setMobileMenuOpen(false)}
                   className="w-full text-left px-5 py-2.5 text-sm font-medium text-[var(--header-text)] hover:bg-[var(--header-hover-bg)] flex items-center gap-2.5 transition"
                 >

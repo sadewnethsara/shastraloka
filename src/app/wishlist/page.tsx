@@ -1,66 +1,65 @@
 'use client';
 
-import React from 'react';
+import React, { useMemo } from 'react';
 import Link from 'next/link';
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
-import BookCard from '../../components/BookCard';
-import { BOOKS } from '../../data/books';
+import Toast from '../../components/Toast';
+import CleanBookCard from '../../components/CleanBookCard';
 import { useApp } from '../../context/AppContext';
-import { Heart, ArrowRight } from 'lucide-react';
+import { BOOKS } from '../../data/books';
 
 export default function WishlistPage() {
-  const { likedBookIds } = useApp();
-  const likedBooks = BOOKS.filter((b) => likedBookIds.includes(b.id));
+  const { boards, likedBookIds } = useApp();
+
+  const savedBooks = useMemo(() => {
+    const boardBookIds = boards.flatMap((b) => b.bookIds);
+    const uniqueIds = Array.from(new Set([...boardBookIds, ...likedBookIds]));
+    const matched = BOOKS.filter((b) => uniqueIds.includes(b.id));
+    return matched.length > 0 ? matched : BOOKS.slice(0, 5);
+  }, [boards, likedBookIds]);
 
   return (
-    <div className="min-h-screen bg-[var(--bg-main)] flex flex-col">
-      <Header />
-      <main className="page-container py-8 sm:py-12 flex-1">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-[var(--border-subtle)] mb-8">
+    <div className="min-h-screen bg-[var(--bg-main)] text-[var(--text-main)] flex flex-col">
+      <Header isSticky />
+
+      <main className="page-container flex-1 py-8 sm:py-10 space-y-8">
+        <header className="pb-6 border-b border-[var(--border-subtle)] flex flex-col sm:flex-row sm:items-end justify-between gap-4">
           <div>
-            <h1 className="text-2xl sm:text-3xl font-heading font-bold text-[var(--text-main)]">
-              My Wishlist
+            <div className="flex items-center gap-2 text-xs text-[var(--text-muted)] mb-2">
+              <Link href="/" className="hover:text-[var(--text-main)] transition-colors">
+                Home
+              </Link>
+              <span>/</span>
+              <span className="text-[var(--text-main)] font-medium">Saved Reading List</span>
+            </div>
+            <h1
+              className="text-2xl sm:text-3xl lg:text-4xl font-heading font-bold text-[var(--text-main)] tracking-tight"
+            >
+              Saved Treatises &amp; Reading List
             </h1>
-            <p className="text-sm text-[var(--text-muted)] mt-1">
-              Books and classical editions you have saved for later ({likedBooks.length} items)
+            <p className="text-xs sm:text-sm text-[var(--text-muted)] mt-1">
+              Quickly review and add your saved volumes to your Shopping Bag
             </p>
           </div>
           <Link
-            href="/books"
-            className="inline-flex items-center gap-2 text-sm font-semibold text-[var(--color-primary)] hover:underline"
+            href="/bestsellers"
+            className="text-xs font-semibold text-[var(--text-muted)] hover:text-[var(--text-main)] px-3.5 py-2 rounded-lg border border-[var(--border-subtle)] bg-[var(--bg-card)] self-start sm:self-auto"
           >
-            <span>Explore All Books</span>
-            <ArrowRight className="w-4 h-4" />
+            Browse Best Sellers &rarr;
           </Link>
-        </div>
+        </header>
 
-        {likedBooks.length === 0 ? (
-          <div className="py-20 text-center max-w-md mx-auto">
-            <div className="w-16 h-16 rounded-full bg-red-500/10 text-red-500 flex items-center justify-center mx-auto mb-4">
-              <Heart className="w-8 h-8" />
-            </div>
-            <h2 className="text-xl font-heading font-bold text-[var(--text-main)] mb-2">
-              Your wishlist is empty
-            </h2>
-            <p className="text-sm text-[var(--text-muted)] mb-6 leading-relaxed">
-              Explore our collection of classical literature, translations, and past papers and click the heart icon on any book to save it here.
-            </p>
-            <Link
-              href="/books"
-              className="inline-flex items-center justify-center px-6 py-3 rounded-full bg-[var(--color-primary)] text-white font-semibold text-sm hover:opacity-90 transition"
-            >
-              Browse Catalog
-            </Link>
-          </div>
-        ) : (
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 sm:gap-6">
-            {likedBooks.map((book) => (
-              <BookCard key={book.id} book={book} />
+        <section>
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-x-4 sm:gap-x-6 gap-y-7 sm:gap-y-9">
+            {savedBooks.map((book) => (
+              <CleanBookCard key={book.id} book={book} />
             ))}
           </div>
-        )}
+        </section>
       </main>
+
+      <Toast />
       <Footer />
     </div>
   );

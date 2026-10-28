@@ -46,7 +46,7 @@ export default function BoardsModal() {
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className="relative w-full max-w-2xl bg-white dark:bg-[#1c1c21] text-[var(--text-main)] rounded-2xl sm:rounded-3xl p-6 sm:p-8 shadow-2xl border border-[var(--border-subtle)] max-h-[85vh] overflow-y-auto animate-slide-up"
+        className="relative w-full max-w-2xl bg-[var(--bg-card)] text-[var(--text-main)] rounded-2xl sm:rounded-3xl p-6 sm:p-8 shadow-2xl border border-[var(--border-subtle)] max-h-[85vh] overflow-y-auto animate-slide-up"
       >
         {/* Header */}
         <div className="flex items-center justify-between pb-4 border-b border-[var(--border-subtle)]">

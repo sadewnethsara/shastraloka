@@ -1,38 +1,114 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useMemo } from 'react';
+import Link from 'next/link';
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
-import BookCard from '../../components/BookCard';
-import { BOOKS } from '../../data/books';
-import { Flame, Sparkles } from 'lucide-react';
+import Toast from '../../components/Toast';
+import CleanBookCard from '../../components/CleanBookCard';
+import { BOOKS, CATEGORIES } from '../../data/books';
+
+type SortOption = 'popular' | 'rating' | 'price-asc' | 'price-desc';
 
 export default function BestSellersPage() {
-  const bestSellers = [...BOOKS].sort((a, b) => b.rating - a.rating || (b.featured ? 1 : 0) - (a.featured ? 1 : 0));
+  const [selectedCategory, setSelectedCategory] = useState<string>('All Books');
+  const [sortBy, setSortBy] = useState<SortOption>('popular');
+
+  const filteredBooks = useMemo(() => {
+    const base =
+      selectedCategory === 'All Books'
+        ? [...BOOKS]
+        : BOOKS.filter((b) => b.category === selectedCategory);
+
+    return base.sort((a, b) => {
+      if (sortBy === 'popular') return b.reviewsCount - a.reviewsCount;
+      if (sortBy === 'rating') return b.rating - a.rating;
+      if (sortBy === 'price-asc') return a.price - b.price;
+      if (sortBy === 'price-desc') return b.price - a.price;
+      return 0;
+    });
+  }, [selectedCategory, sortBy]);
 
   return (
-    <div className="min-h-screen bg-[var(--bg-main)] flex flex-col">
-      <Header />
-      <main className="page-container py-8 sm:py-12 flex-1">
-        <div className="pb-6 border-b border-[var(--border-subtle)] mb-8">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-orange-500/10 text-orange-600 dark:text-orange-400 text-xs font-bold uppercase tracking-wider mb-2">
-            <Flame className="w-3.5 h-3.5" />
-            <span>Most Popular in Sri Lanka</span>
+    <div className="min-h-screen bg-[var(--bg-main)] text-[var(--text-main)] flex flex-col">
+      <Header isSticky />
+
+      <main className="page-container flex-1 py-8 sm:py-10 space-y-8">
+        {/* Clean Editorial Page Header */}
+        <header className="pb-6 border-b border-[var(--border-subtle)] flex flex-col md:flex-row md:items-end justify-between gap-4">
+          <div>
+            <div className="flex items-center gap-2 text-xs text-[var(--text-muted)] mb-2">
+              <Link href="/" className="hover:text-[var(--text-main)] transition-colors">
+                Home
+              </Link>
+              <span>/</span>
+              <span className="text-[var(--text-main)] font-medium">Best Sellers</span>
+            </div>
+            <h1
+              className="text-2xl sm:text-3xl lg:text-4xl font-heading font-bold text-[var(--text-main)] tracking-tight"
+              
+            >
+              Best Sellers
+            </h1>
+            <p className="text-xs sm:text-sm text-[var(--text-muted)] mt-1">
+              Most-read Sri Lankan chronicles, classical Sinhala literature, and scholarly editions •{' '}
+              
+            </p>
           </div>
-          <h1 className="text-2xl sm:text-4xl font-heading font-bold text-[var(--text-main)]">
-            Best Sellers
-          </h1>
-          <p className="text-sm sm:text-base text-[var(--text-muted)] mt-1.5 max-w-2xl">
-            The most sought-after classical texts, Buddhist philosophy chronicles, fiction novels, and academic past papers ordered by readers this month.
-          </p>
+
+          <div className="flex items-center gap-3 self-start md:self-auto">
+            <Link
+              href="/new-releases"
+              className="text-xs font-semibold text-[var(--text-muted)] hover:text-[var(--text-main)] px-3.5 py-2 rounded-lg border border-[var(--border-subtle)] bg-[var(--bg-card)] transition-colors"
+            >
+              New Arrivals &rarr;
+            </Link>
+            <select
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value as SortOption)}
+              aria-label="Sort best sellers"
+              className="h-9 px-3 rounded-lg text-xs font-semibold bg-[var(--bg-card)] text-[var(--text-main)] border border-[var(--border-subtle)] focus:outline-none cursor-pointer"
+            >
+              <option value="popular">Most Popular</option>
+              <option value="rating">Highest Rated</option>
+              <option value="price-asc">Price: Low to High</option>
+              <option value="price-desc">Price: High to Low</option>
+            </select>
+          </div>
+        </header>
+
+        {/* Clean Category Filter Row */}
+        <div className="flex items-center gap-2 overflow-x-auto no-scrollbar pb-1">
+          {CATEGORIES.map((category) => {
+            const active = selectedCategory === category;
+            return (
+              <button
+                key={category}
+                type="button"
+                onClick={() => setSelectedCategory(category)}
+                className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition cursor-pointer ${
+                  active
+                    ? 'bg-[var(--pill-active-bg)] text-[var(--pill-active-text)]'
+                    : 'bg-[var(--bg-card)] text-[var(--text-muted)] border border-[var(--border-subtle)] hover:text-[var(--text-main)] hover:bg-[var(--bg-hover)]'
+                }`}
+              >
+                {category === 'All Books' ? 'All Categories' : category.split(' (')[0]}
+              </button>
+            );
+          })}
         </div>
 
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 sm:gap-6">
-          {bestSellers.map((book) => (
-            <BookCard key={book.id} book={book} />
-          ))}
-        </div>
+        {/* Clean Uniform Bookstore Grid */}
+        <section>
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-x-4 sm:gap-x-6 gap-y-7 sm:gap-y-9">
+            {filteredBooks.map((book, index) => (
+              <CleanBookCard key={book.id} book={book} rank={index + 1} />
+            ))}
+          </div>
+        </section>
       </main>
+
+      <Toast />
       <Footer />
     </div>
   );

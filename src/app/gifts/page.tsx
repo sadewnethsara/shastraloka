@@ -1,72 +1,98 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useMemo } from 'react';
+import Link from 'next/link';
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
-import BookCard from '../../components/BookCard';
+import Toast from '../../components/Toast';
+import CleanBookCard from '../../components/CleanBookCard';
 import { BOOKS } from '../../data/books';
-import { Gift, Sparkles, CheckCircle2 } from 'lucide-react';
+
+type GiftFilter = 'all' | 'silkbound' | 'gold' | 'ola-leaf' | 'under-1000';
 
 export default function GiftsPage() {
-  // Gift-worthy items: hardcover, leather, deluxe, featured
-  const giftBooks = BOOKS.filter(
-    (b) =>
-      b.binding === 'Deluxe Gold Embossed' ||
-      b.binding === 'Ola Leaf Collector Box' ||
-      b.featured ||
-      b.price >= 2500
-  );
+  const [filter, setFilter] = useState<GiftFilter>('all');
+
+  const giftBooks = useMemo(() => {
+    if (filter === 'silkbound') {
+      return BOOKS.filter((b) => b.binding === 'Royal Silkbound Edition');
+    }
+    if (filter === 'gold') {
+      return BOOKS.filter((b) => b.binding === 'Deluxe Gold Embossed');
+    }
+    if (filter === 'ola-leaf') {
+      return BOOKS.filter((b) => b.binding === 'Ola Leaf Collector Box');
+    }
+    if (filter === 'under-1000') {
+      return BOOKS.filter((b) => b.price <= 1000);
+    }
+    return BOOKS;
+  }, [filter]);
 
   return (
-    <div className="min-h-screen bg-[var(--bg-main)] flex flex-col">
-      <Header />
-      <main className="page-container py-8 sm:py-12 flex-1">
-        {/* Hero Section */}
-        <div className="rounded-3xl bg-linear-to-r from-amber-950/20 to-orange-950/20 border border-amber-500/20 p-6 sm:p-10 mb-10">
-          <div className="max-w-2xl">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-400 text-xs font-bold uppercase tracking-wider mb-3">
-              <Gift className="w-3.5 h-3.5" />
-              <span>Curated Literary Gifts</span>
+    <div className="min-h-screen bg-[var(--bg-main)] text-[var(--text-main)] flex flex-col">
+      <Header isSticky />
+
+      <main className="page-container flex-1 py-8 sm:py-10 space-y-8">
+        <header className="pb-6 border-b border-[var(--border-subtle)] flex flex-col md:flex-row md:items-end justify-between gap-4">
+          <div>
+            <div className="flex items-center gap-2 text-xs text-[var(--text-muted)] mb-2">
+              <Link href="/" className="hover:text-[var(--text-main)] transition-colors">
+                Home
+              </Link>
+              <span>/</span>
+              <span className="text-[var(--text-main)] font-medium">Curated Gifts</span>
             </div>
-            <h1 className="text-2xl sm:text-4xl font-heading font-bold text-[var(--text-main)] leading-tight mb-3">
-              Timeless Literary & Heritage Gifts
+            <h1
+              className="text-2xl sm:text-3xl lg:text-4xl font-heading font-bold text-[var(--text-main)] tracking-tight"
+            >
+              Collector Editions &amp; Literary Gifts
             </h1>
-            <p className="text-sm sm:text-base text-[var(--text-muted)] leading-relaxed mb-6">
-              Give the gift of wisdom. Present deluxe bound chronicles, gold-foil classics, and heirloom manuscripts wrapped in premium packaging with custom calligraphy gift cards.
+            <p className="text-xs sm:text-sm text-[var(--text-muted)] mt-1">
+              Silkbound editions, gold-embossed volumes, and presentation boxes •{' '}
+              
             </p>
-            <div className="flex flex-wrap gap-4 text-xs font-semibold text-[var(--text-main)]">
-              <div className="flex items-center gap-1.5">
-                <CheckCircle2 className="w-4 h-4 text-emerald-500" />
-                <span>Complimentary Gift Wrapping</span>
-              </div>
-              <div className="flex items-center gap-1.5">
-                <CheckCircle2 className="w-4 h-4 text-emerald-500" />
-                <span>Custom Calligraphy Inscription</span>
-              </div>
-              <div className="flex items-center gap-1.5">
-                <CheckCircle2 className="w-4 h-4 text-emerald-500" />
-                <span>Express Islandwide Delivery</span>
-              </div>
-            </div>
           </div>
+        </header>
+
+        {/* Clean Filter Row */}
+        <div className="flex items-center gap-2 overflow-x-auto no-scrollbar pb-1">
+          {[
+            { id: 'all', label: 'All Gift Editions' },
+            { id: 'silkbound', label: 'Royal Silkbound' },
+            { id: 'gold', label: 'Gold Embossed' },
+            { id: 'ola-leaf', label: 'Ola Leaf Collector Box' },
+            { id: 'under-1000', label: 'Under LKR 1,000' },
+          ].map((item) => {
+            const active = filter === item.id;
+            return (
+              <button
+                key={item.id}
+                type="button"
+                onClick={() => setFilter(item.id as GiftFilter)}
+                className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition cursor-pointer ${
+                  active
+                    ? 'bg-[var(--pill-active-bg)] text-[var(--pill-active-text)]'
+                    : 'bg-[var(--bg-card)] text-[var(--text-muted)] border border-[var(--border-subtle)] hover:text-[var(--text-main)] hover:bg-[var(--bg-hover)]'
+                }`}
+              >
+                {item.label}
+              </button>
+            );
+          })}
         </div>
 
-        {/* Gift Collection Grid */}
-        <div className="pb-4 border-b border-[var(--border-subtle)] mb-8">
-          <h2 className="text-xl sm:text-2xl font-heading font-bold text-[var(--text-main)]">
-            Collector & Deluxe Editions for Gifting
-          </h2>
-          <p className="text-xs sm:text-sm text-[var(--text-muted)] mt-1">
-            Handpicked heirloom editions suited for graduation, corporate gifts, and esteemed scholars
-          </p>
-        </div>
-
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 sm:gap-6">
-          {giftBooks.map((book) => (
-            <BookCard key={book.id} book={book} />
-          ))}
-        </div>
+        {/* Clean Uniform Grid */}
+        <section>
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-x-4 sm:gap-x-6 gap-y-7 sm:gap-y-9">
+            {giftBooks.map((book) => (
+              <CleanBookCard key={book.id} book={book} />
+            ))}
+          </div>
+        </section>
       </main>
+
+      <Toast />
       <Footer />
     </div>
   );

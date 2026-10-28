@@ -80,7 +80,7 @@ export default function OrdersPage() {
               return (
                 <div
                   key={order.id}
-                  className="p-5 sm:p-6 rounded-2xl bg-white dark:bg-[#1c1c21] border border-[var(--border-subtle)] shadow-xs space-y-4 transition-all hover:border-[var(--text-muted)]"
+                  className="p-5 sm:p-6 rounded-2xl bg-[var(--bg-card)] border border-[var(--border-subtle)] shadow-xs space-y-4 transition-all hover:border-[var(--text-muted)]"
                 >
                   {/* Top Bar: Order ID, Date & Status */}
                   <div className="flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-[var(--border-subtle)]">

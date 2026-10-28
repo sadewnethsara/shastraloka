@@ -99,11 +99,11 @@ export default function SearchGuides({ onSelectGuide, className = '' }: SearchGu
               }}
               className={`shrink-0 h-9 px-3.5 rounded-full text-xs font-semibold border transition-all duration-150 cursor-pointer flex items-center gap-1.5 ${
                 isActive
-                  ? 'bg-[#222222] dark:bg-neutral-100 text-white dark:text-neutral-900 border-[#222222] dark:border-neutral-100 shadow-xs'
+                  ? 'bg-[var(--pill-active-bg)] text-[var(--pill-active-text)] border-[var(--pill-active-bg)] shadow-xs'
                   : 'bg-[var(--bg-input)] hover:bg-[var(--bg-hover)] text-[var(--text-main)] border-transparent'
               }`}
             >
-              <span className={isActive ? 'text-white dark:text-neutral-900' : 'text-[var(--text-muted)]'}>
+              <span className={isActive ? 'text-[var(--pill-active-text)]' : 'text-[var(--text-muted)]'}>
                 {chip.icon}
               </span>
               <span>{chip.label}</span>

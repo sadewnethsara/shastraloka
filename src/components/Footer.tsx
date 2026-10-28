@@ -55,13 +55,12 @@ export default function Footer() {
   };
 
   return (
-    <footer className="bg-[#F4F2ED] dark:bg-[#18181e] text-[#222222] dark:text-neutral-200 pt-10 sm:pt-12 pb-8 border-t border-neutral-300/80 dark:border-neutral-800 transition-colors">
+    <footer className="bg-[var(--footer-bg)] text-[var(--text-main)] pt-10 sm:pt-12 pb-8 border-t border-[var(--border-subtle)] transition-colors">
       <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8">
         {/* DESKTOP FOOTER */}
         <div className="hidden lg:block">
           <h2
-            className="text-[28px] leading-[1.2] text-[#222222] dark:text-white max-w-sm mb-8 font-bold"
-            style={{ fontFamily: 'Georgia, Cambria, "Times New Roman", Times, serif' }}
+            className="text-[28px] leading-[1.2] text-[var(--text-main)] max-w-sm mb-8 font-bold"
           >
             We&apos;re on a mission to
             <br />
@@ -72,7 +71,7 @@ export default function Footer() {
             <div className="col-span-8 grid grid-cols-4 gap-6">
               {FOOTER_COLUMNS.map((col) => (
                 <div key={col.title}>
-                  <h3 className="text-xs font-bold text-[#222222] dark:text-white mb-3">
+                  <h3 className="text-xs font-bold text-[var(--text-main)] mb-3">
                     {col.title}
                   </h3>
                   <ul className="space-y-2">
@@ -81,7 +80,7 @@ export default function Footer() {
                         <button
                           type="button"
                           onClick={() => navigateToSearch(link)}
-                          className="text-xs text-neutral-600 dark:text-neutral-400 hover:underline cursor-pointer text-left transition-colors"
+                          className="text-xs text-[var(--text-muted)] hover:text-[var(--text-main)] hover:underline cursor-pointer text-left transition-colors"
                         >
                           {link}
                         </button>
@@ -171,14 +170,13 @@ export default function Footer() {
           <div className="w-12 h-12 rounded-xl bg-[#F1641E] text-white flex items-center justify-center shadow-xs">
             <span
               className="font-heading text-2xl font-bold"
-              style={{ fontFamily: 'Georgia, Cambria, "Times New Roman", Times, serif' }}
             >
               S
             </span>
           </div>
 
           {/* Collapsible Accordions for 4 Columns */}
-          <div className="divide-y divide-neutral-300/70 dark:divide-neutral-800 border-y border-neutral-300/70 dark:border-neutral-800">
+          <div className="divide-y divide-[var(--border-subtle)] border-y border-[var(--border-subtle)]">
             {FOOTER_COLUMNS.map((col) => (
               <Accordion
                 key={col.title}
@@ -192,7 +190,7 @@ export default function Footer() {
                       <button
                         type="button"
                         onClick={() => navigateToSearch(link)}
-                        className="text-xs text-neutral-600 dark:text-neutral-400 hover:underline block py-0.5"
+                        className="text-xs text-[var(--text-muted)] hover:text-[var(--text-main)] hover:underline block py-0.5"
                       >
                         {link}
                       </button>
@@ -207,7 +205,7 @@ export default function Footer() {
           <div className="flex items-center gap-3 pt-1">
             <button
               type="button"
-              className="bg-black text-white px-3.5 py-1.5 rounded-lg flex items-center gap-2"
+              className="bg-[var(--pill-active-bg)] text-[var(--pill-active-text)] px-3.5 py-1.5 rounded-lg flex items-center gap-2"
             >
               <svg viewBox="0 0 24 24" className="w-5 h-5 fill-current">
                 <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M15.97 6.33c.64-.78 1.08-1.86.96-2.94-.93.04-2.06.62-2.72 1.4-.58.68-1.1 1.79-.96 2.84 1.04.08 2.08-.52 2.72-1.3" />
@@ -222,7 +220,7 @@ export default function Footer() {
 
             <button
               type="button"
-              className="bg-black text-white px-3.5 py-1.5 rounded-lg flex items-center gap-2"
+              className="bg-[var(--pill-active-bg)] text-[var(--pill-active-text)] px-3.5 py-1.5 rounded-lg flex items-center gap-2"
             >
               <svg viewBox="0 0 24 24" className="w-4 h-4 fill-current">
                 <path d="M3 20.5v-17c0-.83.94-1.3 1.6-.8l14 8.5c.6.37.6 1.23 0 1.6l-14 8.5c-.66.5-1.6.03-1.6-.8z" />
@@ -238,10 +236,10 @@ export default function Footer() {
         </div>
 
         {/* SRI LANKA ONLINE BOOKSTORE & AI DISCOVERY SEO DIRECTORY */}
-        <div className="pt-5 pb-4 border-t border-neutral-300/70 dark:border-neutral-800 text-[11px] text-neutral-500 dark:text-neutral-400 space-y-2">
+        <div className="pt-5 pb-4 border-t border-[var(--border-subtle)] text-[11px] text-[var(--text-muted)] space-y-2">
           <div className="flex flex-wrap items-center justify-between gap-2">
-            <p className="font-bold text-[#222222] dark:text-neutral-200">
-              Shastraloka — Sri Lanka&apos;s Premier Classical Bookstore & Royal Archive
+<p className="font-bold text-[var(--text-main)]">
+              Shastraloka (ශාස්ත්රාලෝක | ශාස්ත්‍රලෝක) — Sri Lanka&apos;s Premier Online Bookstore
             </p>
             <div className="flex items-center gap-3 font-semibold text-[#F1641E]">
               <a href="https://shastraloka.lk" className="hover:underline">
@@ -279,9 +277,9 @@ export default function Footer() {
         </div>
 
         {/* BOTTOM LEGAL & REGION BAR */}
-        <div className="pt-4 border-t border-neutral-300/70 dark:border-neutral-800 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 text-[11px] text-neutral-600 dark:text-neutral-400">
+        <div className="pt-4 border-t border-[var(--border-subtle)] flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 text-[11px] text-[var(--text-muted)]">
           <div className="flex flex-wrap items-center gap-4">
-            <span className="inline-flex items-center gap-1.5 font-semibold text-[#222222] dark:text-neutral-200">
+            <span className="inline-flex items-center gap-1.5 font-semibold text-[var(--text-main)]">
               <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <circle cx="12" cy="12" r="10" />
                 <line x1="2" y1="12" x2="22" y2="12" />
@@ -292,11 +290,11 @@ export default function Footer() {
           </div>
 
           <div className="flex flex-wrap items-center gap-x-4 gap-y-1.5">
-            <span>&copy; 2026 Shastraloka Heritage, Inc. All rights reserved.</span>
-            <a href="#terms" className="underline hover:text-black dark:hover:text-white">Terms of Use</a>
-            <a href="#privacy" className="underline hover:text-black dark:hover:text-white">Privacy Policy</a>
-            <a href="/sitemap.xml" className="underline hover:text-black dark:hover:text-white">Sitemap XML</a>
-            <a href="/llms.txt" className="underline hover:text-black dark:hover:text-white">AI &amp; LLM Index</a>
+<span>&copy; 2026 Shastraloka (ශාස්ත්රාලෝක) Heritage, Inc. All rights reserved.</span>
+            <a href="/terms" className="underline hover:text-[var(--text-main)]">Terms of Use</a>
+            <a href="/privacy" className="underline hover:text-[var(--text-main)]">Privacy Policy</a>
+            <a href="/sitemap.xml" className="underline hover:text-[var(--text-main)]">Sitemap XML</a>
+            <a href="/llms.txt" className="underline hover:text-[var(--text-main)]">AI &amp; LLM Index</a>
           </div>
         </div>
       </div>

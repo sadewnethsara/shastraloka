@@ -55,10 +55,27 @@
   --border-strong: #caba9f;
   --border-focus: #3c2f1f;
 
-  /* Heritage / Classical Surfaces */
+  /* Heritage / Classical Surfaces & Banners */
   --surface-cream: #efe5ce;
   --surface-cream-strong: #ded1b8;
   --brand-brown: #8a5722;
+  --footer-bg: #f0e6d2;
+  --hero-banner-bg: #efe4ce;
+  --hero-banner-border: #ded1b8;
+  --banner-guild-bg: #efe5ce;
+  --banner-guild-surface: #e5d8bd;
+  --banner-guild-border: #d5c5a7;
+  --banner-guild-text: #3c2f1f;
+  --banner-guild-muted: #6e5c45;
+  --banner-guild-accent: #8a5722;
+
+  /* Status & Feedback Colors */
+  --color-success: #15803d;
+  --color-success-bg: #e9f5ec;
+  --color-warning: #b45309;
+  --color-warning-bg: #f9eed8;
+  --color-danger: #9f1239;
+  --color-danger-bg: #fae6e8;
 
   /* Pills & Controls */
   --pill-bg: #ede2cf;

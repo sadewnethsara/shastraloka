@@ -1,52 +1,81 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useMemo } from 'react';
+import Link from 'next/link';
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
-import BookCard from '../../components/BookCard';
+import Toast from '../../components/Toast';
+import CleanBookCard from '../../components/CleanBookCard';
 import { BOOKS } from '../../data/books';
-import { Landmark, Scroll, ShieldCheck } from 'lucide-react';
 
 export default function ArchivesPage() {
-  // Ancient & classical items
-  const archiveBooks = BOOKS.filter(
-    (b) => b.category.includes('Classical') || b.category.includes('Heritage') || b.category.includes('Buddhism')
-  );
+  const [bindingFilter, setBindingFilter] = useState<string>('All');
+
+  const archivalBooks = useMemo(() => {
+    if (bindingFilter === 'All') return BOOKS;
+    return BOOKS.filter((b) => b.binding === bindingFilter);
+  }, [bindingFilter]);
 
   return (
-    <div className="min-h-screen bg-[var(--bg-main)] flex flex-col">
-      <Header />
-      <main className="page-container py-8 sm:py-12 flex-1">
-        <div className="rounded-3xl bg-linear-to-r from-stone-900/40 to-amber-950/30 border border-stone-800 p-6 sm:p-10 mb-10">
-          <div className="max-w-2xl">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/10 text-amber-500 text-xs font-bold uppercase tracking-wider mb-3">
-              <Scroll className="w-3.5 h-3.5" />
-              <span>National Heritage Archive</span>
-            </div>
-            <h1 className="text-2xl sm:text-4xl font-heading font-bold text-[var(--text-main)] mb-3">
-              Digital Manuscript & Ola Leaf Archives
-            </h1>
-            <p className="text-sm sm:text-base text-[var(--text-muted)] leading-relaxed">
-              Preserving thousands of ancient Pali, Sanskrit, and Classical Sinhala inscriptions. Explore authoritative diplomatic transcripts of the Mahavamsa, Culavamsa, Thupavamsa, and indigenous medical folios.
-            </p>
+    <div className="min-h-screen bg-[var(--bg-main)] text-[var(--text-main)] flex flex-col">
+      <Header isSticky />
+
+      <main className="page-container flex-1 py-8 sm:py-10 space-y-8">
+        <header className="pb-6 border-b border-[var(--border-subtle)]">
+          <div className="flex items-center gap-2 text-xs text-[var(--text-muted)] mb-2">
+            <Link href="/" className="hover:text-[var(--text-main)] transition-colors">
+              Home
+            </Link>
+            <span>/</span>
+            <span className="text-[var(--text-main)] font-medium">Archives</span>
           </div>
-        </div>
-
-        <div className="pb-4 border-b border-[var(--border-subtle)] mb-8">
-          <h2 className="text-xl sm:text-2xl font-heading font-bold text-[var(--text-main)]">
-            Archival & Critical Editions
-          </h2>
+          <h1
+            className="text-2xl sm:text-3xl lg:text-4xl font-heading font-bold text-[var(--text-main)] tracking-tight"
+          >
+            Historical Archives &amp; Rare Editions
+          </h1>
           <p className="text-xs sm:text-sm text-[var(--text-muted)] mt-1">
-            Carefully curated critical recensions with full scholarly apparatus
+            Restored palm-leaf facsimiles, monastic records, and museum-grade bindings •{' '}
+            
           </p>
+        </header>
+
+        <div className="flex items-center gap-2 overflow-x-auto no-scrollbar pb-1">
+          {[
+            'All',
+            'Ola Leaf Collector Box',
+            'Royal Silkbound Edition',
+            'Deluxe Gold Embossed',
+            'Clothbound Hardcover',
+          ].map((binding) => {
+            const active = bindingFilter === binding;
+            return (
+              <button
+                key={binding}
+                type="button"
+                onClick={() => setBindingFilter(binding)}
+                className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition cursor-pointer ${
+                  active
+                    ? 'bg-[var(--pill-active-bg)] text-[var(--pill-active-text)]'
+                    : 'bg-[var(--bg-card)] text-[var(--text-muted)] border border-[var(--border-subtle)] hover:text-[var(--text-main)] hover:bg-[var(--bg-hover)]'
+                }`}
+              >
+                {binding === 'All' ? 'All Archival Bindings' : binding}
+              </button>
+            );
+          })}
         </div>
 
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 sm:gap-6">
-          {archiveBooks.map((book) => (
-            <BookCard key={book.id} book={book} />
-          ))}
-        </div>
+        <section>
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-x-4 sm:gap-x-6 gap-y-7 sm:gap-y-9">
+            {archivalBooks.map((book) => (
+              <CleanBookCard key={book.id} book={book} />
+            ))}
+          </div>
+        </section>
       </main>
+
+      <Toast />
       <Footer />
     </div>
   );

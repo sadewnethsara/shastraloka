@@ -38,10 +38,10 @@ export function Card({
 }: CardProps) {
   return (
     <div
-      className={`bg-white dark:bg-[#1c1c21] overflow-hidden transition-all duration-200 ${
+      className={`bg-[var(--bg-card)] overflow-hidden transition-all duration-200 ${
         roundedStyles[rounded]
       } ${elevationStyles[elevation]} ${
-        border ? 'border border-neutral-200/80 dark:border-neutral-800' : ''
+        border ? 'border border-[var(--border-subtle)]' : ''
       } ${
         interactive
           ? 'cursor-pointer hover:shadow-md hover:-translate-y-0.5 group'

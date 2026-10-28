@@ -128,7 +128,7 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(schemaGraph) }}
         />
       </head>
-      <body className="font-sans antialiased bg-white dark:bg-[#0a0a0c] text-[var(--text-main)] transition-colors duration-300">
+      <body className="font-sans antialiased bg-[var(--bg-main)] text-[var(--text-main)] transition-colors duration-300">
         <Providers>{children}</Providers>
       </body>
     </html>

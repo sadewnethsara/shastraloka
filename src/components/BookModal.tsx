@@ -71,7 +71,7 @@ export default function BookModal() {
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className="relative w-full max-w-5xl bg-white dark:bg-[#1c1c21] text-[var(--text-main)] rounded-2xl sm:rounded-3xl shadow-2xl border border-[var(--border-subtle)] overflow-hidden my-auto animate-slide-up"
+        className="relative w-full max-w-5xl bg-[var(--bg-card)] text-[var(--text-main)] rounded-2xl sm:rounded-3xl shadow-2xl border border-[var(--border-subtle)] overflow-hidden my-auto animate-slide-up"
       >
         {/* Floating Close Button */}
         <button
@@ -93,7 +93,7 @@ export default function BookModal() {
               </div>
 
               {/* Chanting Audio Recitation */}
-              <div className="w-full mt-5 p-3.5 rounded-xl bg-white dark:bg-neutral-900 border border-[var(--border-subtle)] flex items-center justify-between gap-3 shadow-xs">
+              <div className="w-full mt-5 p-3.5 rounded-xl bg-[var(--bg-card)] border border-[var(--border-subtle)] flex items-center justify-between gap-3 shadow-xs">
                 <div className="flex items-center gap-3">
                   <button
                     onClick={() => {
@@ -106,32 +106,30 @@ export default function BookModal() {
                   </button>
                   <div className="flex flex-col">
                     <span className="text-xs font-bold text-[var(--text-main)]">
-                      {isPlayingChant ? 'Recitation Playing' : 'Listen to Classical Recitation'}
+                      {isPlayingChant ? 'Chanting in progress...' : 'Listen: Sacred Verses'}
                     </span>
                     <span className="text-[11px] text-[var(--text-muted)]">
-                      Traditional Sinhala & Pali Meter
+                      Traditional temple recitation
                     </span>
                   </div>
                 </div>
-
-                {isPlayingChant && (
-                  <div className="flex items-center gap-1">
-                    <span className="w-1 h-3.5 bg-[#e60023] animate-pulse" />
-                    <span className="w-1 h-5 bg-[#e60023] animate-pulse delay-75" />
-                    <span className="w-1 h-3 bg-[#e60023] animate-pulse delay-150" />
-                    <span className="w-1 h-4 bg-[#e60023] animate-pulse delay-100" />
-                  </div>
-                )}
+                <span className="text-[11px] font-mono px-2 py-0.5 rounded bg-[var(--bg-input)] text-[var(--text-dim)]">
+                  1:42
+                </span>
               </div>
             </div>
 
             {/* Quick Specs */}
-            <div className="grid grid-cols-2 gap-2.5 mt-5 text-xs text-[var(--text-muted)]">
-              <div className="p-3 rounded-lg bg-white dark:bg-neutral-900 border border-[var(--border-subtle)]">
-                <div className="text-[10px] font-bold uppercase tracking-wider text-[var(--text-dim)]">Pages</div>
-                <div className="font-semibold text-[var(--text-main)] text-sm">{selectedBook.pages} Pages</div>
+            <div className="grid grid-cols-3 gap-2 pt-6 mt-6 border-t border-[var(--border-subtle)] text-center">
+              <div className="p-2 rounded-lg bg-[var(--bg-card)] border border-[var(--border-subtle)]">
+                <div className="text-[10px] font-bold uppercase tracking-wider text-[var(--text-dim)]">Format</div>
+                <div className="font-semibold text-[var(--text-main)] text-sm">{selectedBook.binding}</div>
               </div>
-              <div className="p-3 rounded-lg bg-white dark:bg-neutral-900 border border-[var(--border-subtle)]">
+              <div className="p-2 rounded-lg bg-[var(--bg-card)] border border-[var(--border-subtle)]">
+                <div className="text-[10px] font-bold uppercase tracking-wider text-[var(--text-dim)]">Pages</div>
+                <div className="font-semibold text-[var(--text-main)] text-sm">{selectedBook.pages}</div>
+              </div>
+              <div className="p-2 rounded-lg bg-[var(--bg-card)] border border-[var(--border-subtle)]">
                 <div className="text-[10px] font-bold uppercase tracking-wider text-[var(--text-dim)]">Language</div>
                 <div className="font-semibold text-[var(--text-main)] text-sm">{selectedBook.language}</div>
               </div>
@@ -177,15 +175,10 @@ export default function BookModal() {
                   {selectedBook.category}
                 </div>
 
-                {/* Sinhala Title */}
-                <h2 className="font-sinhala font-bold text-2xl sm:text-3xl text-[var(--text-main)] leading-tight">
-                  {selectedBook.sinhalaTitle}
-                </h2>
-
-                {/* English Title in Classic Literary Serif */}
-                <h3 className="font-heading font-bold text-base sm:text-lg text-[var(--text-muted)] mt-1 leading-snug">
+                {/* English Title in Modern Professional Typography */}
+                <h2 className="font-heading font-bold text-2xl sm:text-3xl text-[var(--text-main)] leading-tight">
                   {selectedBook.title}
-                </h3>
+                </h2>
 
                 <p className="text-xs text-[var(--text-muted)] mt-1.5">
                   Authored by <span className="font-semibold text-[var(--text-main)]">{selectedBook.author}</span>
@@ -237,8 +230,8 @@ export default function BookModal() {
                       onClick={() => setSelectedBinding(b)}
                       className={`p-2 rounded-lg text-xs font-semibold border text-left transition-all cursor-pointer ${
                         selectedBinding === b
-                          ? 'border-[#222222] dark:border-neutral-200 bg-[#222222] text-white dark:bg-neutral-100 dark:text-neutral-900'
-                          : 'border-[var(--border-subtle)] bg-white dark:bg-neutral-900 hover:bg-[var(--bg-hover)]'
+                          ? 'border-[var(--pill-active-bg)] bg-[var(--pill-active-bg)] text-[var(--pill-active-text)]'
+                          : 'border-[var(--border-subtle)] bg-[var(--bg-card)] hover:bg-[var(--bg-hover)]'
                       }`}
                     >
                       {b}
@@ -270,7 +263,7 @@ export default function BookModal() {
                       : 'text-[var(--text-muted)] hover:text-[var(--text-main)]'
                   }`}
                 >
-                  Sacred Verses & Chants
+                  Sacred Verses &amp; Chants
                   {activeTab === 'verses' && (
                     <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#e60023]" />
                   )}
@@ -283,7 +276,7 @@ export default function BookModal() {
                       : 'text-[var(--text-muted)] hover:text-[var(--text-main)]'
                   }`}
                 >
-                  Discussion ({reviews.length})
+                  Reader Comments ({reviews.length})
                   {activeTab === 'reviews' && (
                     <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#e60023]" />
                   )}
@@ -310,14 +303,14 @@ export default function BookModal() {
               )}
 
               {activeTab === 'verses' && (
-                <div className="p-3.5 rounded-xl bg-[#fdf6e8] dark:bg-[#201a14] border border-[#f5e8c8] dark:border-[#3a2e22] text-center space-y-2">
-                  <div className="font-heading italic font-semibold text-base text-[#a66523] dark:text-amber-300 leading-relaxed">
+                <div className="p-3.5 rounded-xl bg-[var(--banner-guild-bg)] border border-[var(--banner-guild-border)] text-center space-y-2">
+                  <div className="font-heading italic font-semibold text-base text-[var(--banner-guild-accent)] leading-relaxed">
                     &ldquo;{selectedBook.versesSnippet.english}&rdquo;
                   </div>
-                  <div className="text-[11px] font-mono text-[var(--text-muted)] italic">
+                  <div className="text-[11px] font-mono text-[var(--banner-guild-muted)] italic">
                     {selectedBook.versesSnippet.transliteration}
                   </div>
-                  <div className="text-xs text-[var(--text-main)] font-medium pt-2 border-t border-[#f5e8c8] dark:border-[#3a2e22]">
+                  <div className="text-xs text-[var(--banner-guild-text)] font-medium pt-2 border-t border-[var(--banner-guild-border)]">
                     &ldquo;{selectedBook.versesSnippet.english}&rdquo;
                   </div>
                 </div>

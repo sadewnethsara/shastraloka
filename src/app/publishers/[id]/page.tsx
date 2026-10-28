@@ -20,7 +20,7 @@ import {
 import Header from '../../../components/Header';
 import SearchGuides from '../../../components/SearchGuides';
 import Footer from '../../../components/Footer';
-import BookCard from '../../../components/BookCard';
+import CleanBookCard from '../../../components/CleanBookCard';
 import { useApp } from '../../../context/AppContext';
 import { BOOKS } from '../../../data/books';
 import { PUBLISHERS } from '../page';
@@ -93,35 +93,19 @@ export default function PublisherDetailPage() {
                 </div>
 
                 {/* Scriptorium Hero Header */}
-                <section
-                    className="rounded-3xl p-6 sm:p-10 text-white shadow-md space-y-6"
-                    style={{ background: publisher.bannerGradient }}
-                >
+                <section className="rounded-3xl p-6 sm:p-10 bg-[var(--banner-guild-bg)] text-[var(--banner-guild-text)] border border-[var(--banner-guild-border)] shadow-sm space-y-6">
                     <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
                         <div className="flex items-start sm:items-center gap-5">
-                            <div
-                                className="w-20 h-20 sm:w-24 sm:h-24 rounded-3xl flex items-center justify-center font-heading font-bold text-3xl sm:text-4xl shadow-lg border-2 shrink-0"
-                                style={{
-                                    backgroundColor: 'rgba(255,255,255,0.1)',
-                                    borderColor: publisher.accentColor,
-                                    color: publisher.accentColor,
-                                }}
-                            >
+<div className="w-20 h-20 sm:w-24 sm:h-24 rounded-3xl flex items-center justify-center font-heading font-bold text-3xl sm:text-4xl shadow-sm border-2 shrink-0 bg-[var(--bg-card)] text-[var(--banner-guild-accent)] border-[var(--banner-guild-border)]">
                                 {publisher.avatarText}
                             </div>
 
                             <div className="space-y-2">
                                 <div className="flex flex-wrap items-center gap-2.5">
-                                    <span
-                                        className="px-3 py-0.5 rounded-full text-xs font-bold uppercase tracking-wider"
-                                        style={{
-                                            backgroundColor: 'rgba(255,255,255,0.16)',
-                                            color: publisher.accentColor,
-                                        }}
-                                    >
+                                    <span className="px-3 py-0.5 rounded-full text-xs font-bold uppercase tracking-wider bg-[var(--bg-card)] text-[var(--banner-guild-accent)] border border-[var(--banner-guild-border)]">
                                         {publisher.badgeText}
                                     </span>
-                                    <span className="text-xs text-neutral-300 flex items-center gap-1">
+                                    <span className="text-xs text-[var(--banner-guild-muted)] flex items-center gap-1">
                                         <MapPin className="w-3.5 h-3.5" />
                                         {publisher.location} • Founded {publisher.foundedYear}
                                     </span>
@@ -129,22 +113,18 @@ export default function PublisherDetailPage() {
 
                                 <div className="flex items-center gap-2">
                                     <h1
-                                        className="text-2xl sm:text-4xl font-bold tracking-tight"
+                                        className="text-2xl sm:text-4xl font-bold tracking-tight text-[var(--banner-guild-text)]"
                                         style={{
-                                            fontFamily: 'Georgia, Cambria, "Times New Roman", Times, serif',
                                         }}
                                     >
                                         {publisher.name}
                                     </h1>
-                                    <CheckCircle2
-                                        className="w-6 h-6 shrink-0"
-                                        style={{ color: publisher.accentColor }}
-                                    />
+                                    <CheckCircle2 className="w-6 h-6 shrink-0 text-[var(--banner-guild-accent)]" />
                                 </div>
 
-                                <p className="text-sm sm:text-base text-amber-200 font-medium">
-              {publisher.sinhalaName} • {publisher.tagline}
-            </p>
+<p className="text-sm sm:text-base text-[var(--banner-guild-accent)] font-medium">
+                                    {publisher.sinhalaName} • {publisher.tagline}
+                                </p>
                             </div>
                         </div>
 
@@ -161,8 +141,8 @@ export default function PublisherDetailPage() {
                                     );
                                 }}
                                 className={`px-5 py-2.5 rounded-full text-xs font-bold transition cursor-pointer ${isFollowing
-                                        ? 'bg-white text-neutral-900 hover:bg-neutral-200'
-                                        : 'bg-white/15 text-white border border-white/30 hover:bg-white/25'
+                                        ? 'bg-[var(--pill-active-bg)] text-[var(--pill-active-text)] hover:opacity-90'
+                                        : 'bg-[var(--bg-card)] text-[var(--text-main)] border border-[var(--border-strong)] hover:bg-[var(--bg-hover)]'
                                     }`}
                             >
                                 {isFollowing ? 'Following Guild ✓' : '+ Follow Guild'}
@@ -171,7 +151,7 @@ export default function PublisherDetailPage() {
                             <button
                                 type="button"
                                 onClick={handleAddAllToBag}
-                                className="px-5 py-2.5 rounded-full bg-[#F1641E] hover:bg-[#d45314] text-white text-xs font-bold transition cursor-pointer flex items-center gap-2 shadow-sm"
+                                className="px-5 py-2.5 rounded-full bg-[var(--color-primary)] hover:bg-[var(--color-primary-hover)] text-white text-xs font-bold transition cursor-pointer flex items-center gap-2 shadow-sm"
                             >
                                 <Handbag className="w-4 h-4" />
                                 <span>
@@ -181,45 +161,45 @@ export default function PublisherDetailPage() {
                         </div>
                     </div>
 
-                    <p className="text-xs sm:text-sm text-neutral-200 max-w-3xl leading-relaxed">
+                    <p className="text-xs sm:text-sm text-[var(--banner-guild-muted)] max-w-3xl leading-relaxed">
                         {publisher.description}
                     </p>
 
                     {/* Guild Credentials Bar */}
-                    <div className="pt-4 border-t border-white/15 grid grid-cols-2 sm:grid-cols-4 gap-4 text-xs">
+                    <div className="pt-4 border-t border-[var(--banner-guild-border)] grid grid-cols-2 sm:grid-cols-4 gap-4 text-xs">
                         <div className="flex items-center gap-2.5">
-                            <Star className="w-4 h-4 text-amber-400 fill-amber-400 shrink-0" />
+                            <Star className="w-4 h-4 text-amber-500 fill-amber-500 shrink-0" />
                             <div>
-                                <div className="font-bold text-white">{publisher.rating} / 5.0 Rating</div>
-                                <div className="text-neutral-300">
+                                <div className="font-bold text-[var(--banner-guild-text)]">{publisher.rating} / 5.0 Rating</div>
+                                <div className="text-[var(--banner-guild-muted)]">
                                     {publisher.reviewsCount.toLocaleString()} Collector Reviews
                                 </div>
                             </div>
                         </div>
 
                         <div className="flex items-center gap-2.5">
-                            <Users className="w-4 h-4 text-amber-300 shrink-0" />
+                            <Users className="w-4 h-4 text-[var(--banner-guild-accent)] shrink-0" />
                             <div>
-                                <div className="font-bold text-white">
+                                <div className="font-bold text-[var(--banner-guild-text)]">
                                     {publisher.followersCount} Readers
                                 </div>
-                                <div className="text-neutral-300">Active Guild Subscribers</div>
+                                <div className="text-[var(--banner-guild-muted)]">Active Guild Subscribers</div>
                             </div>
                         </div>
 
                         <div className="flex items-center gap-2.5">
-                            <Feather className="w-4 h-4 text-amber-300 shrink-0" />
+                            <Feather className="w-4 h-4 text-[var(--banner-guild-accent)] shrink-0" />
                             <div>
-                                <div className="font-bold text-white">Archival Grade</div>
-                                <div className="text-neutral-300">{publisher.craftsmanshipNote}</div>
+                                <div className="font-bold text-[var(--banner-guild-text)]">Archival Grade</div>
+                                <div className="text-[var(--banner-guild-muted)]">{publisher.craftsmanshipNote}</div>
                             </div>
                         </div>
 
                         <div className="flex items-center gap-2.5">
-                            <Truck className="w-4 h-4 text-amber-300 shrink-0" />
+                            <Truck className="w-4 h-4 text-[var(--banner-guild-accent)] shrink-0" />
                             <div>
-                                <div className="font-bold text-white">Direct Guild Dispatch</div>
-                                <div className="text-neutral-300">Moisture-sealed islandwide courier</div>
+                                <div className="font-bold text-[var(--banner-guild-text)]">Direct Guild Dispatch</div>
+                                <div className="text-[var(--banner-guild-muted)]">Moisture-sealed islandwide courier</div>
                             </div>
                         </div>
                     </div>
@@ -231,7 +211,6 @@ export default function PublisherDetailPage() {
                         <div>
                             <h2
                                 className="text-xl sm:text-2xl font-bold text-[var(--text-main)]"
-                                style={{ fontFamily: 'Georgia, Cambria, "Times New Roman", Times, serif' }}
                             >
                                 Catalog of {publisher.name} ({publisherBooks.length})
                             </h2>
@@ -249,8 +228,8 @@ export default function PublisherDetailPage() {
                                         type="button"
                                         onClick={() => setBindingFilter(binding)}
                                         className={`px-3.5 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap transition cursor-pointer ${active
-                                                ? 'bg-[#222222] text-white dark:bg-neutral-100 dark:text-neutral-900'
-                                                : 'bg-[var(--bg-input)] text-[var(--text-muted)] hover:text-[var(--text-main)]'
+                                                ? 'bg-[var(--pill-active-bg)] text-[var(--pill-active-text)]'
+                                                : 'bg-[var(--pill-bg)] text-[var(--text-muted)] hover:bg-[var(--pill-hover)] hover:text-[var(--text-main)]'
                                             }`}
                                     >
                                         {binding}
@@ -260,9 +239,9 @@ export default function PublisherDetailPage() {
                         </div>
                     </div>
 
-                    <div className="book-masonry">
+                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-x-4 sm:gap-x-6 gap-y-7 sm:gap-y-9">
                         {publisherBooks.map((book) => (
-                            <BookCard key={book.id} book={book} />
+                            <CleanBookCard key={book.id} book={book} />
                         ))}
                     </div>
                 </section>
@@ -271,7 +250,6 @@ export default function PublisherDetailPage() {
                 <section className="pt-8 border-t border-[var(--border-subtle)] space-y-4">
                     <h3
                         className="text-lg font-bold text-[var(--text-main)]"
-                        style={{ fontFamily: 'Georgia, Cambria, "Times New Roman", Times, serif' }}
                     >
                         Other Accredited Sri Lankan Guild Presses
                     </h3>
@@ -280,17 +258,14 @@ export default function PublisherDetailPage() {
                             <Link
                                 key={other.id}
                                 href={`/publishers/${other.id}`}
-                                className="p-4 rounded-2xl bg-[var(--bg-surface)] border border-[var(--border-subtle)] hover:border-[#F1641E] transition group space-y-2"
+                                className="p-4 rounded-2xl bg-[var(--bg-card)] border border-[var(--border-subtle)] hover:border-[var(--color-primary)] transition group space-y-2"
                             >
                                 <div className="flex items-center gap-3">
-                                    <div
-                                        className="w-10 h-10 rounded-xl flex items-center justify-center font-heading font-bold text-sm text-white shrink-0"
-                                        style={{ background: other.bannerGradient }}
-                                    >
+<div className="w-10 h-10 rounded-xl flex items-center justify-center font-heading font-bold text-sm text-[var(--banner-guild-accent)] bg-[var(--banner-guild-bg)] border border-[var(--banner-guild-border)] shrink-0">
                                         {other.avatarText}
                                     </div>
                                     <div className="min-w-0">
-                                        <h4 className="font-bold text-sm text-[var(--text-main)] group-hover:text-[#F1641E] truncate">
+                                        <h4 className="font-bold text-sm text-[var(--text-main)] group-hover:text-[var(--color-primary)] truncate">
                                             {other.name}
                                         </h4>
                                         <p className="text-[11px] text-[var(--text-muted)] truncate">
