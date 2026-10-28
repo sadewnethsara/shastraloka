@@ -12,7 +12,16 @@ import { BOOKS } from '../data/books';
 import { useApp } from '../context/AppContext';
 import { Button } from '../components/ui/Button';
 import { Badge } from '../components/ui/Badge';
-import { Accordion } from '../components/ui/Accordion';
+
+const FALLBACK_BOOK_COVER =
+  'https://grantha.lk/media/catalog/product/cache/5fa2393eb818a642e720faf99039a3de/m/a/manikkawatha_1.jpg';
+
+const handleCoverError = (e: React.SyntheticEvent<HTMLImageElement, Event>) => {
+  const target = e.currentTarget;
+  if (target.src !== FALLBACK_BOOK_COVER) {
+    target.src = FALLBACK_BOOK_COVER;
+  }
+};
 
 // --- DATA DEFINITIONS ---
 
@@ -22,10 +31,12 @@ interface SimpleCardItem {
   image: string;
   subtitle?: string;
   query?: string;
+  bookId?: string;
 }
 
 interface ProductItem {
   id: string;
+  bookId: string;
   title: string;
   price: string;
   image: string;
@@ -34,6 +45,7 @@ interface ProductItem {
 
 interface DealItem {
   id: string;
+  bookId: string;
   title: string;
   salePrice: string;
   originalPrice: string;
@@ -44,121 +56,127 @@ interface DealItem {
 const FEATURED_INTERESTS: SimpleCardItem[] = [
   {
     id: 'fi-1',
-    title: 'Ancient Chronicles (Itihasa)',
-    image: 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?auto=format&fit=crop&w=700&q=80',
-    query: 'Chronicles',
+    title: 'Gajaga Wannama & Royal Lore',
+    image: 'https://rasakatha.lk/media/covers/book-1793105930903-342489ab87-opt.webp',
+    query: 'gajaga',
   },
   {
     id: 'fi-2',
-    title: 'Buddhist Philosophy (Abhidhamma)',
-    image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=700&q=80',
-    query: 'Buddhist',
+    title: 'Manikkawatha & Chronicles',
+    image: 'https://grantha.lk/media/catalog/product/cache/5fa2393eb818a642e720faf99039a3de/m/a/manikkawatha_1.jpg',
+    query: 'Ancient Chronicles (Itihasa)',
   },
   {
     id: 'fi-3',
-    title: 'Indigenous Ayurveda Medicine',
-    image: 'https://images.unsplash.com/photo-1559181567-c3190ca9959b?auto=format&fit=crop&w=700&q=80',
-    query: 'Ayurveda',
+    title: 'Senkottan & Sabaragamuwa',
+    image: 'https://grantha.lk/media/catalog/product/cache/5fa2393eb818a642e720faf99039a3de/s/e/senkottan_front_1.jpg',
+    query: 'Indigenous Ayurveda (Deshiya Wedakama)',
   },
   {
     id: 'fi-4',
-    title: 'Classical Sinhala Poetry (Kavya)',
-    image: 'https://images.unsplash.com/photo-1532012197267-da84d127e765?auto=format&fit=crop&w=700&q=80',
-    query: 'Poetry',
+    title: 'May Mara Prasangaya & Kavya',
+    image: 'https://grantha.lk/media/catalog/product/cache/5fa2393eb818a642e720faf99039a3de/m/a/may-mara-prasangaya.jpg',
+    query: 'Classical Sinhala Poetry (Kavya)',
   },
 ];
 
 const BEST_COLLECTIONS: SimpleCardItem[] = [
   {
     id: 'bc-1',
-    title: 'Royal Temple Inscriptions',
-    image: 'https://images.unsplash.com/photo-1461360370896-922624d12aa1?auto=format&fit=crop&w=600&q=80',
-    query: 'Inscriptions',
+    title: 'Amma & Sinhala Classics',
+    image: 'https://grantha.lk/media/catalog/product/cache/5fa2393eb818a642e720faf99039a3de/a/m/amma-book-cover.jpg',
+    query: 'Mahavamsa',
   },
   {
     id: 'bc-2',
-    title: 'Ola Leaf Folio Editions',
-    image: 'https://images.unsplash.com/photo-1457369804613-52c61a468e7d?auto=format&fit=crop&w=600&q=80',
-    query: 'Manuscript',
+    title: 'Wassana Sihinaya & Novels',
+    image: 'https://grantha.lk/media/catalog/product/cache/5fa2393eb818a642e720faf99039a3de/w/a/wassana_sihinaya_front.jpg',
+    query: 'Buddhist Philosophy (Abhidhamma)',
   },
   {
     id: 'bc-3',
-    title: 'Deluxe Leatherbound Sets',
-    image: 'https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&w=600&q=80',
-    query: 'Leather',
+    title: 'Bala Muduwe Mithuru Epic Sets',
+    image: 'https://grantha.lk/media/catalog/product/cache/5fa2393eb818a642e720faf99039a3de/b/a/bala-muduwe-mithuru-2-lord-of-the-rings-upekha-muses.jpg',
+    query: 'Jataka Stories & Folk Wisdom',
   },
   {
     id: 'bc-4',
-    title: 'Theravada Pali Canon Sets',
-    image: 'https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?auto=format&fit=crop&w=600&q=80',
-    query: 'Pali',
+    title: 'Sanda & Dhammapada Wisdom',
+    image: 'https://grantha.lk/media/catalog/product/cache/5fa2393eb818a642e720faf99039a3de/s/a/sanda_1.jpg',
+    query: 'Dhammapada',
   },
   {
     id: 'bc-5',
-    title: 'Scholarly Gift Editions',
-    image: 'https://images.unsplash.com/photo-1582555172866-f73bb12a2ab3?auto=format&fit=crop&w=600&q=80',
-    query: 'Gifts',
+    title: 'Chemmani & Udupussallawa Editions',
+    image: 'https://grantha.lk/media/catalog/product/cache/5fa2393eb818a642e720faf99039a3de/c/h/chemmani_front_cover_1.jpg',
+    query: 'Udupussallawa',
   },
 ];
 
 const HERO_FEATURE_CARDS: SimpleCardItem[] = [
   {
     id: 'hfc-1',
-    title: 'Anuradhapura Era Chronicles',
-    image: 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?auto=format&fit=crop&w=600&q=80',
-    query: 'Mahavamsa',
+    title: 'Manikkawatha — LKR 960',
+    image: 'https://grantha.lk/media/catalog/product/cache/5fa2393eb818a642e720faf99039a3de/m/a/manikkawatha_1.jpg',
+    query: 'Manikkawatha',
   },
   {
     id: 'hfc-2',
-    title: 'Sacred Ola Leaf Manuscripts',
-    image: 'https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&w=600&q=80',
-    query: 'Ola Leaf',
+    title: 'Senkottan — LKR 840',
+    image: 'https://grantha.lk/media/catalog/product/cache/5fa2393eb818a642e720faf99039a3de/s/e/senkottan_front_1.jpg',
+    query: 'Senkottan',
   },
   {
     id: 'hfc-3',
-    title: 'Polonnaruwa Architectural Treatises',
-    image: 'https://images.unsplash.com/photo-1513519245088-0e12902e5a38?auto=format&fit=crop&w=600&q=80',
-    query: 'Architecture',
+    title: 'May Mara Prasangaya — LKR 920',
+    image: 'https://grantha.lk/media/catalog/product/cache/5fa2393eb818a642e720faf99039a3de/m/a/may-mara-prasangaya.jpg',
+    query: 'May Mara',
   },
 ];
 
 const FEATURED_TREATISE_PRODUCTS: ProductItem[] = [
   {
     id: 'cp-1',
-    title: 'The Mahavamsa: Great Chronicle of Sri Lanka',
-    price: 'LKR 3,850',
-    image: 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?auto=format&fit=crop&w=500&q=80',
+    bookId: 'gajaga-wannama-royal-chronicle',
+    title: 'Gajaga Wannama: Royal Court Elephant Lore',
+    price: 'LKR 950',
+    image: 'https://rasakatha.lk/media/covers/book-1793105930903-342489ab87-opt.webp',
   },
   {
     id: 'cp-2',
-    title: 'Visuddhimagga: The Path of Purification',
-    price: 'LKR 4,500',
-    image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=500&q=80',
+    bookId: 'gajabahu-raja-puwatha',
+    title: 'Manikkawatha & Gajabahu Puwatha',
+    price: 'LKR 960',
+    image: 'https://grantha.lk/media/catalog/product/cache/5fa2393eb818a642e720faf99039a3de/m/a/manikkawatha_1.jpg',
   },
   {
     id: 'cp-3',
-    title: 'Yogarnavaya: Classical Ayurvedic Treasury',
-    price: 'LKR 3,400',
-    image: 'https://images.unsplash.com/photo-1559181567-c3190ca9959b?auto=format&fit=crop&w=500&q=80',
+    bookId: 'gajaga-hasti-palana-shastraya',
+    title: 'Senkottan: Sabaragamuwa Heritage',
+    price: 'LKR 840',
+    image: 'https://grantha.lk/media/catalog/product/cache/5fa2393eb818a642e720faf99039a3de/s/e/senkottan_front_1.jpg',
   },
   {
     id: 'cp-4',
-    title: 'Selalihini Sandeshaya: Messenger Poem',
-    price: 'LKR 1,850',
-    image: 'https://images.unsplash.com/photo-1532012197267-da84d127e765?auto=format&fit=crop&w=500&q=80',
+    bookId: 'chaddanta-gajaga-jataka-illustrated',
+    title: 'May Mara Prasangaya',
+    price: 'LKR 920',
+    image: 'https://grantha.lk/media/catalog/product/cache/5fa2393eb818a642e720faf99039a3de/m/a/may-mara-prasangaya.jpg',
   },
   {
     id: 'cp-5',
-    title: 'Chulavamsa: Lesser Chronicle of Ceylon',
-    price: 'LKR 3,600',
-    image: 'https://images.unsplash.com/photo-1461360370896-922624d12aa1?auto=format&fit=crop&w=500&q=80',
+    bookId: 'mahawamsa-great-chronicle',
+    title: 'Amma & Mahavamsa Chronicle',
+    price: 'LKR 1,150',
+    image: 'https://grantha.lk/media/catalog/product/cache/5fa2393eb818a642e720faf99039a3de/a/m/amma-book-cover.jpg',
     desktopOnly: true,
   },
   {
     id: 'cp-6',
-    title: 'Pansiya Panas Jataka Potha (Vol. I)',
-    price: 'LKR 6,200',
-    image: 'https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&w=500&q=80',
+    bookId: 'pansiya-panas-jataka-potha',
+    title: 'Bala Muduwe Mithuru Vol. II',
+    price: 'LKR 1,850',
+    image: 'https://grantha.lk/media/catalog/product/cache/5fa2393eb818a642e720faf99039a3de/b/a/bala-muduwe-mithuru-2-lord-of-the-rings-upekha-muses.jpg',
     desktopOnly: true,
   },
 ];
@@ -166,33 +184,33 @@ const FEATURED_TREATISE_PRODUCTS: ProductItem[] = [
 const SPECIAL_TREATISE_PILLS: SimpleCardItem[] = [
   {
     id: 'stp-1',
-    title: 'Archival Palm Leaf Folios',
-    image: 'https://images.unsplash.com/photo-1457369804613-52c61a468e7d?auto=format&fit=crop&w=200&q=80',
-    query: 'Manuscript',
+    title: 'Gajaga & Royal Lore',
+    image: 'https://rasakatha.lk/media/covers/book-1793105930903-342489ab87-opt.webp',
+    query: 'gajaga',
   },
   {
     id: 'stp-2',
-    title: 'Gold Embossed Bindings',
-    image: 'https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&w=200&q=80',
-    query: 'Gold',
+    title: 'Manikkawatha Novels',
+    image: 'https://grantha.lk/media/catalog/product/cache/5fa2393eb818a642e720faf99039a3de/m/a/manikkawatha_1.jpg',
+    query: 'Manikkawatha',
   },
   {
     id: 'stp-3',
-    title: 'Pali Chant Manuscripts',
-    image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=200&q=80',
-    query: 'Pali',
+    title: 'Wassana Sihinaya',
+    image: 'https://grantha.lk/media/catalog/product/cache/5fa2393eb818a642e720faf99039a3de/w/a/wassana_sihinaya_front.jpg',
+    query: 'Wassana',
   },
   {
     id: 'stp-4',
-    title: 'Ancient Sinhala Lexicons',
-    image: 'https://images.unsplash.com/photo-1532012197267-da84d127e765?auto=format&fit=crop&w=200&q=80',
-    query: 'Sinhala',
+    title: 'Nedamma & Sandesha',
+    image: 'https://grantha.lk/media/catalog/product/cache/5fa2393eb818a642e720faf99039a3de/n/e/nedamma_cover_final_print_1_.jpg',
+    query: 'Sandesha',
   },
   {
     id: 'stp-5',
-    title: 'Scholarly Collector Sets',
-    image: 'https://images.unsplash.com/photo-1582555172866-f73bb12a2ab3?auto=format&fit=crop&w=200&q=80',
-    query: 'Collector',
+    title: 'Muses Collector Sets',
+    image: 'https://grantha.lk/media/catalog/product/cache/5fa2393eb818a642e720faf99039a3de/b/a/bala-muduwe-mithuru-2-lord-of-the-rings-upekha-muses.jpg',
+    query: 'Bala Muduwe',
   },
 ];
 
@@ -200,158 +218,169 @@ const MOST_LOVED_CATEGORIES: SimpleCardItem[] = [
   {
     id: 'mlc-1',
     title: 'Ancient Chronicles (Itihasa)',
-    image: 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?auto=format&fit=crop&w=500&q=80',
-    query: 'Chronicles',
+    image: 'https://grantha.lk/media/catalog/product/cache/5fa2393eb818a642e720faf99039a3de/m/a/manikkawatha_1.jpg',
+    query: 'Ancient Chronicles (Itihasa)',
   },
   {
     id: 'mlc-2',
-    title: 'Theravada Philosophy',
-    image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=500&q=80',
-    query: 'Buddhist',
+    title: 'Buddhist Philosophy (Abhidhamma)',
+    image: 'https://grantha.lk/media/catalog/product/cache/5fa2393eb818a642e720faf99039a3de/w/a/wassana_sihinaya_front.jpg',
+    query: 'Buddhist Philosophy (Abhidhamma)',
   },
   {
     id: 'mlc-3',
-    title: 'Classical Sinhala Poetry',
-    image: 'https://images.unsplash.com/photo-1532012197267-da84d127e765?auto=format&fit=crop&w=500&q=80',
-    query: 'Poetry',
+    title: 'Classical Sinhala Poetry (Kavya)',
+    image: 'https://grantha.lk/media/catalog/product/cache/5fa2393eb818a642e720faf99039a3de/n/e/nedamma_cover_final_print_1_.jpg',
+    query: 'Classical Sinhala Poetry (Kavya)',
   },
   {
     id: 'mlc-4',
-    title: 'Ayurvedic Medicine',
-    image: 'https://images.unsplash.com/photo-1559181567-c3190ca9959b?auto=format&fit=crop&w=500&q=80',
-    query: 'Ayurveda',
+    title: 'Indigenous Ayurveda (Deshiya Wedakama)',
+    image: 'https://grantha.lk/media/catalog/product/cache/5fa2393eb818a642e720faf99039a3de/c/h/chemmani_front_cover_1.jpg',
+    query: 'Indigenous Ayurveda (Deshiya Wedakama)',
   },
   {
     id: 'mlc-5',
-    title: 'Temple Inscriptions & Vastu',
-    image: 'https://images.unsplash.com/photo-1461360370896-922624d12aa1?auto=format&fit=crop&w=500&q=80',
-    query: 'Architecture',
+    title: 'Temple Architecture & Vastu',
+    image: 'https://grantha.lk/media/catalog/product/cache/5fa2393eb818a642e720faf99039a3de/f/r/front_15_1.jpg',
+    query: 'Temple Architecture & Vastu',
   },
   {
     id: 'mlc-6',
-    title: 'Jataka & Folklore Wisdom',
-    image: 'https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&w=500&q=80',
-    query: 'Jataka',
+    title: 'Jataka Stories & Folk Wisdom',
+    image: 'https://grantha.lk/media/catalog/product/cache/5fa2393eb818a642e720faf99039a3de/m/a/may-mara-prasangaya.jpg',
+    query: 'Jataka Stories & Folk Wisdom',
   },
 ];
 
 const TODAY_DEALS: DealItem[] = [
   {
     id: 'td-1',
-    title: 'The Mahavamsa (Geiger Translation) Hardcover Clothbound Edition',
-    salePrice: 'LKR 3,850',
-    originalPrice: 'LKR 4,950',
-    discount: '22% off',
-    image: 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?auto=format&fit=crop&w=600&q=80',
+    bookId: 'gajaga-wannama-royal-chronicle',
+    title: 'Gajaga Wannama: Royal Court Elephant Lore',
+    salePrice: 'LKR 950',
+    originalPrice: 'LKR 1,350',
+    discount: '30% off',
+    image: 'https://rasakatha.lk/media/covers/book-1793105930903-342489ab87-opt.webp',
   },
   {
     id: 'td-2',
-    title: 'Visuddhimagga Complete 2-Volume Edition with Commentary',
-    salePrice: 'LKR 4,500',
-    originalPrice: 'LKR 5,800',
+    bookId: 'gajabahu-raja-puwatha',
+    title: 'Manikkawatha — Mahinda Prasad Masimbula',
+    salePrice: 'LKR 960',
+    originalPrice: 'LKR 1,280',
     discount: '25% off',
-    image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=600&q=80',
+    image: 'https://grantha.lk/media/catalog/product/cache/5fa2393eb818a642e720faf99039a3de/m/a/manikkawatha_1.jpg',
   },
   {
     id: 'td-3',
-    title: 'Sarartha Samgrahaya: Classical Medical Encylopedia',
-    salePrice: 'LKR 3,200',
-    originalPrice: 'LKR 4,200',
-    discount: '24% off',
-    image: 'https://images.unsplash.com/photo-1559181567-c3190ca9959b?auto=format&fit=crop&w=600&q=80',
+    bookId: 'gajaga-hasti-palana-shastraya',
+    title: 'Senkottan — Mahinda Prasad Masimbula',
+    salePrice: 'LKR 840',
+    originalPrice: 'LKR 1,120',
+    discount: '25% off',
+    image: 'https://grantha.lk/media/catalog/product/cache/5fa2393eb818a642e720faf99039a3de/s/e/senkottan_front_1.jpg',
   },
   {
     id: 'td-4',
-    title: 'Guttila Kavya Illustrated Edition with Classical Sinhala Commentary',
-    salePrice: 'LKR 1,650',
-    originalPrice: 'LKR 2,200',
-    discount: '25% off',
-    image: 'https://images.unsplash.com/photo-1532012197267-da84d127e765?auto=format&fit=crop&w=600&q=80',
+    bookId: 'chaddanta-gajaga-jataka-illustrated',
+    title: 'May Mara Prasangaya — Mahinda Prasad Masimbula',
+    salePrice: 'LKR 920',
+    originalPrice: 'LKR 1,200',
+    discount: '23% off',
+    image: 'https://grantha.lk/media/catalog/product/cache/5fa2393eb818a642e720faf99039a3de/m/a/may-mara-prasangaya.jpg',
   },
   {
     id: 'td-5',
-    title: 'Epigraphia Zeylanica: Archaeological Survey Folio',
-    salePrice: 'LKR 5,400',
-    originalPrice: 'LKR 7,200',
-    discount: '25% off',
-    image: 'https://images.unsplash.com/photo-1461360370896-922624d12aa1?auto=format&fit=crop&w=600&q=80',
+    bookId: 'mahawamsa-great-chronicle',
+    title: 'Amma — Maxim Gorky / Dadigama V. Rodrigo',
+    salePrice: 'LKR 1,150',
+    originalPrice: 'LKR 1,500',
+    discount: '23% off',
+    image: 'https://grantha.lk/media/catalog/product/cache/5fa2393eb818a642e720faf99039a3de/a/m/amma-book-cover.jpg',
   },
 ];
 
 const HOME_GUIDE_ITEMS: ProductItem[] = [
   {
     id: 'hgi-1',
-    title: 'Deluxe Clothbound Mahavamsa',
-    price: 'LKR 3,850',
-    image: 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?auto=format&fit=crop&w=600&q=80',
+    bookId: 'visuddhimagga-path-of-purification',
+    title: 'Wassana Sihinaya',
+    price: 'LKR 880',
+    image: 'https://grantha.lk/media/catalog/product/cache/5fa2393eb818a642e720faf99039a3de/w/a/wassana_sihinaya_front.jpg',
   },
   {
     id: 'hgi-2',
-    title: 'Hand-Bound Palm Leaf Ola Box',
-    price: 'LKR 8,900',
-    image: 'https://images.unsplash.com/photo-1457369804613-52c61a468e7d?auto=format&fit=crop&w=600&q=80',
+    bookId: 'dhammapada-illustrated',
+    title: 'Sanda & Dhammapada',
+    price: 'LKR 780',
+    image: 'https://grantha.lk/media/catalog/product/cache/5fa2393eb818a642e720faf99039a3de/s/a/sanda_1.jpg',
   },
   {
     id: 'hgi-3',
-    title: 'Carved Teakwood Manuscript Stand',
-    price: 'LKR 6,400',
-    image: 'https://images.unsplash.com/photo-1532372320572-cda25653a26d?auto=format&fit=crop&w=600&q=80',
+    bookId: 'guttila-kavyaya',
+    title: 'Glasera & Guttila Kavya',
+    price: 'LKR 1,050',
+    image: 'https://grantha.lk/media/catalog/product/cache/5fa2393eb818a642e720faf99039a3de/g/l/glasera_front-cover.jpg',
   },
   {
     id: 'hgi-4',
-    title: 'Brass Oil Lamp & Shrine Relic Set',
-    price: 'LKR 4,200',
-    image: 'https://images.unsplash.com/photo-1507473885765-e6ed057f782c?auto=format&fit=crop&w=600&q=80',
+    bookId: 'chulavamsa-chronicle',
+    title: 'Udupussallawa',
+    price: 'LKR 1,250',
+    image: 'https://grantha.lk/media/catalog/product/cache/5fa2393eb818a642e720faf99039a3de/u/d/udupussallawa_front.jpeg',
   },
   {
     id: 'hgi-5',
-    title: 'Handloom Cotton Reading Quilt',
-    price: 'LKR 3,600',
-    image: 'https://images.unsplash.com/photo-1600166898405-da9535204843?auto=format&fit=crop&w=600&q=80',
+    bookId: 'saddharma-ratnavaliya',
+    title: 'Buro — Liyanage Amarakeerthi',
+    price: 'LKR 890',
+    image: 'https://grantha.lk/media/catalog/product/cache/5fa2393eb818a642e720faf99039a3de/b/u/buro_1.jpg',
   },
   {
     id: 'hgi-6',
-    title: 'Handmade Herbal Ceramic Incense Burner',
-    price: 'LKR 2,100',
-    image: 'https://images.unsplash.com/photo-1612196808214-b8e1d6145a8c?auto=format&fit=crop&w=600&q=80',
+    bookId: 'amavatura-gurulugomi',
+    title: 'Gomara Nowe Sudu Kabara',
+    price: 'LKR 940',
+    image: 'https://grantha.lk/media/catalog/product/cache/5fa2393eb818a642e720faf99039a3de/g/o/gomar_nowe_sudu_kabara_front.jpg',
   },
 ];
 
 const STANDOUT_STYLES: SimpleCardItem[] = [
   {
     id: 'ss-1',
-    title: 'Temple Folio Editions',
-    subtitle: 'up to 30% off',
-    image: 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?auto=format&fit=crop&w=500&q=80',
-    query: 'Temple',
+    title: 'Gajaga Wannama & Royal Lore',
+    subtitle: 'LKR 950 (30% off)',
+    image: 'https://rasakatha.lk/media/covers/book-1793105930903-342489ab87-opt.webp',
+    query: 'gajaga',
   },
   {
     id: 'ss-2',
-    title: 'Ayurvedic Herbals',
-    subtitle: 'up to 20% off',
-    image: 'https://images.unsplash.com/photo-1559181567-c3190ca9959b?auto=format&fit=crop&w=500&q=80',
-    query: 'Ayurveda',
+    title: 'Subhashithaya & Mawwath Hadawath',
+    subtitle: 'LKR 760 (24% off)',
+    image: 'https://grantha.lk/media/catalog/product/cache/5fa2393eb818a642e720faf99039a3de/m/a/mawwath_hadawath.jpg',
+    query: 'Subhashithaya',
   },
   {
     id: 'ss-3',
-    title: 'Kavya Poetry Manuscripts',
-    subtitle: 'up to 25% off',
-    image: 'https://images.unsplash.com/photo-1532012197267-da84d127e765?auto=format&fit=crop&w=500&q=80',
-    query: 'Poetry',
+    title: 'Kavyashekhara & Classical Verse',
+    subtitle: 'LKR 980 (25% off)',
+    image: 'https://grantha.lk/media/catalog/product/cache/5fa2393eb818a642e720faf99039a3de/f/r/front_7.jpg',
+    query: 'Kavyashekhara',
   },
   {
     id: 'ss-4',
-    title: 'Historical Chronicles',
-    subtitle: 'up to 30% off',
-    image: 'https://images.unsplash.com/photo-1461360370896-922624d12aa1?auto=format&fit=crop&w=500&q=80',
-    query: 'Chronicles',
+    title: 'Sigiriya Kurutu Gee Poetry',
+    subtitle: 'LKR 1,680 (24% off)',
+    image: 'https://grantha.lk/media/catalog/product/cache/5fa2393eb818a642e720faf99039a3de/f/r/front_8_29.jpg',
+    query: 'Sigiriya',
   },
   {
     id: 'ss-5',
-    title: 'Collector Gift Sets',
-    subtitle: 'up to 20% off',
-    image: 'https://images.unsplash.com/photo-1582555172866-f73bb12a2ab3?auto=format&fit=crop&w=500&q=80',
-    query: 'Collector',
+    title: 'Mayura Sandeshaya Classics',
+    subtitle: 'LKR 720 (24% off)',
+    image: 'https://grantha.lk/media/catalog/product/cache/5fa2393eb818a642e720faf99039a3de/i/m/img_20261021_0005.jpg',
+    query: 'Mayura Sandeshaya',
   },
 ];
 
@@ -392,9 +421,17 @@ export default function LandingPage() {
     }
   };
 
-
   const navigateToSearch = (query: string) => {
     router.push(`/search?q=${encodeURIComponent(query)}`);
+  };
+
+  const handleOpenBookById = (bookId: string, fallbackQuery: string) => {
+    const found = BOOKS.find((b) => b.id === bookId);
+    if (found) {
+      router.push(`/books/${found.id}`);
+    } else {
+      navigateToSearch(fallbackQuery);
+    }
   };
 
   return (
@@ -416,7 +453,7 @@ export default function LandingPage() {
               <div className="hidden md:grid md:grid-cols-12 items-center min-h-[280px] lg:min-h-[360px]">
                 <div className="md:col-span-6 p-6 lg:p-10 flex flex-col items-center text-center justify-center">
                   <h1
-                    className="text-[28px] lg:text-[42px] leading-[1.14] text-[#222222] dark:text-white mb-5 font-bold"
+                    className="text-[28px] lg:text-[42px] leading-[1.14] text-[#222222] dark:text-white mb-5 font-heading font-bold"
                     style={{ fontFamily: 'Georgia, Cambria, "Times New Roman", Times, serif' }}
                   >
                     Wonderfully
@@ -427,43 +464,32 @@ export default function LandingPage() {
                     variant="primary"
                     size="md"
                     text="Shop unique treatises"
-                    onClick={() => navigateToSearch('Chronicles')}
+                    onClick={() => navigateToSearch('gajaga')}
                   />
                 </div>
 
-                {/* Classical Lotus Manuscript Visual Motif */}
+                {/* Featured Sri Lankan Book Covers Showcase Grid */}
                 <div className="md:col-span-6 h-full w-full flex items-center justify-center p-3 lg:p-4">
                   <div className="relative w-full h-[240px] lg:h-[330px] rounded-xl overflow-hidden bg-[#8CA12E] p-3 shadow-inner flex flex-col justify-between">
-                    <div className="grid grid-cols-4 grid-rows-4 gap-2 w-full h-full">
-                      {Array.from({ length: 16 }).map((_, idx) => (
+                    <div className="grid grid-cols-4 grid-rows-2 gap-2 w-full h-full">
+                      {BOOKS.slice(0, 8).map((book) => (
                         <div
-                          key={idx}
-                          className={`rounded-md flex items-center justify-center border border-white/20 transition-transform hover:scale-105 ${idx % 2 === 0 ? 'bg-[#A1B53B]' : 'bg-[#8A9E27]'
-                            }`}
+                          key={book.id}
+                          onClick={() => router.push(`/books/${book.id}`)}
+                          className="relative rounded-md overflow-hidden border border-white/25 transition-transform hover:scale-105 cursor-pointer bg-neutral-900"
                         >
-                          {/* Golden Lotus Mandala Motif */}
-                          <svg
-                            viewBox="0 0 64 64"
-                            className="w-8 h-8 lg:w-11 lg:h-11 drop-shadow-xs"
-                          >
-                            <circle cx="32" cy="32" r="8" fill="#FDE047" />
-                            <path
-                              d="M32 6 C28 16, 28 24, 32 32 C36 24, 36 16, 32 6 Z"
-                              fill="#FEF08A"
-                            />
-                            <path
-                              d="M32 58 C28 48, 28 40, 32 32 C36 40, 36 48, 32 58 Z"
-                              fill="#FEF08A"
-                            />
-                            <path
-                              d="M6 32 C16 28, 24 28, 32 32 C24 36, 16 36, 6 32 Z"
-                              fill="#FEF08A"
-                            />
-                            <path
-                              d="M58 32 C48 28, 40 28, 32 32 C40 36, 48 36, 58 32 Z"
-                              fill="#FEF08A"
-                            />
-                          </svg>
+                          <img
+                            src={book.coverImage}
+                            alt={book.title}
+                            referrerPolicy="no-referrer"
+                            onError={handleCoverError}
+                            className="w-full h-full object-cover"
+                          />
+                          <div className="absolute inset-x-0 bottom-0 bg-black/75 px-1 py-0.5 text-center">
+                            <span className="text-[9px] font-bold text-white">
+                              LKR {book.price.toLocaleString()}
+                            </span>
+                          </div>
                         </div>
                       ))}
                     </div>
@@ -474,7 +500,7 @@ export default function LandingPage() {
               {/* Mobile Stacked Layout (< md) */}
               <div className="md:hidden flex flex-col items-center pt-6 px-4 pb-4 text-center">
                 <h1
-                  className="text-[28px] leading-[1.15] text-[#222222] dark:text-white mb-4 font-bold"
+                  className="text-[28px] leading-[1.15] text-[#222222] dark:text-white mb-4 font-heading font-bold"
                   style={{ fontFamily: 'Georgia, Cambria, "Times New Roman", Times, serif' }}
                 >
                   Wonderfully
@@ -482,20 +508,20 @@ export default function LandingPage() {
                   sacred wisdom
                 </h1>
                 <div className="relative w-full max-w-[290px] h-[280px] rounded-xl overflow-hidden bg-[#8CA12E] p-2.5 shadow-md">
-                  <div className="grid grid-cols-4 grid-rows-4 gap-1.5 w-full h-full">
-                    {Array.from({ length: 16 }).map((_, idx) => (
+                  <div className="grid grid-cols-3 grid-rows-2 gap-1.5 w-full h-full">
+                    {BOOKS.slice(0, 6).map((book) => (
                       <div
-                        key={idx}
-                        className={`rounded flex items-center justify-center ${idx % 2 === 0 ? 'bg-[#A1B53B]' : 'bg-[#8A9E27]'
-                          }`}
+                        key={book.id}
+                        onClick={() => router.push(`/books/${book.id}`)}
+                        className="relative rounded overflow-hidden cursor-pointer bg-neutral-900"
                       >
-                        <svg viewBox="0 0 64 64" className="w-7 h-7">
-                          <circle cx="32" cy="32" r="7" fill="#FDE047" />
-                          <path
-                            d="M32 8 C28 16, 28 24, 32 32 C36 24, 36 16, 32 8 Z"
-                            fill="#FEF08A"
-                          />
-                        </svg>
+                        <img
+                          src={book.coverImage}
+                          alt={book.title}
+                          referrerPolicy="no-referrer"
+                          onError={handleCoverError}
+                          className="w-full h-full object-cover"
+                        />
                       </div>
                     ))}
                   </div>
@@ -504,30 +530,35 @@ export default function LandingPage() {
                       variant="primary"
                       size="sm"
                       text="Shop unique treatises"
-                      onClick={() => navigateToSearch('Chronicles')}
+                      onClick={() => navigateToSearch('gajaga')}
                     />
                   </div>
                 </div>
               </div>
             </div>
 
-            {/* Right Card: Desktop Only ("Download Palm Leaf Manuscripts") */}
+            {/* Right Card: Desktop Only ("Gajaga Wannama & Manikkawatha Featured") */}
             <div
-              onClick={() => navigateToSearch('Manuscript')}
+              onClick={() => router.push('/books/gajaga-wannama-royal-chronicle')}
               className="hidden lg:block lg:col-span-4 relative rounded-2xl overflow-hidden group cursor-pointer shadow-xs hover:shadow-md transition min-h-[360px]"
             >
               <img
-                src="https://images.unsplash.com/photo-1457369804613-52c61a468e7d?auto=format&fit=crop&w=800&q=80"
-                alt="Ancient palm leaf manuscript archive"
+                src="https://rasakatha.lk/media/covers/book-1793105930903-342489ab87-opt.webp"
+                alt="Gajaga Wannama & Sri Lankan Book Collection"
+                referrerPolicy="no-referrer"
+                onError={handleCoverError}
                 className="w-full h-full object-cover group-hover:scale-105 transition duration-500"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/35 to-transparent" />
               <div className="absolute bottom-6 left-6 right-6 text-white">
+                <span className="inline-block px-2.5 py-0.5 rounded-full bg-[#e60023] text-white text-[11px] font-extrabold mb-2">
+                  LKR 950 • 30% OFF
+                </span>
                 <p className="text-xl font-bold leading-snug">
-                  Download sacred palm leaf archives
+                  Gajaga Wannama &amp; Sinhala Classics
                 </p>
                 <span className="inline-flex items-center gap-1.5 text-xs font-semibold mt-2 group-hover:translate-x-1 transition text-[#FEF08A]">
-                  Explore archives &rarr;
+                  Explore edition &rarr;
                 </span>
               </div>
             </div>
@@ -552,6 +583,8 @@ export default function LandingPage() {
                   <img
                     src={item.image}
                     alt={item.title}
+                    referrerPolicy="no-referrer"
+                    onError={handleCoverError}
                     className="w-full h-full object-cover group-hover:scale-105 transition duration-300"
                   />
                 </div>
@@ -581,6 +614,8 @@ export default function LandingPage() {
                   <img
                     src={item.image}
                     alt={item.title}
+                    referrerPolicy="no-referrer"
+                    onError={handleCoverError}
                     className="w-full h-full object-cover group-hover:scale-105 transition duration-300"
                   />
                 </div>
@@ -606,7 +641,7 @@ export default function LandingPage() {
                 variant="secondary"
                 size="sm"
                 text="Get inspired"
-                onClick={() => navigateToSearch('Collector')}
+                onClick={() => navigateToSearch('gajaga')}
               />
             </div>
             {HERO_FEATURE_CARDS.map((card) => (
@@ -618,6 +653,8 @@ export default function LandingPage() {
                 <img
                   src={card.image}
                   alt={card.title}
+                  referrerPolicy="no-referrer"
+                  onError={handleCoverError}
                   className="w-full h-full object-cover group-hover:scale-105 transition duration-300"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/20 to-transparent" />
@@ -638,7 +675,7 @@ export default function LandingPage() {
                 variant="secondary"
                 size="sm"
                 text="Get inspired"
-                onClick={() => navigateToSearch('Collector')}
+                onClick={() => navigateToSearch('gajaga')}
               />
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
@@ -651,6 +688,8 @@ export default function LandingPage() {
                   <img
                     src={card.image}
                     alt={card.title}
+                    referrerPolicy="no-referrer"
+                    onError={handleCoverError}
                     className="w-full h-full object-cover group-hover:scale-105 transition duration-300"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/20 to-transparent" />
@@ -668,7 +707,7 @@ export default function LandingPage() {
               <div
                 key={prod.id}
                 onClick={() => {
-                  const matched = BOOKS.find((b) => b.title.toLowerCase().includes(prod.title.toLowerCase().slice(0, 10)));
+                  const matched = BOOKS.find((b) => b.id === prod.bookId);
                   if (matched) openBookModal(matched);
                   else navigateToSearch(prod.title);
                 }}
@@ -678,18 +717,20 @@ export default function LandingPage() {
                 <img
                   src={prod.image}
                   alt={prod.title}
+                  referrerPolicy="no-referrer"
+                  onError={handleCoverError}
                   className="w-full h-full object-cover group-hover:scale-105 transition duration-300"
                 />
 
                 {/* Wishlist Heart Button */}
                 <button
                   type="button"
-                  onClick={(e) => toggleLocalFavorite(prod.id, e)}
+                  onClick={(e) => toggleLocalFavorite(prod.bookId, e)}
                   aria-label="Save to favorites"
                   className="absolute top-2.5 right-2.5 w-8 h-8 rounded-full bg-white/95 dark:bg-neutral-900/90 hover:bg-white shadow-xs flex items-center justify-center opacity-0 group-hover:opacity-100 transition z-10"
                 >
                   <svg
-                    className={`w-4 h-4 ${favorites[prod.id] || isBookSaved(prod.id)
+                    className={`w-4 h-4 ${favorites[prod.bookId] || isBookSaved(prod.bookId)
                         ? 'fill-[#F1641E] text-[#F1641E]'
                         : 'text-neutral-700 dark:text-neutral-200'
                       }`}
@@ -730,6 +771,8 @@ export default function LandingPage() {
                     <img
                       src={pill.image}
                       alt={pill.title}
+                      referrerPolicy="no-referrer"
+                      onError={handleCoverError}
                       className="w-12 h-12 sm:w-14 sm:h-14 rounded-lg object-cover shrink-0"
                     />
                     <span className="text-xs font-bold text-[#222222] dark:text-neutral-100 leading-snug">
@@ -760,6 +803,8 @@ export default function LandingPage() {
                   <img
                     src={cat.image}
                     alt={cat.title}
+                    referrerPolicy="no-referrer"
+                    onError={handleCoverError}
                     className="w-full h-full object-cover group-hover:scale-105 transition duration-300"
                   />
                 </div>
@@ -796,23 +841,25 @@ export default function LandingPage() {
               {TODAY_DEALS.map((deal) => (
                 <div
                   key={deal.id}
-                  onClick={() => navigateToSearch(deal.title.slice(0, 15))}
+                  onClick={() => handleOpenBookById(deal.bookId, deal.title)}
                   className="w-[46%] sm:w-[47%] lg:w-auto shrink-0 group cursor-pointer"
                 >
                   <div className="relative aspect-square w-full rounded-2xl overflow-hidden bg-neutral-100 dark:bg-neutral-800 mb-2">
                     <img
                       src={deal.image}
                       alt={deal.title}
+                      referrerPolicy="no-referrer"
+                      onError={handleCoverError}
                       className="w-full h-full object-cover group-hover:scale-105 transition duration-300"
                     />
                     <button
                       type="button"
-                      onClick={(e) => toggleLocalFavorite(deal.id, e)}
+                      onClick={(e) => toggleLocalFavorite(deal.bookId, e)}
                       aria-label="Save deal"
                       className="absolute top-2.5 right-2.5 w-8 h-8 rounded-full bg-white/95 dark:bg-neutral-900/90 shadow-xs flex items-center justify-center opacity-0 group-hover:opacity-100 transition z-10"
                     >
                       <svg
-                        className={`w-4 h-4 ${favorites[deal.id] || isBookSaved(deal.id)
+                        className={`w-4 h-4 ${favorites[deal.bookId] || isBookSaved(deal.bookId)
                             ? 'fill-[#F1641E] text-[#F1641E]'
                             : 'text-neutral-800 dark:text-neutral-200'
                           }`}
@@ -869,14 +916,14 @@ export default function LandingPage() {
                 Shastraloka&apos;s Guide to Heritage
               </h2>
               <p className="text-sm text-neutral-600 dark:text-neutral-400 mb-5 max-w-md leading-relaxed">
-                Elevate your study with original palm leaves, Pali translations, Ayurveda texts, and authentic handcrafted scripture stands from local master artisans.
+                Elevate your library with bestselling Sinhala novels, Pali translations, Ayurveda treatises, and classical editions from Sri Lanka&apos;s leading publishers.
               </p>
               <div>
                 <Button
                   variant="secondary"
                   size="md"
                   text="Shop these unique items"
-                  onClick={() => navigateToSearch('Mahavamsa')}
+                  onClick={() => navigateToSearch('gajaga')}
                 />
               </div>
             </div>
@@ -884,22 +931,27 @@ export default function LandingPage() {
             {HOME_GUIDE_ITEMS.map((item) => (
               <div
                 key={item.id}
-                onClick={() => navigateToSearch(item.title)}
+                onClick={() => handleOpenBookById(item.bookId, item.title)}
                 className="relative aspect-square rounded-2xl overflow-hidden bg-neutral-100 dark:bg-neutral-800 group cursor-pointer"
               >
                 <img
                   src={item.image}
                   alt={item.title}
+                  referrerPolicy="no-referrer"
+                  onError={handleCoverError}
                   className="w-full h-full object-cover group-hover:scale-105 transition duration-300"
                 />
+                <span className="absolute bottom-2.5 left-2.5">
+                  <Badge variant="price" size="sm" text={item.price} />
+                </span>
                 <button
                   type="button"
-                  onClick={(e) => toggleLocalFavorite(item.id, e)}
+                  onClick={(e) => toggleLocalFavorite(item.bookId, e)}
                   aria-label="Save item"
                   className="absolute top-2.5 right-2.5 w-8 h-8 rounded-full bg-white/95 dark:bg-neutral-900/90 shadow-xs flex items-center justify-center opacity-0 group-hover:opacity-100 transition z-10"
                 >
                   <svg
-                    className={`w-4 h-4 ${favorites[item.id] || isBookSaved(item.id)
+                    className={`w-4 h-4 ${favorites[item.bookId] || isBookSaved(item.bookId)
                         ? 'fill-[#F1641E] text-[#F1641E]'
                         : 'text-neutral-800 dark:text-neutral-200'
                       }`}
@@ -929,7 +981,7 @@ export default function LandingPage() {
                   variant="secondary"
                   size="sm"
                   text="Shop these unique items"
-                  onClick={() => navigateToSearch('Mahavamsa')}
+                  onClick={() => navigateToSearch('gajaga')}
                 />
               </div>
             </div>
@@ -937,12 +989,14 @@ export default function LandingPage() {
             {HOME_GUIDE_ITEMS.map((item) => (
               <div
                 key={item.id}
-                onClick={() => navigateToSearch(item.title)}
+                onClick={() => handleOpenBookById(item.bookId, item.title)}
                 className="relative aspect-square rounded-2xl overflow-hidden bg-neutral-100 dark:bg-neutral-800 group cursor-pointer"
               >
                 <img
                   src={item.image}
                   alt={item.title}
+                  referrerPolicy="no-referrer"
+                  onError={handleCoverError}
                   className="w-full h-full object-cover group-hover:scale-105 transition duration-300"
                 />
                 <span className="absolute bottom-3 left-3">
@@ -966,14 +1020,19 @@ export default function LandingPage() {
               {HOME_GUIDE_ITEMS.map((item) => (
                 <div
                   key={item.id}
-                  onClick={() => navigateToSearch(item.title)}
-                  className="relative aspect-square rounded-2xl overflow-hidden bg-neutral-100 dark:bg-neutral-800"
+                  onClick={() => handleOpenBookById(item.bookId, item.title)}
+                  className="relative aspect-square rounded-2xl overflow-hidden bg-neutral-100 dark:bg-neutral-800 cursor-pointer"
                 >
                   <img
                     src={item.image}
                     alt={item.title}
+                    referrerPolicy="no-referrer"
+                    onError={handleCoverError}
                     className="w-full h-full object-cover"
                   />
+                  <span className="absolute bottom-2 left-2">
+                    <Badge variant="price" size="sm" text={item.price} />
+                  </span>
                 </div>
               ))}
             </div>
@@ -982,7 +1041,7 @@ export default function LandingPage() {
                 variant="secondary"
                 size="sm"
                 text="Shop these unique items"
-                onClick={() => navigateToSearch('Mahavamsa')}
+                onClick={() => navigateToSearch('gajaga')}
               />
             </div>
           </div>
@@ -1006,6 +1065,8 @@ export default function LandingPage() {
                   <img
                     src={style.image}
                     alt={style.title}
+                    referrerPolicy="no-referrer"
+                    onError={handleCoverError}
                     className="w-full h-full object-cover group-hover:scale-105 transition duration-300"
                   />
                 </div>
@@ -1025,13 +1086,13 @@ export default function LandingPage() {
       <section className="border-t border-neutral-200 dark:border-neutral-800 bg-white dark:bg-[#121215] py-12 sm:py-16 px-4 sm:px-6 lg:px-8">
         <div className="max-w-[1140px] mx-auto text-center">
           <h2
-            className="text-2xl sm:text-3xl lg:text-[36px] text-[#222222] dark:text-white mb-1.5"
+            className="text-2xl sm:text-3xl lg:text-[36px] font-heading font-bold text-[#222222] dark:text-white mb-1.5"
             style={{ fontFamily: 'Georgia, Cambria, "Times New Roman", Times, serif' }}
           >
             What is Shastraloka?
           </h2>
           <Link
-            href="/search?q=Manuscript"
+            href="/search?q=gajaga"
             className="inline-block text-xs sm:text-sm text-neutral-700 dark:text-neutral-300 underline hover:text-black dark:hover:text-white mb-8 sm:mb-10"
           >
             Read our wonderfully sacred story
@@ -1075,11 +1136,15 @@ export default function LandingPage() {
               variant="outline"
               size="sm"
               text="Go to Help Center"
-              onClick={() => navigateToSearch('Help')}
+              onClick={() => router.push('/help')}
             />
           </div>
         </div>
       </section>
+
+      <BookModal />
+      <BoardsModal />
+      <Toast />
 
       {/* =====================================================================
           10. FOOTER (Shared Universal Component)

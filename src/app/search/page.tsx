@@ -11,13 +11,11 @@ import {
   MoreHorizontal,
   Check,
   Sparkles,
-  Search,
   ChevronRight,
   ChevronLeft,
   X,
   ArrowUpRight,
   BookOpen,
-  Tag,
   CheckCircle2,
   Eye,
 } from 'lucide-react';
@@ -26,14 +24,23 @@ import Footer from '../../components/Footer';
 import BookModal from '../../components/BookModal';
 import BoardsModal from '../../components/BoardsModal';
 import Toast from '../../components/Toast';
-import { BOOKS, CATEGORIES, Book } from '../../data/books';
+import { BOOKS, CATEGORIES } from '../../data/books';
 import { useApp } from '../../context/AppContext';
 import {
   searchAndRankBooks,
   RankedBook,
   SearchFilterOptions,
-  getOfferPercentage,
 } from '../../utils/searchEngine';
+
+const FALLBACK_BOOK_COVER =
+  'https://grantha.lk/media/catalog/product/cache/5fa2393eb818a642e720faf99039a3de/m/a/manikkawatha_1.jpg';
+
+const handleCoverError = (e: React.SyntheticEvent<HTMLImageElement, Event>) => {
+  const target = e.currentTarget;
+  if (target.src !== FALLBACK_BOOK_COVER) {
+    target.src = FALLBACK_BOOK_COVER;
+  }
+};
 
 // ============================================================================
 // PINTEREST VISUAL SEARCH GUIDE PILLS (Matching Screenshot 1)
@@ -43,68 +50,68 @@ const VISUAL_SEARCH_GUIDES = [
     label: 'Gajaga Lore',
     query: 'gajaga',
     bg: '#8C583A',
-    thumb: 'https://images.unsplash.com/photo-1544947950-fa07a98d237f?auto=format&fit=crop&w=200&q=80',
+    thumb: 'https://rasakatha.lk/media/covers/book-1793105930903-342489ab87-opt.webp',
   },
   {
     label: 'Chronicles',
     query: 'Ancient Chronicles (Itihasa)',
     isCategory: true,
     bg: '#5B6349',
-    thumb: 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?auto=format&fit=crop&w=200&q=80',
+    thumb: 'https://grantha.lk/media/catalog/product/cache/5fa2393eb818a642e720faf99039a3de/m/a/manikkawatha_1.jpg',
   },
   {
     label: 'Kavya Verse',
     query: 'Classical Sinhala Poetry (Kavya)',
     isCategory: true,
     bg: '#7A6855',
-    thumb: 'https://images.unsplash.com/photo-1476275466078-4007374efbbe?auto=format&fit=crop&w=200&q=80',
+    thumb: 'https://grantha.lk/media/catalog/product/cache/5fa2393eb818a642e720faf99039a3de/n/e/nedamma_cover_final_print_1_.jpg',
   },
   {
     label: 'Ayurveda',
     query: 'Indigenous Ayurveda (Deshiya Wedakama)',
     isCategory: true,
     bg: '#3B5249',
-    thumb: 'https://images.unsplash.com/photo-1471107340929-a87cd0f5b5f3?auto=format&fit=crop&w=200&q=80',
+    thumb: 'https://grantha.lk/media/catalog/product/cache/5fa2393eb818a642e720faf99039a3de/s/e/senkottan_front_1.jpg',
   },
   {
     label: 'Abhidhamma',
     query: 'Buddhist Philosophy (Abhidhamma)',
     isCategory: true,
     bg: '#4A5568',
-    thumb: 'https://images.unsplash.com/photo-1457369804613-52c61a468e7d?auto=format&fit=crop&w=200&q=80',
+    thumb: 'https://grantha.lk/media/catalog/product/cache/5fa2393eb818a642e720faf99039a3de/w/a/wassana_sihinaya_front.jpg',
   },
   {
     label: 'Jataka Tales',
     query: 'Jataka Stories & Folk Wisdom',
     isCategory: true,
     bg: '#6E473B',
-    thumb: 'https://images.unsplash.com/photo-1516979187457-637abb4f9353?auto=format&fit=crop&w=200&q=80',
+    thumb: 'https://grantha.lk/media/catalog/product/cache/5fa2393eb818a642e720faf99039a3de/m/a/may-mara-prasangaya.jpg',
   },
   {
     label: 'Temple Vastu',
     query: 'Temple Architecture & Vastu',
     isCategory: true,
     bg: '#7C5E3C',
-    thumb: 'https://images.unsplash.com/photo-1506880018603-83d5b814b5a6?auto=format&fit=crop&w=200&q=80',
+    thumb: 'https://grantha.lk/media/catalog/product/cache/5fa2393eb818a642e720faf99039a3de/f/r/front_15_1.jpg',
   },
   {
     label: 'Inscriptions',
     query: 'Ancient Inscriptions & Culture',
     isCategory: true,
     bg: '#4A4E54',
-    thumb: 'https://images.unsplash.com/photo-1505664194779-8beaceb93744?auto=format&fit=crop&w=200&q=80',
+    thumb: 'https://grantha.lk/media/catalog/product/cache/5fa2393eb818a642e720faf99039a3de/f/r/front_18__1.jpg',
   },
   {
     label: 'Mahavamsa',
     query: 'Mahavamsa',
     bg: '#6B4226',
-    thumb: 'https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?auto=format&fit=crop&w=200&q=80',
+    thumb: 'https://grantha.lk/media/catalog/product/cache/5fa2393eb818a642e720faf99039a3de/a/m/amma-book-cover.jpg',
   },
   {
     label: 'Sandesha',
     query: 'Sandesha',
     bg: '#2E5A44',
-    thumb: 'https://images.unsplash.com/photo-1519682337058-a94d519337bc?auto=format&fit=crop&w=200&q=80',
+    thumb: 'https://grantha.lk/media/catalog/product/cache/5fa2393eb818a642e720faf99039a3de/g/l/glasera_front-cover.jpg',
   },
 ];
 
@@ -128,28 +135,28 @@ const MOBILE_SEARCH_TABS = [
 const FEATURED_BOARDS_WIDGET = [
   {
     id: 'royal-chronicles',
-    title: 'Gajaga & Royal Court Chronicles',
+    title: 'Gajaga, Manikkawatha & Sabaragamuwa',
     curator: 'Shastraloka Guild',
     pinsCount: 59,
     age: '1w',
     query: 'gajaga',
     images: [
-      'https://images.unsplash.com/photo-1544947950-fa07a98d237f?auto=format&fit=crop&w=400&q=80',
-      'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?auto=format&fit=crop&w=300&q=80',
-      'https://images.unsplash.com/photo-1516979187457-637abb4f9353?auto=format&fit=crop&w=300&q=80',
+      'https://rasakatha.lk/media/covers/book-1793105930903-342489ab87-opt.webp',
+      'https://grantha.lk/media/catalog/product/cache/5fa2393eb818a642e720faf99039a3de/m/a/manikkawatha_1.jpg',
+      'https://grantha.lk/media/catalog/product/cache/5fa2393eb818a642e720faf99039a3de/s/e/senkottan_front_1.jpg',
     ],
   },
   {
     id: 'palm-leaf-archives',
-    title: 'Ola Leaf & Classical Kavya',
+    title: 'Sinhala Novels & Classical Kavya',
     curator: 'Kandy Scriptorium',
     pinsCount: 84,
     age: '4d',
     query: 'Classical Sinhala Poetry (Kavya)',
     images: [
-      'https://images.unsplash.com/photo-1457369804613-52c61a468e7d?auto=format&fit=crop&w=400&q=80',
-      'https://images.unsplash.com/photo-1476275466078-4007374efbbe?auto=format&fit=crop&w=300&q=80',
-      'https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&w=300&q=80',
+      'https://grantha.lk/media/catalog/product/cache/5fa2393eb818a642e720faf99039a3de/m/a/may-mara-prasangaya.jpg',
+      'https://grantha.lk/media/catalog/product/cache/5fa2393eb818a642e720faf99039a3de/w/a/wassana_sihinaya_front.jpg',
+      'https://grantha.lk/media/catalog/product/cache/5fa2393eb818a642e720faf99039a3de/b/a/bala-muduwe-mithuru-2-lord-of-the-rings-upekha-muses.jpg',
     ],
   },
 ];
@@ -215,6 +222,8 @@ function PinterestBookPin({ item, index, activeQuery }: PinterestBookPinProps) {
         <img
           src={book.coverImage}
           alt={book.title}
+          referrerPolicy="no-referrer"
+          onError={handleCoverError}
           loading={index < 6 ? 'eager' : 'lazy'}
           className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
         />
@@ -328,7 +337,7 @@ function PinterestBookPin({ item, index, activeQuery }: PinterestBookPinProps) {
       </div>
 
       {/* ===================================================================
-          PINTEREST + AMAZON BOOKSTORE METADATA UNDERNEATH
+           PINTEREST + AMAZON BOOKSTORE METADATA UNDERNEATH
          =================================================================== */}
       <div className="pt-2 px-1">
         {/* Title Row + Pinterest "..." Menu Button */}
@@ -423,7 +432,7 @@ function PinterestBookPin({ item, index, activeQuery }: PinterestBookPinProps) {
           </div>
 
           <span className="text-[10px] font-medium px-1.5 py-0.5 rounded bg-neutral-100 dark:bg-neutral-800 text-[var(--text-muted)] truncate max-w-[125px]">
-            {book.binding.replace(' Edition', '')}
+            {book.sellerName || book.binding.replace(' Edition', '')}
           </span>
         </div>
 
@@ -561,38 +570,38 @@ function SearchContent() {
       return [
         {
           text: 'gajaga wannama verses',
-          thumb: 'https://images.unsplash.com/photo-1544947950-fa07a98d237f?auto=format&fit=crop&w=160&q=80',
+          thumb: 'https://rasakatha.lk/media/covers/book-1793105930903-342489ab87-opt.webp',
         },
         {
-          text: 'king gajabahu chronicle',
-          thumb: 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?auto=format&fit=crop&w=160&q=80',
+          text: 'manikkawatha & gajabahu chronicle',
+          thumb: 'https://grantha.lk/media/catalog/product/cache/5fa2393eb818a642e720faf99039a3de/m/a/manikkawatha_1.jpg',
         },
         {
-          text: 'gajaga hasti shastraya',
-          thumb: 'https://images.unsplash.com/photo-1471107340929-a87cd0f5b5f3?auto=format&fit=crop&w=160&q=80',
+          text: 'senkottan & gajaga lore',
+          thumb: 'https://grantha.lk/media/catalog/product/cache/5fa2393eb818a642e720faf99039a3de/s/e/senkottan_front_1.jpg',
         },
         {
-          text: 'chaddanta jataka murals',
-          thumb: 'https://images.unsplash.com/photo-1516979187457-637abb4f9353?auto=format&fit=crop&w=160&q=80',
+          text: 'may mara prasangaya',
+          thumb: 'https://grantha.lk/media/catalog/product/cache/5fa2393eb818a642e720faf99039a3de/m/a/may-mara-prasangaya.jpg',
         },
       ];
     }
     return [
       {
         text: 'gajaga wannama',
-        thumb: 'https://images.unsplash.com/photo-1544947950-fa07a98d237f?auto=format&fit=crop&w=160&q=80',
+        thumb: 'https://rasakatha.lk/media/covers/book-1793105930903-342489ab87-opt.webp',
       },
       {
-        text: 'mahavamsa great chronicle',
-        thumb: 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?auto=format&fit=crop&w=160&q=80',
+        text: 'manikkawatha masimbula',
+        thumb: 'https://grantha.lk/media/catalog/product/cache/5fa2393eb818a642e720faf99039a3de/m/a/manikkawatha_1.jpg',
       },
       {
-        text: 'sigiriya mirror wall poetry',
-        thumb: 'https://images.unsplash.com/photo-1532012197267-da84d127e765?auto=format&fit=crop&w=160&q=80',
+        text: 'senkottan',
+        thumb: 'https://grantha.lk/media/catalog/product/cache/5fa2393eb818a642e720faf99039a3de/s/e/senkottan_front_1.jpg',
       },
       {
-        text: 'king buddhadasa ayurveda',
-        thumb: 'https://images.unsplash.com/photo-1471107340929-a87cd0f5b5f3?auto=format&fit=crop&w=160&q=80',
+        text: 'wassana sihinaya',
+        thumb: 'https://grantha.lk/media/catalog/product/cache/5fa2393eb818a642e720faf99039a3de/w/a/wassana_sihinaya_front.jpg',
       },
     ];
   }, [activeQuery]);
@@ -684,6 +693,8 @@ function SearchContent() {
                 <img
                   src={guide.thumb}
                   alt={guide.label}
+                  referrerPolicy="no-referrer"
+                  onError={handleCoverError}
                   className="w-8 h-8 rounded-xl object-cover shrink-0 border border-white/20"
                 />
                 <span>{guide.label}</span>
@@ -918,17 +929,23 @@ function SearchContent() {
                           <img
                             src={b.images[0]}
                             alt={b.title}
+                            referrerPolicy="no-referrer"
+                            onError={handleCoverError}
                             className="col-span-2 w-full h-full object-cover"
                           />
                           <div className="grid grid-rows-2 gap-1 h-full">
                             <img
                               src={b.images[1]}
                               alt=""
+                              referrerPolicy="no-referrer"
+                              onError={handleCoverError}
                               className="w-full h-full object-cover"
                             />
                             <img
                               src={b.images[2]}
                               alt=""
+                              referrerPolicy="no-referrer"
+                              onError={handleCoverError}
                               className="w-full h-full object-cover"
                             />
                           </div>
@@ -997,6 +1014,8 @@ function SearchContent() {
                         <img
                           src={book.coverImage}
                           alt={book.title}
+                          referrerPolicy="no-referrer"
+                          onError={handleCoverError}
                           className="w-full h-full object-cover group-hover:scale-105 transition-transform"
                         />
                         <div className="absolute inset-x-0 bottom-0 bg-black/75 p-1 text-center">
@@ -1032,6 +1051,8 @@ function SearchContent() {
                         <img
                           src={rel.thumb}
                           alt={rel.text}
+                          referrerPolicy="no-referrer"
+                          onError={handleCoverError}
                           className="w-9 h-9 rounded-lg object-cover shrink-0"
                         />
                         <span className="text-xs font-bold text-[var(--text-main)] line-clamp-2">

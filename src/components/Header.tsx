@@ -27,15 +27,17 @@ import { getAutocompleteSuggestions } from '../utils/searchEngine';
 import { SearchField } from './ui/SearchField';
 import VisualSearchModal from './VisualSearchModal';
 
-export const NAV_LINKS = [
-  { label: 'Gifts', hasIcon: true, query: 'Gifts' },
-  { label: 'Best Sellers', hasIcon: false, query: 'Best Sellers' },
-  { label: 'New Arrivals', hasIcon: false, query: 'New Arrivals' },
-  { label: 'Novels & Fiction (Sinhala & English)', hasIcon: false, query: 'Novels & Fiction' },
-  { label: 'Translations (පරිවර්තන)', hasIcon: false, query: 'Translations' },
-  { label: 'A/L & O/L Books (Textbooks, Past Papers & Revision Guides)', hasIcon: false, query: 'Past Papers' },
-  { label: "Children's Books", hasIcon: false, query: "Children's Books" },
-  { label: 'Sri Lankan Classics (Mahavamsa, Buddhism & Heritage)', hasIcon: false, query: 'Sri Lankan Classics' },
+export interface NavLinkItem {
+  label: string;
+  hasIcon?: boolean;
+  query: string;
+  href: string;
+}
+
+export const NAV_LINKS: NavLinkItem[] = [
+  { label: 'Gifts', hasIcon: true, query: 'Gifts', href: '/gifts' },
+  { label: 'Best Sellers', hasIcon: false, query: 'Best Sellers', href: '/bestsellers' },
+  { label: 'New Arrivals', hasIcon: false, query: 'New Arrivals', href: '/new-releases' },
 ];
 
 export interface RecentSearchData {
@@ -598,17 +600,16 @@ export default function Header({ isSticky = false }: HeaderProps = {}) {
              ===================================================================== */}
           <nav className="hidden lg:flex items-center justify-start xl:justify-center gap-1.5 xl:gap-3.5 pb-2.5 pt-0.5 text-[12px] xl:text-[13px] font-medium text-[var(--header-text)] overflow-x-auto no-scrollbar">
             {NAV_LINKS.map((item) => (
-              <button
+              <Link
                 key={item.label}
-                type="button"
-                onClick={() => handleSearchSubmit(item.query)}
+                href={item.href}
                 className="flex items-center gap-1.5 px-3 py-1 rounded-full hover:bg-[var(--header-hover-bg)] text-[var(--header-text)] transition cursor-pointer whitespace-nowrap shrink-0"
               >
                 {item.hasIcon && (
                   <Gift className="w-3.5 h-3.5 text-[var(--color-primary)]" />
                 )}
                 <span>{item.label}</span>
-              </button>
+              </Link>
             ))}
           </nav>
 
@@ -759,17 +760,17 @@ export default function Header({ isSticky = false }: HeaderProps = {}) {
                 Featured Collections
               </div>
               {NAV_LINKS.map((link) => (
-                <button
+                <Link
                   key={link.label}
-                  type="button"
-                  onClick={() => handleSearchSubmit(link.query)}
+                  href={link.href}
+                  onClick={() => setMobileMenuOpen(false)}
                   className="w-full text-left px-5 py-2.5 text-sm font-medium text-[var(--header-text)] hover:bg-[var(--header-hover-bg)] flex items-center gap-2.5 transition"
                 >
                   {link.hasIcon && (
                     <Gift className="w-4 h-4 text-[var(--color-primary)]" />
                   )}
                   <span>{link.label}</span>
-                </button>
+                </Link>
               ))}
 
               <div className="px-5 pt-5 pb-2 text-xs font-semibold uppercase tracking-wider text-[var(--header-text-muted)]">
