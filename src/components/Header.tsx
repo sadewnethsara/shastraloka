@@ -13,11 +13,69 @@ import {
   Heart,
   Gift,
   Handbag,
+  BookOpen,
   X,
 } from 'lucide-react';
 import { useApp } from '../context/AppContext';
 import { CATEGORIES } from '../data/books';
-import { SearchField } from './ui/SearchField';
+import { SearchBar } from './SearchBar';
+
+export interface RecentSearchData {
+  id: string;
+  label: string;
+  thumbType?: 'mahavamsa' | 'visuddhimagga' | 'dhammapada' | 'ayurveda' | 'default';
+  image?: string;
+}
+
+export const INITIAL_RECENT_SEARCHES: RecentSearchData[] = [
+  {
+    id: 'rs-1',
+    label: 'Mahavamsa Great Chronicle',
+    thumbType: 'mahavamsa',
+    image: 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?auto=format&fit=crop&w=120&q=80',
+  },
+  {
+    id: 'rs-2',
+    label: 'Theravada Buddhist Philosophy',
+    thumbType: 'visuddhimagga',
+    image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=120&q=80',
+  },
+  {
+    id: 'rs-3',
+    label: 'Indigenous Ayurvedic Herbs',
+    thumbType: 'ayurveda',
+    image: 'https://images.unsplash.com/photo-1559181567-c3190ca9959b?auto=format&fit=crop&w=120&q=80',
+  },
+  {
+    id: 'rs-4',
+    label: 'Ola Leaf Manuscripts',
+    thumbType: 'default',
+    image: 'https://images.unsplash.com/photo-1457369804613-52c61a468e7d?auto=format&fit=crop&w=120&q=80',
+  },
+  {
+    id: 'rs-5',
+    label: 'Dhammapada Pali Verses',
+    thumbType: 'dhammapada',
+    image: 'https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&w=120&q=80',
+  },
+];
+
+function RecentSearchThumb({ image }: { type?: string; image?: string }) {
+  if (image) {
+    return (
+      <img
+        src={image}
+        alt="Search thumbnail"
+        className="w-full h-full object-cover"
+      />
+    );
+  }
+  return (
+    <div className="w-full h-full bg-[var(--color-primary)]/15 flex items-center justify-center text-[var(--color-primary)]">
+      <BookOpen className="w-5 h-5" />
+    </div>
+  );
+}
 
 export const NAV_LINKS = [
   { label: 'Gifts', hasIcon: true, query: 'Gifts' },
@@ -39,27 +97,27 @@ export default function Header({ isSticky = false }: HeaderProps = {}) {
   const {
     isDark,
     toggleTheme,
-    searchQuery,
-    setSearchQuery,
     bag,
     bagCount,
-    bagTotal,
-    usdBagTotal,
     boards,
     setIsBoardsModalOpen,
     setSelectedCategory,
     triggerNavigation,
+    searchQuery,
+    setSearchQuery,
+    showToast,
   } = useApp();
 
   const [categoriesOpen, setCategoriesOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [localSearch, setLocalSearch] = useState(searchQuery || '');
+  const [recentSearches, setRecentSearches] = useState<RecentSearchData[]>(INITIAL_RECENT_SEARCHES);
 
   const categoriesRef = useRef<HTMLDivElement>(null);
 
   const totalFavorites = boards.reduce((acc, b) => acc + b.bookIds.length, 0);
 
-  // Sync local search with global search
+  // Sync localSearch when global search query changes
   useEffect(() => {
     setLocalSearch(searchQuery || '');
   }, [searchQuery]);
@@ -85,9 +143,10 @@ export default function Header({ isSticky = false }: HeaderProps = {}) {
 
   const handleSearchSubmit = (queryText: string) => {
     const q = queryText.trim();
+    setLocalSearch(q);
     setSearchQuery(q);
     setMobileMenuOpen(false);
-    triggerNavigation(); // Trigger navigation detection
+    triggerNavigation();
     if (q) {
       router.push(`/search?q=${encodeURIComponent(q)}`);
     } else {
@@ -99,7 +158,7 @@ export default function Header({ isSticky = false }: HeaderProps = {}) {
     setSelectedCategory(category);
     setCategoriesOpen(false);
     setMobileMenuOpen(false);
-    triggerNavigation(); // Trigger navigation detection
+    triggerNavigation();
     if (category === 'All Treatises') {
       router.push('/');
     } else {
@@ -110,10 +169,11 @@ export default function Header({ isSticky = false }: HeaderProps = {}) {
   return (
     <>
       <header
-        className={`${isSticky
+        className={`${
+          isSticky
             ? 'sticky top-0 backdrop-blur-md bg-[var(--header-bg-glass)]'
             : 'relative bg-[var(--header-bg)]'
-          } z-40 border-b border-[var(--header-border)] text-[var(--header-text)] transition-colors duration-200`}
+        } z-40 border-b border-[var(--header-border)] text-[var(--header-text)] transition-colors duration-200`}
       >
         <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8">
           {/* =====================================================================
@@ -149,8 +209,9 @@ export default function Header({ isSticky = false }: HeaderProps = {}) {
                 <Menu className="w-4 h-4 text-[var(--header-text)]" />
                 <span>Categories</span>
                 <ChevronDown
-                  className={`w-3.5 h-3.5 text-[var(--header-text-muted)] transition-transform ${categoriesOpen ? 'rotate-180' : ''
-                    }`}
+                  className={`w-3.5 h-3.5 text-[var(--header-text-muted)] transition-transform ${
+                    categoriesOpen ? 'rotate-180' : ''
+                  }`}
                 />
               </button>
 
@@ -158,7 +219,7 @@ export default function Header({ isSticky = false }: HeaderProps = {}) {
               {categoriesOpen && (
                 <div className="absolute left-0 mt-2 w-72 max-h-96 overflow-y-auto bg-[var(--header-dropdown-bg)] text-[var(--header-text)] rounded-2xl shadow-xl border border-[var(--header-dropdown-border)] py-2 z-50 animate-fade-in">
                   <div className="px-4 py-1.5 text-[11px] font-bold uppercase tracking-wider text-[var(--header-text-muted)]">
-                    Sacred Classifications
+                    All Categories
                   </div>
                   {CATEGORIES.map((cat) => (
                     <button
@@ -175,16 +236,24 @@ export default function Header({ isSticky = false }: HeaderProps = {}) {
               )}
             </div>
 
-            {/* Search Input Bar with Orange Pill Button */}
+            {/* Search Input Bar with Modern SearchBar & Recent Searches */}
             <div className="flex-1 max-w-2xl">
-              <SearchField
+              <SearchBar
                 value={localSearch}
                 onChange={setLocalSearch}
                 onSubmit={handleSearchSubmit}
                 placeholder="Search sacred manuscripts, Mahavamsa, Ayurveda..."
-                accessibilityLabel="Search sacred manuscripts"
-                submitButtonColor="orange"
-                size="md"
+                recentSearches={recentSearches.map((r: RecentSearchData) => ({
+                  id: r.id,
+                  label: r.label,
+                  thumbnail: <RecentSearchThumb type={r.thumbType} image={r.image} />,
+                }))}
+                onRemoveRecent={(id: string) =>
+                  setRecentSearches((prev: RecentSearchData[]) => prev.filter((r: RecentSearchData) => r.id !== id))
+                }
+                onRestoreRecent={() => setRecentSearches(INITIAL_RECENT_SEARCHES)}
+                onCameraClick={() => showToast('Visual Manuscript Search is ready!')}
+                onMicClick={() => showToast('Voice search listening for classical treatises...')}
               />
             </div>
 
@@ -372,15 +441,23 @@ export default function Header({ isSticky = false }: HeaderProps = {}) {
                 <Menu className="w-5 h-5" />
               </button>
 
-              <div className="flex-1">
-                <SearchField
+              <div className="order-3 sm:order-2 w-full sm:w-auto sm:flex-1 min-w-0">
+                <SearchBar
                   value={localSearch}
                   onChange={setLocalSearch}
                   onSubmit={handleSearchSubmit}
                   placeholder="Search sacred manuscripts..."
-                  accessibilityLabel="Search manuscripts"
-                  submitButtonColor="orange"
-                  size="sm"
+                  recentSearches={recentSearches.map((r: RecentSearchData) => ({
+                    id: r.id,
+                    label: r.label,
+                    thumbnail: <RecentSearchThumb type={r.thumbType} image={r.image} />,
+                  }))}
+                  onRemoveRecent={(id: string) =>
+                    setRecentSearches((prev: RecentSearchData[]) => prev.filter((r: RecentSearchData) => r.id !== id))
+                  }
+                  onRestoreRecent={() => setRecentSearches(INITIAL_RECENT_SEARCHES)}
+                  onCameraClick={() => showToast('Visual Manuscript Search is ready!')}
+                  onMicClick={() => showToast('Voice search listening for classical treatises...')}
                 />
               </div>
             </div>

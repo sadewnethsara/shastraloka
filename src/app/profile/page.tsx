@@ -44,7 +44,7 @@ export default function ProfilePage() {
       <Header />
       <SearchGuides />
 
-      <main className="max-w-[1720px] mx-auto px-4 sm:px-6 py-8 sm:py-12">
+      <main className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
         
         {/* Profile Header Section */}
         <div className="max-w-2xl mx-auto text-center space-y-4 pb-10 border-b border-[var(--border-subtle)]">

@@ -32,7 +32,7 @@ function BoardDetailContent() {
     <div className="min-h-screen bg-[var(--bg-main)] text-[var(--text-main)]">
       <Header />
 
-      <main className="max-w-[1720px] mx-auto px-4 sm:px-6 py-8">
+      <main className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
         
         {/* Navigation Breadcrumb */}
         <div className="mb-6 flex items-center justify-between text-xs text-[var(--text-muted)]">

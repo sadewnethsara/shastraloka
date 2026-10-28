@@ -70,7 +70,7 @@ function SearchContent() {
     <div className="min-h-screen bg-[var(--bg-main)] text-[var(--text-main)] flex flex-col">
       <Header />
 
-      <main className="flex-1 max-w-[1720px] w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 space-y-6">
+      <main className="flex-1 max-w-[1440px] w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 space-y-6">
         {/* Search Header Bar */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-neutral-200 dark:border-neutral-800">
           <div>

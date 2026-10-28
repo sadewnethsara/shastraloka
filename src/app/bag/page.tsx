@@ -4,6 +4,7 @@ import React, { useState, useMemo } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useApp } from '../../context/AppContext';
+import Header from '../../components/Header';
 import {
     Search,
     Heart,
@@ -1038,13 +1039,8 @@ export default function Bag() {
     // Pinterest Saved Reading Pins (Wishlist)
     const [pinnedBookIds, setPinnedBookIds] = useState<string[]>(['rel-b2', 'rel-s1']);
 
-    // Floating Top-Right Urgency Notification Banner State (matches screenshots)
-    const [showFloatingUrgency, setShowFloatingUrgency] = useState<boolean>(true);
-
-    // Search Bar & Amazon Book Category Filter
+    // Search query for filtering related books
     const [searchQuery, setSearchQuery] = useState<string>('');
-    const [selectedBookDept, setSelectedBookDept] = useState<string>('All Books');
-    const [showCategoriesMenu, setShowCategoriesMenu] = useState<boolean>(false);
 
     // Related Books Filter Tab ('screenshot-1' | 'screenshot-2' | 'all')
     const [relatedTab, setRelatedTab] = useState<'screenshot-1' | 'screenshot-2' | 'all'>('screenshot-1');
@@ -1079,7 +1075,6 @@ export default function Bag() {
     // Switch between Screenshot 1 (2 items + Botanical books) and Screenshot 2 (1 item + Spooky Coloring books)
     const handleSwitchPreset = (preset: 'screenshot-1' | 'screenshot-2') => {
         setActivePreset(preset);
-        setShowFloatingUrgency(true);
         if (preset === 'screenshot-1') {
             setBagItems(INITIAL_BAG_SCREENSHOT_1);
             setRelatedTab('screenshot-1');
@@ -1253,16 +1248,13 @@ export default function Bag() {
         });
     }, [relatedTab, searchQuery]);
 
-    // Highlighted item for the top-right floating urgency popover (matches screenshot 1 & 2)
-    const urgencyHighlight = bagItems[0] || INITIAL_BAG_SCREENSHOT_1[0];
-
     return (
         <div className="min-h-screen bg-white text-[#222222] font-sans antialiased selection:bg-[#f1641e]/15 selection:text-[#f1641e]">
             {/* ------------------------------------------------------------------- */}
             {/* TOP INTERACTIVE PRESET SWITCHER BAR (Amazon + Pinterest + Etsy Hybrid) */}
             {/* ------------------------------------------------------------------- */}
-            <div className="bg-[#faf8f5] border-b border-stone-200/80 px-4 py-1.5 text-xs">
-                <div className="max-w-[1280px] mx-auto flex flex-wrap items-center justify-between gap-2">
+            <div className="bg-[#faf8f5] border-b border-stone-200/80 py-1.5 text-xs">
+                <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 flex flex-wrap items-center justify-between gap-2">
                     <div className="flex items-center gap-2 text-stone-600">
                         <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-[#e60023]/10 text-[#e60023] font-semibold text-[11px]">
                             <Bookmark className="w-3 h-3 fill-current" /> Pinterest Book Aesthetic
@@ -1298,208 +1290,14 @@ export default function Bag() {
             </div>
 
             {/* ------------------------------------------------------------------- */}
-            {/* MAIN HEADER BAR (Cloned from Screenshots + Bookstore & Pin Touches) */}
+            {/* REAL APP HEADER                                                     */}
             {/* ------------------------------------------------------------------- */}
-            <header className="sticky top-0 z-30 bg-white border-b border-stone-200">
-                <div className="max-w-[1280px] mx-auto px-4 sm:px-6 h-[72px] flex items-center justify-between gap-3 sm:gap-5 relative">
-                    {/* Left: Logo + Categories */}
-                    <div className="flex items-center gap-3 sm:gap-4 shrink-0">
-                        <Link
-                            href="/"
-                            className="flex flex-col shrink-0 select-none group focus:outline-none"
-                        >
-                            <span
-                                className="text-[#F1641E] text-[28px] sm:text-[32px] leading-none font-bold tracking-tight transition-transform group-hover:scale-102"
-                                style={{
-                                    fontFamily: 'Georgia, Cambria, "Times New Roman", Times, serif',
-                                }}
-                            >
-                                Shastraloka
-                            </span>
-                            <span className="text-[9.5px] text-stone-500 font-sinhala tracking-wider pl-0.5">
-                                ශාස්ත්‍රලෝක • Classical Bookstore
-                            </span>
-                        </Link>
-
-                        <div className="relative">
-                            <button
-                                onClick={() => setShowCategoriesMenu((prev) => !prev)}
-                                className="flex items-center gap-2 px-3 py-2 rounded-full text-[13.5px] font-medium text-[#222222] hover:bg-stone-100 transition-colors"
-                            >
-                                <Menu className="w-4 h-4 stroke-[2.2]" />
-                                <span>Categories</span>
-                            </button>
-
-                            {/* Amazon Bookstore + Pinterest Aesthetic Categories Dropdown */}
-                            {showCategoriesMenu && (
-                                <div className="absolute left-0 mt-2 w-64 bg-white rounded-2xl shadow-xl border border-stone-200 py-2 z-50">
-                                    <div className="px-4 py-1.5 text-[11px] font-bold uppercase tracking-wider text-stone-400">
-                                        Bookstore Departments
-                                    </div>
-                                    {[
-                                        'All Books & Editions',
-                                        'Collector Sprayed-Edge Hardcovers',
-                                        'Instant Kindle & Printable Coloring Books',
-                                        'Botanical & Pressed Flower Journals',
-                                        'Cozy Mystery & Autumn BookTok',
-                                        'Handmade Bookmarks & Ex-Libris Seals'
-                                    ].map((cat) => (
-                                        <button
-                                            key={cat}
-                                            onClick={() => {
-                                                setSelectedBookDept(cat.split(' ')[0]);
-                                                setShowCategoriesMenu(false);
-                                                triggerToast(`Browsing category: ${cat}`);
-                                            }}
-                                            className="w-full text-left px-4 py-2 text-xs text-stone-700 hover:bg-stone-100 flex items-center justify-between"
-                                        >
-                                            <span>{cat}</span>
-                                            <BookOpen className="w-3.5 h-3.5 text-stone-400" />
-                                        </button>
-                                    ))}
-                                </div>
-                            )}
-                        </div>
-                    </div>
-
-                    {/* Center: Pill Search Bar with Orange Circle Search Button */}
-                    <div className="flex-1 max-w-[740px]">
-                        <div className="relative flex items-center w-full h-[46px] rounded-full border-[1.5px] border-[#222222] bg-white hover:shadow-xs focus-within:ring-2 focus-within:ring-[#222222]/10 overflow-hidden transition-all">
-                            {/* Subtle Amazon-style book format filter inside search pill */}
-                            <div className="hidden lg:flex items-center pl-4 pr-2.5 h-full bg-stone-50 border-r border-stone-200 text-xs font-medium text-stone-700 shrink-0">
-                                <span>{selectedBookDept}</span>
-                                <ChevronDown className="w-3.5 h-3.5 ml-1 text-stone-500" />
-                            </div>
-
-                            <input
-                                type="text"
-                                value={searchQuery}
-                                onChange={(e) => setSearchQuery(e.target.value)}
-                                placeholder="Search for books, authors, ISBNs, or cozy reading pins..."
-                                className="w-full h-full px-4 text-[14.5px] text-[#222222] placeholder-stone-500 bg-transparent focus:outline-none"
-                            />
-
-                            {searchQuery && (
-                                <button
-                                    onClick={() => setSearchQuery('')}
-                                    className="p-1.5 mr-1 text-stone-400 hover:text-stone-700"
-                                    title="Clear search"
-                                >
-                                    <X className="w-4 h-4" />
-                                </button>
-                            )}
-
-                            <button
-                                onClick={() =>
-                                    triggerToast(
-                                        searchQuery
-                                            ? `Searching bookstore for "${searchQuery}"`
-                                            : 'Showing all curated books'
-                                    )
-                                }
-                                aria-label="Search"
-                                className="mr-1.5 w-[36px] h-[36px] rounded-full bg-[#f1641e] hover:bg-[#d95616] text-white flex items-center justify-center shrink-0 transition-colors cursor-pointer"
-                            >
-                                <Search className="w-4 h-4 stroke-[2.5]" />
-                            </button>
-                        </div>
-                    </div>
-
-                    {/* Right: Sign in, Heart (Saved Pins), and Bag Icon with Counter */}
-                    <div className="flex items-center gap-2 sm:gap-4 shrink-0">
-                        <button
-                            onClick={() => triggerToast('Signed in as Reader • Kindle & Print Sync Active')}
-                            className="px-3 py-1.5 rounded-full text-[13.5px] font-medium text-[#222222] hover:bg-stone-100 transition-colors"
-                        >
-                            Sign in
-                        </button>
-
-                        <button
-                            onClick={() =>
-                                triggerToast(`You have ${pinnedBookIds.length} books pinned to your Reading Board`)
-                            }
-                            className="relative p-2 rounded-full text-[#222222] hover:bg-stone-100 transition-colors"
-                            title="Pinned Reading List"
-                        >
-                            <Heart className="w-5 h-5 fill-[#222222]" />
-                            {pinnedBookIds.length > 0 && (
-                                <span className=" -top-0.5 -right-0.5 absolute w-4 h-4 rounded-full bg-[#e60023] text-white text-[9.5px] font-bold flex items-center justify-center">
-                                    {pinnedBookIds.length}
-                                </span>
-                            )}
-                        </button>
-
-                        {/* Replaced Cart Icon with Shopping Bag Icon & Dynamic Badge */}
-                        <button
-                            onClick={() =>
-                                window.scrollTo({ top: 0, behavior: 'smooth' })
-                            }
-                            className="relative p-2 rounded-full text-[#222222] hover:bg-stone-100 transition-colors flex items-center"
-                            title="Your Book Bag"
-                        >
-                            <ShoppingBag className="w-5 h-5 stroke-[2.2]" />
-                            <span className=" -top-0.5 -right-1 absolute min-w-[18px] h-[18px] px-1 rounded-full bg-[#f1641e] text-white text-[10.5px] font-bold flex items-center justify-center shadow-xs">
-                                {financials.totalCount}
-                            </span>
-                        </button>
-                    </div>
-
-                    {/* --------------------------------------------------------------- */}
-                    {/* FLOATING TOP-RIGHT URGENCY NOTIFICATION POPOVER (From Screenshots) */}
-                    {/* --------------------------------------------------------------- */}
-                    {showFloatingUrgency && bagItems.length > 0 && (
-                        <div className="hidden md:flex items-center gap-3.5 absolute right-4 top-[54px] z-40 w-[348px] bg-white rounded-2xl shadow-[0_10px_32px_rgba(0,0,0,0.16)] border border-stone-200/90 p-3 animate-in fade-in slide-in-from-top-2 duration-200">
-                            {/* Thumbnail with Blue Bag Badge */}
-                            <div className="relative w-[74px] h-[74px] rounded-xl overflow-hidden shrink-0 border border-stone-200 bg-stone-50">
-                                <BookCoverArtwork
-                                    variant={
-                                        activePreset === 'screenshot-2'
-                                            ? 'spooky-girl-main'
-                                            : urgencyHighlight.coverType
-                                    }
-                                />
-                                {/* Blue corner circle with bag icon matching screenshot */}
-                                <div className="absolute -bottom-1 -left-1 w-7 h-7 rounded-tr-xl bg-[#1e3a8a] text-white flex items-center justify-center shadow">
-                                    <ShoppingBag className="w-3.5 h-3.5" />
-                                </div>
-                            </div>
-
-                            {/* Content */}
-                            <div className="flex-1 min-w-0 pr-4">
-                                <p className="text-[12.5px] font-bold text-[#222222] leading-snug">
-                                    Hurry! Shop this one while it lasts!
-                                </p>
-                                <p className="text-[11.5px] font-bold text-[#a61a2e] mt-0.5">
-                                    {activePreset === 'screenshot-1'
-                                        ? '23 sold in the past 24 hours'
-                                        : '4 sold in the past 24 hours'}
-                                </p>
-                                <button
-                                    onClick={() => router.push('/checkout')}
-                                    className="mt-2 w-full py-1.5 px-3 rounded-full bg-[#222222] hover:bg-stone-800 text-white text-[12px] font-semibold flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
-                                >
-                                    <span>Proceed to checkout</span>
-                                    <ArrowRight className="w-3.5 h-3.5" />
-                                </button>
-                            </div>
-
-                            {/* Close X button */}
-                            <button
-                                onClick={() => setShowFloatingUrgency(false)}
-                                aria-label="Dismiss notification"
-                                className="absolute top-2.5 right-2.5 p-1 text-stone-500 hover:text-stone-900 rounded-full hover:bg-stone-100"
-                            >
-                                <X className="w-4 h-4" />
-                            </button>
-                        </div>
-                    )}
-                </div>
-            </header>
+            <Header isSticky />
 
             {/* ------------------------------------------------------------------- */}
             {/* MAIN BODY CONTAINER */}
             {/* ------------------------------------------------------------------- */}
-            <main className="max-w-[1140px] mx-auto px-4 sm:px-6 pt-6 pb-16">
+            <main className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 pt-6 pb-16">
                 {/* Page Heading ("Your bag" replacing "Your cart") */}
                 <div className="flex flex-wrap items-center justify-between gap-2 mb-5">
                     <div className="flex items-baseline gap-3">
@@ -1510,15 +1308,6 @@ export default function Bag() {
                             ({financials.totalCount} {financials.totalCount === 1 ? 'book' : 'books'} curated)
                         </span>
                     </div>
-
-                    {!showFloatingUrgency && (
-                        <button
-                            onClick={() => setShowFloatingUrgency(true)}
-                            className="text-xs text-stone-500 hover:text-[#222222] underline cursor-pointer"
-                        >
-                            Show live demand alert
-                        </button>
-                    )}
                 </div>
 
                 {/* ----------------------------------------------------------------- */}
@@ -2244,7 +2033,7 @@ export default function Bag() {
             {/* FOOTER (Exact Clone of Bottom Region, Links & Merchant Legal Text)  */}
             {/* ------------------------------------------------------------------- */}
             <footer className="border-t border-stone-200 bg-white text-[#222222] mt-8">
-                <div className="max-w-[1140px] mx-auto px-4 sm:px-6 py-5 flex flex-col sm:flex-row items-center justify-between gap-4 text-[12px]">
+                <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-5 flex flex-col sm:flex-row items-center justify-between gap-4 text-[12px]">
                     {/* Left: Location Selector */}
                     <button
                         onClick={() =>
