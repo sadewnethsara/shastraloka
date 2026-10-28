@@ -192,25 +192,30 @@ export default function Header({ isSticky = false }: HeaderProps = {}) {
   const renderAutocompleteDropdown = () => {
     if (!suggestionsOpen) return null;
 
-    // STATE A: Empty Search Query -> Show Recent Searches & Trending Topics on Click
+    // STATE A: Empty Search Query -> Show Recent Searches
     if (!localSearch.trim()) {
       return (
         <div
           data-testid="search-autocomplete-dropdown"
+          onClick={(e) => e.stopPropagation()}
           className="absolute left-0 right-0 top-full mt-2 bg-[var(--header-dropdown-bg)] text-[var(--header-text)] rounded-2xl shadow-2xl border border-[var(--header-dropdown-border)] overflow-hidden z-50 animate-fade-in max-h-[78vh] overflow-y-auto"
         >
           {/* Recent Searches */}
-          <div className="p-3.5 sm:p-4 border-b border-[var(--header-border)]">
+          <div className="p-3.5 sm:p-4">
             <div className="flex items-center justify-between mb-3 px-1">
               <span className="text-xs font-bold uppercase tracking-wider text-[var(--header-text-muted)] flex items-center gap-1.5">
                 <RotateCcw className="w-3.5 h-3.5 text-[var(--color-primary)]" />
                 <span>Recent Searches</span>
               </span>
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2 sm:gap-3">
                 {recentSearches.length < INITIAL_RECENT_SEARCHES.length && (
                   <button
                     type="button"
-                    onClick={() => setRecentSearches(INITIAL_RECENT_SEARCHES)}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      setRecentSearches(INITIAL_RECENT_SEARCHES);
+                    }}
                     className="text-xs font-semibold text-[var(--color-primary)] hover:underline cursor-pointer"
                   >
                     Restore
@@ -219,7 +224,11 @@ export default function Header({ isSticky = false }: HeaderProps = {}) {
                 {recentSearches.length > 0 && (
                   <button
                     type="button"
-                    onClick={() => setRecentSearches([])}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      setRecentSearches([]);
+                    }}
                     className="text-xs font-semibold text-[var(--text-muted)] hover:text-[var(--text-main)] cursor-pointer"
                   >
                     Clear all
@@ -227,17 +236,23 @@ export default function Header({ isSticky = false }: HeaderProps = {}) {
                 )}
                 <button
                   type="button"
-                  onClick={() => setSuggestionsOpen(false)}
-                  className="text-xs font-semibold text-[var(--text-muted)] hover:text-[var(--text-main)] cursor-pointer"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    setSuggestionsOpen(false);
+                  }}
+                  aria-label="Close search suggestions"
+                  className="px-2.5 py-1 rounded-full text-xs font-semibold text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--header-hover-bg)] flex items-center gap-1 cursor-pointer transition"
                 >
-                  Close
+                  <span>Close</span>
+                  <X className="w-3.5 h-3.5" />
                 </button>
               </div>
             </div>
 
             {recentSearches.length === 0 ? (
-              <p className="text-xs text-[var(--text-muted)] py-3 text-center">
-                No recent searches. Type above or explore trending topics below.
+              <p className="text-xs text-[var(--text-muted)] py-4 text-center">
+                No recent searches. Type above to search manuscripts, authors & categories.
               </p>
             ) : (
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
@@ -269,6 +284,7 @@ export default function Header({ isSticky = false }: HeaderProps = {}) {
                     <button
                       type="button"
                       onClick={(e) => {
+                        e.preventDefault();
                         e.stopPropagation();
                         handleRemoveRecent(item.id);
                       }}
@@ -283,33 +299,6 @@ export default function Header({ isSticky = false }: HeaderProps = {}) {
               </div>
             )}
           </div>
-
-          {/* Trending Treatises & Topics */}
-          <div className="p-3.5 sm:p-4 bg-[var(--bg-wash)]/40">
-            <div className="text-[10px] font-bold uppercase tracking-wider text-[var(--header-text-muted)] mb-2 px-1 flex items-center gap-1.5">
-              <Sparkles className="w-3 h-3 text-amber-500" />
-              <span>Trending Classical Treatises</span>
-            </div>
-            <div className="flex flex-wrap gap-1.5">
-              {[
-                'Mahavamsa Great Chronicle',
-                'Gajaga Wannama',
-                'Indigenous Ayurveda',
-                'Visuddhimagga',
-                'Ola Leaf Manuscripts',
-                'Classical Sinhala Poetry',
-              ].map((term) => (
-                <button
-                  key={term}
-                  type="button"
-                  onClick={() => handleSearchSubmit(term)}
-                  className="px-2.5 py-1 rounded-full text-xs font-medium bg-[var(--bg-card)] border border-[var(--border-subtle)] hover:border-[var(--color-primary)] text-[var(--text-main)] hover:text-[var(--color-primary)] transition cursor-pointer shadow-2xs"
-                >
-                  {term}
-                </button>
-              ))}
-            </div>
-          </div>
         </div>
       );
     }
@@ -318,13 +307,26 @@ export default function Header({ isSticky = false }: HeaderProps = {}) {
     return (
       <div
         data-testid="search-autocomplete-dropdown"
+        onClick={(e) => e.stopPropagation()}
         className="absolute left-0 right-0 top-full mt-2 bg-[var(--header-dropdown-bg)] text-[var(--header-text)] rounded-2xl shadow-2xl border border-[var(--header-dropdown-border)] overflow-hidden z-50 animate-fade-in max-h-[78vh] overflow-y-auto"
       >
         {/* Keyword Search Suggestions */}
         <div className="p-2 border-b border-[var(--header-border)]">
           <div className="px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-[var(--header-text-muted)] flex items-center justify-between">
             <span>Search Pinterest Book Feed</span>
-            <span>Press Enter</span>
+            <button
+              type="button"
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                setSuggestionsOpen(false);
+              }}
+              aria-label="Close search suggestions"
+              className="px-2 py-0.5 rounded-full text-xs font-semibold text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--header-hover-bg)] flex items-center gap-1 cursor-pointer transition"
+            >
+              <span>Close</span>
+              <X className="w-3.5 h-3.5" />
+            </button>
           </div>
           {autocompleteData.querySuggestions.map((qText) => (
             <button
@@ -432,8 +434,8 @@ export default function Header({ isSticky = false }: HeaderProps = {}) {
     <>
       <header
         className={`${isSticky
-            ? 'sticky top-0 backdrop-blur-md bg-[var(--header-bg-glass)]'
-            : 'relative bg-[var(--header-bg)]'
+          ? 'sticky top-0 backdrop-blur-md bg-[var(--header-bg-glass)]'
+          : 'relative bg-[var(--header-bg)]'
           } z-40 border-b border-[var(--header-border)] text-[var(--header-text)] transition-colors duration-200`}
       >
         <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8">
@@ -497,19 +499,14 @@ export default function Header({ isSticky = false }: HeaderProps = {}) {
             </div>
 
             {/* Search Input Bar with Orange Pill Button */}
-            <div
-              className="relative flex-1 max-w-2xl"
-              ref={desktopSearchRef}
-              onClick={handleSearchFocus}
-              onFocusCapture={handleSearchFocus}
-            >
+            <div className="relative flex-1 max-w-2xl" ref={desktopSearchRef}>
               <SearchField
                 value={localSearch}
                 onChange={handleSearchInputChange}
                 onSubmit={handleSearchSubmit}
                 onClear={() => {
                   setLocalSearch('');
-                  setSuggestionsOpen(true);
+                  setSuggestionsOpen(false);
                 }}
                 onFocus={handleSearchFocus}
                 onClick={handleSearchFocus}
@@ -706,20 +703,15 @@ export default function Header({ isSticky = false }: HeaderProps = {}) {
                 <Menu className="w-5 h-5" />
               </button>
 
-              <div
-                className="relative flex-1"
-                ref={mobileSearchRef}
-                onClick={handleSearchFocus}
-                onFocusCapture={handleSearchFocus}
-              >
+              <div className="relative flex-1" ref={mobileSearchRef}>
                 <SearchField
                   value={localSearch}
                   onChange={handleSearchInputChange}
                   onSubmit={handleSearchSubmit}
                   onClear={() => {
-                    setLocalSearch('');
-                    setSuggestionsOpen(true);
-                  }}
+                  setLocalSearch('');
+                  setSuggestionsOpen(false);
+                }}
                   onFocus={handleSearchFocus}
                   onClick={handleSearchFocus}
                   onImageSearchClick={() => setIsVisualSearchOpen(true)}
