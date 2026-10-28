@@ -1,0 +1,71 @@
+/* =========================================================================
+   THEME: Sacred Dark
+   Selector: [data-theme="dark"], .dark
+   ========================================================================= */
+
+[data-theme="dark"],
+.dark {
+  /* Brand Identity & Accents */
+  --color-primary: #F1641E;
+  --color-primary-hover: #ff7836;
+  --color-primary-subtle: rgba(241, 100, 30, 0.18);
+  --color-primary-border: rgba(241, 100, 30, 0.45);
+  --color-accent-badge: #e60023;
+  --color-accent-badge-text: #ffffff;
+
+  /* Header Design Tokens */
+  --header-bg: #151518;
+  --header-bg-glass: rgba(21, 21, 24, 0.95);
+  --header-border: #26262d;
+  --header-text: #f4f4f5;
+  --header-text-muted: #a1a1aa;
+  --header-hover-bg: #26262e;
+  --header-dropdown-bg: #1a1a20;
+  --header-dropdown-border: #2e2e38;
+  --header-mobile-drawer-bg: #1a1a20;
+
+  /* Header Badges & Shopping Bag Pill */
+  --header-badge-fav-bg: #F1641E;
+  --header-badge-bag-bg: #e60023;
+  --header-badge-text: #ffffff;
+  --bag-btn-bg: #222228;
+  --bag-btn-border: rgba(241, 100, 30, 0.45);
+  --bag-btn-hover-bg: rgba(241, 100, 30, 0.18);
+  --bag-btn-hover-border: #F1641E;
+  --bag-btn-text: #f4f4f5;
+
+  /* Global Surface & Background Colors */
+  --bg-main: #0e0e11;
+  --bg-surface: #16161a;
+  --bg-wash: #121215;
+  --bg-card: #1c1c21;
+  --bg-hover: #27272f;
+  --bg-input: #19191d;
+  --bg-badge: #f4f4f5;
+
+  /* Global Text Colors */
+  --text-main: #f4f4f5;
+  --text-body: #d4d4d8;
+  --text-muted: #a1a1aa;
+  --text-dim: #71717a;
+
+  /* Global Borders */
+  --border-subtle: #26262d;
+  --border-strong: #3f3f46;
+  --border-focus: #f4f4f5;
+
+  /* Heritage / Classical Surfaces */
+  --surface-cream: #2a2216;
+  --surface-cream-strong: #3d301f;
+  --brand-brown: #d9964a;
+
+  /* Pills & Controls */
+  --pill-bg: #222228;
+  --pill-hover: #33333d;
+  --pill-active-bg: #f4f4f5;
+  --pill-active-text: #111111;
+
+  /* Shadows */
+  --card-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+  --card-shadow-hover: 0 16px 40px rgba(0, 0, 0, 0.6);
+}

@@ -52,8 +52,24 @@ export interface Review {
   comment: string;
 }
 
+export interface ThemeOption {
+  id: string;
+  label: string;
+  isDark?: boolean;
+}
+
+export const AVAILABLE_THEMES: ThemeOption[] = [
+  { id: 'light', label: 'Classical Light', isDark: false },
+  { id: 'dark', label: 'Sacred Dark', isDark: true },
+  { id: 'sepia', label: 'Palm Leaf Sepia', isDark: false },
+  { id: 'emerald', label: 'Royal Temple Emerald', isDark: false },
+];
+
 interface AppContextType {
-  // Theme
+  // Theme Management
+  theme: string;
+  setTheme: (theme: string) => void;
+  availableThemes: ThemeOption[];
   isDark: boolean;
   toggleTheme: () => void;
 
@@ -80,6 +96,7 @@ interface AppContextType {
   bagTotal: number;
   usdBagTotal: number;
   showMiniBagRail: boolean;
+  setShowMiniBagRail: (show: boolean) => void;
   triggerNavigation: () => void;
 
   // Compatibility Cart Aliases
@@ -351,6 +368,7 @@ export const INITIAL_SAMPLE_BAG: BagItem[] = [
 const AppContext = createContext<AppContextType | undefined>(undefined);
 
 export function AppProvider({ children }: { children: React.ReactNode }) {
+  const [theme, setThemeState] = useState<string>('emerald');
   const [isDark, setIsDark] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All Treatises');
@@ -384,13 +402,17 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   // Hydrate from LocalStorage on mount
   useEffect(() => {
     // Theme
-    const savedTheme = localStorage.getItem('shastraloka-theme');
-    if (savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-      setIsDark(true);
-      document.documentElement.setAttribute('data-theme', 'dark');
-    } else {
-      setIsDark(false);
-      document.documentElement.removeAttribute('data-theme');
+    try {
+      const savedTheme = localStorage.getItem('shastraloka-theme');
+      if (savedTheme) {
+        applyTheme(savedTheme);
+      } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        applyTheme('dark');
+      } else {
+        applyTheme('light');
+      }
+    } catch {
+      applyTheme('light');
     }
 
     // Bag
@@ -456,19 +478,32 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     } catch { }
   }, [bookReviews]);
 
-  const toggleTheme = () => {
-    setIsDark((prev) => {
-      const next = !prev;
-      if (next) {
-        document.documentElement.setAttribute('data-theme', 'dark');
-        localStorage.setItem('shastraloka-theme', 'dark');
+  const applyTheme = useCallback((targetTheme: string) => {
+    setThemeState(targetTheme);
+    const darkActive = targetTheme === 'dark';
+    setIsDark(darkActive);
+
+    if (typeof document !== 'undefined') {
+      document.documentElement.setAttribute('data-theme', targetTheme);
+      if (darkActive) {
+        document.documentElement.classList.add('dark');
       } else {
-        document.documentElement.removeAttribute('data-theme');
-        localStorage.setItem('shastraloka-theme', 'light');
+        document.documentElement.classList.remove('dark');
       }
-      return next;
-    });
-  };
+    }
+
+    try {
+      localStorage.setItem('shastraloka-theme', targetTheme);
+    } catch { }
+  }, []);
+
+  const setTheme = useCallback((targetTheme: string) => {
+    applyTheme(targetTheme);
+  }, [applyTheme]);
+
+  const toggleTheme = useCallback(() => {
+    applyTheme(isDark ? 'light' : 'dark');
+  }, [isDark, applyTheme]);
 
   const showToast = (msg: string) => {
     setToastMessage(msg);
@@ -539,7 +574,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     (acc, item) =>
       acc +
       (item.book.usdPrice ?? Number((item.book.price / 300).toFixed(2))) *
-        item.quantity,
+      item.quantity,
     0
   );
 
@@ -688,6 +723,9 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   return (
     <AppContext.Provider
       value={{
+        theme,
+        setTheme,
+        availableThemes: AVAILABLE_THEMES,
         isDark,
         toggleTheme,
         searchQuery,
@@ -708,6 +746,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         bagTotal,
         usdBagTotal,
         showMiniBagRail,
+        setShowMiniBagRail,
         triggerNavigation,
         cart,
         addToCart,

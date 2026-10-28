@@ -2,11 +2,11 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { Handbag } from 'lucide-react';
+import { Handbag, X } from 'lucide-react';
 import { useApp } from '../context/AppContext';
 
 export default function MiniBagRail() {
-  const { bag, bagCount, bagTotal, usdBagTotal } = useApp();
+  const { bag, bagCount, bagTotal, usdBagTotal, setShowMiniBagRail } = useApp();
 
   const totalInUSD = usdBagTotal ?? Number((bagTotal / 300).toFixed(2));
 
@@ -16,7 +16,16 @@ export default function MiniBagRail() {
       <div className="w-3.5 h-3.5 bg-white dark:bg-[#151518] border-l border-b border-stone-200 dark:border-neutral-800 rotate-45 absolute -left-[8px] top-6" />
 
       {/* Top Summary & View Bag CTA */}
-      <div className="p-3.5">
+      <div className="p-3.5 relative">
+        <button
+          type="button"
+          onClick={() => setShowMiniBagRail(false)}
+          className="absolute top-2.5 right-2.5 p-1 rounded-full text-stone-400 hover:text-stone-700 dark:hover:text-stone-200 hover:bg-stone-100 dark:hover:bg-neutral-800 transition cursor-pointer"
+          aria-label="Close mini bag"
+          title="Close mini bag"
+        >
+          <X className="w-4 h-4" />
+        </button>
         <div className="text-[13px] text-stone-600 dark:text-neutral-400">Subtotal:</div>
         <div className="text-[15.5px] font-bold text-[#222222] dark:text-white mt-0.5">
           USD {totalInUSD.toFixed(2)}
@@ -49,7 +58,7 @@ export default function MiniBagRail() {
                 ? Number((item.book.originalPrice / 300).toFixed(2))
                 : undefined);
             const urgency =
-              item.book.urgencyText || 'In 85 carts, 4 bought in the past 24 hours';
+              item.book.urgencyText || 'In 85 bags, 4 bought in the past 24 hours';
 
             return (
               <div key={`${item.book.id}-${idx}`}>

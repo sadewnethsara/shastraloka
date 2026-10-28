@@ -1,0 +1,71 @@
+/* =========================================================================
+   THEME: Classical Light (Default)
+   Selector: :root, [data-theme="light"]
+   ========================================================================= */
+
+:root,
+[data-theme="light"] {
+  /* Brand Identity & Accents */
+  --color-primary: #F1641E;
+  --color-primary-hover: #d85516;
+  --color-primary-subtle: rgba(241, 100, 30, 0.10);
+  --color-primary-border: rgba(241, 100, 30, 0.40);
+  --color-accent-badge: #e60023;
+  --color-accent-badge-text: #ffffff;
+
+  /* Header Design Tokens */
+  --header-bg: #ffffff;
+  --header-bg-glass: rgba(255, 255, 255, 0.95);
+  --header-border: #e5e7eb;
+  --header-text: #1f2937;
+  --header-text-muted: #6b7280;
+  --header-hover-bg: #f3f4f6;
+  --header-dropdown-bg: #ffffff;
+  --header-dropdown-border: #e5e7eb;
+  --header-mobile-drawer-bg: #ffffff;
+
+  /* Header Badges & Shopping Bag Pill */
+  --header-badge-fav-bg: #F1641E;
+  --header-badge-bag-bg: #e60023;
+  --header-badge-text: #ffffff;
+  --bag-btn-bg: #f3f4f6;
+  --bag-btn-border: rgba(241, 100, 30, 0.40);
+  --bag-btn-hover-bg: rgba(241, 100, 30, 0.10);
+  --bag-btn-hover-border: #F1641E;
+  --bag-btn-text: #111827;
+
+  /* Global Surface & Background Colors */
+  --bg-main: #ffffff;
+  --bg-surface: #ffffff;
+  --bg-wash: #f8f8f8;
+  --bg-card: #ffffff;
+  --bg-hover: #f0f0f0;
+  --bg-input: #ffffff;
+  --bg-badge: #222222;
+
+  /* Global Text Colors */
+  --text-main: #1f2937;
+  --text-body: #374151;
+  --text-muted: #6b7280;
+  --text-dim: #9ca3af;
+
+  /* Global Borders */
+  --border-subtle: #e5e7eb;
+  --border-strong: #d1d5db;
+  --border-focus: #1f2937;
+
+  /* Heritage / Classical Surfaces */
+  --surface-cream: #fdf6e8;
+  --surface-cream-strong: #f5e8c8;
+  --brand-brown: #a66523;
+
+  /* Pills & Controls */
+  --pill-bg: #f3f3f3;
+  --pill-hover: #e6e6e6;
+  --pill-active-bg: #222222;
+  --pill-active-text: #ffffff;
+
+  /* Shadows */
+  --card-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+  --card-shadow-hover: 0 4px 14px rgba(0, 0, 0, 0.09);
+}

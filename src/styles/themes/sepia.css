@@ -1,0 +1,70 @@
+/* =========================================================================
+   THEME: Palm Leaf Sepia (Antique Parchment & Classical Folios)
+   Selector: [data-theme="sepia"]
+   ========================================================================= */
+
+[data-theme="sepia"] {
+  /* Brand Identity & Accents */
+  --color-primary: #9b4b1a;
+  --color-primary-hover: #7c3b14;
+  --color-primary-subtle: rgba(155, 75, 26, 0.12);
+  --color-primary-border: rgba(155, 75, 26, 0.40);
+  --color-accent-badge: #8c1d18;
+  --color-accent-badge-text: #fffdf7;
+
+  /* Header Design Tokens */
+  --header-bg: #f6efe1;
+  --header-bg-glass: rgba(246, 239, 225, 0.95);
+  --header-border: #e3d5be;
+  --header-text: #3c2f1f;
+  --header-text-muted: #7d6b52;
+  --header-hover-bg: #ebe0cc;
+  --header-dropdown-bg: #fbf7ee;
+  --header-dropdown-border: #ded1b8;
+  --header-mobile-drawer-bg: #fbf7ee;
+
+  /* Header Badges & Shopping Bag Pill */
+  --header-badge-fav-bg: #9b4b1a;
+  --header-badge-bag-bg: #8c1d18;
+  --header-badge-text: #ffffff;
+  --bag-btn-bg: #ebe0cc;
+  --bag-btn-border: rgba(155, 75, 26, 0.45);
+  --bag-btn-hover-bg: rgba(155, 75, 26, 0.15);
+  --bag-btn-hover-border: #9b4b1a;
+  --bag-btn-text: #3c2f1f;
+
+  /* Global Surface & Background Colors */
+  --bg-main: #fbf7ee;
+  --bg-surface: #f6efe1;
+  --bg-wash: #f0e6d2;
+  --bg-card: #fffdf7;
+  --bg-hover: #ebe0cc;
+  --bg-input: #fffdf7;
+  --bg-badge: #3c2f1f;
+
+  /* Global Text Colors */
+  --text-main: #3c2f1f;
+  --text-body: #54432f;
+  --text-muted: #7d6b52;
+  --text-dim: #9c896f;
+
+  /* Global Borders */
+  --border-subtle: #e3d5be;
+  --border-strong: #caba9f;
+  --border-focus: #3c2f1f;
+
+  /* Heritage / Classical Surfaces */
+  --surface-cream: #efe5ce;
+  --surface-cream-strong: #ded1b8;
+  --brand-brown: #8a5722;
+
+  /* Pills & Controls */
+  --pill-bg: #ede2cf;
+  --pill-hover: #ded1b8;
+  --pill-active-bg: #3c2f1f;
+  --pill-active-text: #fbf7ee;
+
+  /* Shadows */
+  --card-shadow: 0 1px 4px rgba(60, 47, 31, 0.06);
+  --card-shadow-hover: 0 6px 16px rgba(60, 47, 31, 0.12);
+}

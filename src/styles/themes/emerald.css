@@ -1,0 +1,70 @@
+/* =========================================================================
+   THEME: Royal Temple Emerald (Sacred Botanical & Ceylon Forestry)
+   Selector: [data-theme="emerald"]
+   ========================================================================= */
+
+[data-theme="emerald"] {
+  /* Brand Identity & Accents */
+  --color-primary: #0f766e;
+  --color-primary-hover: #115e59;
+  --color-primary-subtle: rgba(15, 118, 110, 0.12);
+  --color-primary-border: rgba(15, 118, 110, 0.40);
+  --color-accent-badge: #b91c1c;
+  --color-accent-badge-text: #ffffff;
+
+  /* Header Design Tokens */
+  --header-bg: #f0fdfa;
+  --header-bg-glass: rgba(240, 253, 250, 0.95);
+  --header-border: #ccfbf1;
+  --header-text: #134e4a;
+  --header-text-muted: #14b8a6;
+  --header-hover-bg: #e6fffa;
+  --header-dropdown-bg: #ffffff;
+  --header-dropdown-border: #99f6e4;
+  --header-mobile-drawer-bg: #f0fdfa;
+
+  /* Header Badges & Shopping Bag Pill */
+  --header-badge-fav-bg: #0f766e;
+  --header-badge-bag-bg: #b91c1c;
+  --header-badge-text: #ffffff;
+  --bag-btn-bg: #ccfbf1;
+  --bag-btn-border: rgba(15, 118, 110, 0.45);
+  --bag-btn-hover-bg: rgba(15, 118, 110, 0.15);
+  --bag-btn-hover-border: #0f766e;
+  --bag-btn-text: #134e4a;
+
+  /* Global Surface & Background Colors */
+  --bg-main: #fcfdfd;
+  --bg-surface: #f0fdfa;
+  --bg-wash: #e6fffa;
+  --bg-card: #ffffff;
+  --bg-hover: #ccfbf1;
+  --bg-input: #ffffff;
+  --bg-badge: #134e4a;
+
+  /* Global Text Colors */
+  --text-main: #134e4a;
+  --text-body: #115e59;
+  --text-muted: #14b8a6;
+  --text-dim: #5eead4;
+
+  /* Global Borders */
+  --border-subtle: #ccfbf1;
+  --border-strong: #99f6e4;
+  --border-focus: #134e4a;
+
+  /* Heritage / Classical Surfaces */
+  --surface-cream: #f0fdf4;
+  --surface-cream-strong: #dcfce7;
+  --brand-brown: #047857;
+
+  /* Pills & Controls */
+  --pill-bg: #e6fffa;
+  --pill-hover: #ccfbf1;
+  --pill-active-bg: #134e4a;
+  --pill-active-text: #f0fdfa;
+
+  /* Shadows */
+  --card-shadow: 0 1px 4px rgba(19, 78, 74, 0.05);
+  --card-shadow-hover: 0 6px 16px rgba(19, 78, 74, 0.10);
+}

@@ -53,9 +53,9 @@ export const SearchField = forwardRef<HTMLInputElement, SearchFieldProps>(
     };
 
     const submitColorClasses = {
-      orange: 'bg-[#F1641E] hover:bg-[#d95616] text-white',
-      dark: 'bg-[#222222] hover:bg-black text-white',
-      red: 'bg-[#e60023] hover:bg-[#ad081b] text-white',
+      orange: 'bg-[var(--color-primary)] hover:bg-[var(--color-primary-hover)] text-white',
+      dark: 'bg-[var(--text-main)] hover:opacity-90 text-[var(--bg-main)]',
+      red: 'bg-[var(--color-accent-badge)] hover:opacity-90 text-white',
     }[submitButtonColor];
 
     const sizeClasses = {
@@ -92,10 +92,10 @@ export const SearchField = forwardRef<HTMLInputElement, SearchFieldProps>(
           placeholder={placeholder}
           aria-label={accessibilityLabel}
           autoFocus={autoFocus}
-          className={`w-full h-full bg-white dark:bg-[#19191d] text-[#222222] dark:text-neutral-100 placeholder:text-neutral-500 border-2 rounded-full transition-all duration-200 outline-hidden ${
+          className={`w-full h-full bg-[var(--bg-input)] text-[var(--text-main)] placeholder:text-[var(--text-dim)] border-2 rounded-full transition-all duration-200 outline-hidden ${
             isFocused
-              ? 'border-[#222222] dark:border-neutral-200 shadow-sm'
-              : 'border-neutral-800 dark:border-neutral-700 hover:border-neutral-900'
+              ? 'border-[var(--border-focus)] shadow-sm'
+              : 'border-[var(--border-strong)] hover:border-[var(--border-focus)]'
           } ${sizeClasses.input}`}
         />
 
@@ -105,7 +105,7 @@ export const SearchField = forwardRef<HTMLInputElement, SearchFieldProps>(
             type="button"
             onClick={handleClear}
             aria-label="Clear search input"
-            className={`absolute flex items-center justify-center p-1 rounded-full text-neutral-400 hover:text-neutral-700 dark:hover:text-neutral-200 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition ${
+            className={`absolute flex items-center justify-center p-1 rounded-full text-[var(--text-dim)] hover:text-[var(--text-main)] hover:bg-[var(--header-hover-bg)] transition ${
               showSubmitButton ? 'right-12 sm:right-14' : 'right-3'
             }`}
           >

@@ -1,67 +1,32 @@
 @import "tailwindcss";
 @import "./gestalt.css";
+@import "../styles/themes/index.css";
 
 @theme {
   --color-brand: #e60023;
   --color-brand-hover: #ad081b;
   --color-brand-active: #800014;
   --color-brand-subtle: #ffebed;
-  
+
+  /* Semantic Theme Color Bindings */
+  --color-header-bg: var(--header-bg);
+  --color-header-border: var(--header-border);
+  --color-header-text: var(--header-text);
+  --color-header-muted: var(--header-text-muted);
+  --color-header-hover: var(--header-hover-bg);
+  --color-header-dropdown: var(--header-dropdown-bg);
+  --color-header-dropdown-border: var(--header-dropdown-border);
+  --color-brand-primary: var(--color-primary);
+  --color-brand-primary-hover: var(--color-primary-hover);
+  --color-brand-primary-subtle: var(--color-primary-subtle);
+  --color-brand-primary-border: var(--color-primary-border);
+  --color-bag-btn-bg: var(--bag-btn-bg);
+  --color-bag-btn-border: var(--bag-btn-border);
+  --color-bag-btn-text: var(--bag-btn-text);
+
   --font-sans: var(--font-sans), system-ui, -apple-system, sans-serif;
   --font-serif: var(--font-serif), Georgia, serif;
   --font-sinhala: var(--font-sinhala), "Noto Serif Sinhala", "Iskoola Pota", serif;
-}
-
-:root {
-  --bg-main: #ffffff;
-  --bg-surface: #ffffff;
-  --bg-wash: #f8f8f8;
-  --bg-card: #ffffff;
-  --bg-hover: #f0f0f0;
-  --bg-input: #f3f3f3;
-  --bg-badge: #222222;
-  --text-main: #222222;
-  --text-body: #3f3f3f;
-  --text-muted: #595959;
-  --text-dim: #757575;
-  --border-subtle: #e6e6e6;
-  --border-strong: #bdbdbd;
-  --border-focus: #222222;
-  --surface-cream: #fdf6e8;
-  --surface-cream-strong: #f5e8c8;
-  --brand-brown: #a66523;
-  --pill-bg: #f3f3f3;
-  --pill-hover: #e6e6e6;
-  --pill-active-bg: #222222;
-  --pill-active-text: #ffffff;
-  --card-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
-  --card-shadow-hover: 0 4px 14px rgba(0, 0, 0, 0.09);
-}
-
-[data-theme="dark"] {
-  --bg-main: #0e0e11;
-  --bg-surface: #16161a;
-  --bg-wash: #121215;
-  --bg-card: #1c1c21;
-  --bg-hover: #27272f;
-  --bg-input: #232329;
-  --bg-badge: #f4f4f5;
-  --text-main: #f4f4f5;
-  --text-body: #d4d4d8;
-  --text-muted: #a1a1aa;
-  --text-dim: #71717a;
-  --border-subtle: #26262d;
-  --border-strong: #3f3f46;
-  --border-focus: #f4f4f5;
-  --surface-cream: #2a2216;
-  --surface-cream-strong: #3d301f;
-  --brand-brown: #d9964a;
-  --pill-bg: #222228;
-  --pill-hover: #33333d;
-  --pill-active-bg: #f4f4f5;
-  --pill-active-text: #111111;
-  --card-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
-  --card-shadow-hover: 0 16px 40px rgba(0, 0, 0, 0.6);
 }
 
 * {
@@ -83,13 +48,16 @@ body {
   width: 7px;
   height: 7px;
 }
+
 ::-webkit-scrollbar-track {
   background: var(--bg-main);
 }
+
 ::-webkit-scrollbar-thumb {
   background: var(--border-subtle);
   border-radius: 9999px;
 }
+
 ::-webkit-scrollbar-thumb:hover {
   background: var(--text-dim);
 }
@@ -144,6 +112,7 @@ body {
 .no-scrollbar::-webkit-scrollbar {
   display: none;
 }
+
 .no-scrollbar {
   -ms-overflow-style: none;
   scrollbar-width: none;
@@ -237,4 +206,61 @@ body {
 
 .animate-slide-up {
   animation: slideUp 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* =========================================================================
+   HEADER THEME COMPONENT UTILITIES
+   Ensures Header elements map directly to global CSS variables
+   ========================================================================= */
+
+.header-container {
+  background-color: var(--header-bg);
+  color: var(--header-text);
+  border-color: var(--header-border);
+}
+
+.header-container-sticky {
+  background-color: var(--header-bg-glass);
+  color: var(--header-text);
+  border-color: var(--header-border);
+}
+
+.header-brand-logo {
+  color: var(--color-primary);
+}
+
+.header-action-btn {
+  color: var(--header-text);
+  transition: all 0.15s ease;
+}
+
+.header-action-btn:hover {
+  background-color: var(--header-hover-bg);
+}
+
+.header-dropdown-surface {
+  background-color: var(--header-dropdown-bg);
+  border-color: var(--header-dropdown-border);
+  color: var(--header-text);
+}
+
+.header-bag-pill {
+  background-color: var(--bag-btn-bg);
+  border-color: var(--bag-btn-border);
+  color: var(--bag-btn-text);
+}
+
+.header-bag-pill:hover {
+  background-color: var(--bag-btn-hover-bg);
+  border-color: var(--bag-btn-hover-border);
+}
+
+.header-bag-pill-badge {
+  background-color: var(--header-badge-bag-bg);
+  color: var(--header-badge-text);
+}
+
+.header-fav-badge {
+  background-color: var(--header-badge-fav-bg);
+  color: var(--header-badge-text);
 }

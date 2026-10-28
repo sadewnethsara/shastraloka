@@ -1,0 +1,12 @@
+/* =========================================================================
+   SHASTRALOKA THEMES REGISTRY
+   Import all theme variant files.
+   To add a new theme in the future:
+   1. Create `src/styles/themes/<theme-name>.css`
+   2. Import it here
+   ========================================================================= */
+
+@import "./light.css";
+@import "./dark.css";
+@import "./sepia.css";
+@import "./emerald.css";
