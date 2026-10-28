@@ -1,6 +1,6 @@
 'use client';
 
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { Book, BOOKS } from '../data/books';
 
 export interface BagItem {
@@ -79,6 +79,8 @@ interface AppContextType {
   bagCount: number;
   bagTotal: number;
   usdBagTotal: number;
+  showMiniBagRail: boolean;
+  triggerNavigation: () => void;
 
   // Compatibility Cart Aliases
   cart: BagItem[];
@@ -375,6 +377,10 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   // Toast
   const [toastMessage, setToastMessage] = useState<string | null>(null);
 
+  // Mini Bag Rail
+  const [showMiniBagRail, setShowMiniBagRail] = useState(false);
+  const [navigationTriggered, setNavigationTriggered] = useState(false);
+
   // Hydrate from LocalStorage on mount
   useEffect(() => {
     // Theme
@@ -488,6 +494,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       }
       return [...prev, { book, quantity, binding: selectedBinding }];
     });
+    setShowMiniBagRail(true); // Show rail when item is added
     showToast(`Added ${quantity > 1 ? `${quantity}x ` : ''}"${book.title}" to Bag`);
   };
 
@@ -510,6 +517,21 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   };
 
   const clearBag = () => setBag([]);
+
+  // Auto-hide rail when bag is empty and navigation happens
+  const triggerNavigation = useCallback(() => {
+    setNavigationTriggered(true);
+  }, []);
+
+  // Handle rail visibility logic
+  useEffect(() => {
+    if (navigationTriggered) {
+      if (bag.length === 0) {
+        setShowMiniBagRail(false);
+      }
+      setNavigationTriggered(false);
+    }
+  }, [navigationTriggered, bag.length]);
 
   const bagCount = bag.reduce((acc, item) => acc + item.quantity, 0);
   const bagTotal = bag.reduce((acc, item) => acc + item.book.price * item.quantity, 0);
@@ -685,6 +707,8 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         bagCount,
         bagTotal,
         usdBagTotal,
+        showMiniBagRail,
+        triggerNavigation,
         cart,
         addToCart,
         removeFromCart,

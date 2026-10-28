@@ -3,6 +3,7 @@
 import React, { useState, useMemo } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { useApp } from '../../context/AppContext';
 import {
     Search,
     Heart,
@@ -990,11 +991,46 @@ const BookCoverArtwork: React.FC<{
 
 export default function Bag() {
     const router = useRouter();
+    const { bag, removeFromBag, updateBagQuantity, clearBag } = useApp();
+    
     // Active preset view to let user inspect both uploaded screenshots or interact freely
     const [activePreset, setActivePreset] = useState<'screenshot-1' | 'screenshot-2'>('screenshot-1');
 
-    // Bag Items State
+    // Bag Items State - Using global context bag when available, otherwise mock data
     const [bagItems, setBagItems] = useState<BagItem[]>(INITIAL_BAG_SCREENSHOT_1);
+
+    // Sync local bag items with global context
+    React.useEffect(() => {
+        if (bag.length > 0) {
+            // Convert global bag items to local format for display
+            const convertedItems = bag.map((item, index) => ({
+                id: `bag-${index}`,
+                shopName: item.book.sellerName || 'Shastraloka Books',
+                shopRating: item.book.sellerRating || 4.9,
+                shopReviews: item.book.sellerReviews || '1.2k',
+                shopAvatarBg: '#fef3c7',
+                shopAvatarIcon: 'botanical' as const,
+                title: item.book.title,
+                author: item.book.author,
+                bookFormat: 'Hardcover' as const,
+                isbn: '978-1-954821-99-0',
+                pills: [
+                    { label: item.book.binding || 'Standard Edition' }
+                ],
+                urgencyRedText: item.book.urgencyText || 'In 85 carts, 4 bought in the past 24 hours',
+                price: item.book.usdPrice ?? (item.book.price / 300),
+                originalPrice: item.book.originalUsdPrice ?? (item.book.originalPrice ? item.book.originalPrice / 300 : undefined),
+                discountPercent: item.book.originalPrice ? Math.round((1 - item.book.price / item.book.originalPrice) * 100) : undefined,
+                quantity: item.quantity,
+                shippingCost: 0,
+                isDigital: item.book.isDigital || false,
+                coverType: 'daisy-journal' as const,
+                selectedEdition: item.binding,
+                customOption: undefined
+            }));
+            setBagItems(convertedItems);
+        }
+    }, [bag]);
 
     // Saved for Later Items State
     const [savedForLater, setSavedForLater] = useState<BagItem[]>([]);
@@ -1060,12 +1096,21 @@ export default function Bag() {
         setBagItems((prev) =>
             prev.map((item) => (item.id === id ? { ...item, quantity: newQty } : item))
         );
+        // Update global context
+        const bookId = id.startsWith('bag-') ? id.replace('bag-', '') : id;
+        const delta = newQty - (bagItems.find(i => i.id === id)?.quantity || 0);
+        if (delta !== 0) {
+            updateBagQuantity(bookId, delta);
+        }
     };
 
     // Remove item from bag
     const handleRemoveFromBag = (id: string) => {
         const target = bagItems.find((i) => i.id === id);
         setBagItems((prev) => prev.filter((item) => item.id !== id));
+        // Remove from global context using book ID
+        const bookId = id.startsWith('bag-') ? id.replace('bag-', '') : id;
+        removeFromBag(bookId);
         if (target) {
             triggerToast(`Removed "${target.title.slice(0, 32)}..." from your bag`);
         }
@@ -1077,6 +1122,9 @@ export default function Bag() {
         if (!target) return;
         setBagItems((prev) => prev.filter((item) => item.id !== id));
         setSavedForLater((prev) => [target, ...prev]);
+        // Also remove from global context
+        const bookId = id.startsWith('bag-') ? id.replace('bag-', '') : id;
+        removeFromBag(bookId);
         triggerToast(`Saved "${target.title.slice(0, 28)}..." for later`);
     };
 

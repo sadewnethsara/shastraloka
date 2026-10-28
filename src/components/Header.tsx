@@ -2,7 +2,7 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import {
   Menu,
   ChevronDown,
@@ -35,6 +35,7 @@ export interface HeaderProps {
 
 export default function Header({ isSticky = false }: HeaderProps = {}) {
   const router = useRouter();
+  const pathname = usePathname();
   const {
     isDark,
     toggleTheme,
@@ -47,15 +48,14 @@ export default function Header({ isSticky = false }: HeaderProps = {}) {
     boards,
     setIsBoardsModalOpen,
     setSelectedCategory,
+    triggerNavigation,
   } = useApp();
 
   const [categoriesOpen, setCategoriesOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [bagDropdownOpen, setBagDropdownOpen] = useState(false);
   const [localSearch, setLocalSearch] = useState(searchQuery || '');
 
   const categoriesRef = useRef<HTMLDivElement>(null);
-  const bagDropdownRef = useRef<HTMLDivElement>(null);
 
   const totalFavorites = boards.reduce((acc, b) => acc + b.bookIds.length, 0);
 
@@ -64,7 +64,12 @@ export default function Header({ isSticky = false }: HeaderProps = {}) {
     setLocalSearch(searchQuery || '');
   }, [searchQuery]);
 
-  // Close categories and bag dropdown on outside click
+  // Trigger navigation logic on route changes
+  useEffect(() => {
+    triggerNavigation();
+  }, [pathname, triggerNavigation]);
+
+  // Close categories dropdown on outside click
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (
@@ -72,12 +77,6 @@ export default function Header({ isSticky = false }: HeaderProps = {}) {
         !categoriesRef.current.contains(event.target as Node)
       ) {
         setCategoriesOpen(false);
-      }
-      if (
-        bagDropdownRef.current &&
-        !bagDropdownRef.current.contains(event.target as Node)
-      ) {
-        setBagDropdownOpen(false);
       }
     }
     document.addEventListener('mousedown', handleClickOutside);
@@ -88,6 +87,7 @@ export default function Header({ isSticky = false }: HeaderProps = {}) {
     const q = queryText.trim();
     setSearchQuery(q);
     setMobileMenuOpen(false);
+    triggerNavigation(); // Trigger navigation detection
     if (q) {
       router.push(`/search?q=${encodeURIComponent(q)}`);
     } else {
@@ -99,6 +99,7 @@ export default function Header({ isSticky = false }: HeaderProps = {}) {
     setSelectedCategory(category);
     setCategoriesOpen(false);
     setMobileMenuOpen(false);
+    triggerNavigation(); // Trigger navigation detection
     if (category === 'All Treatises') {
       router.push('/');
     } else {
@@ -251,137 +252,25 @@ export default function Header({ isSticky = false }: HeaderProps = {}) {
                 <Gift className="w-5 h-5 text-neutral-800 dark:text-neutral-200" />
               </Link>
 
-              {/* Highlighted Shopping Bag Button with Etsy Dropdown Popover */}
-              <div className="relative" ref={bagDropdownRef}>
-                <button
-                  type="button"
-                  onClick={() => setBagDropdownOpen((prev) => !prev)}
-                  onMouseEnter={() => setBagDropdownOpen(true)}
-                  aria-label="Shopping Bag"
-                  className={`relative flex items-center gap-2 h-10 px-3.5 sm:px-4 rounded-full font-bold text-sm transition-all duration-150 cursor-pointer shadow-xs active:scale-95 group ${
-                    bagDropdownOpen
-                      ? 'bg-[#222222] text-white border-2 border-[#222222]'
-                      : 'bg-neutral-100 dark:bg-neutral-800 hover:bg-[#F1641E]/10 border-2 border-[#F1641E]/40 hover:border-[#F1641E] text-neutral-900 dark:text-neutral-100'
-                  }`}
-                  title="View Shopping Bag"
-                >
-                  <div className="relative flex items-center justify-center">
-                    <Handbag
-                      className={`w-5 h-5 transition-colors ${
-                        bagDropdownOpen
-                          ? 'text-white'
-                          : 'text-neutral-900 dark:text-neutral-100 group-hover:text-[#F1641E]'
-                      }`}
-                    />
-                    {bagCount > 0 && (
-                      <span className="absolute -top-1.5 -right-2 min-w-4 h-4 px-1 rounded-full bg-[#e60023] text-white text-[10px] font-bold flex items-center justify-center shadow-xs leading-none">
-                        {bagCount}
-                      </span>
-                    )}
-                  </div>
-                  <span
-                    className={`font-bold text-sm tracking-tight transition-colors ${
-                      bagDropdownOpen
-                        ? 'text-white'
-                        : 'text-neutral-900 dark:text-neutral-100 group-hover:text-[#F1641E]'
-                    }`}
-                  >
-                    Bag
-                  </span>
-                </button>
-
-                {/* Etsy-Style Bag Flyout Menu (Anchored under Bag icon) */}
-                {bagDropdownOpen && (
-                  <div
-                    onMouseLeave={() => setBagDropdownOpen(false)}
-                    className="absolute right-0 top-full mt-2.5 w-76 sm:w-80 bg-white dark:bg-[#1E1E22] border border-[#E6E6E2] dark:border-neutral-700/80 rounded-2xl shadow-2xl z-50 overflow-hidden animate-in fade-in slide-in-from-top-2 duration-150"
-                  >
-                    {/* Caret arrow pointing to Bag button */}
-                    <div className="absolute -top-1.5 right-6 w-3 h-3 bg-white dark:bg-[#1E1E22] border-t border-l border-[#E6E6E2] dark:border-neutral-700 rotate-45 z-10" />
-
-                    {/* Popover Header with Subtotal & View bag button */}
-                    <div className="p-4 pb-3">
-                      <div className="text-xs font-semibold text-neutral-600 dark:text-neutral-400">
-                        Subtotal:
-                      </div>
-                      <div className="text-xl font-bold text-neutral-900 dark:text-white mt-0.5">
-                        USD {usdBagTotal ? usdBagTotal.toFixed(2) : (bagTotal / 300).toFixed(2)}
-                      </div>
-
-                      {/* Prominent dark pill button: View bag */}
-                      <Link
-                        href="/bag"
-                        onClick={() => setBagDropdownOpen(false)}
-                        className="w-full mt-3 py-2.5 px-4 rounded-full bg-[#222222] hover:bg-black dark:bg-white dark:hover:bg-neutral-200 text-white dark:text-neutral-900 font-bold text-sm text-center block transition cursor-pointer shadow-sm active:scale-98"
-                      >
-                        View bag
-                      </Link>
-                    </div>
-
-                    {/* Thin divider */}
-                    <div className="border-t border-[#E6E6E2] dark:border-neutral-800" />
-
-                    {/* Scrollable list of preview items */}
-                    <div className="max-h-[380px] overflow-y-auto px-4 py-3 space-y-4 divide-y divide-[#F0F0EE] dark:divide-neutral-800/80">
-                      {bag.length === 0 ? (
-                        <div className="py-8 text-center space-y-2">
-                          <Handbag className="w-8 h-8 text-neutral-300 dark:text-neutral-600 mx-auto" />
-                          <p className="text-sm font-semibold text-neutral-700 dark:text-neutral-300">
-                            Your bag is empty
-                          </p>
-                        </div>
-                      ) : (
-                        bag.map((item, idx) => {
-                          const price =
-                            item.book.usdPrice ?? Number((item.book.price / 300).toFixed(2));
-                          const origPrice =
-                            item.book.originalUsdPrice ??
-                            (item.book.originalPrice
-                              ? Number((item.book.originalPrice / 300).toFixed(2))
-                              : undefined);
-                          const urgency =
-                            item.book.urgencyText || 'In 85 carts, 4 bought in the past 24 hours';
-
-                          return (
-                            <div key={`${item.book.id}-${idx}`} className={idx > 0 ? 'pt-4' : ''}>
-                              <Link
-                                href={`/books/${item.book.id}`}
-                                onClick={() => setBagDropdownOpen(false)}
-                                className="block group"
-                              >
-                                <div className="w-full aspect-square rounded-xl overflow-hidden bg-neutral-100 dark:bg-neutral-800 relative mb-2 shadow-2xs">
-                                  <img
-                                    src={item.book.coverImage}
-                                    alt={item.book.title}
-                                    className="w-full h-full object-cover group-hover:scale-104 transition-transform duration-200"
-                                  />
-                                </div>
-
-                                <div className="space-y-1">
-                                  <div className="flex items-baseline gap-2">
-                                    <span className="font-bold text-sm sm:text-base text-neutral-900 dark:text-white">
-                                      USD {price.toFixed(2)}
-                                    </span>
-                                    {origPrice && (
-                                      <span className="text-xs text-neutral-400 dark:text-neutral-500 line-through">
-                                        USD {origPrice.toFixed(2)}
-                                      </span>
-                                    )}
-                                  </div>
-
-                                  <p className="text-xs font-bold text-[#C83500] dark:text-[#FF6B4A] leading-snug">
-                                    {urgency}
-                                  </p>
-                                </div>
-                              </Link>
-                            </div>
-                          );
-                        })
-                      )}
-                    </div>
-                  </div>
-                )}
-              </div>
+              {/* Shopping Bag Button - Simple link to /bag */}
+              <Link
+                href="/bag"
+                aria-label="Shopping Bag"
+                className="relative flex items-center gap-2 h-10 px-3.5 sm:px-4 rounded-full font-bold text-sm transition-all duration-150 cursor-pointer shadow-xs active:scale-95 group bg-neutral-100 dark:bg-neutral-800 hover:bg-[#F1641E]/10 border-2 border-[#F1641E]/40 hover:border-[#F1641E] text-neutral-900 dark:text-neutral-100"
+                title="View Shopping Bag"
+              >
+                <div className="relative flex items-center justify-center">
+                  <Handbag className="w-5 h-5 transition-colors text-neutral-900 dark:text-neutral-100 group-hover:text-[#F1641E]" />
+                  {bagCount > 0 && (
+                    <span className="absolute -top-1.5 -right-2 min-w-4 h-4 px-1 rounded-full bg-[#e60023] text-white text-[10px] font-bold flex items-center justify-center shadow-xs leading-none">
+                      {bagCount}
+                    </span>
+                  )}
+                </div>
+                <span className="font-bold text-sm tracking-tight transition-colors text-neutral-900 dark:text-neutral-100 group-hover:text-[#F1641E]">
+                  Bag
+                </span>
+              </Link>
             </div>
           </div>
 

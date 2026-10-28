@@ -58,7 +58,7 @@ export default function RootLayout({
       className={`${jakarta.variable} ${playfair.variable} ${notoSerifSinhala.variable} scroll-smooth`} 
       suppressHydrationWarning
     >
-      <body className="font-sans antialiased min-h-screen bg-[var(--bg-main)] text-[var(--text-main)] transition-colors duration-300">
+      <body className="font-sans antialiased bg-white dark:bg-[#0a0a0c] text-[var(--text-main)] transition-colors duration-300">
         <Providers>
           {children}
         </Providers>
