@@ -659,6 +659,17 @@ function ProductDetailContent() {
     bookstore: false,
   });
 
+  // Top Announcement Bar state
+  const [isAnnouncementVisible, setIsAnnouncementVisible] = useState<boolean>(true);
+  const [isAnnouncementClosing, setIsAnnouncementClosing] = useState<boolean>(false);
+
+  const handleCloseAnnouncement = () => {
+    setIsAnnouncementClosing(true);
+    setTimeout(() => {
+      setIsAnnouncementVisible(false);
+    }, 300);
+  };
+
   // Filter States
   const [selectedReviewTag, setSelectedReviewTag] = useState<string>('All');
   const [authorFollowed, setAuthorFollowed] = useState<boolean>(false);
@@ -823,25 +834,37 @@ function ProductDetailContent() {
   return (
     <div className="min-h-screen bg-[#FAF8F5] dark:bg-[#121215] text-[#1E1E1C] dark:text-neutral-100 font-sans antialiased selection:bg-[#F1641E]/20 transition-colors duration-200">
       {/* 1. Global Announcement Bar */}
-      <div className="bg-[#23382C] text-[#F5F2EB] text-xs py-2 px-4">
-        <div className="max-w-[1440px] mx-auto flex flex-wrap items-center justify-between gap-2">
-          <div className="flex items-center gap-2">
-            <Sparkles className="w-3.5 h-3.5 text-[#E8B059]" />
-            <span>
-              <strong>Shastraloka Classical Literary Guild:</strong> Free Islandwide Book-Post over LKR 3,500 + Complimentary Pressed Botanical Bookmark
-            </span>
-          </div>
-          <div className="hidden md:flex items-center gap-4 text-[11px] text-[#D7E2DC]">
-            <span className="flex items-center gap-1">
-              <MapPin className="w-3 h-3" /> Delivering Across Sri Lanka & Worldwide
-            </span>
-            <span>•</span>
-            <a href="#masonry-discovery" className="underline hover:text-white">
-              Explore Visual Book Pinboard
-            </a>
+      {isAnnouncementVisible && (
+        <div
+          className={`bg-[#1E3327] text-[#F5F2EB] border-b border-[#2D4737] overflow-hidden transition-all duration-300 ease-in-out ${
+            isAnnouncementClosing
+              ? 'max-h-0 opacity-0 py-0 -translate-y-2'
+              : 'max-h-16 opacity-100 py-2 sm:py-2.5 translate-y-0'
+          }`}
+        >
+          <div className="max-w-[1440px] mx-auto px-4 sm:px-6 flex items-center justify-between gap-3 text-xs">
+            <div className="flex items-center gap-2.5 mx-auto sm:mx-0">
+              <span className="flex items-center justify-center w-5 h-5 rounded-full bg-emerald-500/20 text-[#E8B059] shrink-0">
+                <Truck className="w-3 h-3" />
+              </span>
+              <span className="font-medium tracking-tight">
+                <span className="font-semibold text-white">Free Islandwide Delivery</span> on Orders Over LKR 3,500
+                <span className="hidden sm:inline mx-2 text-[#D7E2DC]/40">•</span>
+                <span className="hidden sm:inline text-[#D7E2DC]">Cash on Delivery Available</span>
+              </span>
+            </div>
+
+            <button
+              type="button"
+              onClick={handleCloseAnnouncement}
+              aria-label="Close announcement"
+              className="p-1 rounded-full text-[#D7E2DC]/70 hover:text-white hover:bg-white/10 transition cursor-pointer shrink-0"
+            >
+              <X className="w-3.5 h-3.5" />
+            </button>
           </div>
         </div>
-      </div>
+      )}
 
       {/* 2. Global Header */}
       <Header />
