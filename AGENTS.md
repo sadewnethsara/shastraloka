@@ -55,6 +55,13 @@
     import { Tabs, Spinner, Avatar, Tooltip } from '@/components/ui';
     ```
 
+### Rule 6: SEO, Dual-Domain (`shastraloka.lk` & `ශාස්ත්රාලෝක.ලංකා`) & AI Discoverability Standards
+- **Official Brand Names:** Always include both **"Shastraloka"** and **"ශාස්ත්රාලෝක"** (alongside **"ශාස්ත්‍රලෝක"**) in SEO metadata, titles, JSON-LD, and footer branding.
+- **Official Domains:** Always maintain dual-domain support for **`https://shastraloka.lk`** and **`https://ශාස්ත්රාලෝක.ලංකා`** (Punycode: `xn--j1b1a4b2a9d2a.xn--fzc2c9e2c`) in `src/utils/seoConfig.ts`, `src/app/layout.tsx`, `src/app/sitemap.ts`, `src/app/robots.ts`, and `public/llms.txt`.
+- **Social Sharing & Structured Data:** Never remove the OpenGraph (`og:*`), Twitter (`twitter:*`), WhatsApp metadata, or Schema.org `@graph` JSON-LD (`BookStore`, `WebSite` with `SearchAction`, `ItemList`/`Book`/`Offer` in `LKR`, and `FAQPage`).
+- **New Books & Routes:** Whenever new books or routes are added to `src/data/books.ts`, ensure they include `price` (LKR), `originalPrice` (LKR), `sinhalaTitle`, and `tags` so `sitemap.ts`, `searchEngine.ts`, and `seoConfig.ts` automatically index them with LKR price & offer percentage badges.
+- **External SEO Documentation:** Keep [`guide.md`](guide.md) in the root directory updated when SEO routes or schemas change.
+
 ---
 
 ## 3. Directory Layout
@@ -63,8 +70,10 @@
 shastraloka/
 ├── src/
 │   ├── app/                      # Next.js App Router routes
-│   │   ├── layout.tsx            # Root layout with fonts, Providers, globals.css
+│   │   ├── layout.tsx            # Root layout with fonts, SEO metadata, JSON-LD, Providers
 │   │   ├── page.tsx              # Homepage (Hero, Explore Feed, Editorial, Masonry)
+│   │   ├── robots.ts             # Dynamic robots.txt for search engines & AI crawlers
+│   │   ├── sitemap.ts            # Dynamic sitemap.xml for all routes, books & categories
 │   │   ├── globals.css           # Design tokens, theme variables & Tailwind
 │   │   ├── gestalt.css           # Local Gestalt styling bundle
 │   │   ├── books/[id]/page.tsx   # Product Detail Page (Dual-column classical layout)
@@ -73,29 +82,28 @@ shastraloka/
 │   │   ├── orders/[id]/page.tsx  # Order tracking & courier delivery timeline
 │   │   ├── profile/page.tsx      # User profile, saved collections
 │   │   ├── profile/boards/[id]/  # Dedicated board reading list view
-│   │   └── search/page.tsx       # Live search & category filtering results
+│   │   └── search/page.tsx       # Pinterest + Amazon visual search & filter discovery body
 │   ├── components/               # App Domain Components
-│   │   ├── Header.tsx            # Universal top navigation & mobile menu
-│   │   ├── Footer.tsx            # Universal footer with newsletter & heritage badges
+│   │   ├── Header.tsx            # Universal top navigation & live search autocomplete
+│   │   ├── Footer.tsx            # Universal footer with SEO directory & dual domains
 │   │   ├── BagDrawer.tsx         # Slide-out Shopping Bag drawer with coupon & delivery progress
 │   │   ├── CartDrawer.tsx        # Re-exports BagDrawer for compatibility
-│   │   ├── BookCard.tsx          # Masonry book item with hover save & "+ Add to Bag"
+│   │   ├── BookCard.tsx          # Masonry book item with LKR offer % badge & "+ Add to Bag"
 │   │   ├── BookModal.tsx         # Quick view modal with audio chanting & reviews
 │   │   ├── BoardsModal.tsx       # Save book to Pinterest-style Board dialog
 │   │   ├── Icons.tsx             # Shared icons (IconBag, IconHandbag use Lucide Handbag)
 │   │   ├── Providers.tsx         # AppProvider, BookModal, BagDrawer, Toast wrapper
 │   │   └── ui/                   # Reusable UI Primitives
-│   │       ├── Button.tsx        # Tailored Button (primary, orange, outline, danger)
-│   │       ├── SearchField.tsx   # Rounded search field with clear & submit buttons
-│   │       ├── BagDrawer.tsx     # Shopping bag drawer
-│   │       ├── index.ts          # Barrel export for all UI components
-│   │       └── gestalt/          # Local standalone Gestalt component library
 │   ├── context/
 │   │   └── AppContext.tsx        # Global store: Bag, Boards, Likes, Orders, Theme, Toast
-│   └── data/
-│       └── books.ts              # Books catalog (Mahavamsa, Chulavamsa, Kavya, Ayurveda)
-├── package.json                  # Dependencies (Next.js, React, Tailwind, Lucide, classnames)
-├── tsconfig.json                 # Path aliases (@/*, @/gestalt/*, gestalt)
+│   ├── data/
+│   │   └── books.ts              # Books catalog (Gajaga, Mahavamsa, Chulavamsa, Kavya, Ayurveda)
+│   └── utils/
+│       ├── searchEngine.ts       # Fuzzy book matching, autocomplete & LKR discount engine
+│       └── seoConfig.ts          # Dual-domain SEO config, competitive keywords & JSON-LD graph
+├── public/
+│   └── llms.txt                  # AI & LLM search engine index (ChatGPT, Gemini, Claude, Perplexity)
+├── guide.md                      # External SEO, Google Search Console & Bing Webmaster Guide
 └── AGENTS.md                     # This agent architecture guide
 ```
 
@@ -109,7 +117,6 @@ Always run this command before reporting any task as completed:
 pnpm build
 ```
 - **Must pass with Exit Code 0.**
-- Generates 11 static and partially prerendered routes.
 - TypeScript check must report 0 errors.
 
 ---
@@ -123,3 +130,5 @@ pnpm build
 | **2026-10-28** | Replaced all Header icons with `lucide-react` | Standardized header icon styling across mobile and desktop. |
 | **2026-10-28** | Fixed Product Detail Page dual-scroll bug | Removed separate scroll locking so both columns scroll smoothly together in `items-start` grid. |
 | **2026-10-28** | Removed npm `gestalt` & bundled UI locally | Avoided heavy external package locks while preserving all 99 Gestalt components locally in `src/components/ui/gestalt/`. |
+| **2026-10-28** | Added Pinterest search body, live autocomplete & LKR offer % tags | Implemented `src/utils/searchEngine.ts` and rebuilt `/search` with closest-book-first ranking and suggested books. |
+| **2026-10-28** | Added full SEO, Dual Domains (`shastraloka.lk` & `ශාස්ත්රාලෝක.ලංකා`), `llms.txt` & `guide.md` | Configured Schema.org `@graph`, `sitemap.ts`, `robots.ts`, competitive bookstore SEO keywords, and external Search Console guide. |

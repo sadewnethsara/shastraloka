@@ -1,7 +1,7 @@
 'use client';
 
 import React, { forwardRef, useState } from 'react';
-import { Search, X } from 'lucide-react';
+import { Search, X, Camera } from 'lucide-react';
 
 export interface SearchFieldProps {
   id?: string;
@@ -9,6 +9,7 @@ export interface SearchFieldProps {
   onChange: (value: string) => void;
   onSubmit?: (value: string) => void;
   onClear?: () => void;
+  onImageSearchClick?: () => void;
   placeholder?: string;
   accessibilityLabel: string;
   autoFocus?: boolean;
@@ -26,6 +27,7 @@ export const SearchField = forwardRef<HTMLInputElement, SearchFieldProps>(
       onChange,
       onSubmit,
       onClear,
+      onImageSearchClick,
       placeholder = 'Search for anything...',
       accessibilityLabel,
       autoFocus = false,
@@ -44,12 +46,20 @@ export const SearchField = forwardRef<HTMLInputElement, SearchFieldProps>(
         onSubmit?.(value);
       } else if (e.key === 'Escape') {
         e.preventDefault();
-        onClear ? onClear() : onChange('');
+        if (onClear) {
+          onClear();
+        } else {
+          onChange('');
+        }
       }
     };
 
     const handleClear = () => {
-      onClear ? onClear() : onChange('');
+      if (onClear) {
+        onClear();
+      } else {
+        onChange('');
+      }
     };
 
     const submitColorClasses = {
@@ -61,17 +71,17 @@ export const SearchField = forwardRef<HTMLInputElement, SearchFieldProps>(
     const sizeClasses = {
       sm: {
         container: 'h-9',
-        input: 'text-xs pl-4 pr-11 py-1.5',
+        input: 'text-xs pl-4 pr-18 py-1.5',
         button: 'w-7 h-7 right-1',
       },
       md: {
         container: 'h-11',
-        input: 'text-sm pl-5 pr-14 py-2.5',
+        input: 'text-sm pl-5 pr-22 py-2.5',
         button: 'w-9 h-9 right-1.5',
       },
       lg: {
         container: 'h-13',
-        input: 'text-base pl-6 pr-16 py-3',
+        input: 'text-base pl-6 pr-24 py-3',
         button: 'w-10 h-10 right-1.5',
       },
     }[size];
@@ -106,10 +116,31 @@ export const SearchField = forwardRef<HTMLInputElement, SearchFieldProps>(
             onClick={handleClear}
             aria-label="Clear search input"
             className={`absolute flex items-center justify-center p-1 rounded-full text-[var(--text-dim)] hover:text-[var(--text-main)] hover:bg-[var(--header-hover-bg)] transition ${
-              showSubmitButton ? 'right-12 sm:right-14' : 'right-3'
+              onImageSearchClick
+                ? (showSubmitButton ? 'right-19 sm:right-21' : 'right-10')
+                : (showSubmitButton ? 'right-12 sm:right-14' : 'right-3')
             }`}
           >
             <X className="w-4 h-4" />
+          </button>
+        )}
+
+        {/* Visual Manuscript / Camera Search Icon Button */}
+        {onImageSearchClick && (
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              onImageSearchClick();
+            }}
+            title="Search sacred manuscripts by image"
+            aria-label="Search sacred manuscripts by image"
+            className={`absolute flex items-center justify-center p-1.5 rounded-full text-[var(--text-dim)] hover:text-[var(--color-primary)] hover:bg-[var(--header-hover-bg)] transition-colors cursor-pointer group ${
+              showSubmitButton ? 'right-11 sm:right-13' : 'right-2 sm:right-2.5'
+            }`}
+          >
+            <Camera className="w-4 h-4 stroke-[2.2] group-hover:scale-110 transition-transform" />
+            <span className="w-1.5 h-1.5 rounded-full bg-[var(--color-primary)] absolute bottom-1 right-1" />
           </button>
         )}
 

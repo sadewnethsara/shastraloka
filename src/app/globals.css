@@ -16,8 +16,6 @@
   --color-header-hover: var(--header-hover-bg);
   --color-header-dropdown: var(--header-dropdown-bg);
   --color-header-dropdown-border: var(--header-dropdown-border);
-  --color-header-search-bg: var(--header-search-bg);
-  --color-header-search-border: var(--header-search-border);
   --color-brand-primary: var(--color-primary);
   --color-brand-primary-hover: var(--color-primary-hover);
   --color-brand-primary-subtle: var(--color-primary-subtle);

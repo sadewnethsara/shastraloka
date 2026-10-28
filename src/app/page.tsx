@@ -641,12 +641,12 @@ export default function LandingPage() {
                 onClick={() => navigateToSearch('Collector')}
               />
             </div>
-            <div className="grid grid-cols-3 gap-2.5 sm:gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
               {HERO_FEATURE_CARDS.map((card) => (
                 <div
                   key={card.id}
                   onClick={() => card.query && navigateToSearch(card.query)}
-                  className="relative aspect-[4/3] rounded-xl sm:rounded-2xl overflow-hidden group cursor-pointer"
+                  className="relative aspect-[16/9] sm:aspect-[4/3] rounded-xl sm:rounded-2xl overflow-hidden group cursor-pointer"
                 >
                   <img
                     src={card.image}
@@ -654,7 +654,7 @@ export default function LandingPage() {
                     className="w-full h-full object-cover group-hover:scale-105 transition duration-300"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/20 to-transparent" />
-                  <p className="absolute bottom-2 left-2 right-2 text-white text-[11px] sm:text-xs font-bold leading-tight">
+                  <p className="absolute bottom-3 left-3 right-3 text-white text-xs sm:text-xs font-bold leading-snug">
                     {card.title}
                   </p>
                 </div>
@@ -775,7 +775,7 @@ export default function LandingPage() {
             6. TODAY'S BIG DEALS (With Live Countdown Timer & Smooth Carousel)
            =================================================================== */}
         <section className="relative">
-          <div className="flex items-center gap-2.5 mb-4">
+          <div className="flex flex-wrap items-center gap-2.5 mb-4">
             <h2 className="text-lg sm:text-xl font-bold text-[#222222] dark:text-neutral-100">
               Today&apos;s big deals
             </h2>
@@ -1085,11 +1085,6 @@ export default function LandingPage() {
           10. FOOTER (Shared Universal Component)
          ===================================================================== */}
       <Footer />
-
-      {/* Global Interactive Modals */}
-      <BookModal />
-      <BoardsModal />
-      <Toast />
     </div>
   );
 }

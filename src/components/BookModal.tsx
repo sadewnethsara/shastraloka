@@ -209,7 +209,7 @@ export default function BookModal() {
               </div>
 
               {/* Price & Discount Bar in LKR */}
-              <div className="flex items-baseline gap-3 my-3.5 p-3.5 rounded-xl bg-[var(--bg-wash)] border border-[var(--border-subtle)]">
+              <div className="flex flex-wrap items-baseline gap-2 sm:gap-3 my-3.5 p-3.5 rounded-xl bg-[var(--bg-wash)] border border-[var(--border-subtle)]">
                 <span className="text-2xl sm:text-3xl font-black text-[var(--text-main)]">
                   Rs. {selectedBook.price.toLocaleString()}
                 </span>
@@ -248,10 +248,10 @@ export default function BookModal() {
               </div>
 
               {/* Tabs: Overview, Verses, Reviews */}
-              <div className="flex border-b border-[var(--border-subtle)] gap-6 mb-3">
+              <div className="flex border-b border-[var(--border-subtle)] gap-4 sm:gap-6 mb-3 overflow-x-auto no-scrollbar">
                 <button
                   onClick={() => setActiveTab('overview')}
-                  className={`pb-2 text-xs sm:text-sm font-semibold transition-colors cursor-pointer relative ${
+                  className={`pb-2 text-xs sm:text-sm font-semibold transition-colors cursor-pointer relative whitespace-nowrap shrink-0 ${
                     activeTab === 'overview'
                       ? 'text-[#e60023]'
                       : 'text-[var(--text-muted)] hover:text-[var(--text-main)]'
@@ -264,7 +264,7 @@ export default function BookModal() {
                 </button>
                 <button
                   onClick={() => setActiveTab('verses')}
-                  className={`pb-2 text-xs sm:text-sm font-semibold transition-colors cursor-pointer relative ${
+                  className={`pb-2 text-xs sm:text-sm font-semibold transition-colors cursor-pointer relative whitespace-nowrap shrink-0 ${
                     activeTab === 'verses'
                       ? 'text-[#e60023]'
                       : 'text-[var(--text-muted)] hover:text-[var(--text-main)]'
@@ -277,7 +277,7 @@ export default function BookModal() {
                 </button>
                 <button
                   onClick={() => setActiveTab('reviews')}
-                  className={`pb-2 text-xs sm:text-sm font-semibold transition-colors cursor-pointer relative ${
+                  className={`pb-2 text-xs sm:text-sm font-semibold transition-colors cursor-pointer relative whitespace-nowrap shrink-0 ${
                     activeTab === 'reviews'
                       ? 'text-[#e60023]'
                       : 'text-[var(--text-muted)] hover:text-[var(--text-main)]'
@@ -357,7 +357,7 @@ export default function BookModal() {
             </div>
 
             {/* Bottom Actions Bar */}
-            <div className="pt-4 mt-4 border-t border-[var(--border-subtle)] flex items-center gap-2.5">
+            <div className="pt-4 mt-4 border-t border-[var(--border-subtle)] flex flex-wrap sm:flex-nowrap items-center gap-2">
               <Link
                 href={`/books/${selectedBook.id}`}
                 onClick={closeBookModal}
@@ -373,7 +373,7 @@ export default function BookModal() {
                   addToBag(selectedBook, selectedBinding);
                   closeBookModal();
                 }}
-                className="flex-1 py-2.5 px-4 rounded-full text-xs sm:text-sm font-semibold bg-[var(--bg-input)] hover:bg-[var(--bg-hover)] text-[var(--text-main)] cursor-pointer flex items-center justify-center gap-1.5 border border-[var(--border-subtle)]"
+                className="flex-1 py-2.5 px-3.5 rounded-full text-xs sm:text-sm font-semibold bg-[var(--bg-input)] hover:bg-[var(--bg-hover)] text-[var(--text-main)] cursor-pointer flex items-center justify-center gap-1.5 border border-[var(--border-subtle)] whitespace-nowrap"
               >
                 <Handbag size={15} />
                 <span>Add to Bag</span>
@@ -385,7 +385,7 @@ export default function BookModal() {
                   closeBookModal();
                   router.push('/checkout');
                 }}
-                className="flex-1 py-2.5 px-4 rounded-full text-xs sm:text-sm font-bold bg-[#F1641E] hover:bg-[#d45314] text-white cursor-pointer shadow-sm flex items-center justify-center gap-1.5"
+                className="w-full sm:w-auto sm:flex-1 py-2.5 px-4 rounded-full text-xs sm:text-sm font-bold bg-[#F1641E] hover:bg-[#d45314] text-white cursor-pointer shadow-sm flex items-center justify-center gap-1.5 whitespace-nowrap"
               >
                 <span>Buy Now (Rs. {selectedBook.price.toLocaleString()})</span>
               </button>

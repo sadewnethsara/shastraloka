@@ -1,0 +1,7 @@
+{
+  "name": "Shastraloka",
+  "description": "Sri Lanka's Premier Classical Bookstore & Heritage Manuscript Library",
+  "capabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
