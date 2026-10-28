@@ -12,8 +12,10 @@ export default function HeroBanner() {
 
   if (dismissed) return null;
 
-  const mahawamsa = BOOKS[0];
-  const visuddhimagga = BOOKS[1];
+  const mahawamsa = BOOKS.find((b) => b.id === 'mahawamsa-great-chronicle') || BOOKS[0];
+  const visuddhimagga = BOOKS.find((b) => b.id === 'gajaga-wannama-royal-chronicle') || BOOKS[1];
+  const fallbackCover =
+    'https://grantha.lk/media/catalog/product/cache/5fa2393eb818a642e720faf99039a3de/m/a/manikkawatha_1.jpg';
 
   return (
     <div className="max-w-[1720px] mx-auto px-4 sm:px-6 mb-6">
@@ -93,6 +95,10 @@ export default function HeroBanner() {
                 <img
                   src={visuddhimagga.coverImage}
                   alt={visuddhimagga.title}
+                  referrerPolicy="no-referrer"
+                  onError={(e) => {
+                    if (e.currentTarget.src !== fallbackCover) e.currentTarget.src = fallbackCover;
+                  }}
                   className="w-full h-full object-cover"
                 />
               </div>
@@ -125,6 +131,10 @@ export default function HeroBanner() {
                 <img
                   src={mahawamsa.coverImage}
                   alt={mahawamsa.title}
+                  referrerPolicy="no-referrer"
+                  onError={(e) => {
+                    if (e.currentTarget.src !== fallbackCover) e.currentTarget.src = fallbackCover;
+                  }}
                   className="w-full h-full object-cover"
                 />
               </div>
