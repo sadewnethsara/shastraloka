@@ -62,6 +62,19 @@
 - **New Books & Routes:** Whenever new books or routes are added to `src/data/books.ts`, ensure they include `price` (LKR), `originalPrice` (LKR), `sinhalaTitle`, and `tags` so `sitemap.ts`, `searchEngine.ts`, and `seoConfig.ts` automatically index them with LKR price & offer percentage badges.
 - **External SEO Documentation:** Keep [`guide.md`](guide.md) in the root directory updated when SEO routes or schemas change.
 
+### Rule 7: Strict English UI (Pinterest + Etsy Aesthetic, No Sinhala Script in UI)
+- **Visual Aesthetic:** Strictly follow high-end Pinterest (clean geometric sans `--font-sans` for UI body, labels, badges, buttons) and Etsy (refined classical serif `--font-serif` for titles, headers, and editorial accents).
+- **No Sinhala Script in User-Facing UI:** All user-facing UI labels, modal headers, card subtitles, badges, search autocomplete entries, and navigation text must be rendered strictly in English. Never display Sinhala script text in visible UI components (e.g. `VisualSearchModal`, `Header`, `BookCard`, `HeroBanner`, `BookModal`, `Footer`, etc.).
+- *(Note: Dual-domain SEO indexing for `https://ශාස්ත්රාලෝක.ලංකා` and catalog data fields such as `book.sinhalaTitle` remain in metadata, sitemaps, and search engines for domain resolution and SEO, but MUST NOT be rendered directly on user-facing UI elements).*
+
+### Rule 8: Universal Page Container Standard (`page-container` / `PageContainer`)
+- **Consistent Layout Across All Routes:** Every page in `src/app/` must use the universal responsive layout container matching the landing page:
+  `max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 w-full`
+- **Standard Implementation:**
+  - Use the CSS utility class `.page-container` (defined in `src/app/globals.css`) on the page `<main className="page-container ...">` or wrapper.
+  - Or import and use `<PageContainer>` from [`src/components/ui/PageContainer.tsx`](src/components/ui/PageContainer.tsx) / `@/components/PageContainer`.
+  - **Never hardcode arbitrary widths** (e.g. `max-w-[1140px]`, `max-w-[1200px]`, `max-w-[1720px]`, or non-standard `px-3.5`) on top-level page containers that cause horizontal jumping between routes. Any future modification to horizontal padding or maximum width must be made in `src/app/globals.css` (`.page-container`) and [`src/components/ui/PageContainer.tsx`](src/components/ui/PageContainer.tsx) so that all pages update simultaneously.
+
 ---
 
 ## 3. Directory Layout
@@ -132,3 +145,5 @@ pnpm build
 | **2026-10-28** | Removed npm `gestalt` & bundled UI locally | Avoided heavy external package locks while preserving all 99 Gestalt components locally in `src/components/ui/gestalt/`. |
 | **2026-10-28** | Added Pinterest search body, live autocomplete & LKR offer % tags | Implemented `src/utils/searchEngine.ts` and rebuilt `/search` with closest-book-first ranking and suggested books. |
 | **2026-10-28** | Added full SEO, Dual Domains (`shastraloka.lk` & `ශාස්ත්රාලෝක.ලංකා`), `llms.txt` & `guide.md` | Configured Schema.org `@graph`, `sitemap.ts`, `robots.ts`, competitive bookstore SEO keywords, and external Search Console guide. |
+| **2026-10-28** | Removed Sinhala text from App UI & Standardized Pinterest/Etsy fonts | Enforced English Pinterest + Etsy aesthetic across all components & removed Sinhala script from UI. |
+| **2026-10-28** | Standardized Universal PageContainer across all routes | Applied `page-container` and `PageContainer` (1440px + px-4 sm:px-6 lg:px-8) across all app routes. |

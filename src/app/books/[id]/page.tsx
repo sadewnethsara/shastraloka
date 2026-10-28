@@ -849,7 +849,7 @@ function ProductDetailContent() {
 
 
       {/* 3. Breadcrumb & Back Bar (Centered) */}
-      <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 pt-4 pb-2">
+      <div className="page-container pt-4 pb-2">
         <div className="flex items-center justify-center text-xs text-neutral-500">
           <div className="flex items-center flex-wrap justify-center gap-1.5 text-center">
             <Link
@@ -882,7 +882,7 @@ function ProductDetailContent() {
       {/* =====================================================================
           MAIN PRODUCT DETAIL SECTION (3-Way Fusion: Pinterest + Etsy + Amazon)
          ===================================================================== */}
-      <main className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-4 space-y-14">
+      <main className="page-container py-4 space-y-14">
         <section className="grid grid-cols-1 lg:grid-cols-12 gap-8 xl:gap-10 items-start">
           {/* -----------------------------------------------------------------
               LEFT COLUMN TOP (lg:col-span-7): Gallery Card (1st on Mobile)
@@ -1866,7 +1866,7 @@ function ProductDetailContent() {
               </blockquote>
               <div className="pt-2 border-t border-white/15 flex items-center justify-between text-xs text-[#D7E2DC]">
                 <span>From the Prologue of {activeBook.title}</span>
-                <span className="font-sinhala text-[11px] opacity-80">ශාස්ත්‍රාලෝක එකතුව</span>
+                <span className="text-[11px] opacity-80 uppercase tracking-wider font-semibold">Shastraloka Royal Collection</span>
               </div>
             </div>
 

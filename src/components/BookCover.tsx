@@ -47,12 +47,12 @@ export default function BookCover({
           className="w-full h-full flex flex-col justify-between p-4 text-center items-center"
           style={{ background: book.bgGradient || book.themeColor }}
         >
-          <div className="w-10 h-10 rounded-full border border-amber-300/40 bg-black/40 flex items-center justify-center font-sinhala text-amber-200 text-lg mt-3">
-            {book.symbol}
+          <div className="w-10 h-10 rounded-full border border-amber-300/40 bg-black/40 flex items-center justify-center font-serif font-bold text-amber-200 text-sm mt-3">
+            SL
           </div>
           <div>
-            <p className="font-sinhala font-bold text-amber-100 text-base leading-snug">
-              {book.sinhalaTitle}
+            <p className="font-serif font-bold text-amber-100 text-sm leading-snug">
+              {book.category}
             </p>
             <p className="font-serif font-bold text-white/90 text-xs mt-1 line-clamp-2">
               {book.title}
@@ -74,8 +74,8 @@ export default function BookCover({
       {/* 4. Optional Top / Bottom Badge */}
       {showOverlayTitle && (
         <div className="absolute inset-x-0 bottom-0 p-3 bg-gradient-to-t from-black/80 via-black/40 to-transparent z-10 text-white pointer-events-none">
-          <p className="font-sinhala font-bold text-xs text-amber-200 truncate">
-            {book.sinhalaTitle}
+          <p className="text-[10px] font-bold text-amber-300 uppercase tracking-wider truncate">
+            {book.category}
           </p>
           <p className="font-serif font-semibold text-xs text-white truncate">
             {book.title}

@@ -437,7 +437,7 @@ export default function App() {
       {/* =====================================================================
           MAIN CENTERED WHITE CARD CONTAINER (540px max width like Etsy)
          ===================================================================== */}
-      <main className="flex-1 px-3.5 sm:px-4 pb-16 pt-2 flex items-start justify-center">
+      <main className="page-container flex-1 pb-16 pt-2 flex items-start justify-center">
         <div className="w-full max-w-[540px] bg-white rounded-[24px] sm:rounded-[28px] shadow-[0_2px_24px_rgba(0,0,0,0.05)] border border-black/[0.06] px-4 sm:px-10 py-6 sm:py-9 transition-all">
           {/* Validation Error Banner */}
           {errorMessage && (

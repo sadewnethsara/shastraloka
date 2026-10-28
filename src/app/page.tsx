@@ -403,7 +403,7 @@ export default function LandingPage() {
       <Header />
 
       {/* Main Content Container */}
-      <main className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 pt-4 sm:pt-6 pb-16 space-y-12 sm:space-y-16">
+      <main className="page-container pt-4 sm:pt-6 pb-16 space-y-12 sm:space-y-16">
 
         {/* ===================================================================
             1. HERO SECTION (Desktop 2-col, Tablet horizontal, Mobile vertical)

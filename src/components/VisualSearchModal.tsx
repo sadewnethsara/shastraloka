@@ -69,7 +69,7 @@ const ARCHIVAL_PRESETS: ArchivalPreset[] = [
 const SCAN_STEPS = [
   { label: 'Initializing neural manuscript scanner...', progress: 18 },
   { label: 'Analyzing palm-leaf fiber, folios & binding...', progress: 42 },
-  { label: 'Deciphering Pali & Classical Sinhala script glyphs...', progress: 75 },
+  { label: 'Deciphering archival calligraphy & typography...', progress: 75 },
   { label: 'Matching against Shastraloka Royal Library archives...', progress: 95 },
   { label: 'Treatise identified with high confidence!', progress: 100 },
 ];
@@ -237,11 +237,11 @@ export default function VisualSearchModal({ isOpen, onClose }: VisualSearchModal
               <Camera className="w-5 h-5 stroke-[2.2]" />
             </div>
             <div>
-              <h2 className="text-base sm:text-lg font-bold font-serif text-[var(--text-main)] leading-tight">
+              <h2 className="text-base sm:text-lg font-bold font-serif text-[var(--text-main)] leading-tight tracking-tight">
                 Visual Manuscript Search
               </h2>
-              <p className="text-[11px] sm:text-xs text-[var(--text-muted)] font-sinhala">
-                ශාස්ත්‍රීය දෘශ්‍ය ගවේෂණය • AI Ola Leaf & Book Recognition
+              <p className="text-[11px] sm:text-xs text-[var(--text-muted)] font-medium tracking-normal mt-0.5">
+                AI Palm-Leaf Folio & Classical Book Recognition
               </p>
             </div>
           </div>
@@ -297,7 +297,7 @@ export default function VisualSearchModal({ isOpen, onClose }: VisualSearchModal
 
                 <div className="mt-4 inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[var(--bg-surface)] border border-[var(--border-subtle)] text-[11px] text-[var(--text-muted)]">
                   <Sparkles className="w-3.5 h-3.5 text-amber-500" />
-                  <span>Recognizes ancient Pali, Sinhala script, and classical treatise bindings</span>
+                  <span>Recognizes ancient folios, rare manuscripts, and classical treatise bindings</span>
                 </div>
               </div>
 
@@ -447,8 +447,8 @@ export default function VisualSearchModal({ isOpen, onClose }: VisualSearchModal
                     <h4 className="text-base sm:text-lg font-bold font-serif text-[var(--text-main)] leading-snug">
                       {matchedBook.title}
                     </h4>
-                    <p className="text-xs font-sinhala text-[var(--text-muted)] mt-0.5">
-                      {matchedBook.sinhalaTitle} • {matchedBook.author}
+                    <p className="text-xs text-[var(--text-muted)] font-medium mt-0.5">
+                      By {matchedBook.author} • {matchedBook.binding || 'Classical Treatise'}
                     </p>
                     <p className="text-xs text-[var(--text-body)] line-clamp-2 mt-2">
                       {matchedBook.description}

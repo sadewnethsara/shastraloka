@@ -403,7 +403,7 @@ export default function Header({ isSticky = false }: HeaderProps = {}) {
                         {book.title}
                       </p>
                       <p className="text-[11px] text-[var(--header-text-muted)] truncate">
-                        {book.sinhalaTitle} • {book.author}
+                        {book.category} • {book.author}
                       </p>
                       <div className="flex items-center gap-2 mt-0.5 text-[10px] text-[var(--header-text-muted)]">
                         <span className="inline-flex items-center text-amber-500 font-semibold">
@@ -431,11 +431,10 @@ export default function Header({ isSticky = false }: HeaderProps = {}) {
   return (
     <>
       <header
-        className={`${
-          isSticky
+        className={`${isSticky
             ? 'sticky top-0 backdrop-blur-md bg-[var(--header-bg-glass)]'
             : 'relative bg-[var(--header-bg)]'
-        } z-40 border-b border-[var(--header-border)] text-[var(--header-text)] transition-colors duration-200`}
+          } z-40 border-b border-[var(--header-border)] text-[var(--header-text)] transition-colors duration-200`}
       >
         <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8">
           {/* =====================================================================
@@ -456,8 +455,8 @@ export default function Header({ isSticky = false }: HeaderProps = {}) {
               >
                 Shastraloka
               </span>
-              <span className="text-[10px] text-[var(--header-text-muted)] font-sinhala tracking-wider pl-0.5">
-                ශාස්ත්‍රලෝක • Classical Bookstore
+              <span className="text-[10px] text-[var(--header-text-muted)] font-medium tracking-wide pl-0.5">
+                Classical Bookstore & Library
               </span>
             </Link>
 
@@ -471,9 +470,8 @@ export default function Header({ isSticky = false }: HeaderProps = {}) {
                 <Menu className="w-4 h-4 text-[var(--header-text)]" />
                 <span>Categories</span>
                 <ChevronDown
-                  className={`w-3.5 h-3.5 text-[var(--header-text-muted)] transition-transform ${
-                    categoriesOpen ? 'rotate-180' : ''
-                  }`}
+                  className={`w-3.5 h-3.5 text-[var(--header-text-muted)] transition-transform ${categoriesOpen ? 'rotate-180' : ''
+                    }`}
                 />
               </button>
 

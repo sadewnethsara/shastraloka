@@ -66,7 +66,7 @@ export default function PublisherDetailPage() {
             <Header isSticky />
             <SearchGuides />
 
-            <main className="flex-1 max-w-[1440px] w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+            <main className="page-container flex-1 py-8 space-y-8">
                 {/* Breadcrumb Navigation */}
                 <div className="flex items-center justify-between text-xs text-[var(--text-muted)]">
                     <Link
@@ -142,9 +142,9 @@ export default function PublisherDetailPage() {
                                     />
                                 </div>
 
-                                <p className="font-sinhala text-sm sm:text-base text-amber-200">
-                                    {publisher.sinhalaName} • {publisher.tagline}
-                                </p>
+                                <p className="text-sm sm:text-base text-amber-200 font-medium">
+              {publisher.sinhalaName} • {publisher.tagline}
+            </p>
                             </div>
                         </div>
 

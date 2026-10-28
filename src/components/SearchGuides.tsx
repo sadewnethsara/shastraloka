@@ -17,8 +17,7 @@ import {
 interface GuideChip {
   id: string;
   label: string;
-  sinhalaLabel?: string;
-  query: string;
+    query: string;
   icon: React.ReactNode;
 }
 
@@ -26,64 +25,55 @@ const SEARCH_GUIDES: GuideChip[] = [
   {
     id: 'all',
     label: 'All Treatises',
-    sinhalaLabel: 'සියලු ග්‍රන්ථ',
-    query: '',
+        query: '',
     icon: <IconCompass size={15} />,
   },
   {
     id: 'chronicles',
     label: 'Mahavamsa & Chronicles',
-    sinhalaLabel: 'මහාවංසය',
-    query: 'Mahavamsa',
+        query: 'Mahavamsa',
     icon: <IconBook size={15} />,
   },
   {
     id: 'buddhism',
     label: 'Theravada Philosophy',
-    sinhalaLabel: 'විසුද්ධිමග්ග',
-    query: 'Buddhist',
+        query: 'Buddhist',
     icon: <IconScroll size={15} />,
   },
   {
     id: 'ayurveda',
     label: 'Ayurveda & Healing',
-    sinhalaLabel: 'දේශීය වෙදකම',
-    query: 'Ayurveda',
+        query: 'Ayurveda',
     icon: <IconLeaf size={15} />,
   },
   {
     id: 'poetry',
     label: 'Classical Poetry (Kavya)',
-    sinhalaLabel: 'සැළලිහිණිය',
-    query: 'Poetry',
+        query: 'Poetry',
     icon: <IconFeather size={15} />,
   },
   {
     id: 'ola-leaf',
     label: 'Ola Leaf Replicas',
-    sinhalaLabel: 'පුස්කොළ පොත්',
-    query: 'Ola Leaf',
+        query: 'Ola Leaf',
     icon: <IconScroll size={15} />,
   },
   {
     id: 'gold-embossed',
     label: 'Gold Foil Deluxe',
-    sinhalaLabel: 'රන් මුද්‍රිත',
-    query: 'Gold',
+        query: 'Gold',
     icon: <IconCrown size={15} />,
   },
   {
     id: 'audiobooks',
     label: 'Recitations & Audio',
-    sinhalaLabel: 'සජ්ඣායනා',
-    query: 'chanting',
+        query: 'chanting',
     icon: <IconAudioWave size={15} />,
   },
   {
     id: 'aesthetic',
     label: 'Archival Curations',
-    sinhalaLabel: 'පුස්තකාල එකතුව',
-    query: 'aesthetic',
+        query: 'aesthetic',
     icon: <IconSparkle size={15} />,
   },
 ];
@@ -130,11 +120,7 @@ export default function SearchGuides({ onSelectGuide, className = '' }: SearchGu
                 {chip.icon}
               </span>
               <span>{chip.label}</span>
-              {chip.sinhalaLabel && (
-                <span className="font-sinhala text-[11px] opacity-60 hidden md:inline">
-                  • {chip.sinhalaLabel}
-                </span>
-              )}
+              
             </button>
           );
         })}

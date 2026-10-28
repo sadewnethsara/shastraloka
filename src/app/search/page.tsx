@@ -406,8 +406,8 @@ function PinterestBookPin({ item, index, activeQuery }: PinterestBookPinProps) {
 
         {/* Sinhala Title & Author */}
         <p className="text-[11px] text-[var(--text-muted)] truncate mt-0.5">
-          <span className="font-sinhala text-[#a66523] dark:text-amber-400 font-medium">
-            {book.sinhalaTitle}
+          <span className="text-[#a66523] dark:text-amber-400 font-medium">
+            {book.category}
           </span>{' '}
           • {book.author}
         </p>
@@ -636,7 +636,7 @@ function SearchContent() {
       {/* =====================================================================
           2. PINTEREST SEARCH BODY CONTAINER
          ===================================================================== */}
-      <main className="flex-1 max-w-[1720px] w-full mx-auto px-3 sm:px-6 lg:px-8 py-4 sm:py-5 space-y-4">
+      <main className="page-container flex-1 py-4 sm:py-5 space-y-4">
         {/* -------------------------------------------------------------------
             TOP FILTER BUTTON + COLORED THUMBNAIL GUIDE PILLS (Screenshot 1)
            ------------------------------------------------------------------- */}

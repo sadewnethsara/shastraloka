@@ -97,7 +97,7 @@ function OrderDetailContent() {
     <div className="min-h-screen bg-[var(--bg-main)] text-[var(--text-main)]">
       <Header />
 
-      <main className="max-w-[1200px] mx-auto px-4 sm:px-6 py-8 sm:py-12">
+      <main className="page-container py-8 sm:py-12">
         
         {/* Top Header & Breadcrumbs */}
         <div className="flex flex-wrap items-center justify-between gap-4 pb-6 border-b border-[var(--border-subtle)] mb-8">
@@ -285,8 +285,8 @@ function OrderDetailContent() {
                     </div>
                     <div className="flex-1 text-xs">
                       <h4 className="font-serif font-bold text-sm text-[var(--text-main)]">{item.book.title}</h4>
-                      {item.book.sinhalaTitle && (
-                        <p className="font-sinhala text-[#a66523]">{item.book.sinhalaTitle}</p>
+                      {item.book.category && (
+                        <p className="text-[var(--color-primary)] font-medium">{item.book.category}</p>
                       )}
                       <p className="text-[11px] text-[var(--text-muted)] mt-0.5">
                         Edition: <strong>{item.binding}</strong>

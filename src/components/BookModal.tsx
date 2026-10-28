@@ -270,7 +270,7 @@ export default function BookModal() {
                       : 'text-[var(--text-muted)] hover:text-[var(--text-main)]'
                   }`}
                 >
-                  Sacred Verses (ගාථා / කාව්‍ය)
+                  Sacred Verses & Chants
                   {activeTab === 'verses' && (
                     <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#e60023]" />
                   )}
@@ -311,8 +311,8 @@ export default function BookModal() {
 
               {activeTab === 'verses' && (
                 <div className="p-3.5 rounded-xl bg-[#fdf6e8] dark:bg-[#201a14] border border-[#f5e8c8] dark:border-[#3a2e22] text-center space-y-2">
-                  <div className="font-sinhala font-bold text-lg text-[#a66523] dark:text-amber-300 leading-relaxed">
-                    {selectedBook.versesSnippet.original}
+                  <div className="font-serif italic font-semibold text-base text-[#a66523] dark:text-amber-300 leading-relaxed">
+                    &ldquo;{selectedBook.versesSnippet.english}&rdquo;
                   </div>
                   <div className="text-[11px] font-mono text-[var(--text-muted)] italic">
                     {selectedBook.versesSnippet.transliteration}

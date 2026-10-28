@@ -114,11 +114,10 @@ export const SearchField = forwardRef<HTMLInputElement, SearchFieldProps>(
           placeholder={placeholder}
           aria-label={accessibilityLabel}
           autoFocus={autoFocus}
-          className={`w-full h-full bg-[var(--bg-input)] text-[var(--text-main)] placeholder:text-[var(--text-dim)] border-2 rounded-full transition-all duration-200 outline-hidden ${
-            isFocused
+          className={`w-full h-full bg-[var(--bg-input)] text-[var(--text-main)] placeholder:text-[var(--text-dim)] border-2 rounded-full transition-all duration-200 outline-hidden ${isFocused
               ? 'border-[var(--border-focus)] shadow-sm'
               : 'border-[var(--border-strong)] hover:border-[var(--border-focus)]'
-          } ${sizeClasses.input}`}
+            } ${sizeClasses.input}`}
         />
 
         {/* Clear Button */}
@@ -130,11 +129,10 @@ export const SearchField = forwardRef<HTMLInputElement, SearchFieldProps>(
               handleClear();
             }}
             aria-label="Clear search input"
-            className={`absolute flex items-center justify-center p-1 rounded-full text-[var(--text-dim)] hover:text-[var(--text-main)] hover:bg-[var(--header-hover-bg)] transition ${
-              onImageSearchClick
+            className={`absolute flex items-center justify-center p-1 rounded-full text-[var(--text-dim)] hover:text-[var(--text-main)] hover:bg-[var(--header-hover-bg)] transition ${onImageSearchClick
                 ? (showSubmitButton ? 'right-19 sm:right-21' : 'right-10')
                 : (showSubmitButton ? 'right-12 sm:right-14' : 'right-3')
-            }`}
+              }`}
           >
             <X className="w-4 h-4" />
           </button>
@@ -150,9 +148,8 @@ export const SearchField = forwardRef<HTMLInputElement, SearchFieldProps>(
             }}
             title="Search sacred manuscripts by image"
             aria-label="Search sacred manuscripts by image"
-            className={`absolute flex items-center justify-center p-1.5 rounded-full text-[var(--text-dim)] hover:text-[var(--color-primary)] hover:bg-[var(--header-hover-bg)] transition-colors cursor-pointer group ${
-              showSubmitButton ? 'right-11 sm:right-13' : 'right-2 sm:right-2.5'
-            }`}
+            className={`absolute flex items-center justify-center p-1.5 rounded-full text-[var(--text-dim)] hover:text-[var(--color-primary)] hover:bg-[var(--header-hover-bg)] transition-colors cursor-pointer group ${showSubmitButton ? 'right-11 sm:right-13' : 'right-2 sm:right-2.5'
+              }`}
           >
             <Camera className="w-4 h-4 stroke-[2.2] group-hover:scale-110 transition-transform" />
             <span className="w-1.5 h-1.5 rounded-full bg-[var(--color-primary)] absolute bottom-1 right-1" />

@@ -44,7 +44,7 @@ export default function ProfilePage() {
       <Header />
       <SearchGuides />
 
-      <main className="max-w-[1720px] mx-auto px-4 sm:px-6 py-8 sm:py-12">
+      <main className="page-container py-8 sm:py-12">
         
         {/* Profile Header Section */}
         <div className="max-w-2xl mx-auto text-center space-y-4 pb-10 border-b border-[var(--border-subtle)]">
@@ -64,8 +64,8 @@ export default function ProfilePage() {
             <h1 className="font-serif font-bold text-2xl sm:text-3xl text-[var(--text-main)]">
               Dr. Senaka Bandara
             </h1>
-            <p className="font-sinhala text-xs sm:text-sm text-[#a66523] dark:text-amber-400 font-semibold">
-              සම්මානිත ආචාර්ය සේනක බණ්ඩාර • ශ්‍රී ලංකා පුරාවිද්‍යා සංගමය
+            <p className="text-xs sm:text-sm text-[#a66523] dark:text-amber-400 font-semibold">
+              Prof. Emeritus Senaka Bandara • Royal Archaeological Society
             </p>
             <p className="text-xs sm:text-sm text-[var(--text-muted)] max-w-lg mx-auto pt-1 leading-relaxed">
               Bibliophile & researcher of classical Theravada treatises, Mahavihara historical chronicles, and ancient palm-leaf ola manuscripts.

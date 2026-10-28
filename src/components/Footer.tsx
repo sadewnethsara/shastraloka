@@ -241,15 +241,15 @@ export default function Footer() {
         <div className="pt-5 pb-4 border-t border-neutral-300/70 dark:border-neutral-800 text-[11px] text-neutral-500 dark:text-neutral-400 space-y-2">
           <div className="flex flex-wrap items-center justify-between gap-2">
             <p className="font-bold text-[#222222] dark:text-neutral-200">
-              Shastraloka (ශාස්ත්රාලෝක | ශාස්ත්‍රලෝක) — Sri Lanka&apos;s Premier Online Bookstore
+              Shastraloka — Sri Lanka&apos;s Premier Classical Bookstore & Royal Archive
             </p>
             <div className="flex items-center gap-3 font-semibold text-[#F1641E]">
               <a href="https://shastraloka.lk" className="hover:underline">
                 shastraloka.lk
               </a>
               <span>•</span>
-              <a href="https://ශාස්ත්රාලෝක.ලංකා" className="font-sinhala hover:underline">
-                ශාස්ත්රාලෝක.ලංකා
+              <a href="https://shastraloka.lk" className="hover:underline">
+                shastraloka.lk
               </a>
             </div>
           </div>
@@ -287,12 +287,12 @@ export default function Footer() {
                 <line x1="2" y1="12" x2="22" y2="12" />
                 <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
               </svg>
-              <span>Sri Lanka (LKR) • shastraloka.lk | ශාස්ත්රාලෝක.ලංකා</span>
+              <span>Sri Lanka (LKR) • shastraloka.lk | Royal Archival Editions</span>
             </span>
           </div>
 
           <div className="flex flex-wrap items-center gap-x-4 gap-y-1.5">
-            <span>&copy; 2026 Shastraloka (ශාස්ත්රාලෝක) Heritage, Inc.</span>
+            <span>&copy; 2026 Shastraloka Heritage, Inc. All rights reserved.</span>
             <a href="#terms" className="underline hover:text-black dark:hover:text-white">Terms of Use</a>
             <a href="#privacy" className="underline hover:text-black dark:hover:text-white">Privacy Policy</a>
             <a href="/sitemap.xml" className="underline hover:text-black dark:hover:text-white">Sitemap XML</a>

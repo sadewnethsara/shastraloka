@@ -166,8 +166,8 @@ export default function BookCard({ book }: BookCardProps) {
       {/* Book Metadata Underneath (Etsy Restraint) */}
       <div className="pt-2.5 pb-1 px-1">
         {/* Classical Sinhala Subtitle */}
-        <p className="font-sinhala text-xs text-[#a66523] dark:text-amber-400 font-medium truncate mb-0.5">
-          {book.sinhalaTitle}
+        <p className="text-xs text-[var(--color-primary)] font-medium truncate mb-0.5">
+          {book.category} • {book.binding}
         </p>
 
         {/* English Title in Disciplined Literary Serif */}

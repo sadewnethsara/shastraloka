@@ -1264,7 +1264,7 @@ export default function Bag() {
             {/* TOP INTERACTIVE PRESET SWITCHER BAR (Amazon + Pinterest + Etsy Hybrid) */}
             {/* ------------------------------------------------------------------- */}
             <div className="bg-[#faf8f5] border-b border-stone-200/80 px-4 py-1.5 text-xs">
-                <div className="max-w-[1280px] mx-auto flex flex-wrap items-center justify-between gap-2">
+                <div className="page-container flex flex-wrap items-center justify-between gap-2">
                     <div className="flex items-center gap-2 text-stone-600">
                         <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-[#e60023]/10 text-[#e60023] font-semibold text-[11px]">
                             <Bookmark className="w-3 h-3 fill-current" /> Pinterest Book Aesthetic
@@ -1303,7 +1303,7 @@ export default function Bag() {
             {/* MAIN HEADER BAR (Cloned from Screenshots + Bookstore & Pin Touches) */}
             {/* ------------------------------------------------------------------- */}
             <header className="sticky top-0 z-30 bg-white border-b border-stone-200">
-                <div className="max-w-[1280px] mx-auto px-4 sm:px-6">
+                <div className="page-container">
                     {/* Row 1: Brand + Desktop Search + Right Actions */}
                     <div className="h-[64px] md:h-[72px] flex items-center justify-between gap-2 sm:gap-5 relative">
                         {/* Left: Logo + Categories */}
@@ -1320,8 +1320,8 @@ export default function Bag() {
                                 >
                                     Shastraloka
                                 </span>
-                                <span className="text-[9.5px] text-stone-500 font-sinhala tracking-wider pl-0.5">
-                                    ශාස්ත්‍රලෝක • Classical Bookstore
+                                <span className="text-[9.5px] text-stone-500 font-medium tracking-wide pl-0.5">
+                                    Classical Bookstore & Library
                                 </span>
                             </Link>
 
@@ -1575,7 +1575,7 @@ export default function Bag() {
             {/* ------------------------------------------------------------------- */}
             {/* MAIN BODY CONTAINER */}
             {/* ------------------------------------------------------------------- */}
-            <main className="max-w-[1140px] mx-auto px-4 sm:px-6 pt-6 pb-16">
+            <main className="page-container pt-6 pb-16">
                 {/* Page Heading ("Your bag" replacing "Your cart") */}
                 <div className="flex flex-wrap items-center justify-between gap-2 mb-5">
                     <div className="flex items-baseline gap-3">
@@ -2321,7 +2321,7 @@ export default function Bag() {
             {/* FOOTER (Exact Clone of Bottom Region, Links & Merchant Legal Text)  */}
             {/* ------------------------------------------------------------------- */}
             <footer className="border-t border-stone-200 bg-white text-[#222222] mt-8">
-                <div className="max-w-[1140px] mx-auto px-4 sm:px-6 py-5 flex flex-col sm:flex-row items-center justify-between gap-4 text-[12px]">
+                <div className="page-container py-5 flex flex-col sm:flex-row items-center justify-between gap-4 text-[12px]">
                     {/* Left: Location Selector */}
                     <button
                         onClick={() =>

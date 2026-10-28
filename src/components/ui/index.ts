@@ -9,6 +9,7 @@ export * from './Toast';
 export * from './Dropdown';
 export * from './Accordion';
 export * from './Box';
+export * from './PageContainer';
 
 // Full Suite of Gestalt UI Components (Local, Self-Contained)
 export {

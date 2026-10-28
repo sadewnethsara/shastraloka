@@ -34,7 +34,7 @@ export default function HeroBanner() {
           <div className="lg:col-span-7 flex flex-col gap-3.5">
             {/* National Classical Archive Badge */}
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#f5e8c8] dark:bg-[#34271a] text-[#a66523] dark:text-amber-300 text-xs font-semibold tracking-wide w-fit">
-              <span className="font-sinhala font-bold text-sm">ශ්‍රී</span>
+              <span className="font-serif font-bold text-sm tracking-tight">SL</span>
               <span>National Classical Archive • National Heritage Collection</span>
             </div>
 
@@ -53,7 +53,7 @@ export default function HeroBanner() {
                 onClick={() => openBookModal(mahawamsa)}
                 className="h-11 px-5 rounded-full bg-[#e60023] hover:bg-[#ad081b] text-white font-semibold text-sm pill-btn shadow-xs cursor-pointer flex items-center gap-2"
               >
-                <span>Featured: The Mahavamsa (මහාවංසය)</span>
+                <span>Featured: The Mahavamsa (Great Chronicle)</span>
                 <span>&rarr;</span>
               </button>
 
@@ -97,8 +97,8 @@ export default function HeroBanner() {
                 />
               </div>
               <div className="pt-2">
-                <p className="font-sinhala text-xs text-[#a66523] font-medium truncate">
-                  {visuddhimagga.sinhalaTitle}
+                <p className="text-xs text-[#a66523] dark:text-amber-400 font-medium truncate">
+                  {visuddhimagga.category}
                 </p>
                 <p className="font-serif font-bold text-xs text-[#222222] dark:text-white truncate mt-0.5">
                   {visuddhimagga.title}
@@ -129,8 +129,8 @@ export default function HeroBanner() {
                 />
               </div>
               <div className="pt-2">
-                <p className="font-sinhala text-xs text-[#a66523] font-medium truncate">
-                  {mahawamsa.sinhalaTitle}
+                <p className="text-xs text-[#a66523] dark:text-amber-400 font-medium truncate">
+                  {mahawamsa.category}
                 </p>
                 <p className="font-serif font-bold text-xs sm:text-sm text-[#222222] dark:text-white line-clamp-1 mt-0.5">
                   {mahawamsa.title}

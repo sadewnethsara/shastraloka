@@ -49,7 +49,7 @@ export const PUBLISHERS: PublisherProfile[] = [
   {
     id: 'shastraloka-guild-press',
     name: 'Shastraloka Guild Press',
-    sinhalaName: 'ශාස්ත්‍රලෝක මුද්‍රණ සංසදය',
+    sinhalaName: 'Shastraloka Archival Imprints',
     tagline: 'Flagship Archival & Royal Chronicle Imprint',
     location: 'Colombo 07 & Kandy, Sri Lanka',
     foundedYear: 1984,
@@ -74,7 +74,7 @@ export const PUBLISHERS: PublisherProfile[] = [
   {
     id: 'mahavihara-monastic-press',
     name: 'Mahavihara Monastic Press',
-    sinhalaName: 'මහාවිහාර ධර්ම ග්‍රන්ථ ප්‍රකාශකයෝ',
+    sinhalaName: 'Mahavihara Canonical Publications',
     tagline: 'Canonical Pali & Theravada Abhidhamma Scriptorium',
     location: 'Sacred City of Anuradhapura',
     foundedYear: 1956,
@@ -99,7 +99,7 @@ export const PUBLISHERS: PublisherProfile[] = [
   {
     id: 'totagamuwa-kavya-mandapa',
     name: 'Totagamuwa Kavya Mandapa',
-    sinhalaName: 'තොටගමුව කාව්‍ය මණ්ඩපය',
+    sinhalaName: 'Totagamuwa Poetic Scriptorium',
     tagline: 'Classical Sinhala Sandesha & Elu Prose House',
     location: 'Galle Fort & Kotte, Sri Lanka',
     foundedYear: 1972,
@@ -126,7 +126,7 @@ export const PUBLISHERS: PublisherProfile[] = [
   {
     id: 'kurunegala-royal-ola-foundry',
     name: 'Kurunegala Royal Ola Foundry',
-    sinhalaName: 'කුරුණෑගල පුස්කොළ පොත් සංරක්ෂණාගාරය',
+    sinhalaName: 'Kurunegala Palm-Leaf Conservation Archive',
     tagline: 'Traditional Palm-Leaf & Jataka Boxset Artisans',
     location: 'Kurunegala & Dambadeniya',
     foundedYear: 1968,
@@ -147,7 +147,7 @@ export const PUBLISHERS: PublisherProfile[] = [
   {
     id: 'heladiva-ayurveda-vastu-council',
     name: 'Heladiva Ayurveda & Vastu Council',
-    sinhalaName: 'හෙළදිව දේශීය වෛද්‍ය හා වාස්තු පර්ෂදය',
+    sinhalaName: 'Heladiva Indigenous Medicine Council',
     tagline: 'Indigenous Medicine & Sacred Stupa Architecture Press',
     location: 'Peradeniya, Central Province',
     foundedYear: 1979,
@@ -220,7 +220,7 @@ export default function PublishersPage() {
       <Header isSticky />
       <SearchGuides />
 
-      <main className="flex-1 max-w-[1440px] w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10 space-y-10">
+      <main className="page-container flex-1 py-8 sm:py-10 space-y-10">
         {/* Hero Banner */}
         <section className="relative rounded-3xl overflow-hidden bg-gradient-to-br from-[#23382C] via-[#1B2B22] to-[#121D17] text-[#F5F2EB] p-6 sm:p-10 lg:p-12 shadow-md border border-[#2D4537]">
           <div className="max-w-3xl space-y-4 relative z-10">
@@ -237,7 +237,7 @@ export default function PublishersPage() {
             </h1>
 
             <p className="font-sinhala text-sm sm:text-base text-[#E8B059] font-semibold">
-              ශාස්ත්‍රලෝක ප්‍රකාශක සංසදය • පුරාණ ග්‍රන්ථ හා පුස්කොළ පොත් මුද්‍රණාල
+              Shastraloka Publishers Guild • Archival Press & Palm-Leaf Scriptoriums
             </p>
 
             <p className="text-sm sm:text-base text-[#D7E2DC] leading-relaxed max-w-2xl">
@@ -368,9 +368,9 @@ export default function PublishersPage() {
                         />
                       </Link>
 
-                      <p className="font-sinhala text-xs sm:text-sm text-amber-200/90">
-                        {pub.sinhalaName} — {pub.tagline}
-                      </p>
+                      <p className="text-xs sm:text-sm text-amber-200/90 font-medium">
+                  {pub.sinhalaName} — {pub.tagline}
+                </p>
                     </div>
                   </div>
 
