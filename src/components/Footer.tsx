@@ -237,25 +237,66 @@ export default function Footer() {
           </div>
         </div>
 
+        {/* SRI LANKA ONLINE BOOKSTORE & AI DISCOVERY SEO DIRECTORY */}
+        <div className="pt-5 pb-4 border-t border-neutral-300/70 dark:border-neutral-800 text-[11px] text-neutral-500 dark:text-neutral-400 space-y-2">
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <p className="font-bold text-[#222222] dark:text-neutral-200">
+              Shastraloka (ශාස්ත්රාලෝක | ශාස්ත්‍රලෝක) — Sri Lanka&apos;s Premier Online Bookstore
+            </p>
+            <div className="flex items-center gap-3 font-semibold text-[#F1641E]">
+              <a href="https://shastraloka.lk" className="hover:underline">
+                shastraloka.lk
+              </a>
+              <span>•</span>
+              <a href="https://ශාස්ත්රාලෝක.ලංකා" className="font-sinhala hover:underline">
+                ශාස්ත්රාලෝක.ලංකා
+              </a>
+            </div>
+          </div>
+          <p className="leading-relaxed">
+            Discover and order authentic Sinhala &amp; English books,{' '}
+            <button type="button" onClick={() => navigateToSearch('gajaga')} className="underline hover:text-[#F1641E] cursor-pointer">
+              Gajaga Wannama
+            </button>
+            ,{' '}
+            <button type="button" onClick={() => navigateToSearch('Mahavamsa')} className="underline hover:text-[#F1641E] cursor-pointer">
+              The Mahavamsa
+            </button>
+            ,{' '}
+            <button type="button" onClick={() => navigateToSearch('Visuddhimagga')} className="underline hover:text-[#F1641E] cursor-pointer">
+              Visuddhimagga
+            </button>
+            ,{' '}
+            <button type="button" onClick={() => navigateToSearch('Jataka')} className="underline hover:text-[#F1641E] cursor-pointer">
+              Pansiya Panas Jataka Potha
+            </button>
+            , and{' '}
+            <button type="button" onClick={() => navigateToSearch('Ayurveda')} className="underline hover:text-[#F1641E] cursor-pointer">
+              Deshiya Wedakama Ayurveda
+            </button>{' '}
+            with up to 28% OFF in LKR. Serving readers across Colombo, Kandy, Galle, Gampaha, Kurunegala &amp; all 25 districts who search for Sri Lanka&apos;s finest editions alongside Sarasavi, M.D. Gunasena, Grantha.lk, Books.lk, Rasakatha, Vijitha Yapa, Makeen Books, Godage &amp; Samudra collections.
+          </p>
+        </div>
+
         {/* BOTTOM LEGAL & REGION BAR */}
-        <div className="pt-5 border-t border-neutral-300/70 dark:border-neutral-800 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 text-[11px] text-neutral-600 dark:text-neutral-400">
-          <div className="flex items-center gap-5">
+        <div className="pt-4 border-t border-neutral-300/70 dark:border-neutral-800 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 text-[11px] text-neutral-600 dark:text-neutral-400">
+          <div className="flex flex-wrap items-center gap-4">
             <span className="inline-flex items-center gap-1.5 font-semibold text-[#222222] dark:text-neutral-200">
               <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <circle cx="12" cy="12" r="10" />
                 <line x1="2" y1="12" x2="22" y2="12" />
                 <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
               </svg>
-              <span>Sri Lanka (LKR)</span>
+              <span>Sri Lanka (LKR) • shastraloka.lk | ශාස්ත්රාලෝක.ලංකා</span>
             </span>
           </div>
 
           <div className="flex flex-wrap items-center gap-x-4 gap-y-1.5">
-            <span>&copy; 2026 Shastraloka Heritage, Inc.</span>
+            <span>&copy; 2026 Shastraloka (ශාස්ත්රාලෝක) Heritage, Inc.</span>
             <a href="#terms" className="underline hover:text-black dark:hover:text-white">Terms of Use</a>
             <a href="#privacy" className="underline hover:text-black dark:hover:text-white">Privacy Policy</a>
-            <a href="#archives" className="underline hover:text-black dark:hover:text-white">Temple Archives</a>
-            <a href="#regional" className="underline hover:text-black dark:hover:text-white">Preservation Program</a>
+            <a href="/sitemap.xml" className="underline hover:text-black dark:hover:text-white">Sitemap XML</a>
+            <a href="/llms.txt" className="underline hover:text-black dark:hover:text-white">AI &amp; LLM Index</a>
           </div>
         </div>
       </div>

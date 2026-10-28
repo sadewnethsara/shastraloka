@@ -97,7 +97,7 @@ function OrderDetailContent() {
     <div className="min-h-screen bg-[var(--bg-main)] text-[var(--text-main)]">
       <Header />
 
-      <main className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+      <main className="max-w-[1200px] mx-auto px-4 sm:px-6 py-8 sm:py-12">
         
         {/* Top Header & Breadcrumbs */}
         <div className="flex flex-wrap items-center justify-between gap-4 pb-6 border-b border-[var(--border-subtle)] mb-8">

@@ -437,8 +437,8 @@ export default function App() {
       {/* =====================================================================
           MAIN CENTERED WHITE CARD CONTAINER (540px max width like Etsy)
          ===================================================================== */}
-      <main className="flex-1 px-4 pb-16 pt-2 flex items-start justify-center">
-        <div className="w-full max-w-[540px] bg-white rounded-[28px] shadow-[0_2px_24px_rgba(0,0,0,0.05)] border border-black/[0.06] px-6 sm:px-10 py-8 sm:py-9 transition-all">
+      <main className="flex-1 px-3.5 sm:px-4 pb-16 pt-2 flex items-start justify-center">
+        <div className="w-full max-w-[540px] bg-white rounded-[24px] sm:rounded-[28px] shadow-[0_2px_24px_rgba(0,0,0,0.05)] border border-black/[0.06] px-4 sm:px-10 py-6 sm:py-9 transition-all">
           {/* Validation Error Banner */}
           {errorMessage && (
             <div className="mb-5 px-4 py-3 rounded-xl bg-[#FDF2F2] border border-[#F8B4B4] text-[#9B1C1C] text-xs font-medium flex items-center justify-between">
@@ -1135,7 +1135,7 @@ export default function App() {
          ===================================================================== */}
       <footer className="pb-6 px-4 text-center space-y-3">
         {/* Quick Step Previewer Bar so you can jump between your 3 screenshots in 1 click */}
-        <div className="inline-flex flex-wrap items-center justify-center gap-1.5 p-1.5 rounded-full bg-white border border-black/10 shadow-xs text-[11px]">
+        <div className="inline-flex flex-wrap items-center justify-center gap-1.5 p-1.5 rounded-2xl sm:rounded-full bg-white border border-black/10 shadow-xs text-[11px] max-w-full">
           <span className="px-2.5 py-1 text-neutral-400 font-semibold">
             Quick Screen Jump:
           </span>
@@ -1162,14 +1162,14 @@ export default function App() {
           ))}
         </div>
 
-        <div className="flex items-center justify-center gap-4 text-[11px] text-neutral-500">
+        <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-[11px] text-neutral-500">
           <span className="inline-flex items-center gap-1">
             <ShieldCheck className="w-3.5 h-3.5 text-emerald-700" /> Shastraloka
             Purchase Protection
           </span>
-          <span>•</span>
+          <span className="hidden sm:inline">•</span>
           <span>256-Bit SSL Encryption</span>
-          <span>•</span>
+          <span className="hidden sm:inline">•</span>
           <span>Sri Lanka Island-wide Dispatch</span>
         </div>
       </footer>

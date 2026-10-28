@@ -60,6 +60,16 @@ export default function BookCard({ book }: BookCardProps) {
           </div>
         )}
 
+        {/* Small LKR Price Tag with Offer Percentage on Cover Bottom-Left */}
+        <div className="absolute bottom-2 left-2 z-20 inline-flex items-center gap-1 px-2 py-0.5 rounded-lg bg-black/80 backdrop-blur-xs text-white border border-white/15 shadow-xs pointer-events-none">
+          <span className="text-[11px] font-bold">LKR {book.price.toLocaleString()}</span>
+          {discountPercent > 0 && (
+            <span className="px-1 py-0.2 rounded bg-[#e60023] text-white text-[9px] font-extrabold">
+              -{discountPercent}%
+            </span>
+          )}
+        </div>
+
         {/* Hover Action Overlay */}
         <div
           className={`absolute inset-0 bg-black/35 backdrop-blur-[1px] rounded-lg p-3 flex flex-col justify-between transition-opacity duration-200 pointer-events-none ${
@@ -175,16 +185,21 @@ export default function BookCard({ book }: BookCardProps) {
 
         {/* Rating and Price row in LKR */}
         <div className="flex items-center justify-between mt-2 pt-1.5 border-t border-[var(--border-subtle)]">
-          <div className="flex items-baseline gap-1.5">
-            <span className="font-bold text-sm text-[var(--text-main)]">
-              Rs. {book.price.toLocaleString()}
+          <div className="flex items-baseline gap-1 flex-wrap">
+            <span className="font-bold text-xs sm:text-sm text-[var(--text-main)]">
+              LKR {book.price.toLocaleString()}
             </span>
-            <span className="text-[11px] line-through text-[var(--text-dim)]">
-              Rs. {book.originalPrice.toLocaleString()}
+            <span className="text-[10px] line-through text-[var(--text-dim)]">
+              {book.originalPrice.toLocaleString()}
             </span>
+            {discountPercent > 0 && (
+              <span className="text-[10px] font-bold text-[#e60023] dark:text-rose-400">
+                ({discountPercent}% off)
+              </span>
+            )}
           </div>
 
-          <div className="flex items-center gap-1 text-xs font-semibold text-[var(--text-muted)]">
+          <div className="flex items-center gap-1 text-xs font-semibold text-[var(--text-muted)] shrink-0">
             <IconStar size={13} className="text-amber-500" />
             <span className="text-[var(--text-main)] font-bold">{book.rating}</span>
             <span className="text-[10px]">({book.reviewsCount.toLocaleString()})</span>

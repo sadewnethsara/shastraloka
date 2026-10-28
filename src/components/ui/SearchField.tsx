@@ -44,12 +44,20 @@ export const SearchField = forwardRef<HTMLInputElement, SearchFieldProps>(
         onSubmit?.(value);
       } else if (e.key === 'Escape') {
         e.preventDefault();
-        onClear ? onClear() : onChange('');
+        if (onClear) {
+          onClear();
+        } else {
+          onChange('');
+        }
       }
     };
 
     const handleClear = () => {
-      onClear ? onClear() : onChange('');
+      if (onClear) {
+        onClear();
+      } else {
+        onChange('');
+      }
     };
 
     const submitColorClasses = {

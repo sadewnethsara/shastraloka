@@ -586,30 +586,31 @@ function ProductDetailContent() {
     ],
   });
 
+  const [prevMatchedBookId, setPrevMatchedBookId] = useState(matchedBook.id);
+
   // Keep state updated if bookId param changes
-  useEffect(() => {
-    if (matchedBook) {
-      setActiveBook({
-        id: matchedBook.id,
-        title: matchedBook.title,
-        subtitle: matchedBook.description,
-        author: matchedBook.author,
-        coAuthor: matchedBook.translator || 'Translated with Notes',
-        series: matchedBook.category,
-        rating: matchedBook.rating,
-        reviewsCount: matchedBook.reviewsCount,
-        price: matchedBook.price,
-        originalPrice: matchedBook.originalPrice,
-        coverImage: matchedBook.coverImage,
-        categoryPath: [
-          'Shastraloka Bookstore',
-          matchedBook.category,
-          matchedBook.binding || 'Collector Hardcover',
-          matchedBook.title,
-        ],
-      });
-    }
-  }, [matchedBook]);
+  if (matchedBook.id !== prevMatchedBookId) {
+    setPrevMatchedBookId(matchedBook.id);
+    setActiveBook({
+      id: matchedBook.id,
+      title: matchedBook.title,
+      subtitle: matchedBook.description,
+      author: matchedBook.author,
+      coAuthor: matchedBook.translator || 'Translated with Notes',
+      series: matchedBook.category,
+      rating: matchedBook.rating,
+      reviewsCount: matchedBook.reviewsCount,
+      price: matchedBook.price,
+      originalPrice: matchedBook.originalPrice,
+      coverImage: matchedBook.coverImage,
+      categoryPath: [
+        'Shastraloka Bookstore',
+        matchedBook.category,
+        matchedBook.binding || 'Collector Hardcover',
+        matchedBook.title,
+      ],
+    });
+  }
 
   // Format & Gallery States
   const [selectedFormat, setSelectedFormat] = useState<FormatKey>('hardcover');
@@ -663,13 +664,15 @@ function ProductDetailContent() {
   const [authorFollowed, setAuthorFollowed] = useState<boolean>(false);
   const [selectedMasonryCategory, setSelectedMasonryCategory] = useState<string>('All');
   const [searchQuery, setSearchQuery] = useState<string>(globalSearchQuery || '');
+  const [prevGlobalSearch, setPrevGlobalSearch] = useState(globalSearchQuery);
 
   // Synchronize local searchQuery with global search guides / header
-  useEffect(() => {
-    if (globalSearchQuery !== undefined && globalSearchQuery !== searchQuery) {
+  if (globalSearchQuery !== prevGlobalSearch) {
+    setPrevGlobalSearch(globalSearchQuery);
+    if (globalSearchQuery !== undefined) {
       setSearchQuery(globalSearchQuery);
     }
-  }, [globalSearchQuery]);
+  }
 
   // Audio timer
   useEffect(() => {
@@ -882,9 +885,9 @@ function ProductDetailContent() {
       <main className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-4 space-y-14">
         <section className="grid grid-cols-1 lg:grid-cols-12 gap-8 xl:gap-10 items-start">
           {/* -----------------------------------------------------------------
-              LEFT COLUMN (lg:col-span-7): Gallery, Specs, Bundles, Reviews
+              LEFT COLUMN TOP (lg:col-span-7): Gallery Card (1st on Mobile)
              ----------------------------------------------------------------- */}
-          <div className="lg:col-span-7 space-y-8">
+          <div className="lg:col-span-7 lg:col-start-1">
             {/* PINTEREST + ETSY GALLERY CARD */}
             <div className="bg-white dark:bg-[#1a1a20] rounded-3xl border border-neutral-200/90 dark:border-neutral-800 shadow-xs p-3 sm:p-5">
               {/* Top Pinterest Action Bar */}
@@ -1131,7 +1134,7 @@ function ProductDetailContent() {
                   {GALLERY_MEDIA[activeMediaIndex].caption}
                 </p>
 
-                <div className="flex items-center gap-2 shrink-0">
+                <div className="flex flex-wrap items-center gap-2 w-full sm:w-auto">
                   <Button
                     variant="primary"
                     size="sm"
@@ -1181,7 +1184,13 @@ function ProductDetailContent() {
                 </form>
               </div>
             </div>
+          </div>
 
+          {/* -----------------------------------------------------------------
+              LEFT COLUMN BOTTOM (lg:col-span-7): Specs, Bundles, Reviews
+              Ordered 3rd on Mobile (after Buy Box) & stacked under Gallery on Desktop
+             ----------------------------------------------------------------- */}
+          <div className="order-3 lg:order-none lg:col-span-7 lg:col-start-1 space-y-8">
             {/* ---------------------------------------------------------------
                 AMAZON-STYLE BOOK METADATA SPECIFICATIONS
                --------------------------------------------------------------- */}
@@ -1238,11 +1247,11 @@ function ProductDetailContent() {
 
               <div className="flex flex-col md:flex-row items-center gap-6">
                 {/* 3 Books with + signs */}
-                <div className="flex items-center justify-center gap-2 sm:gap-3">
+                <div className="flex items-center justify-center gap-1.5 sm:gap-3">
                   {BUNDLE_BOOKS.map((book, idx) => (
                     <React.Fragment key={book.id}>
                       {idx > 0 && (
-                        <span className="text-xl font-bold text-neutral-400">+</span>
+                        <span className="text-lg sm:text-xl font-bold text-neutral-400">+</span>
                       )}
                       <div
                         onClick={() =>
@@ -1251,7 +1260,7 @@ function ProductDetailContent() {
                             [book.id]: !prev[book.id],
                           }))
                         }
-                        className={`relative w-24 sm:w-28 aspect-[3/4] rounded-xl overflow-hidden border-2 cursor-pointer transition ${
+                        className={`relative w-20 sm:w-28 aspect-[3/4] rounded-xl overflow-hidden border-2 cursor-pointer transition ${
                           selectedBundleIds[book.id]
                             ? 'border-[#23382C] dark:border-emerald-500 shadow-md'
                             : 'border-neutral-200 dark:border-neutral-700 opacity-45'
@@ -1486,8 +1495,9 @@ function ProductDetailContent() {
 
           {/* -----------------------------------------------------------------
               RIGHT COLUMN (lg:col-span-5): Buy Box, Formats, CTAs, Accordions
+              Ordered 2nd on Mobile (immediately below Gallery Card)
              ----------------------------------------------------------------- */}
-          <div className="lg:col-span-5 space-y-6">
+          <div className="order-2 lg:order-none lg:col-span-5 lg:col-start-8 lg:row-start-1 lg:row-span-2 space-y-6">
             <div className="bg-white dark:bg-[#1a1a20] rounded-3xl border border-neutral-200/90 dark:border-neutral-800 p-5 sm:p-7 shadow-xs space-y-5">
               {/* Urgency Callout */}
               <div className="flex items-center justify-between gap-2">
@@ -1606,8 +1616,8 @@ function ProductDetailContent() {
 
               {/* Price & Quantity Box */}
               <div className="p-4 rounded-2xl bg-[#FAF8F5] dark:bg-[#151518] border border-neutral-200/80 dark:border-neutral-800 space-y-2">
-                <div className="flex items-baseline justify-between">
-                  <div className="flex items-baseline gap-2.5">
+                <div className="flex flex-wrap items-baseline justify-between gap-2">
+                  <div className="flex flex-wrap items-baseline gap-2">
                     <span className="text-2xl sm:text-3xl font-bold text-[#0F743B] dark:text-[#76d691]">
                       LKR {(currentFormatObj.price * quantity).toLocaleString()}
                     </span>
@@ -1657,7 +1667,7 @@ function ProductDetailContent() {
                   onClick={() => handleAddToBag(undefined, quantity)}
                 />
 
-                <div className="grid grid-cols-2 gap-2.5">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                   <Button
                     variant="orange"
                     size="md"
@@ -2216,9 +2226,9 @@ function ProductDetailContent() {
             }`}
           >
             {/* Header */}
-            <div className="px-6 py-4 border-b border-black/10 dark:border-white/10 flex flex-wrap items-center justify-between gap-3">
+            <div className="px-4 sm:px-6 py-4 border-b border-black/10 dark:border-white/10 flex flex-wrap items-center justify-between gap-3">
               <div className="flex items-center gap-2.5">
-                <BookOpen className="w-5 h-5 text-[#F1641E]" />
+                <BookOpen className="w-5 h-5 text-[#F1641E] shrink-0" />
                 <div>
                   <h3 className="text-sm font-bold leading-none">
                     Look Inside: {activeBook.title}
@@ -2230,7 +2240,7 @@ function ProductDetailContent() {
               </div>
 
               {/* Controls */}
-              <div className="flex items-center gap-2">
+              <div className="flex flex-wrap items-center gap-2">
                 <div className="flex items-center rounded-full border border-current/20 p-0.5 text-xs">
                   {(['cream', 'white', 'night'] as const).map((t) => (
                     <button
@@ -2276,7 +2286,7 @@ function ProductDetailContent() {
             </div>
 
             {/* Page Body */}
-            <div className="p-6 sm:p-10 max-h-[68vh] overflow-y-auto">
+            <div className="p-4 sm:p-10 max-h-[65vh] overflow-y-auto">
               <div className="max-w-xl mx-auto space-y-5">
                 <div className="flex items-center justify-between text-xs uppercase tracking-widest opacity-60 border-b border-current/15 pb-2">
                   <span>{SAMPLE_PAGES[samplePageIndex].chapter}</span>
@@ -2301,7 +2311,7 @@ function ProductDetailContent() {
             </div>
 
             {/* Modal Footer */}
-            <div className="px-6 py-4 border-t border-black/10 dark:border-white/10 flex flex-wrap items-center justify-between gap-3">
+            <div className="px-4 sm:px-6 py-4 border-t border-black/10 dark:border-white/10 flex flex-wrap items-center justify-between gap-3">
               <div className="flex items-center gap-2">
                 <Button
                   variant="outline"
@@ -2345,7 +2355,6 @@ function ProductDetailContent() {
       )}
 
       {/* Global Modals */}
-      <BoardsModal />
       <Footer />
     </div>
   );

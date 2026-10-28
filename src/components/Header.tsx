@@ -13,69 +13,15 @@ import {
   Heart,
   Gift,
   Handbag,
-  BookOpen,
   X,
+  Search,
+  Star,
+  ArrowUpRight,
 } from 'lucide-react';
 import { useApp } from '../context/AppContext';
-import { CATEGORIES } from '../data/books';
-import { SearchBar } from './SearchBar';
-
-export interface RecentSearchData {
-  id: string;
-  label: string;
-  thumbType?: 'mahavamsa' | 'visuddhimagga' | 'dhammapada' | 'ayurveda' | 'default';
-  image?: string;
-}
-
-export const INITIAL_RECENT_SEARCHES: RecentSearchData[] = [
-  {
-    id: 'rs-1',
-    label: 'Mahavamsa Great Chronicle',
-    thumbType: 'mahavamsa',
-    image: 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?auto=format&fit=crop&w=120&q=80',
-  },
-  {
-    id: 'rs-2',
-    label: 'Theravada Buddhist Philosophy',
-    thumbType: 'visuddhimagga',
-    image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=120&q=80',
-  },
-  {
-    id: 'rs-3',
-    label: 'Indigenous Ayurvedic Herbs',
-    thumbType: 'ayurveda',
-    image: 'https://images.unsplash.com/photo-1559181567-c3190ca9959b?auto=format&fit=crop&w=120&q=80',
-  },
-  {
-    id: 'rs-4',
-    label: 'Ola Leaf Manuscripts',
-    thumbType: 'default',
-    image: 'https://images.unsplash.com/photo-1457369804613-52c61a468e7d?auto=format&fit=crop&w=120&q=80',
-  },
-  {
-    id: 'rs-5',
-    label: 'Dhammapada Pali Verses',
-    thumbType: 'dhammapada',
-    image: 'https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&w=120&q=80',
-  },
-];
-
-function RecentSearchThumb({ image }: { type?: string; image?: string }) {
-  if (image) {
-    return (
-      <img
-        src={image}
-        alt="Search thumbnail"
-        className="w-full h-full object-cover"
-      />
-    );
-  }
-  return (
-    <div className="w-full h-full bg-[var(--color-primary)]/15 flex items-center justify-center text-[var(--color-primary)]">
-      <BookOpen className="w-5 h-5" />
-    </div>
-  );
-}
+import { CATEGORIES, BOOKS } from '../data/books';
+import { getAutocompleteSuggestions } from '../utils/searchEngine';
+import { SearchField } from './ui/SearchField';
 
 export const NAV_LINKS = [
   { label: 'Gifts', hasIcon: true, query: 'Gifts' },
@@ -97,37 +43,43 @@ export default function Header({ isSticky = false }: HeaderProps = {}) {
   const {
     isDark,
     toggleTheme,
+    searchQuery,
+    setSearchQuery,
     bag,
     bagCount,
     boards,
     setIsBoardsModalOpen,
     setSelectedCategory,
     triggerNavigation,
-    searchQuery,
-    setSearchQuery,
-    showToast,
   } = useApp();
 
   const [categoriesOpen, setCategoriesOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [localSearch, setLocalSearch] = useState(searchQuery || '');
-  const [recentSearches, setRecentSearches] = useState<RecentSearchData[]>(INITIAL_RECENT_SEARCHES);
+  const [prevSearchQuery, setPrevSearchQuery] = useState(searchQuery);
+  const [suggestionsOpen, setSuggestionsOpen] = useState(false);
+
+  if (searchQuery !== prevSearchQuery) {
+    setPrevSearchQuery(searchQuery);
+    setLocalSearch(searchQuery || '');
+  }
 
   const categoriesRef = useRef<HTMLDivElement>(null);
+  const desktopSearchRef = useRef<HTMLDivElement>(null);
+  const mobileSearchRef = useRef<HTMLDivElement>(null);
 
   const totalFavorites = boards.reduce((acc, b) => acc + b.bookIds.length, 0);
-
-  // Sync localSearch when global search query changes
-  useEffect(() => {
-    setLocalSearch(searchQuery || '');
-  }, [searchQuery]);
+  const autocompleteData = React.useMemo(
+    () => getAutocompleteSuggestions(localSearch, BOOKS),
+    [localSearch]
+  );
 
   // Trigger navigation logic on route changes
   useEffect(() => {
     triggerNavigation();
   }, [pathname, triggerNavigation]);
 
-  // Close categories dropdown on outside click
+  // Close categories and search suggestions dropdown on outside click
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (
@@ -136,17 +88,39 @@ export default function Header({ isSticky = false }: HeaderProps = {}) {
       ) {
         setCategoriesOpen(false);
       }
+      const inDesktopSearch =
+        desktopSearchRef.current &&
+        desktopSearchRef.current.contains(event.target as Node);
+      const inMobileSearch =
+        mobileSearchRef.current &&
+        mobileSearchRef.current.contains(event.target as Node);
+      if (!inDesktopSearch && !inMobileSearch) {
+        setSuggestionsOpen(false);
+      }
     }
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
+  const handleSearchInputChange = (val: string) => {
+    setLocalSearch(val);
+    setSuggestionsOpen(val.trim().length > 0);
+  };
+
+  const handleBookSuggestionClick = (bookId: string, title: string) => {
+    setSuggestionsOpen(false);
+    setMobileMenuOpen(false);
+    setLocalSearch(title);
+    triggerNavigation();
+    router.push(`/books/${bookId}`);
+  };
+
   const handleSearchSubmit = (queryText: string) => {
     const q = queryText.trim();
-    setLocalSearch(q);
     setSearchQuery(q);
+    setSuggestionsOpen(false);
     setMobileMenuOpen(false);
-    triggerNavigation();
+    triggerNavigation(); // Trigger navigation detection
     if (q) {
       router.push(`/search?q=${encodeURIComponent(q)}`);
     } else {
@@ -157,23 +131,121 @@ export default function Header({ isSticky = false }: HeaderProps = {}) {
   const handleCategoryClick = (category: string) => {
     setSelectedCategory(category);
     setCategoriesOpen(false);
+    setSuggestionsOpen(false);
     setMobileMenuOpen(false);
-    triggerNavigation();
+    triggerNavigation(); // Trigger navigation detection
     if (category === 'All Treatises') {
-      router.push('/');
+      router.push('/search');
     } else {
-      router.push(`/search?q=${encodeURIComponent(category)}`);
+      router.push(`/search?category=${encodeURIComponent(category)}&q=${encodeURIComponent(category)}`);
     }
+  };
+
+  const renderAutocompleteDropdown = () => {
+    if (!suggestionsOpen || !localSearch.trim()) return null;
+    return (
+      <div
+        data-testid="search-autocomplete-dropdown"
+        className="absolute left-0 right-0 top-full mt-2 bg-[var(--header-dropdown-bg)] text-[var(--header-text)] rounded-2xl shadow-2xl border border-[var(--header-dropdown-border)] overflow-hidden z-50 animate-fade-in max-h-[78vh] overflow-y-auto"
+      >
+        {/* Keyword Search Suggestions */}
+        <div className="p-2 border-b border-[var(--header-border)]">
+          <div className="px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-[var(--header-text-muted)] flex items-center justify-between">
+            <span>Search Pinterest Book Feed</span>
+            <span>Press Enter</span>
+          </div>
+          {autocompleteData.querySuggestions.map((qText) => (
+            <button
+              key={qText}
+              type="button"
+              onClick={() => handleSearchSubmit(qText)}
+              className="w-full text-left px-3 py-2 rounded-xl text-xs sm:text-sm text-[var(--header-text)] hover:bg-[var(--header-hover-bg)] flex items-center justify-between gap-2 transition cursor-pointer"
+            >
+              <div className="flex items-center gap-2.5 min-w-0">
+                <Search className="w-3.5 h-3.5 text-[#F1641E] shrink-0" />
+                <span className="truncate font-medium">{qText}</span>
+              </div>
+              <span className="text-[11px] text-[var(--header-text-muted)] shrink-0">
+                Search all &rarr;
+              </span>
+            </button>
+          ))}
+        </div>
+
+        {/* Direct Book Matches & Similar Books */}
+        <div className="p-2">
+          <div className="px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider text-[var(--header-text-muted)] flex items-center justify-between">
+            <span>Matching &amp; Similar Books (Click for Product Page)</span>
+            <span className="text-[#F1641E]">LKR Offers</span>
+          </div>
+          <div className="space-y-1">
+            {autocompleteData.bookSuggestions.map(({ book, matchType, discountPercent }) => (
+              <button
+                key={book.id}
+                type="button"
+                onClick={() => handleBookSuggestionClick(book.id, book.title)}
+                className="w-full text-left p-2 rounded-xl hover:bg-[var(--header-hover-bg)] flex items-center gap-3 transition group cursor-pointer"
+              >
+                <img
+                  src={book.coverImage}
+                  alt={book.title}
+                  className="w-11 h-14 object-cover rounded-lg shrink-0 border border-neutral-200 dark:border-neutral-700 shadow-xs"
+                />
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-1.5 flex-wrap">
+                    <span
+                      className={`px-1.5 py-0.5 rounded text-[9px] font-bold uppercase tracking-wider ${
+                        matchType === 'Exact Match'
+                          ? 'bg-[#F1641E]/15 text-[#F1641E]'
+                          : 'bg-amber-500/15 text-amber-700 dark:text-amber-300'
+                      }`}
+                    >
+                      {matchType}
+                    </span>
+                    <span className="text-[10px] text-[var(--header-text-muted)] font-sinhala truncate">
+                      {book.sinhalaTitle}
+                    </span>
+                  </div>
+                  <p className="text-xs sm:text-sm font-bold text-[var(--header-text)] group-hover:text-[#F1641E] truncate mt-0.5">
+                    {book.title}
+                  </p>
+                  <div className="flex items-center gap-2 text-[11px] text-[var(--header-text-muted)] mt-0.5">
+                    <span className="truncate max-w-[160px]">{book.author}</span>
+                    <span>•</span>
+                    <span className="inline-flex items-center gap-0.5 text-amber-500 font-semibold">
+                      <Star className="w-3 h-3 fill-amber-400 text-amber-400" />
+                      {book.rating}
+                    </span>
+                  </div>
+                </div>
+                <div className="text-right shrink-0 flex flex-col items-end gap-0.5">
+                  <span className="px-2 py-0.5 rounded-md bg-emerald-600 text-white text-[11px] font-bold whitespace-nowrap">
+                    LKR {book.price.toLocaleString()}
+                  </span>
+                  {discountPercent > 0 && (
+                    <span className="text-[10px] font-bold text-[#e60023] dark:text-rose-400 whitespace-nowrap">
+                      {discountPercent}% OFF
+                    </span>
+                  )}
+                  <span className="text-[10px] text-[var(--header-text-muted)] inline-flex items-center gap-0.5 group-hover:text-[#F1641E]">
+                    Product page <ArrowUpRight className="w-2.5 h-2.5" />
+                  </span>
+                </div>
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+    );
   };
 
   return (
     <>
       <header
-        className={`${
-          isSticky
+        className={`${isSticky
             ? 'sticky top-0 backdrop-blur-md bg-[var(--header-bg-glass)]'
             : 'relative bg-[var(--header-bg)]'
-        } z-40 border-b border-[var(--header-border)] text-[var(--header-text)] transition-colors duration-200`}
+          } z-40 border-b border-[var(--header-border)] text-[var(--header-text)] transition-colors duration-200`}
       >
         <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8">
           {/* =====================================================================
@@ -209,9 +281,8 @@ export default function Header({ isSticky = false }: HeaderProps = {}) {
                 <Menu className="w-4 h-4 text-[var(--header-text)]" />
                 <span>Categories</span>
                 <ChevronDown
-                  className={`w-3.5 h-3.5 text-[var(--header-text-muted)] transition-transform ${
-                    categoriesOpen ? 'rotate-180' : ''
-                  }`}
+                  className={`w-3.5 h-3.5 text-[var(--header-text-muted)] transition-transform ${categoriesOpen ? 'rotate-180' : ''
+                    }`}
                 />
               </button>
 
@@ -219,7 +290,7 @@ export default function Header({ isSticky = false }: HeaderProps = {}) {
               {categoriesOpen && (
                 <div className="absolute left-0 mt-2 w-72 max-h-96 overflow-y-auto bg-[var(--header-dropdown-bg)] text-[var(--header-text)] rounded-2xl shadow-xl border border-[var(--header-dropdown-border)] py-2 z-50 animate-fade-in">
                   <div className="px-4 py-1.5 text-[11px] font-bold uppercase tracking-wider text-[var(--header-text-muted)]">
-                    All Categories
+                    Sacred Classifications
                   </div>
                   {CATEGORIES.map((cat) => (
                     <button
@@ -236,25 +307,28 @@ export default function Header({ isSticky = false }: HeaderProps = {}) {
               )}
             </div>
 
-            {/* Search Input Bar with Modern SearchBar & Recent Searches */}
-            <div className="flex-1 max-w-2xl">
-              <SearchBar
+            {/* Search Input Bar with Orange Pill Button */}
+            <div
+              className="relative flex-1 max-w-2xl"
+              ref={desktopSearchRef}
+              onFocusCapture={() => {
+                if (localSearch.trim().length > 0) setSuggestionsOpen(true);
+              }}
+            >
+              <SearchField
                 value={localSearch}
-                onChange={setLocalSearch}
+                onChange={handleSearchInputChange}
                 onSubmit={handleSearchSubmit}
-                placeholder="Search sacred manuscripts, Mahavamsa, Ayurveda..."
-                recentSearches={recentSearches.map((r: RecentSearchData) => ({
-                  id: r.id,
-                  label: r.label,
-                  thumbnail: <RecentSearchThumb type={r.thumbType} image={r.image} />,
-                }))}
-                onRemoveRecent={(id: string) =>
-                  setRecentSearches((prev: RecentSearchData[]) => prev.filter((r: RecentSearchData) => r.id !== id))
-                }
-                onRestoreRecent={() => setRecentSearches(INITIAL_RECENT_SEARCHES)}
-                onCameraClick={() => showToast('Visual Manuscript Search is ready!')}
-                onMicClick={() => showToast('Voice search listening for classical treatises...')}
+                onClear={() => {
+                  setLocalSearch('');
+                  setSuggestionsOpen(false);
+                }}
+                placeholder="Search sacred manuscripts, Gajaga, Mahavamsa, Ayurveda..."
+                accessibilityLabel="Search sacred manuscripts"
+                submitButtonColor="orange"
+                size="md"
               />
+              {renderAutocompleteDropdown()}
             </div>
 
             {/* Right User Actions */}
@@ -361,17 +435,17 @@ export default function Header({ isSticky = false }: HeaderProps = {}) {
                   setSearchQuery('');
                   setLocalSearch('');
                 }}
-                className="text-[var(--color-primary)] text-[26px] leading-none font-bold tracking-tight select-none font-serif"
+                className="text-[var(--color-primary)] text-[24px] sm:text-[26px] leading-none font-bold tracking-tight select-none font-serif shrink-0"
               >
                 Shastraloka
               </Link>
 
-              <div className="flex items-center gap-1.5">
+              <div className="flex items-center gap-1 sm:gap-1.5 shrink-0">
                 <button
                   type="button"
                   onClick={toggleTheme}
                   aria-label="Toggle theme"
-                  className="p-2 rounded-full hover:bg-[var(--header-hover-bg)] text-[var(--header-text)]"
+                  className="p-1.5 sm:p-2 rounded-full hover:bg-[var(--header-hover-bg)] text-[var(--header-text)]"
                 >
                   {isDark ? (
                     <Sun className="w-4 h-4 text-amber-300" />
@@ -382,7 +456,7 @@ export default function Header({ isSticky = false }: HeaderProps = {}) {
 
                 <Link
                   href="/profile"
-                  className="px-2 py-1 rounded-full text-xs font-semibold text-[var(--header-text)] hover:bg-[var(--header-hover-bg)]"
+                  className="px-2 py-1 rounded-full text-xs font-semibold text-[var(--header-text)] hover:bg-[var(--header-hover-bg)] whitespace-nowrap shrink-0"
                 >
                   Sign in
                 </Link>
@@ -441,24 +515,27 @@ export default function Header({ isSticky = false }: HeaderProps = {}) {
                 <Menu className="w-5 h-5" />
               </button>
 
-              <div className="order-3 sm:order-2 w-full sm:w-auto sm:flex-1 min-w-0">
-                <SearchBar
+              <div
+                className="relative flex-1"
+                ref={mobileSearchRef}
+                onFocusCapture={() => {
+                  if (localSearch.trim().length > 0) setSuggestionsOpen(true);
+                }}
+              >
+                <SearchField
                   value={localSearch}
-                  onChange={setLocalSearch}
+                  onChange={handleSearchInputChange}
                   onSubmit={handleSearchSubmit}
-                  placeholder="Search sacred manuscripts..."
-                  recentSearches={recentSearches.map((r: RecentSearchData) => ({
-                    id: r.id,
-                    label: r.label,
-                    thumbnail: <RecentSearchThumb type={r.thumbType} image={r.image} />,
-                  }))}
-                  onRemoveRecent={(id: string) =>
-                    setRecentSearches((prev: RecentSearchData[]) => prev.filter((r: RecentSearchData) => r.id !== id))
-                  }
-                  onRestoreRecent={() => setRecentSearches(INITIAL_RECENT_SEARCHES)}
-                  onCameraClick={() => showToast('Visual Manuscript Search is ready!')}
-                  onMicClick={() => showToast('Voice search listening for classical treatises...')}
+                  onClear={() => {
+                    setLocalSearch('');
+                    setSuggestionsOpen(false);
+                  }}
+                  placeholder="Search Gajaga, Mahavamsa, Ayurveda..."
+                  accessibilityLabel="Search manuscripts"
+                  submitButtonColor="orange"
+                  size="sm"
                 />
+                {renderAutocompleteDropdown()}
               </div>
             </div>
           </div>

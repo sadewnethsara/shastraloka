@@ -44,7 +44,7 @@ export default function ProfilePage() {
       <Header />
       <SearchGuides />
 
-      <main className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+      <main className="max-w-[1720px] mx-auto px-4 sm:px-6 py-8 sm:py-12">
         
         {/* Profile Header Section */}
         <div className="max-w-2xl mx-auto text-center space-y-4 pb-10 border-b border-[var(--border-subtle)]">
@@ -73,7 +73,7 @@ export default function ProfilePage() {
           </div>
 
           {/* Metrics */}
-          <div className="flex items-center justify-center gap-4 text-xs font-semibold text-[var(--text-muted)] pt-1">
+          <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-xs font-semibold text-[var(--text-muted)] pt-1">
             <span>{boards.length} Boards</span>
             <span>•</span>
             <span>{allSavedBooks.length} Saved Treatises</span>
@@ -107,7 +107,7 @@ export default function ProfilePage() {
         </div>
 
         {/* Profile Tabs (Saved Boards / All Pins / Likes) */}
-        <div className="flex items-center justify-center gap-2 sm:gap-4 pt-6 pb-8 border-b border-[var(--border-subtle)] text-xs sm:text-sm font-semibold">
+        <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-4 pt-6 pb-8 border-b border-[var(--border-subtle)] text-xs sm:text-sm font-semibold">
           <button
             onClick={() => setActiveTab('boards')}
             className={`px-4 py-2 rounded-full cursor-pointer transition-colors ${

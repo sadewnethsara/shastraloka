@@ -254,7 +254,7 @@ export const INITIAL_SAMPLE_BAG: BagItem[] = [
       originalPrice: 1950,
       usdPrice: 4.15,
       originalUsdPrice: 6.39,
-      urgencyText: 'In 835 carts, 37 bought in the past 24 hours',
+      urgencyText: 'In 835 bags, 37 bought in the past 24 hours',
       sellerName: 'AirilGiftsShop',
       sellerAvatar: 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?auto=format&fit=crop&w=120&q=80',
       sellerRating: 4.9,
@@ -294,7 +294,7 @@ export const INITIAL_SAMPLE_BAG: BagItem[] = [
       originalPrice: 2550,
       usdPrice: 4.42,
       originalUsdPrice: 8.50,
-      urgencyText: 'In 267 carts, 23 bought in the past 24 hours',
+      urgencyText: 'In 267 bags, 23 bought in the past 24 hours',
       sellerName: 'LeatherCraftLK',
       sellerAvatar: 'https://images.unsplash.com/photo-1507842217343-583bb7270b66?auto=format&fit=crop&w=120&q=80',
       sellerRating: 4.8,
@@ -334,7 +334,7 @@ export const INITIAL_SAMPLE_BAG: BagItem[] = [
       originalPrice: 1200,
       usdPrice: 1.49,
       originalUsdPrice: 3.99,
-      urgencyText: 'In 85 carts, 4 bought in the past 24 hours',
+      urgencyText: 'In 85 bags, 4 bought in the past 24 hours',
       sellerName: 'CocoWyoColoring',
       sellerAvatar: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=120&q=80',
       sellerRating: 4.8,
@@ -397,54 +397,84 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
 
   // Mini Bag Rail
   const [showMiniBagRail, setShowMiniBagRail] = useState(false);
-  const [navigationTriggered, setNavigationTriggered] = useState(false);
+
+  const applyTheme = useCallback((targetTheme: string) => {
+    setThemeState(targetTheme);
+    const darkActive = targetTheme === 'dark';
+    setIsDark(darkActive);
+
+    if (typeof document !== 'undefined') {
+      document.documentElement.setAttribute('data-theme', targetTheme);
+      if (darkActive) {
+        document.documentElement.classList.add('dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+      }
+    }
+
+    try {
+      localStorage.setItem('shastraloka-theme', targetTheme);
+    } catch { }
+  }, []);
+
+  const setTheme = useCallback((targetTheme: string) => {
+    applyTheme(targetTheme);
+  }, [applyTheme]);
+
+  const toggleTheme = useCallback(() => {
+    applyTheme(isDark ? 'light' : 'dark');
+  }, [isDark, applyTheme]);
 
   // Hydrate from LocalStorage on mount
   useEffect(() => {
-    // Theme
-    try {
-      const savedTheme = localStorage.getItem('shastraloka-theme');
-      if (savedTheme) {
-        applyTheme(savedTheme);
-      } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-        applyTheme('dark');
-      } else {
+    const timer = setTimeout(() => {
+      // Theme
+      try {
+        const savedTheme = localStorage.getItem('shastraloka-theme');
+        if (savedTheme) {
+          applyTheme(savedTheme);
+        } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+          applyTheme('dark');
+        } else {
+          applyTheme('light');
+        }
+      } catch {
         applyTheme('light');
       }
-    } catch {
-      applyTheme('light');
-    }
 
-    // Bag
-    try {
-      const savedBag = localStorage.getItem('shastraloka-bag') || localStorage.getItem('shastraloka-cart');
-      if (savedBag) setBag(JSON.parse(savedBag));
-    } catch { }
+      // Bag
+      try {
+        const savedBag = localStorage.getItem('shastraloka-bag') || localStorage.getItem('shastraloka-cart');
+        if (savedBag) setBag(JSON.parse(savedBag));
+      } catch { }
 
-    // Boards
-    try {
-      const savedBoards = localStorage.getItem('shastraloka-boards');
-      if (savedBoards) setBoards(JSON.parse(savedBoards));
-    } catch { }
+      // Boards
+      try {
+        const savedBoards = localStorage.getItem('shastraloka-boards');
+        if (savedBoards) setBoards(JSON.parse(savedBoards));
+      } catch { }
 
-    // Likes
-    try {
-      const savedLikes = localStorage.getItem('shastraloka-likes');
-      if (savedLikes) setLikedBookIds(JSON.parse(savedLikes));
-    } catch { }
+      // Likes
+      try {
+        const savedLikes = localStorage.getItem('shastraloka-likes');
+        if (savedLikes) setLikedBookIds(JSON.parse(savedLikes));
+      } catch { }
 
-    // Orders
-    try {
-      const savedOrders = localStorage.getItem('shastraloka-orders');
-      if (savedOrders) setOrders(JSON.parse(savedOrders));
-    } catch { }
+      // Orders
+      try {
+        const savedOrders = localStorage.getItem('shastraloka-orders');
+        if (savedOrders) setOrders(JSON.parse(savedOrders));
+      } catch { }
 
-    // Reviews
-    try {
-      const savedReviews = localStorage.getItem('shastraloka-reviews');
-      if (savedReviews) setBookReviews(JSON.parse(savedReviews));
-    } catch { }
-  }, []);
+      // Reviews
+      try {
+        const savedReviews = localStorage.getItem('shastraloka-reviews');
+        if (savedReviews) setBookReviews(JSON.parse(savedReviews));
+      } catch { }
+    }, 0);
+
+    return () => clearTimeout(timer);
+  }, [applyTheme]);
 
   // Sync state to LocalStorage
   useEffect(() => {
@@ -477,33 +507,6 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       localStorage.setItem('shastraloka-reviews', JSON.stringify(bookReviews));
     } catch { }
   }, [bookReviews]);
-
-  const applyTheme = useCallback((targetTheme: string) => {
-    setThemeState(targetTheme);
-    const darkActive = targetTheme === 'dark';
-    setIsDark(darkActive);
-
-    if (typeof document !== 'undefined') {
-      document.documentElement.setAttribute('data-theme', targetTheme);
-      if (darkActive) {
-        document.documentElement.classList.add('dark');
-      } else {
-        document.documentElement.classList.remove('dark');
-      }
-    }
-
-    try {
-      localStorage.setItem('shastraloka-theme', targetTheme);
-    } catch { }
-  }, []);
-
-  const setTheme = useCallback((targetTheme: string) => {
-    applyTheme(targetTheme);
-  }, [applyTheme]);
-
-  const toggleTheme = useCallback(() => {
-    applyTheme(isDark ? 'light' : 'dark');
-  }, [isDark, applyTheme]);
 
   const showToast = (msg: string) => {
     setToastMessage(msg);
@@ -554,19 +557,12 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const clearBag = () => setBag([]);
 
   // Auto-hide rail when bag is empty and navigation happens
+  // Auto-hide rail when bag is empty and navigation happens
   const triggerNavigation = useCallback(() => {
-    setNavigationTriggered(true);
-  }, []);
-
-  // Handle rail visibility logic
-  useEffect(() => {
-    if (navigationTriggered) {
-      if (bag.length === 0) {
-        setShowMiniBagRail(false);
-      }
-      setNavigationTriggered(false);
+    if (bag.length === 0) {
+      setShowMiniBagRail(false);
     }
-  }, [navigationTriggered, bag.length]);
+  }, [bag.length]);
 
   const bagCount = bag.reduce((acc, item) => acc + item.quantity, 0);
   const bagTotal = bag.reduce((acc, item) => acc + item.book.price * item.quantity, 0);
@@ -653,7 +649,6 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     paymentMethod,
     discount = 0,
     shippingFee = 350,
-    shippingDistrict,
   }: {
     customer: OrderCustomer;
     paymentMethod: 'cod' | 'card' | 'bank';
