@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Search, Camera, Mic, X, ArrowLeft } from 'lucide-react';
+import { Search, Camera, Mic, X } from 'lucide-react';
 
 export interface RecentSearchItem {
     id: string;
@@ -73,43 +73,18 @@ export function SearchBar({
 
     return (
         <div ref={wrapperRef} className="relative w-full min-w-0 flex-1 max-w-[780px]">
-            {/* Dim backdrop while open */}
-            {isOpen && (
-                <div
-                    className="fixed inset-0 bg-black/30 backdrop-blur-xs z-20"
-                    aria-hidden="true"
-                    onClick={() => setIsOpen(false)}
-                />
-            )}
-
-            {/* Search pill */}
+            {/* Search pill - Consistent background color across all states without changing color when clicked */}
             <div
                 onClick={() => {
                     setIsOpen(true);
                     inputRef.current?.focus();
                 }}
-                className={`relative z-30 flex items-center w-full h-10 sm:h-[46px] rounded-full transition-all ${
+                className={`relative z-30 flex items-center w-full h-10 sm:h-[46px] rounded-full transition-all bg-[var(--bg-input)] ${
                     isOpen
-                        ? 'bg-[var(--header-search-bg)] ring-2 ring-[var(--color-primary)] border border-transparent shadow-md'
-                        : 'bg-[var(--header-search-bg)] hover:bg-[var(--header-hover-bg)] border-[1.5px] border-[var(--header-search-border)] shadow-xs'
+                        ? 'ring-2 ring-[var(--color-primary)] border border-transparent shadow-sm'
+                        : 'border-[1.5px] border-[var(--border-strong)] hover:border-[var(--color-primary)] shadow-xs'
                 }`}
             >
-                {/* Back arrow: mobile only, shown while open */}
-                {isOpen && (
-                    <button
-                        type="button"
-                        onClick={(e) => {
-                            e.stopPropagation();
-                            setIsOpen(false);
-                            inputRef.current?.blur();
-                        }}
-                        aria-label="Close search"
-                        className="sm:hidden ml-1.5 p-1.5 rounded-full text-[var(--header-text)] hover:bg-[var(--header-hover-bg)] shrink-0 cursor-pointer"
-                    >
-                        <ArrowLeft className="w-4 h-4" />
-                    </button>
-                )}
-
                 <input
                     ref={inputRef}
                     type="text"
@@ -130,9 +105,7 @@ export function SearchBar({
                         }
                     }}
                     placeholder={placeholder}
-                    className={`w-full min-w-0 h-full text-base sm:text-[14.5px] text-[var(--header-text)] placeholder-[var(--header-text-muted)] bg-transparent focus:outline-none ${
-                        isOpen ? 'pl-2 sm:pl-5' : 'pl-4 sm:pl-5'
-                    } pr-2`}
+                    className="w-full min-w-0 h-full text-base sm:text-[14.5px] text-[var(--header-text)] placeholder-[var(--header-text-muted)] bg-transparent focus:outline-none pl-4 sm:pl-5 pr-2"
                 />
 
                 {value && (
@@ -182,20 +155,20 @@ export function SearchBar({
                         <Mic className="w-[18px] h-[18px] sm:w-[20px] sm:h-[20px] stroke-[2]" />
                     </button>
 
-                    {/* Orange search button */}
-                    {!isOpen && (
-                        <button
-                            type="button"
-                            onClick={(e) => {
-                                e.stopPropagation();
-                                onSubmit?.(value);
-                            }}
-                            aria-label="Search"
-                            className="hidden sm:flex ml-0.5 w-[34px] h-[34px] rounded-full bg-[var(--color-primary)] hover:bg-[var(--color-primary-hover)] text-white items-center justify-center shrink-0 transition-colors shadow-xs cursor-pointer active:scale-95"
-                        >
-                            <Search className="w-4 h-4 stroke-[2.5]" />
-                        </button>
-                    )}
+                    {/* Orange search button - Always visible */}
+                    <button
+                        type="button"
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            onSubmit?.(value);
+                            setIsOpen(false);
+                            inputRef.current?.blur();
+                        }}
+                        aria-label="Search"
+                        className="hidden sm:flex ml-0.5 w-[34px] h-[34px] rounded-full bg-[var(--color-primary)] hover:bg-[var(--color-primary-hover)] text-white items-center justify-center shrink-0 transition-colors shadow-xs cursor-pointer active:scale-95"
+                    >
+                        <Search className="w-4 h-4 stroke-[2.5]" />
+                    </button>
                 </div>
             </div>
 

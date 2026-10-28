@@ -22,6 +22,8 @@
   --header-dropdown-bg: #ffffff;
   --header-dropdown-border: #99f6e4;
   --header-mobile-drawer-bg: #f0fdfa;
+  --header-search-bg: #ffffff;
+  --header-search-border: #99f6e4;
 
   /* Header Badges & Shopping Bag Pill */
   --header-badge-fav-bg: #0f766e;
