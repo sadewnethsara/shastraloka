@@ -19,6 +19,8 @@ export interface AutocompleteBookSuggestion {
 export interface AutocompleteResult {
   bookSuggestions: AutocompleteBookSuggestion[];
   querySuggestions: string[];
+  categoryMatches: string[];
+  bookMatches: Book[];
 }
 
 export interface SearchFilterOptions {
@@ -200,6 +202,8 @@ export function getAutocompleteSuggestions(
     }));
     return {
       bookSuggestions: featured,
+      bookMatches: featured.map((s) => s.book),
+      categoryMatches: [],
       querySuggestions: [
         'gajaga',
         'gajaga wannama',
@@ -254,9 +258,12 @@ export function getAutocompleteSuggestions(
     dynamicQueries.add('gajaga hasti shastraya');
   }
 
+  const categoryMatches = CATEGORIES.filter((cat) => cat !== 'All Treatises' && cat.toLowerCase().includes(qLower));
   return {
     bookSuggestions,
+    bookMatches: bookSuggestions.map((s) => s.book),
     querySuggestions: Array.from(dynamicQueries).slice(0, 5),
+    categoryMatches,
   };
 }
 
