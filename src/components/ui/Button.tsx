@@ -28,14 +28,14 @@ export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElemen
 }
 
 const variantStyles: Record<ButtonVariant, string> = {
-  primary: 'bg-[#222222] hover:bg-black text-white active:scale-[0.98]',
-  dark: 'bg-[#111111] hover:bg-black text-white active:scale-[0.98]',
+  primary: 'bg-[var(--pill-active-bg)] hover:opacity-90 text-[var(--pill-active-text)] active:scale-[0.98]',
+  dark: 'bg-[var(--pill-active-bg)] hover:opacity-90 text-[var(--pill-active-text)] active:scale-[0.98]',
   red: 'bg-[#e60023] hover:bg-[#ad081b] text-white shadow-xs active:scale-[0.98]',
   orange: 'bg-[#F1641E] hover:bg-[#d95616] text-white shadow-xs active:scale-[0.98]',
-  secondary: 'bg-neutral-100 hover:bg-neutral-200 text-[#222222] dark:bg-neutral-800 dark:hover:bg-neutral-700 dark:text-neutral-100 active:scale-[0.98]',
-  tertiary: 'bg-transparent hover:bg-black/5 dark:hover:bg-white/10 text-[#222222] dark:text-white',
-  outline: 'bg-transparent border border-neutral-300 dark:border-neutral-700 hover:bg-neutral-100 dark:hover:bg-neutral-800 text-[#222222] dark:text-neutral-100',
-  ghost: 'bg-transparent hover:bg-neutral-100 dark:hover:bg-neutral-800 text-neutral-700 dark:text-neutral-300',
+  secondary: 'bg-[var(--bg-input)] hover:bg-[var(--bg-hover)] text-[var(--text-main)] active:scale-[0.98]',
+  tertiary: 'bg-transparent hover:bg-[var(--bg-hover)] text-[var(--text-main)]',
+  outline: 'bg-transparent border border-[var(--border-subtle)] hover:bg-[var(--bg-hover)] text-[var(--text-main)]',
+  ghost: 'bg-transparent hover:bg-[var(--bg-hover)] text-[var(--text-body)]',
   transparent: 'bg-transparent text-current hover:opacity-80',
 };
 

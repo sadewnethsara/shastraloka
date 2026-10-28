@@ -25,7 +25,7 @@ function MiniBagRailWrapper() {
 function ProvidersContent({ children }: { children: React.ReactNode }) {
   return (
     <>
-      <div className="min-h-screen flex bg-white dark:bg-[#0a0a0c]">
+      <div className="min-h-screen flex bg-[var(--bg-main)] text-[var(--text-main)]">
         {/* Left Column: Page Content */}
         <div className="flex-1 min-w-0">
           {children}

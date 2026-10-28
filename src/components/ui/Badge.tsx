@@ -23,21 +23,21 @@ export interface BadgeProps {
 
 const variantStyles: Record<BadgeVariant, string> = {
   price:
-    'bg-white/95 dark:bg-[#202025]/95 text-[#222222] dark:text-white border border-neutral-300 dark:border-neutral-700 font-bold shadow-xs backdrop-blur-xs',
+    'bg-[var(--bg-card)]/95 text-[var(--text-main)] border border-[var(--border-subtle)] font-bold shadow-xs backdrop-blur-xs',
   sale:
-    'bg-[#A0E193]/70 text-[#0F743B] dark:bg-[#0F743B]/30 dark:text-[#76d691] font-bold',
+    'bg-[var(--color-success-bg)] text-[var(--color-success)] font-bold',
   bestseller:
-    'bg-[#fdf6e8] text-[#a66523] dark:bg-[#342410] dark:text-[#f8c17b] border border-[#f5e8c8] dark:border-[#523816] font-semibold tracking-wide',
+    'bg-[var(--banner-guild-bg)] text-[var(--banner-guild-accent)] border border-[var(--banner-guild-border)] font-semibold tracking-wide',
   info:
     'bg-blue-50 text-blue-700 dark:bg-blue-950/50 dark:text-blue-300 border border-blue-200 dark:border-blue-800',
   success:
-    'bg-emerald-50 text-emerald-700 dark:bg-emerald-950/50 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800',
+    'bg-[var(--color-success-bg)] text-[var(--color-success)] border border-[var(--border-subtle)]',
   warning:
-    'bg-amber-50 text-amber-700 dark:bg-amber-950/50 dark:text-amber-300 border border-amber-200 dark:border-amber-800',
+    'bg-[var(--color-warning-bg)] text-[var(--color-warning)] border border-[var(--border-subtle)]',
   error:
-    'bg-rose-50 text-rose-700 dark:bg-rose-950/50 dark:text-rose-300 border border-rose-200 dark:border-rose-800',
+    'bg-[var(--color-danger-bg)] text-[var(--color-danger)] border border-[var(--border-subtle)]',
   neutral:
-    'bg-neutral-100 text-neutral-700 dark:bg-neutral-800 dark:text-neutral-300 border border-neutral-200 dark:border-neutral-700',
+    'bg-[var(--bg-input)] text-[var(--text-body)] border border-[var(--border-subtle)]',
   recommendation:
     'bg-purple-50 text-purple-700 dark:bg-purple-950/50 dark:text-purple-300 border border-purple-200 dark:border-purple-800',
 };

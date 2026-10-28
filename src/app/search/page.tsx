@@ -283,8 +283,8 @@ function PinterestBookPin({ item, index, activeQuery }: PinterestBookPinProps) {
             <span className="truncate max-w-[90px]">{boards[0]?.name || 'Reading List'}</span>
           </button>
           {boardDropdownOpen && (
-            <div className="absolute top-9 left-0 w-44 bg-white dark:bg-[#1e1e24] text-neutral-900 dark:text-neutral-100 rounded-xl p-1.5 shadow-2xl border border-neutral-200 dark:border-neutral-700 z-30">
-              <p className="text-[10px] font-bold uppercase tracking-wider text-neutral-400 px-2 py-1">
+            <div className="absolute top-9 left-0 w-44 bg-[var(--bg-card)] text-[var(--text-main)] rounded-xl p-1.5 shadow-2xl border border-[var(--border-subtle)] z-30">
+              <p className="text-[10px] font-bold uppercase tracking-wider text-[var(--text-muted)] px-2 py-1">
                 Save to Board
               </p>
               {boards.map((b) => (
@@ -295,10 +295,10 @@ function PinterestBookPin({ item, index, activeQuery }: PinterestBookPinProps) {
                     saveToBoard(book.id, b.id);
                     setBoardDropdownOpen(false);
                   }}
-                  className="w-full text-left px-2 py-1.5 rounded-lg text-xs font-medium hover:bg-neutral-100 dark:hover:bg-neutral-800 flex items-center justify-between cursor-pointer"
+                  className="w-full text-left px-2 py-1.5 rounded-lg text-xs font-medium hover:bg-[var(--bg-hover)] flex items-center justify-between cursor-pointer"
                 >
                   <span className="truncate">{b.name}</span>
-                  {b.bookIds.includes(book.id) && <Check className="w-3.5 h-3.5 text-[#e60023]" />}
+                  {b.bookIds.includes(book.id) && <Check className="w-3.5 h-3.5 text-[var(--color-accent-badge)]" />}
                 </button>
               ))}
             </div>
@@ -363,16 +363,16 @@ function PinterestBookPin({ item, index, activeQuery }: PinterestBookPinProps) {
             </button>
 
             {menuOpen && (
-              <div className="absolute right-0 bottom-7 w-48 bg-white dark:bg-[#1e1e24] text-neutral-900 dark:text-neutral-100 rounded-2xl shadow-xl border border-neutral-200 dark:border-neutral-700 py-1.5 z-30 text-xs">
+              <div className="absolute right-0 bottom-7 w-48 bg-[var(--bg-card)] text-[var(--text-main)] rounded-2xl shadow-xl border border-[var(--border-subtle)] py-1.5 z-30 text-xs">
                 <button
                   type="button"
                   onClick={() => {
                     setMenuOpen(false);
                     router.push(`/books/${book.id}`);
                   }}
-                  className="w-full text-left px-3.5 py-2 hover:bg-neutral-100 dark:hover:bg-neutral-800 flex items-center gap-2 font-semibold cursor-pointer"
+                  className="w-full text-left px-3.5 py-2 hover:bg-[var(--bg-hover)] flex items-center gap-2 font-semibold cursor-pointer"
                 >
-                  <BookOpen className="w-3.5 h-3.5 text-[#F1641E]" />
+                  <BookOpen className="w-3.5 h-3.5 text-[var(--color-primary)]" />
                   <span>Open Product Page</span>
                 </button>
                 <button
@@ -381,9 +381,9 @@ function PinterestBookPin({ item, index, activeQuery }: PinterestBookPinProps) {
                     setMenuOpen(false);
                     openBookModal(book);
                   }}
-                  className="w-full text-left px-3.5 py-2 hover:bg-neutral-100 dark:hover:bg-neutral-800 flex items-center gap-2 cursor-pointer"
+                  className="w-full text-left px-3.5 py-2 hover:bg-[var(--bg-hover)] flex items-center gap-2 cursor-pointer"
                 >
-                  <Eye className="w-3.5 h-3.5 text-neutral-500" />
+                  <Eye className="w-3.5 h-3.5 text-[var(--text-muted)]" />
                   <span>Quick Look Inside</span>
                 </button>
                 <button
@@ -392,9 +392,9 @@ function PinterestBookPin({ item, index, activeQuery }: PinterestBookPinProps) {
                     setMenuOpen(false);
                     addToBag(book);
                   }}
-                  className="w-full text-left px-3.5 py-2 hover:bg-neutral-100 dark:hover:bg-neutral-800 flex items-center gap-2 cursor-pointer"
+                  className="w-full text-left px-3.5 py-2 hover:bg-[var(--bg-hover)] flex items-center gap-2 cursor-pointer"
                 >
-                  <Handbag className="w-3.5 h-3.5 text-emerald-600" />
+                  <Handbag className="w-3.5 h-3.5 text-[var(--color-success)]" />
                   <span>Add to Bag</span>
                 </button>
                 <button
@@ -403,9 +403,9 @@ function PinterestBookPin({ item, index, activeQuery }: PinterestBookPinProps) {
                     setMenuOpen(false);
                     saveToBoard(book.id);
                   }}
-                  className="w-full text-left px-3.5 py-2 hover:bg-neutral-100 dark:hover:bg-neutral-800 flex items-center gap-2 cursor-pointer"
+                  className="w-full text-left px-3.5 py-2 hover:bg-[var(--bg-hover)] flex items-center gap-2 cursor-pointer"
                 >
-                  <Heart className="w-3.5 h-3.5 text-[#e60023]" />
+                  <Heart className="w-3.5 h-3.5 text-[var(--color-accent-badge)]" />
                   <span>{saved ? 'Remove from Board' : 'Save to Board'}</span>
                 </button>
               </div>
@@ -709,9 +709,9 @@ function SearchContent() {
         {filtersOpen && (
           <div
             data-testid="search-filter-panel"
-            className="bg-white dark:bg-[#19191f] rounded-2xl p-4 sm:p-5 border border-neutral-200 dark:border-neutral-800 shadow-lg space-y-4 animate-fade-in"
+            className="bg-[var(--bg-card)] rounded-2xl p-4 sm:p-5 border border-[var(--border-subtle)] shadow-lg space-y-4 animate-fade-in"
           >
-            <div className="flex flex-wrap items-center justify-between gap-2 pb-3 border-b border-neutral-100 dark:border-neutral-800">
+            <div className="flex flex-wrap items-center justify-between gap-2 pb-3 border-b border-[var(--border-subtle)]">
               <div className="flex items-center gap-2">
                 <SlidersHorizontal className="w-4 h-4 text-[#F1641E]" />
                 <h2 className="text-sm font-bold">
@@ -914,7 +914,7 @@ function SearchContent() {
 
               {/* After Card #1: Inject "Explore featured boards" Pinterest Widget (Matching Screenshot 1) */}
               {idx === 0 && (
-                <div className="masonry-item break-inside-avoid mb-4 sm:mb-5 p-3 rounded-2xl bg-neutral-100/80 dark:bg-[#1a1a20] border border-neutral-200/80 dark:border-neutral-800">
+                <div className="masonry-item break-inside-avoid mb-4 sm:mb-5 p-3 rounded-2xl bg-[var(--bg-wash)] border border-[var(--border-subtle)]">
                   <h3 className="text-xs sm:text-sm font-bold text-[var(--text-main)] mb-2.5">
                     Explore featured boards
                   </h3>
@@ -923,7 +923,7 @@ function SearchContent() {
                       <div
                         key={b.id}
                         onClick={() => handleApplyQueryOrCategory(b.query)}
-                        className="group cursor-pointer bg-white dark:bg-[#23232b] rounded-xl p-1.5 border border-neutral-200/70 dark:border-neutral-700/70 hover:shadow-md transition"
+                        className="group cursor-pointer bg-[var(--bg-card)] rounded-xl p-1.5 border border-[var(--border-subtle)] hover:shadow-md transition"
                       >
                         <div className="grid grid-cols-3 gap-1 h-20 rounded-lg overflow-hidden">
                           <img
@@ -950,12 +950,12 @@ function SearchContent() {
                             />
                           </div>
                         </div>
-                        <p className="text-[11px] font-bold text-[var(--text-main)] group-hover:text-[#F1641E] line-clamp-1 mt-1.5">
+                        <p className="text-[11px] font-bold text-[var(--text-main)] group-hover:text-[var(--color-primary)] line-clamp-1 mt-1.5">
                           {b.title}
                         </p>
                         <p className="text-[10px] text-[var(--text-muted)] flex items-center gap-1 truncate">
                           <span>{b.curator}</span>
-                          <CheckCircle2 className="w-2.5 h-2.5 text-[#e60023] shrink-0" />
+                          <CheckCircle2 className="w-2.5 h-2.5 text-[var(--color-accent-badge)] shrink-0" />
                         </p>
                         <p className="text-[9px] text-[var(--text-dim)] mt-0.5">
                           {b.pinsCount} Pins • {b.age}
@@ -968,7 +968,7 @@ function SearchContent() {
 
               {/* After Card #5: Inject "Shop [Query/Category] Editions" Inline Carousel Widget (Matching Screenshot 1) */}
               {idx === 4 && shopCarouselBooks.length > 0 && (
-                <div className="masonry-item break-inside-avoid mb-4 sm:mb-5 p-3 rounded-2xl bg-neutral-100/90 dark:bg-[#1a1a20] border border-neutral-200/80 dark:border-neutral-800">
+                <div className="masonry-item break-inside-avoid mb-4 sm:mb-5 p-3 rounded-2xl bg-[var(--bg-wash)] border border-[var(--border-subtle)]">
                   <div className="flex items-center justify-between mb-2">
                     <div>
                       <p className="text-[10px] font-semibold text-[var(--text-muted)]">
@@ -1036,7 +1036,7 @@ function SearchContent() {
 
               {/* Near Bottom of Grid: Inject "Related searches" Widget (Matching Screenshot 1) */}
               {idx === Math.min(9, searchResult.allItems.length - 1) && (
-                <div className="masonry-item break-inside-avoid mb-4 sm:mb-5 p-3.5 rounded-2xl bg-neutral-100/90 dark:bg-[#1a1a20] border border-neutral-200/80 dark:border-neutral-800">
+                <div className="masonry-item break-inside-avoid mb-4 sm:mb-5 p-3.5 rounded-2xl bg-[var(--bg-wash)] border border-[var(--border-subtle)]">
                   <h3 className="text-xs sm:text-sm font-bold text-[var(--text-main)] mb-2.5">
                     Related searches
                   </h3>
@@ -1046,7 +1046,7 @@ function SearchContent() {
                         key={rel.text}
                         type="button"
                         onClick={() => handleApplyQueryOrCategory(rel.text)}
-                        className="w-full p-1.5 rounded-xl bg-neutral-200/75 dark:bg-neutral-800 hover:bg-neutral-300/70 dark:hover:bg-neutral-700 flex items-center gap-2.5 text-left transition cursor-pointer"
+                        className="w-full p-1.5 rounded-xl bg-[var(--bg-card)] hover:bg-[var(--bg-hover)] border border-[var(--border-subtle)] flex items-center gap-2.5 text-left transition cursor-pointer"
                       >
                         <img
                           src={rel.thumb}

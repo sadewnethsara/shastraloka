@@ -141,7 +141,7 @@ function OrderDetailContent() {
         </div>
 
         {/* Tracking Timeline Card */}
-        <div className="p-6 sm:p-8 rounded-2xl bg-white dark:bg-[#1c1c21] border border-[var(--border-subtle)] shadow-xs mb-8 space-y-6">
+        <div className="p-6 sm:p-8 rounded-2xl bg-[var(--bg-card)] border border-[var(--border-subtle)] shadow-xs mb-8 space-y-6">
           <div className="flex flex-wrap items-center justify-between gap-3 pb-4 border-b border-[var(--border-subtle)]">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-full bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-300 flex items-center justify-center font-bold">
@@ -202,7 +202,7 @@ function OrderDetailContent() {
           {/* Recipient and Payment details */}
           <div className="lg:col-span-5 space-y-6">
             
-            <div className="p-6 rounded-2xl bg-white dark:bg-[#1c1c21] border border-[var(--border-subtle)] shadow-xs space-y-4">
+            <div className="p-6 rounded-2xl bg-[var(--bg-card)] border border-[var(--border-subtle)] shadow-xs space-y-4">
               <h3 className="font-serif font-bold text-base text-[var(--text-main)] border-b border-[var(--border-subtle)] pb-3">
                 Recipient & Delivery
               </h3>
@@ -237,7 +237,7 @@ function OrderDetailContent() {
               </div>
             </div>
 
-            <div className="p-6 rounded-2xl bg-white dark:bg-[#1c1c21] border border-[var(--border-subtle)] shadow-xs space-y-4">
+            <div className="p-6 rounded-2xl bg-[var(--bg-card)] border border-[var(--border-subtle)] shadow-xs space-y-4">
               <h3 className="font-serif font-bold text-base text-[var(--text-main)] border-b border-[var(--border-subtle)] pb-3">
                 Payment Verification
               </h3>
@@ -271,7 +271,7 @@ function OrderDetailContent() {
           {/* Itemized Order Breakdown with Real Photographs */}
           <div className="lg:col-span-7 space-y-6">
             
-            <div className="p-6 rounded-2xl bg-white dark:bg-[#1c1c21] border border-[var(--border-subtle)] shadow-xs space-y-5">
+            <div className="p-6 rounded-2xl bg-[var(--bg-card)] border border-[var(--border-subtle)] shadow-xs space-y-5">
               <h3 className="font-serif font-bold text-base text-[var(--text-main)] border-b border-[var(--border-subtle)] pb-3">
                 Archival Invoice Manifest
               </h3>

@@ -87,14 +87,22 @@ function RecentSearchThumb({ image }: { type?: string; image?: string }) {
   );
 }
 
-export const NAV_LINKS = [
-  { label: 'Gifts', hasIcon: true, query: 'Gifts' },
+export interface NavLinkItem {
+  label: string;
+  hasIcon: boolean;
+  href?: string;
+  query?: string;
+}
+
+export const NAV_LINKS: NavLinkItem[] = [
+  { label: 'Best Sellers', hasIcon: false, href: '/bestsellers' },
+  { label: 'New Arrivals & Releases', hasIcon: false, href: '/new-releases' },
+  { label: 'Gifts', hasIcon: true, href: '/gifts' },
   { label: 'Ancient Chronicles', hasIcon: false, query: 'Chronicles' },
   { label: 'Buddhist Philosophy', hasIcon: false, query: 'Buddhist' },
   { label: 'Sinhala Poetry', hasIcon: false, query: 'Poetry' },
   { label: 'Ayurvedic Texts', hasIcon: false, query: 'Ayurveda' },
-  { label: 'Palm Leaf Collections', hasIcon: false, query: 'Manuscript' },
-  { label: 'Best Sellers', hasIcon: false, query: 'Mahavamsa' },
+  { label: 'Archives', hasIcon: false, href: '/archives' },
 ];
 
 export interface HeaderProps {
@@ -345,12 +353,18 @@ export default function Header({ isSticky = false }: HeaderProps = {}) {
           {/* =====================================================================
               DESKTOP SUB-NAVIGATION ROW
              ===================================================================== */}
-          <nav className="hidden lg:flex items-center justify-center gap-7 pb-2.5 pt-0.5 text-[13px] font-medium text-[var(--header-text)]">
+          <nav className="hidden lg:flex items-center justify-center gap-6 pb-2.5 pt-0.5 text-[13px] font-medium text-[var(--header-text)]">
             {NAV_LINKS.map((item) => (
               <button
                 key={item.label}
                 type="button"
-                onClick={() => handleSearchSubmit(item.query)}
+                onClick={() => {
+                  if (item.href) {
+                    router.push(item.href);
+                  } else if (item.query) {
+                    handleSearchSubmit(item.query);
+                  }
+                }}
                 className="flex items-center gap-1.5 px-3 py-1 rounded-full hover:bg-[var(--header-hover-bg)] text-[var(--header-text)] transition cursor-pointer"
               >
                 {item.hasIcon && (
@@ -511,7 +525,14 @@ export default function Header({ isSticky = false }: HeaderProps = {}) {
                 <button
                   key={link.label}
                   type="button"
-                  onClick={() => handleSearchSubmit(link.query)}
+                  onClick={() => {
+                    setMobileMenuOpen(false);
+                    if (link.href) {
+                      router.push(link.href);
+                    } else if (link.query) {
+                      handleSearchSubmit(link.query);
+                    }
+                  }}
                   className="w-full text-left px-5 py-2.5 text-sm font-medium text-[var(--header-text)] hover:bg-[var(--header-hover-bg)] flex items-center gap-2.5 transition"
                 >
                   {link.hasIcon && (

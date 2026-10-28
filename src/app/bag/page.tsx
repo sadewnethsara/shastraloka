@@ -1259,29 +1259,29 @@ export default function Bag() {
     const urgencyHighlight = bagItems[0] || INITIAL_BAG_SCREENSHOT_1[0];
 
     return (
-        <div className="min-h-screen bg-white text-[#222222] font-sans antialiased selection:bg-[#f1641e]/15 selection:text-[#f1641e]">
+        <div className="min-h-screen bg-[var(--bg-main)] text-[var(--text-main)] font-sans antialiased selection:bg-[#f1641e]/15 selection:text-[#f1641e] transition-colors duration-200">
             {/* ------------------------------------------------------------------- */}
             {/* TOP INTERACTIVE PRESET SWITCHER BAR (Amazon + Pinterest + Etsy Hybrid) */}
             {/* ------------------------------------------------------------------- */}
-            <div className="bg-[#faf8f5] border-b border-stone-200/80 px-4 py-1.5 text-xs">
+            <div className="bg-[var(--bg-wash)] border-b border-[var(--border-subtle)] px-4 py-1.5 text-xs">
                 <div className="max-w-[1280px] mx-auto flex flex-wrap items-center justify-between gap-2">
-                    <div className="flex items-center gap-2 text-stone-600">
+                    <div className="flex items-center gap-2 text-[var(--text-muted)]">
                         <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-[#e60023]/10 text-[#e60023] font-semibold text-[11px]">
                             <Bookmark className="w-3 h-3 fill-current" /> Pinterest Book Aesthetic
                         </span>
-                        <span className="hidden sm:inline text-stone-300">•</span>
-                        <span className="hidden sm:inline-flex items-center gap-1 text-stone-600 font-medium">
+                        <span className="hidden sm:inline text-[var(--border-strong)]">•</span>
+                        <span className="hidden sm:inline-flex items-center gap-1 text-[var(--text-muted)] font-medium">
                             <BookOpen className="w-3.5 h-3.5 text-[#f1641e]" /> Amazon Book Formats + Etsy Bag Layout
                         </span>
                     </div>
 
                     <div className="flex flex-wrap items-center gap-1.5">
-                        <span className="text-[11px] text-stone-500 font-medium mr-1">Reference Preset:</span>
+                        <span className="text-[11px] text-[var(--text-muted)] font-medium mr-1">Reference Preset:</span>
                         <button
                             onClick={() => handleSwitchPreset('screenshot-1')}
                             className={`px-2.5 py-1 rounded-full text-[11px] font-semibold transition-all ${activePreset === 'screenshot-1'
-                                ? 'bg-[#222222] text-white shadow-xs'
-                                : 'bg-stone-200/75 text-stone-700 hover:bg-stone-300/70'
+                                ? 'bg-[var(--pill-active-bg)] text-[var(--pill-active-text)] shadow-xs'
+                                : 'bg-[var(--bg-input)] text-[var(--text-muted)] hover:bg-[var(--bg-hover)]'
                                 }`}
                         >
                             Screenshot 1 (2 Books in Bag • USD 10.90)
@@ -1289,8 +1289,8 @@ export default function Bag() {
                         <button
                             onClick={() => handleSwitchPreset('screenshot-2')}
                             className={`px-2.5 py-1 rounded-full text-[11px] font-semibold transition-all ${activePreset === 'screenshot-2'
-                                ? 'bg-[#222222] text-white shadow-xs'
-                                : 'bg-stone-200/75 text-stone-700 hover:bg-stone-300/70'
+                                ? 'bg-[var(--pill-active-bg)] text-[var(--pill-active-text)] shadow-xs'
+                                : 'bg-[var(--bg-input)] text-[var(--text-muted)] hover:bg-[var(--bg-hover)]'
                                 }`}
                         >
                             Screenshot 2 (1 Digital Book • USD 1.49)
@@ -1302,7 +1302,7 @@ export default function Bag() {
             {/* ------------------------------------------------------------------- */}
             {/* MAIN HEADER BAR (Cloned from Screenshots + Bookstore & Pin Touches) */}
             {/* ------------------------------------------------------------------- */}
-            <header className="sticky top-0 z-30 bg-white border-b border-stone-200">
+            <header className="sticky top-0 z-30 bg-[var(--header-bg)] border-b border-[var(--header-border)]">
                 <div className="max-w-[1280px] mx-auto px-4 sm:px-6">
                     {/* Row 1: Brand + Desktop Search + Right Actions */}
                     <div className="h-[64px] md:h-[72px] flex items-center justify-between gap-2 sm:gap-5 relative">
@@ -1328,7 +1328,7 @@ export default function Bag() {
                             <div className="relative hidden md:block">
                                 <button
                                     onClick={() => setShowCategoriesMenu((prev) => !prev)}
-                                    className="flex items-center gap-2 px-3 py-2 rounded-full text-[13.5px] font-medium text-[#222222] hover:bg-stone-100 transition-colors"
+                                    className="flex items-center gap-2 px-3 py-2 rounded-full text-[13.5px] font-medium text-[var(--text-main)] hover:bg-[var(--bg-hover)] transition-colors"
                                 >
                                     <Menu className="w-4 h-4 stroke-[2.2]" />
                                     <span>Categories</span>
@@ -1336,8 +1336,8 @@ export default function Bag() {
 
                                 {/* Amazon Bookstore + Pinterest Aesthetic Categories Dropdown */}
                                 {showCategoriesMenu && (
-                                    <div className="absolute left-0 mt-2 w-64 bg-white rounded-2xl shadow-xl border border-stone-200 py-2 z-50">
-                                        <div className="px-4 py-1.5 text-[11px] font-bold uppercase tracking-wider text-stone-400">
+                                    <div className="absolute left-0 mt-2 w-64 bg-[var(--bg-card)] rounded-2xl shadow-xl border border-[var(--border-subtle)] py-2 z-50">
+                                        <div className="px-4 py-1.5 text-[11px] font-bold uppercase tracking-wider text-[var(--text-dim)]">
                                             Bookstore Departments
                                         </div>
                                         {[
@@ -1355,10 +1355,10 @@ export default function Bag() {
                                                     setShowCategoriesMenu(false);
                                                     triggerToast(`Browsing category: ${cat}`);
                                                 }}
-                                                className="w-full text-left px-4 py-2 text-xs text-stone-700 hover:bg-stone-100 flex items-center justify-between"
+                                                className="w-full text-left px-4 py-2 text-xs text-[var(--text-body)] hover:bg-[var(--bg-hover)] flex items-center justify-between"
                                             >
                                                 <span>{cat}</span>
-                                                <BookOpen className="w-3.5 h-3.5 text-stone-400" />
+                                                <BookOpen className="w-3.5 h-3.5 text-[var(--text-dim)]" />
                                             </button>
                                         ))}
                                     </div>
@@ -1368,11 +1368,11 @@ export default function Bag() {
 
                         {/* Center: Desktop Pill Search Bar with Orange Circle Search Button */}
                         <div className="hidden md:block flex-1 max-w-[740px]">
-                            <div className="relative flex items-center w-full h-[46px] rounded-full border-[1.5px] border-[#222222] bg-white hover:shadow-xs focus-within:ring-2 focus-within:ring-[#222222]/10 overflow-hidden transition-all">
+                            <div className="relative flex items-center w-full h-[46px] rounded-full border-[1.5px] border-[var(--border-strong)] bg-[var(--bg-input)] hover:shadow-xs focus-within:ring-2 focus-within:ring-[#F1641E]/25 overflow-hidden transition-all">
                                 {/* Subtle Amazon-style book format filter inside search pill */}
-                                <div className="hidden lg:flex items-center pl-4 pr-2.5 h-full bg-stone-50 border-r border-stone-200 text-xs font-medium text-stone-700 shrink-0">
+                                <div className="hidden lg:flex items-center pl-4 pr-2.5 h-full bg-[var(--bg-wash)] border-r border-[var(--border-subtle)] text-xs font-medium text-[var(--text-body)] shrink-0">
                                     <span>{selectedBookDept}</span>
-                                    <ChevronDown className="w-3.5 h-3.5 ml-1 text-stone-500" />
+                                    <ChevronDown className="w-3.5 h-3.5 ml-1 text-[var(--text-muted)]" />
                                 </div>
 
                                 <input
@@ -1380,13 +1380,13 @@ export default function Bag() {
                                     value={searchQuery}
                                     onChange={(e) => setSearchQuery(e.target.value)}
                                     placeholder="Search for books, authors, ISBNs, or cozy reading pins..."
-                                    className="w-full h-full px-4 text-[14.5px] text-[#222222] placeholder-stone-500 bg-transparent focus:outline-none"
+                                    className="w-full h-full px-4 text-[14.5px] text-[var(--text-main)] placeholder-[var(--text-muted)] bg-transparent focus:outline-none"
                                 />
 
                                 {searchQuery && (
                                     <button
                                         onClick={() => setSearchQuery('')}
-                                        className="p-1.5 mr-1 text-stone-400 hover:text-stone-700"
+                                        className="p-1.5 mr-1 text-[var(--text-muted)] hover:text-[var(--text-main)]"
                                         title="Clear search"
                                     >
                                         <X className="w-4 h-4" />
@@ -1413,7 +1413,7 @@ export default function Bag() {
                         <div className="flex items-center gap-1.5 sm:gap-4 shrink-0">
                             <button
                                 onClick={() => triggerToast('Signed in as Reader • Kindle & Print Sync Active')}
-                                className="px-2.5 sm:px-3 py-1.5 rounded-full text-xs sm:text-[13.5px] font-medium text-[#222222] hover:bg-stone-100 transition-colors"
+                                className="px-2.5 sm:px-3 py-1.5 rounded-full text-xs sm:text-[13.5px] font-medium text-[var(--text-main)] hover:bg-[var(--bg-hover)] transition-colors"
                             >
                                 Sign in
                             </button>
@@ -1422,10 +1422,10 @@ export default function Bag() {
                                 onClick={() =>
                                     triggerToast(`You have ${pinnedBookIds.length} books pinned to your Reading Board`)
                                 }
-                                className="relative p-2 rounded-full text-[#222222] hover:bg-stone-100 transition-colors"
+                                className="relative p-2 rounded-full text-[var(--text-main)] hover:bg-[var(--bg-hover)] transition-colors"
                                 title="Pinned Reading List"
                             >
-                                <Heart className="w-5 h-5 fill-[#222222]" />
+                                <Heart className="w-5 h-5 fill-current" />
                                 {pinnedBookIds.length > 0 && (
                                     <span className=" -top-0.5 -right-0.5 absolute w-4 h-4 rounded-full bg-[#e60023] text-white text-[9.5px] font-bold flex items-center justify-center">
                                         {pinnedBookIds.length}
@@ -1437,7 +1437,7 @@ export default function Bag() {
                                 onClick={() =>
                                     window.scrollTo({ top: 0, behavior: 'smooth' })
                                 }
-                                className="relative p-2 rounded-full text-[#222222] hover:bg-stone-100 transition-colors flex items-center"
+                                className="relative p-2 rounded-full text-[var(--text-main)] hover:bg-[var(--bg-hover)] transition-colors flex items-center"
                                 title="Your Book Bag"
                             >
                                 <Handbag className="w-5 h-5 stroke-[2.2]" />
@@ -1451,9 +1451,9 @@ export default function Bag() {
                         {/* FLOATING TOP-RIGHT URGENCY NOTIFICATION POPOVER (From Screenshots) */}
                         {/* --------------------------------------------------------------- */}
                         {showFloatingUrgency && bagItems.length > 0 && (
-                            <div className="hidden md:flex items-center gap-3.5 absolute right-4 top-[54px] z-40 w-[348px] bg-white rounded-2xl shadow-[0_10px_32px_rgba(0,0,0,0.16)] border border-stone-200/90 p-3 animate-in fade-in slide-in-from-top-2 duration-200">
+                            <div className="hidden md:flex items-center gap-3.5 absolute right-4 top-[54px] z-40 w-[348px] bg-[var(--bg-card)] rounded-2xl shadow-[0_10px_32px_rgba(0,0,0,0.16)] border border-[var(--border-subtle)] p-3 animate-in fade-in slide-in-from-top-2 duration-200">
                                 {/* Thumbnail with Blue Bag Badge */}
-                                <div className="relative w-[74px] h-[74px] rounded-xl overflow-hidden shrink-0 border border-stone-200 bg-stone-50">
+                                <div className="relative w-[74px] h-[74px] rounded-xl overflow-hidden shrink-0 border border-[var(--border-subtle)] bg-[var(--bg-wash)]">
                                     <BookCoverArtwork
                                         variant={
                                             activePreset === 'screenshot-2'
@@ -1469,7 +1469,7 @@ export default function Bag() {
 
                                 {/* Content */}
                                 <div className="flex-1 min-w-0 pr-4">
-                                    <p className="text-[12.5px] font-bold text-[#222222] leading-snug">
+                                    <p className="text-[12.5px] font-bold text-[var(--text-main)] leading-snug">
                                         Hurry! Shop this one while it lasts!
                                     </p>
                                     <p className="text-[11.5px] font-bold text-[#a61a2e] mt-0.5">
@@ -1479,7 +1479,7 @@ export default function Bag() {
                                     </p>
                                     <button
                                         onClick={() => router.push('/checkout')}
-                                        className="mt-2 w-full py-1.5 px-3 rounded-full bg-[#222222] hover:bg-stone-800 text-white text-[12px] font-semibold flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
+                                        className="mt-2 w-full py-1.5 px-3 rounded-full bg-[var(--pill-active-bg)] text-[var(--pill-active-text)] hover:opacity-90 text-[12px] font-semibold flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
                                     >
                                         <span>Proceed to checkout</span>
                                         <ArrowRight className="w-3.5 h-3.5" />
@@ -1490,7 +1490,7 @@ export default function Bag() {
                                 <button
                                     onClick={() => setShowFloatingUrgency(false)}
                                     aria-label="Dismiss notification"
-                                    className="absolute top-2.5 right-2.5 p-1 text-stone-500 hover:text-stone-900 rounded-full hover:bg-stone-100"
+                                    className="absolute top-2.5 right-2.5 p-1 text-[var(--text-muted)] hover:text-[var(--text-main)] rounded-full hover:bg-[var(--bg-hover)]"
                                 >
                                     <X className="w-4 h-4" />
                                 </button>
@@ -1502,15 +1502,15 @@ export default function Bag() {
                     <div className="md:hidden pb-3 flex items-center gap-2 relative">
                         <button
                             onClick={() => setShowCategoriesMenu((prev) => !prev)}
-                            className="flex items-center gap-1.5 px-3 h-[42px] rounded-full border border-stone-300 text-xs font-semibold text-[#222222] hover:bg-stone-100 transition-colors shrink-0"
+                            className="flex items-center gap-1.5 px-3 h-[42px] rounded-full border border-[var(--border-subtle)] text-xs font-semibold text-[var(--text-main)] hover:bg-[var(--bg-hover)] transition-colors shrink-0"
                         >
                             <Menu className="w-4 h-4 stroke-[2.2]" />
                             <span>Categories</span>
                         </button>
 
                         {showCategoriesMenu && (
-                            <div className="absolute left-0 top-full mt-1 w-64 bg-white rounded-2xl shadow-xl border border-stone-200 py-2 z-50">
-                                <div className="px-4 py-1.5 text-[11px] font-bold uppercase tracking-wider text-stone-400">
+                            <div className="absolute left-0 top-full mt-1 w-64 bg-[var(--bg-card)] rounded-2xl shadow-xl border border-[var(--border-subtle)] py-2 z-50">
+                                <div className="px-4 py-1.5 text-[11px] font-bold uppercase tracking-wider text-[var(--text-dim)]">
                                     Bookstore Departments
                                 </div>
                                 {[
@@ -1528,27 +1528,27 @@ export default function Bag() {
                                             setShowCategoriesMenu(false);
                                             triggerToast(`Browsing category: ${cat}`);
                                         }}
-                                        className="w-full text-left px-4 py-2 text-xs text-stone-700 hover:bg-stone-100 flex items-center justify-between"
+                                        className="w-full text-left px-4 py-2 text-xs text-[var(--text-body)] hover:bg-[var(--bg-hover)] flex items-center justify-between"
                                     >
                                         <span>{cat}</span>
-                                        <BookOpen className="w-3.5 h-3.5 text-stone-400" />
+                                        <BookOpen className="w-3.5 h-3.5 text-[var(--text-dim)]" />
                                     </button>
                                 ))}
                             </div>
                         )}
 
-                        <div className="relative flex-1 flex items-center h-[42px] rounded-full border-[1.5px] border-[#222222] bg-white overflow-hidden">
+                        <div className="relative flex-1 flex items-center h-[42px] rounded-full border-[1.5px] border-[var(--border-strong)] bg-[var(--bg-input)] overflow-hidden">
                             <input
                                 type="text"
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
                                 placeholder="Search books, authors..."
-                                className="w-full h-full px-3.5 text-xs text-[#222222] placeholder-stone-500 bg-transparent focus:outline-none"
+                                className="w-full h-full px-3.5 text-xs text-[var(--text-main)] placeholder-[var(--text-muted)] bg-transparent focus:outline-none"
                             />
                             {searchQuery && (
                                 <button
                                     onClick={() => setSearchQuery('')}
-                                    className="p-1 text-stone-400 hover:text-stone-700"
+                                    className="p-1 text-[var(--text-muted)] hover:text-[var(--text-main)]"
                                     title="Clear search"
                                 >
                                     <X className="w-3.5 h-3.5" />
@@ -1579,10 +1579,10 @@ export default function Bag() {
                 {/* Page Heading ("Your bag" replacing "Your cart") */}
                 <div className="flex flex-wrap items-center justify-between gap-2 mb-5">
                     <div className="flex items-baseline gap-3">
-                        <h1 className="text-[22px] sm:text-[24px] font-semibold text-[#222222] tracking-tight">
+                        <h1 className="text-[22px] sm:text-[24px] font-semibold text-[var(--text-main)] tracking-tight">
                             Your bag
                         </h1>
-                        <span className="text-xs text-stone-500 font-medium">
+                        <span className="text-xs text-[var(--text-muted)] font-medium">
                             ({financials.totalCount} {financials.totalCount === 1 ? 'book' : 'books'} curated)
                         </span>
                     </div>
@@ -1590,7 +1590,7 @@ export default function Bag() {
                     {!showFloatingUrgency && (
                         <button
                             onClick={() => setShowFloatingUrgency(true)}
-                            className="text-xs text-stone-500 hover:text-[#222222] underline cursor-pointer"
+                            className="text-xs text-[var(--text-muted)] hover:text-[var(--text-main)] underline cursor-pointer"
                         >
                             Show live demand alert
                         </button>
@@ -1601,22 +1601,22 @@ export default function Bag() {
                 {/* TWO-COLUMN BAG LAYOUT (Left: Bag Items, Right: Order Summary)     */}
                 {/* ----------------------------------------------------------------- */}
                 {bagItems.length === 0 ? (
-                    <div className="bg-[#faf8f5] border border-stone-200 rounded-2xl p-10 text-center my-4">
-                        <ShoppingBag className="w-10 h-10 mx-auto text-stone-400 mb-3" />
-                        <h2 className="text-lg font-semibold text-stone-800">Your book bag is currently empty</h2>
-                        <p className="text-xs text-stone-500 max-w-md mx-auto mt-1">
+                    <div className="bg-[var(--bg-wash)] border border-[var(--border-subtle)] rounded-2xl p-10 text-center my-4">
+                        <ShoppingBag className="w-10 h-10 mx-auto text-[var(--text-dim)] mb-3" />
+                        <h2 className="text-lg font-semibold text-[var(--text-main)]">Your book bag is currently empty</h2>
+                        <p className="text-xs text-[var(--text-muted)] max-w-md mx-auto mt-1">
                             Explore our Pinterest-curated indie books, botanical collector hardcovers, and cozy printable coloring editions below.
                         </p>
                         <div className="mt-4 flex justify-center gap-3">
                             <button
                                 onClick={() => handleSwitchPreset('screenshot-1')}
-                                className="px-4 py-2 rounded-full bg-[#222222] text-white text-xs font-semibold hover:bg-stone-800"
+                                className="px-4 py-2 rounded-full bg-[var(--pill-active-bg)] text-[var(--pill-active-text)] text-xs font-semibold hover:opacity-90"
                             >
                                 Restore 2-Book Bag (Screenshot 1)
                             </button>
                             <button
                                 onClick={() => handleSwitchPreset('screenshot-2')}
-                                className="px-4 py-2 rounded-full border border-stone-300 bg-white text-stone-800 text-xs font-semibold hover:bg-stone-50"
+                                className="px-4 py-2 rounded-full border border-[var(--border-subtle)] bg-[var(--bg-card)] text-[var(--text-main)] text-xs font-semibold hover:bg-[var(--bg-hover)]"
                             >
                                 Restore 1-Book Bag (Screenshot 2)
                             </button>
@@ -1629,7 +1629,7 @@ export default function Bag() {
                             {bagItems.map((item) => (
                                 <div
                                     key={item.id}
-                                    className="bg-white rounded-xl border border-stone-200/95 shadow-[0_1px_4px_rgba(0,0,0,0.04)] overflow-hidden transition-shadow hover:shadow-md"
+                                    className="bg-[var(--bg-card)] rounded-xl border border-[var(--border-subtle)] shadow-[0_1px_4px_rgba(0,0,0,0.04)] overflow-hidden transition-shadow hover:shadow-md"
                                 >
                                     {/* Card Inner Padding */}
                                     <div className="p-4 sm:p-5">
@@ -1841,13 +1841,13 @@ export default function Bag() {
 
                                     {/* Card Footer Bar for Physical Book Shipping (Matches Screenshot 1) */}
                                     {!item.isDigital && (
-                                        <div className="px-4 sm:px-5 py-3 border-t border-stone-200 bg-white flex items-center justify-between text-[12.5px] text-[#222222]">
+                                        <div className="px-4 sm:px-5 py-3 border-t border-[var(--border-subtle)] bg-[var(--bg-wash)] flex items-center justify-between text-[12.5px] text-[var(--text-main)]">
                                             <div>
                                                 <span className="font-bold">Shipping:</span>{' '}
                                                 {item.shippingCost === 0 ? 'FREE' : `USD ${item.shippingCost.toFixed(2)}`}{' '}
-                                                <span className="text-stone-600">({item.shippingEta || 'Get it by Nov 7-14'})</span>
+                                                <span className="text-[var(--text-muted)]">({item.shippingEta || 'Get it by Nov 7-14'})</span>
                                             </div>
-                                            <span className="text-[11px] text-stone-500 hidden sm:inline">
+                                            <span className="text-[11px] text-[var(--text-muted)] hidden sm:inline">
                                                 Amazon-grade protective book box included
                                             </span>
                                         </div>
@@ -1857,32 +1857,32 @@ export default function Bag() {
 
                             {/* Saved For Later Section (if user clicks "Save for later") */}
                             {savedForLater.length > 0 && (
-                                <div className="bg-[#faf8f5] rounded-xl border border-stone-200 p-4">
-                                    <h3 className="text-xs font-bold uppercase tracking-wider text-stone-500 mb-3">
+                                <div className="bg-[var(--bg-wash)] rounded-xl border border-[var(--border-subtle)] p-4">
+                                    <h3 className="text-xs font-bold uppercase tracking-wider text-[var(--text-muted)] mb-3">
                                         Saved for later ({savedForLater.length})
                                     </h3>
                                     <div className="space-y-2.5">
                                         {savedForLater.map((saved) => (
                                             <div
                                                 key={saved.id}
-                                                className="flex items-center justify-between gap-3 bg-white p-2.5 rounded-lg border border-stone-200"
+                                                className="flex items-center justify-between gap-3 bg-[var(--bg-card)] p-2.5 rounded-lg border border-[var(--border-subtle)]"
                                             >
                                                 <div className="flex items-center gap-3 min-w-0">
-                                                    <div className="w-10 h-10 rounded overflow-hidden shrink-0 border border-stone-200">
+                                                    <div className="w-10 h-10 rounded overflow-hidden shrink-0 border border-[var(--border-subtle)]">
                                                         <BookCoverArtwork variant={saved.coverType} />
                                                     </div>
                                                     <div className="min-w-0">
-                                                        <p className="text-xs font-medium text-stone-800 truncate">
+                                                        <p className="text-xs font-medium text-[var(--text-main)] truncate">
                                                             {saved.title}
                                                         </p>
-                                                        <p className="text-[11px] text-stone-500">
+                                                        <p className="text-[11px] text-[var(--text-muted)]">
                                                             USD {saved.price.toFixed(2)} • {saved.bookFormat}
                                                         </p>
                                                     </div>
                                                 </div>
                                                 <button
                                                     onClick={() => handleMoveToBag(saved)}
-                                                    className="px-3 py-1 rounded-full border border-stone-800 text-xs font-semibold hover:bg-stone-900 hover:text-white transition-colors shrink-0"
+                                                    className="px-3 py-1 rounded-full border border-[var(--border-strong)] text-xs font-semibold hover:bg-[var(--pill-active-bg)] hover:text-[var(--pill-active-text)] transition-colors shrink-0"
                                                 >
                                                     Move to bag
                                                 </button>
@@ -1895,9 +1895,9 @@ export default function Bag() {
 
                         {/* RIGHT COLUMN: Order Summary & Checkout Sidebar (4 Cols on lg) */}
                         <div className="lg:col-span-4">
-                            <div className="bg-white rounded-xl p-1">
+                            <div className="bg-[var(--bg-card)] rounded-xl p-4 border border-[var(--border-subtle)]">
                                 {/* Price Breakdown Rows */}
-                                <div className="space-y-2.5 text-[13.5px] text-[#222222]">
+                                <div className="space-y-2.5 text-[13.5px] text-[var(--text-main)]">
                                     {financials.shopDiscount > 0 && (
                                         <>
                                             <div className="flex items-center justify-between">
@@ -2320,22 +2320,22 @@ export default function Bag() {
             {/* ------------------------------------------------------------------- */}
             {/* FOOTER (Exact Clone of Bottom Region, Links & Merchant Legal Text)  */}
             {/* ------------------------------------------------------------------- */}
-            <footer className="border-t border-stone-200 bg-white text-[#222222] mt-8">
+            <footer className="border-t border-[var(--border-subtle)] bg-[var(--footer-bg)] text-[var(--text-main)] mt-8">
                 <div className="max-w-[1140px] mx-auto px-4 sm:px-6 py-5 flex flex-col sm:flex-row items-center justify-between gap-4 text-[12px]">
                     {/* Left: Location Selector */}
                     <button
                         onClick={() =>
                             triggerToast('Region set to Sri Lanka • Currency: USD ($) • Ships Worldwide')
                         }
-                        className="flex items-center gap-2 font-semibold text-[#222222] hover:bg-stone-100 px-2.5 py-1.5 rounded-full transition-colors cursor-pointer"
+                        className="flex items-center gap-2 font-semibold text-[var(--text-main)] hover:bg-[var(--bg-hover)] px-2.5 py-1.5 rounded-full transition-colors cursor-pointer"
                     >
                         <Globe className="w-4 h-4" />
                         <span>Sri Lanka</span>
                     </button>
 
                     {/* Right: Copyright & Policy Links */}
-                    <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-1.5 text-stone-600">
-                        <span>© 2026 Booksy, Inc.</span>
+                    <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-1.5 text-[var(--text-muted)]">
+                        <span>© 2026 Shastraloka (ශාස්ත්රාලෝක), Inc.</span>
                         <a href="#terms" onClick={(e) => e.preventDefault()} className="hover:underline">
                             Terms of Use
                         </a>
@@ -2358,12 +2358,9 @@ export default function Bag() {
                 </div>
 
                 {/* Bottom Merchant Legal Disclosure Block */}
-                <div className="border-t border-stone-200/70 bg-[#faf9f7] py-6 px-4 text-center text-[11px] text-stone-500 space-y-2">
+                <div className="border-t border-[var(--border-subtle)] bg-[var(--bg-wash)] py-6 px-4 text-center text-[11px] text-[var(--text-muted)] space-y-2">
                     <p className="max-w-[960px] mx-auto">
-                        Merchant is Booksy, Inc. (USA), Booksy Ireland UC (Ireland), Booksy UK Limited (United Kingdom), Booksy Canada Limited (Canada), or Booksy Australia Pty Limited (Australia) depending on the currency and location of the payment instrument issuance.
-                    </p>
-                    <p className="text-stone-500">
-                        Booksy, Inc., USA 117 Adams Street Brooklyn, NY 11201 &nbsp;&nbsp;&nbsp;&nbsp; Booksy Ireland UC One Le Pole Square Ship Street Great Dublin 8
+                        Shastraloka (ශාස්ත්රාලෝක) — Sri Lanka&apos;s Premier Online Bookstore • shastraloka.lk | ශාස්ත්රාලෝක.ලංකා
                     </p>
                 </div>
             </footer>
@@ -2373,7 +2370,7 @@ export default function Bag() {
             {/* ------------------------------------------------------------------- */}
             {editingItem && (
                 <div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4">
-                    <div className="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl border border-stone-200">
+                    <div className="bg-[var(--bg-card)] text-[var(--text-main)] rounded-2xl max-w-md w-full p-6 shadow-2xl border border-[var(--border-subtle)]">
                         <div className="flex items-center justify-between pb-3 border-b border-stone-200">
                             <h3 className="text-base font-bold text-[#222222]">
                                 Edit Book Edition & Personalization

@@ -821,22 +821,22 @@ function ProductDetailContent() {
   });
 
   return (
-    <div className="min-h-screen bg-[#FAF8F5] dark:bg-[#121215] text-[#1E1E1C] dark:text-neutral-100 font-sans antialiased selection:bg-[#F1641E]/20 transition-colors duration-200">
+    <div className="min-h-screen bg-[var(--bg-main)] text-[var(--text-main)] font-sans antialiased selection:bg-[var(--color-primary-subtle)] transition-colors duration-200">
       {/* 1. Global Announcement Bar */}
-      <div className="bg-[#23382C] text-[#F5F2EB] text-xs py-2 px-4">
+      <div className="bg-[var(--banner-guild-bg)] text-[var(--banner-guild-text)] border-b border-[var(--banner-guild-border)] text-xs py-2 px-4">
         <div className="max-w-[1440px] mx-auto flex flex-wrap items-center justify-between gap-2">
           <div className="flex items-center gap-2">
-            <Sparkles className="w-3.5 h-3.5 text-[#E8B059]" />
+            <Sparkles className="w-3.5 h-3.5 text-[var(--banner-guild-accent)]" />
             <span>
               <strong>Shastraloka Classical Literary Guild:</strong> Free Islandwide Book-Post over LKR 3,500 + Complimentary Pressed Botanical Bookmark
             </span>
           </div>
-          <div className="hidden md:flex items-center gap-4 text-[11px] text-[#D7E2DC]">
+          <div className="hidden md:flex items-center gap-4 text-[11px] text-[var(--banner-guild-muted)]">
             <span className="flex items-center gap-1">
               <MapPin className="w-3 h-3" /> Delivering Across Sri Lanka & Worldwide
             </span>
             <span>•</span>
-            <a href="#masonry-discovery" className="underline hover:text-white">
+            <a href="#masonry-discovery" className="underline hover:text-[var(--banner-guild-text)]">
               Explore Visual Book Pinboard
             </a>
           </div>
@@ -889,9 +889,9 @@ function ProductDetailContent() {
              ----------------------------------------------------------------- */}
           <div className="lg:col-span-7 lg:col-start-1">
             {/* PINTEREST + ETSY GALLERY CARD */}
-            <div className="bg-white dark:bg-[#1a1a20] rounded-3xl border border-neutral-200/90 dark:border-neutral-800 shadow-xs p-3 sm:p-5">
+            <div className="bg-[var(--bg-card)] rounded-3xl border border-[var(--border-subtle)] shadow-xs p-3 sm:p-5">
               {/* Top Pinterest Action Bar */}
-              <div className="flex flex-wrap items-center justify-between gap-2 pb-3.5 mb-3.5 border-b border-neutral-100 dark:border-neutral-800">
+              <div className="flex flex-wrap items-center justify-between gap-2 pb-3.5 mb-3.5 border-b border-[var(--border-subtle)]">
                 <div className="flex items-center gap-1 sm:gap-2">
                   <button
                     type="button"
@@ -1027,7 +1027,7 @@ function ProductDetailContent() {
                 </div>
 
                 {/* Main Showcase Frame */}
-                <div className="relative flex-1 rounded-2xl overflow-hidden bg-[#919B78] min-h-[380px] sm:min-h-[480px] flex flex-col items-center justify-center p-6 sm:p-10 group">
+                <div className="relative flex-1 rounded-2xl overflow-hidden bg-[var(--bg-wash)] border border-[var(--border-subtle)] min-h-[380px] sm:min-h-[480px] flex flex-col items-center justify-center p-6 sm:p-10 group">
                   <div className="absolute top-4 left-4 z-10">
                     <Badge
                       variant="bestseller"
@@ -1036,36 +1036,13 @@ function ProductDetailContent() {
                     />
                   </div>
 
-                  {activeMediaIndex === 0 ? (
-                    <div className="relative w-[220px] sm:w-[265px] aspect-[2/3] bg-[#F3EFE6] rounded-r-md shadow-[16px_20px_35px_rgba(0,0,0,0.38)] border-l-8 border-[#636D4C] p-3.5 flex flex-col justify-between transition-transform duration-500 group-hover:scale-[1.02]">
-                      <div className="w-full h-[76%] bg-[#6C7753] rounded-xs p-5 flex flex-col items-center justify-between text-center text-[#EAE5D9] shadow-inner">
-                        <span className="text-[9px] uppercase tracking-[0.25em] opacity-80">
-                          Shastraloka Edition
-                        </span>
-                        <div className="my-auto space-y-1.5">
-                          <h2
-                            className="text-lg sm:text-xl tracking-[0.12em] uppercase font-normal leading-snug"
-                            style={{
-                              fontFamily: 'Georgia, Cambria, "Times New Roman", Times, serif',
-                            }}
-                          >
-                            {activeBook.title.split(':')[0]}
-                          </h2>
-                          <div className="w-8 h-[1px] bg-[#EAE5D9]/50 mx-auto" />
-                        </div>
-                        <div className="text-[10px] tracking-widest opacity-90 italic font-serif">
-                          — ❖ —
-                        </div>
-                      </div>
-
-                      <div className="pt-2.5 flex items-end justify-between text-[#2D2C29] px-1">
-                        <p className="text-[9px] leading-tight italic font-serif max-w-[65%] line-clamp-2">
-                          {activeBook.subtitle}
-                        </p>
-                        <span className="text-[8px] uppercase tracking-wider font-bold text-neutral-600 truncate max-w-[30%]">
-                          {activeBook.author}
-                        </span>
-                      </div>
+                  {activeMediaIndex === 0 && activeBook.coverImage ? (
+                    <div className="relative w-[220px] sm:w-[270px] aspect-[2/3] rounded-xl overflow-hidden shadow-2xl border border-[var(--border-subtle)] transition-transform duration-500 group-hover:scale-[1.02] bg-[var(--bg-card)]">
+                      <img
+                        src={activeBook.coverImage}
+                        alt={activeBook.title}
+                        className="w-full h-full object-cover"
+                      />
                     </div>
                   ) : (
                     <img
@@ -1194,12 +1171,12 @@ function ProductDetailContent() {
             {/* ---------------------------------------------------------------
                 AMAZON-STYLE BOOK METADATA SPECIFICATIONS
                --------------------------------------------------------------- */}
-            <div className="bg-white dark:bg-[#1a1a20] rounded-2xl border border-neutral-200/90 dark:border-neutral-800 p-4 shadow-2xs">
+            <div className="bg-[var(--bg-card)] rounded-2xl border border-[var(--border-subtle)] p-4 shadow-2xs">
               <div className="flex items-center justify-between mb-3">
-                <h3 className="text-xs font-bold uppercase tracking-wider text-neutral-500">
+                <h3 className="text-xs font-bold uppercase tracking-wider text-[var(--text-muted)]">
                   Bibliographic Specifications & Edition Details
                 </h3>
-                <span className="text-[11px] text-emerald-700 dark:text-emerald-400 font-semibold">
+                <span className="text-[11px] text-[var(--color-success)] font-semibold">
                   ISBN Verified • Archival Grade
                 </span>
               </div>
@@ -1209,13 +1186,13 @@ function ProductDetailContent() {
                   return (
                     <div
                       key={meta.label}
-                      className="p-2.5 rounded-xl bg-[#FAF8F5] dark:bg-[#151518] border border-neutral-200/60 dark:border-neutral-800 flex flex-col items-center text-center"
+                      className="p-2.5 rounded-xl bg-[var(--bg-wash)] border border-[var(--border-subtle)] flex flex-col items-center text-center"
                     >
-                      <span className="text-[10px] text-neutral-500 mb-1">
+                      <span className="text-[10px] text-[var(--text-muted)] mb-1">
                         {meta.label}
                       </span>
-                      <IconComponent className="w-4 h-4 text-[#23382C] dark:text-emerald-400 my-1" />
-                      <span className="text-[11px] font-bold text-neutral-800 dark:text-neutral-200 leading-tight">
+                      <IconComponent className="w-4 h-4 text-[var(--banner-guild-accent)] my-1" />
+                      <span className="text-[11px] font-bold text-[var(--text-main)] leading-tight">
                         {meta.value}
                       </span>
                     </div>
@@ -1227,7 +1204,7 @@ function ProductDetailContent() {
             {/* ---------------------------------------------------------------
                 AMAZON-STYLE "FREQUENTLY BOUGHT TOGETHER" BUNDLE
                --------------------------------------------------------------- */}
-            <div className="bg-white dark:bg-[#1a1a20] rounded-3xl border border-neutral-200/90 dark:border-neutral-800 p-5 sm:p-6 shadow-2xs">
+            <div className="bg-[var(--bg-card)] rounded-3xl border border-[var(--border-subtle)] p-5 sm:p-6 shadow-2xs">
               <div className="flex flex-wrap items-center justify-between gap-2 mb-4">
                 <div>
                   <h3
@@ -1351,29 +1328,29 @@ function ProductDetailContent() {
             {/* ---------------------------------------------------------------
                 ETSY + AMAZON HYBRID REVIEWS SECTION
                --------------------------------------------------------------- */}
-            <div className="bg-white dark:bg-[#1a1a20] rounded-3xl border border-neutral-200/90 dark:border-neutral-800 p-5 sm:p-7 shadow-2xs space-y-6">
-              <div className="flex flex-wrap items-center justify-between gap-4 border-b border-neutral-200 dark:border-neutral-800 pb-5">
+            <div className="bg-[var(--bg-card)] rounded-3xl border border-[var(--border-subtle)] p-5 sm:p-7 shadow-2xs space-y-6">
+              <div className="flex flex-wrap items-center justify-between gap-4 border-b border-[var(--border-subtle)] pb-5">
                 <div>
                   <h3
-                    className="text-xl font-bold text-neutral-900 dark:text-neutral-100"
+                    className="text-xl font-bold text-[var(--text-main)]"
                     style={{
                       fontFamily: 'Georgia, Cambria, "Times New Roman", Times, serif',
                     }}
                   >
                     Reviews for this edition
                   </h3>
-                  <p className="text-xs text-neutral-500 mt-0.5">
+                  <p className="text-xs text-[var(--text-muted)] mt-0.5">
                     All reviews are from verified Shastraloka readers
                   </p>
                 </div>
 
                 <div className="flex flex-wrap items-center gap-3 sm:gap-5">
-                  <div className="flex items-center gap-1.5 pr-3 border-r border-neutral-200 dark:border-neutral-800">
-                    <span className="text-2xl font-bold text-neutral-900 dark:text-white">
+                  <div className="flex items-center gap-1.5 pr-3 border-r border-[var(--border-subtle)]">
+                    <span className="text-2xl font-bold text-[var(--text-main)]">
                       {activeBook.rating}
                     </span>
                     <Star className="w-5 h-5 fill-[#F59E0B] text-[#F59E0B]" />
-                    <span className="text-xs text-neutral-500">
+                    <span className="text-xs text-[var(--text-muted)]">
                       ({activeBook.reviewsCount})
                     </span>
                   </div>
@@ -1384,10 +1361,10 @@ function ProductDetailContent() {
                     { score: '5/5', label: 'Translation accuracy' },
                   ].map((metric) => (
                     <div key={metric.label} className="flex items-center gap-2">
-                      <span className="w-9 h-9 rounded-full bg-[#FFF3D1] dark:bg-amber-950/60 border border-[#E8C56B] dark:border-amber-800 text-[#6B4C00] dark:text-amber-300 text-xs font-bold flex items-center justify-center">
+                      <span className="w-9 h-9 rounded-full bg-[var(--surface-cream)] border border-[var(--border-subtle)] text-[var(--brand-brown)] text-xs font-bold flex items-center justify-center">
                         {metric.score}
                       </span>
-                      <span className="text-xs font-medium text-neutral-700 dark:text-neutral-300">
+                      <span className="text-xs font-medium text-[var(--text-body)]">
                         {metric.label}
                       </span>
                     </div>
@@ -1411,8 +1388,8 @@ function ProductDetailContent() {
                     onClick={() => setSelectedReviewTag(tag)}
                     className={`px-3.5 py-1.5 rounded-full text-xs font-semibold border transition shrink-0 cursor-pointer ${
                       selectedReviewTag === tag
-                        ? 'bg-[#222222] dark:bg-white text-white dark:text-neutral-900 border-[#222222]'
-                        : 'bg-[#FAF8F5] dark:bg-neutral-800 text-neutral-700 dark:text-neutral-300 border-neutral-300 dark:border-neutral-700 hover:bg-neutral-100'
+                        ? 'bg-[var(--pill-active-bg)] text-[var(--pill-active-text)] border-[var(--pill-active-bg)]'
+                        : 'bg-[var(--pill-bg)] text-[var(--text-body)] border-[var(--border-subtle)] hover:bg-[var(--pill-hover)]'
                     }`}
                   >
                     {tag}
@@ -1421,7 +1398,7 @@ function ProductDetailContent() {
               </div>
 
               {/* Reviews List */}
-              <div className="divide-y divide-neutral-200/80 dark:divide-neutral-800 space-y-5">
+              <div className="divide-y divide-[var(--border-subtle)] space-y-5">
                 {filteredReviews.map((rev) => (
                   <div key={rev.id} className="pt-5 first:pt-0 space-y-3">
                     <div className="flex items-center justify-between">
@@ -1433,21 +1410,21 @@ function ProductDetailContent() {
                         />
                         <div>
                           <div className="flex items-center gap-2">
-                            <span className="text-xs font-bold text-neutral-900 dark:text-white">
+                            <span className="text-xs font-bold text-[var(--text-main)]">
                               {rev.author}
                             </span>
                             {rev.verified && (
-                              <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-emerald-800 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/40 px-2 py-0.5 rounded-full">
+                              <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-[var(--color-success)] bg-[var(--color-success-bg)] px-2 py-0.5 rounded-full">
                                 <CheckCircle2 className="w-3 h-3" /> Verified Reader
                               </span>
                             )}
                           </div>
-                          <span className="text-[11px] text-neutral-500">
+                          <span className="text-[11px] text-[var(--text-muted)]">
                             {rev.formatPurchased}
                           </span>
                         </div>
                       </div>
-                      <span className="text-xs text-neutral-400">{rev.date}</span>
+                      <span className="text-xs text-[var(--text-dim)]">{rev.date}</span>
                     </div>
 
                     <div className="flex items-center gap-1">
@@ -1460,29 +1437,29 @@ function ProductDetailContent() {
                     </div>
 
                     <div className="flex flex-col sm:flex-row gap-4 justify-between">
-                      <p className="text-xs sm:text-sm text-neutral-700 dark:text-neutral-300 leading-relaxed flex-1">
+                      <p className="text-xs sm:text-sm text-[var(--text-body)] leading-relaxed flex-1">
                         {rev.comment}
                       </p>
                       {rev.reviewImage && (
                         <img
                           src={rev.reviewImage}
                           alt="Reader photo"
-                          className="w-20 h-20 rounded-xl object-cover border border-neutral-200 dark:border-neutral-700 shrink-0"
+                          className="w-20 h-20 rounded-xl object-cover border border-[var(--border-subtle)] shrink-0"
                         />
                       )}
                     </div>
 
                     {rev.sellerReply && (
-                      <div className="ml-4 sm:ml-6 p-3.5 rounded-2xl bg-[#FAF8F5] dark:bg-neutral-900 border-l-4 border-[#23382C] space-y-1">
+                      <div className="ml-4 sm:ml-6 p-3.5 rounded-2xl bg-[var(--bg-wash)] border-l-4 border-[var(--banner-guild-accent)] space-y-1">
                         <div className="flex items-center justify-between text-xs">
-                          <span className="font-bold text-neutral-900 dark:text-white">
+                          <span className="font-bold text-[var(--text-main)]">
                             Response from {rev.sellerReply.shopName}
                           </span>
-                          <span className="text-[11px] text-neutral-400">
+                          <span className="text-[11px] text-[var(--text-dim)]">
                             {rev.sellerReply.date}
                           </span>
                         </div>
-                        <p className="text-xs text-neutral-600 dark:text-neutral-400 leading-relaxed">
+                        <p className="text-xs text-[var(--text-muted)] leading-relaxed">
                           {rev.sellerReply.text}
                         </p>
                       </div>
@@ -1498,7 +1475,7 @@ function ProductDetailContent() {
               Ordered 2nd on Mobile (immediately below Gallery Card)
              ----------------------------------------------------------------- */}
           <div className="order-2 lg:order-none lg:col-span-5 lg:col-start-8 lg:row-start-1 lg:row-span-2 space-y-6">
-            <div className="bg-white dark:bg-[#1a1a20] rounded-3xl border border-neutral-200/90 dark:border-neutral-800 p-5 sm:p-7 shadow-xs space-y-5">
+            <div className="bg-[var(--bg-card)] rounded-3xl border border-[var(--border-subtle)] p-5 sm:p-7 shadow-xs space-y-5">
               {/* Urgency Callout */}
               <div className="flex items-center justify-between gap-2">
                 <span className="inline-flex items-center gap-1.5 text-xs font-bold text-[#F1641E] bg-[#F1641E]/10 px-3 py-1 rounded-full">
@@ -1810,37 +1787,37 @@ function ProductDetailContent() {
             </div>
 
             {/* 2. Guild Shipping, Care & Authenticity Card */}
-            <div className="bg-white dark:bg-[#1a1a20] rounded-3xl border border-neutral-200/90 dark:border-neutral-800 p-5 sm:p-6 shadow-2xs space-y-4">
-              <h3 className="text-sm font-bold text-neutral-900 dark:text-neutral-100 flex items-center gap-2">
-                <Truck className="w-4 h-4 text-[#F1641E]" />
+            <div className="bg-[var(--bg-card)] rounded-3xl border border-[var(--border-subtle)] p-5 sm:p-6 shadow-2xs space-y-4">
+              <h3 className="text-sm font-bold text-[var(--text-main)] flex items-center gap-2">
+                <Truck className="w-4 h-4 text-[var(--color-primary)]" />
                 <span>Islandwide Delivery & Archival Care</span>
               </h3>
 
-              <div className="space-y-3 text-xs text-neutral-600 dark:text-neutral-400">
-                <div className="flex items-start gap-3 p-3 rounded-2xl bg-[#FAF8F5] dark:bg-[#151518] border border-neutral-200/60 dark:border-neutral-800">
-                  <Truck className="w-4 h-4 text-[#23382C] dark:text-emerald-400 shrink-0 mt-0.5" />
+              <div className="space-y-3 text-xs text-[var(--text-muted)]">
+                <div className="flex items-start gap-3 p-3 rounded-2xl bg-[var(--bg-wash)] border border-[var(--border-subtle)]">
+                  <Truck className="w-4 h-4 text-[var(--banner-guild-accent)] shrink-0 mt-0.5" />
                   <div>
-                    <span className="font-bold text-neutral-800 dark:text-neutral-200 block">
+                    <span className="font-bold text-[var(--text-main)] block">
                       Colombo & Suburbs: 1–2 Days • Islandwide: 2–3 Days
                     </span>
                     <span>Dispatched in moisture-resistant archival bubble mailers with corner guards.</span>
                   </div>
                 </div>
 
-                <div className="flex items-start gap-3 p-3 rounded-2xl bg-[#FAF8F5] dark:bg-[#151518] border border-neutral-200/60 dark:border-neutral-800">
-                  <ShieldCheck className="w-4 h-4 text-[#23382C] dark:text-emerald-400 shrink-0 mt-0.5" />
+                <div className="flex items-start gap-3 p-3 rounded-2xl bg-[var(--bg-wash)] border border-[var(--border-subtle)]">
+                  <ShieldCheck className="w-4 h-4 text-[var(--banner-guild-accent)] shrink-0 mt-0.5" />
                   <div>
-                    <span className="font-bold text-neutral-800 dark:text-neutral-200 block">
+                    <span className="font-bold text-[var(--text-main)] block">
                       Cash on Delivery (COD) & Bank Transfer Available
                     </span>
                     <span>Pay at your doorstep anywhere in Sri Lanka, or checkout securely with cards.</span>
                   </div>
                 </div>
 
-                <div className="flex items-start gap-3 p-3 rounded-2xl bg-[#FAF8F5] dark:bg-[#151518] border border-neutral-200/60 dark:border-neutral-800">
-                  <Gift className="w-4 h-4 text-[#23382C] dark:text-emerald-400 shrink-0 mt-0.5" />
+                <div className="flex items-start gap-3 p-3 rounded-2xl bg-[var(--bg-wash)] border border-[var(--border-subtle)]">
+                  <Gift className="w-4 h-4 text-[var(--banner-guild-accent)] shrink-0 mt-0.5" />
                   <div>
-                    <span className="font-bold text-neutral-800 dark:text-neutral-200 block">
+                    <span className="font-bold text-[var(--text-main)] block">
                       Complimentary Gift Wrapping & Botanical Bookmark
                     </span>
                     <span>Every classical book order includes a hand-pressed lotus petal bookmark.</span>
@@ -1850,36 +1827,36 @@ function ProductDetailContent() {
             </div>
 
             {/* 3. Classical Excerpt & Scriptorium Epigraph */}
-            <div className="bg-gradient-to-br from-[#23382C] to-[#16241C] text-[#F5F2EB] rounded-3xl p-6 shadow-sm border border-[#2D4537] space-y-3 relative overflow-hidden">
-              <div className="absolute -right-6 -bottom-6 opacity-10 text-white pointer-events-none">
+            <div className="bg-[var(--banner-guild-bg)] text-[var(--banner-guild-text)] rounded-3xl p-6 shadow-sm border border-[var(--banner-guild-border)] space-y-3 relative overflow-hidden">
+              <div className="absolute -right-6 -bottom-6 opacity-10 text-[var(--banner-guild-accent)] pointer-events-none">
                 <BookOpen className="w-36 h-36" />
               </div>
-              <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#E8B059]">
+              <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[var(--banner-guild-accent)]">
                 <Sparkles className="w-3.5 h-3.5" />
                 <span>Scriptorium Epigraph</span>
               </div>
               <blockquote
-                className="text-base sm:text-lg font-serif italic leading-relaxed text-[#F5F2EB]"
+                className="text-base sm:text-lg font-serif italic leading-relaxed text-[var(--banner-guild-text)]"
                 style={{ fontFamily: 'Georgia, Cambria, "Times New Roman", Times, serif' }}
               >
                 &ldquo;Composed for the serene joy and spiritual elevation of the pious, tracing the deep springs of sacred wisdom through centuries of chronicle.&rdquo;
               </blockquote>
-              <div className="pt-2 border-t border-white/15 flex items-center justify-between text-xs text-[#D7E2DC]">
+              <div className="pt-2 border-t border-[var(--banner-guild-border)] flex items-center justify-between text-xs text-[var(--banner-guild-muted)]">
                 <span>From the Prologue of {activeBook.title}</span>
                 <span className="font-sinhala text-[11px] opacity-80">ශාස්ත්‍රාලෝක එකතුව</span>
               </div>
             </div>
 
             {/* 4. Monastic Edition Reader FAQ & Preservation */}
-            <div className="bg-white dark:bg-[#1a1a20] rounded-3xl border border-neutral-200/90 dark:border-neutral-800 p-5 sm:p-6 shadow-2xs space-y-4">
-              <h3 className="text-sm font-bold text-neutral-900 dark:text-neutral-100 flex items-center gap-2">
-                <FileText className="w-4 h-4 text-[#F1641E]" />
+            <div className="bg-[var(--bg-card)] rounded-3xl border border-[var(--border-subtle)] p-5 sm:p-6 shadow-2xs space-y-4">
+              <h3 className="text-sm font-bold text-[var(--text-main)] flex items-center gap-2">
+                <FileText className="w-4 h-4 text-[var(--color-primary)]" />
                 <span>Edition FAQs & Preservation</span>
               </h3>
 
-              <div className="space-y-3 text-xs text-neutral-600 dark:text-neutral-400">
-                <div className="p-3 rounded-2xl bg-[#FAF8F5] dark:bg-[#151518] border border-neutral-200/60 dark:border-neutral-800 space-y-1">
-                  <h4 className="font-bold text-neutral-800 dark:text-neutral-200">
+              <div className="space-y-3 text-xs text-[var(--text-muted)]">
+                <div className="p-3 rounded-2xl bg-[var(--bg-wash)] border border-[var(--border-subtle)] space-y-1">
+                  <h4 className="font-bold text-[var(--text-main)]">
                     Is this translation unabridged with original notes?
                   </h4>
                   <p className="leading-relaxed">
@@ -1887,8 +1864,8 @@ function ProductDetailContent() {
                   </p>
                 </div>
 
-                <div className="p-3 rounded-2xl bg-[#FAF8F5] dark:bg-[#151518] border border-neutral-200/60 dark:border-neutral-800 space-y-1">
-                  <h4 className="font-bold text-neutral-800 dark:text-neutral-200">
+                <div className="p-3 rounded-2xl bg-[var(--bg-wash)] border border-[var(--border-subtle)] space-y-1">
+                  <h4 className="font-bold text-[var(--text-main)]">
                     How should I care for Smyth-sewn linen bindings?
                   </h4>
                   <p className="leading-relaxed">
@@ -1896,8 +1873,8 @@ function ProductDetailContent() {
                   </p>
                 </div>
 
-                <div className="p-3 rounded-2xl bg-[#FAF8F5] dark:bg-[#151518] border border-neutral-200/60 dark:border-neutral-800 space-y-1">
-                  <h4 className="font-bold text-neutral-800 dark:text-neutral-200">
+                <div className="p-3 rounded-2xl bg-[var(--bg-wash)] border border-[var(--border-subtle)] space-y-1">
+                  <h4 className="font-bold text-[var(--text-main)]">
                     Can I read the digital companion on mobile & e-readers?
                   </h4>
                   <p className="leading-relaxed">
@@ -1906,12 +1883,12 @@ function ProductDetailContent() {
                 </div>
               </div>
 
-              <div className="pt-2 border-t border-neutral-100 dark:border-neutral-800 flex items-center justify-between text-xs text-neutral-500">
+              <div className="pt-2 border-t border-[var(--border-subtle)] flex items-center justify-between text-xs text-[var(--text-muted)]">
                 <span>Have more questions about this edition?</span>
                 <button
                   type="button"
                   onClick={() => triggerToast('Connecting with Shastraloka Monastic Librarian via WhatsApp')}
-                  className="font-bold text-[#F1641E] hover:underline cursor-pointer"
+                  className="font-bold text-[var(--color-primary)] hover:underline cursor-pointer"
                 >
                   Ask a Librarian →
                 </button>
@@ -1919,16 +1896,16 @@ function ProductDetailContent() {
             </div>
 
             {/* 5. Shastraloka Guarantee & Support */}
-            <div className="p-5 rounded-3xl bg-[#FAF8F5] dark:bg-[#18181e] border border-neutral-200/80 dark:border-neutral-800 flex items-center justify-between gap-4">
+            <div className="p-5 rounded-3xl bg-[var(--bg-card)] border border-[var(--border-subtle)] flex items-center justify-between gap-4">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-2xl bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 flex items-center justify-center shrink-0">
+                <div className="w-10 h-10 rounded-2xl bg-[var(--color-success-bg)] text-[var(--color-success)] flex items-center justify-center shrink-0">
                   <ShieldCheck className="w-5 h-5" />
                 </div>
                 <div className="text-xs">
-                  <span className="font-bold text-neutral-900 dark:text-white block">
+                  <span className="font-bold text-[var(--text-main)] block">
                     100% Collector Satisfaction Guarantee
                   </span>
-                  <span className="text-neutral-500">
+                  <span className="text-[var(--text-muted)]">
                     30-day hassle-free replacements if damaged in transit
                   </span>
                 </div>
@@ -2364,8 +2341,8 @@ export default function BookDetailPage() {
   return (
     <Suspense
       fallback={
-        <div className="min-h-screen flex items-center justify-center bg-[#FAF8F5]">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#F1641E]" />
+        <div className="min-h-screen flex items-center justify-center bg-[var(--bg-main)]">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[var(--color-primary)]" />
         </div>
       }
     >

@@ -51,7 +51,7 @@ export default function ProfilePage() {
           
           {/* Avatar with verified badge */}
           <div className="relative inline-block">
-            <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-full bg-neutral-900 text-white font-bold text-3xl flex items-center justify-center shadow-md mx-auto ring-4 ring-[var(--bg-surface)]">
+            <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-full bg-[var(--banner-guild-bg)] text-[var(--banner-guild-accent)] border-2 border-[var(--banner-guild-border)] font-bold text-3xl flex items-center justify-center shadow-md mx-auto ring-4 ring-[var(--bg-surface)]">
               SB
             </div>
             <div className="absolute bottom-0 right-0 w-7 h-7 rounded-full bg-[#e60023] text-white flex items-center justify-center shadow-xs">
@@ -112,7 +112,7 @@ export default function ProfilePage() {
             onClick={() => setActiveTab('boards')}
             className={`px-4 py-2 rounded-full cursor-pointer transition-colors ${
               activeTab === 'boards'
-                ? 'bg-[#222222] dark:bg-neutral-100 text-white dark:text-neutral-900 shadow-xs'
+                ? 'bg-[var(--pill-active-bg)] text-[var(--pill-active-text)] shadow-xs'
                 : 'text-[var(--text-muted)] hover:text-[var(--text-main)]'
             }`}
           >
@@ -123,7 +123,7 @@ export default function ProfilePage() {
             onClick={() => setActiveTab('all-pins')}
             className={`px-4 py-2 rounded-full cursor-pointer transition-colors ${
               activeTab === 'all-pins'
-                ? 'bg-[#222222] dark:bg-neutral-100 text-white dark:text-neutral-900 shadow-xs'
+                ? 'bg-[var(--pill-active-bg)] text-[var(--pill-active-text)] shadow-xs'
                 : 'text-[var(--text-muted)] hover:text-[var(--text-main)]'
             }`}
           >
@@ -134,7 +134,7 @@ export default function ProfilePage() {
             onClick={() => setActiveTab('likes')}
             className={`px-4 py-2 rounded-full cursor-pointer transition-colors flex items-center gap-1.5 ${
               activeTab === 'likes'
-                ? 'bg-[#222222] dark:bg-neutral-100 text-white dark:text-neutral-900 shadow-xs'
+                ? 'bg-[var(--pill-active-bg)] text-[var(--pill-active-text)] shadow-xs'
                 : 'text-[var(--text-muted)] hover:text-[var(--text-main)]'
             }`}
           >
@@ -292,7 +292,7 @@ export default function ProfilePage() {
           >
             <div
               onClick={(e) => e.stopPropagation()}
-              className="w-full max-w-md bg-white dark:bg-[#1c1c21] rounded-2xl p-6 shadow-2xl border border-[var(--border-subtle)] space-y-4 animate-slide-up"
+              className="w-full max-w-md bg-[var(--bg-card)] rounded-2xl p-6 shadow-2xl border border-[var(--border-subtle)] space-y-4 animate-slide-up"
             >
               <div className="flex items-center justify-between pb-3 border-b border-[var(--border-subtle)]">
                 <h3 className="font-serif font-bold text-lg text-[var(--text-main)]">

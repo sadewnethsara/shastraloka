@@ -21,7 +21,7 @@ export default function BookCard({ book }: BookCardProps) {
 
   return (
     <div
-      className="masonry-item group relative bg-white dark:bg-[#1c1c21] rounded-lg p-2 transition-shadow duration-200 hover:shadow-md border border-[var(--border-subtle)]"
+      className="masonry-item group relative bg-[var(--bg-card)] rounded-lg p-2 transition-shadow duration-200 hover:shadow-md border border-[var(--border-subtle)]"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => {
         setIsHovered(false);

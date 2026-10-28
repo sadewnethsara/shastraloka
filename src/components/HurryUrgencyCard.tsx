@@ -46,14 +46,14 @@ function HurryUrgencyCardContent() {
   return (
     <aside
       aria-label="Demand notification"
-      className={`hidden md:flex fixed top-24 right-4 sm:right-6 z-40 w-[340px] sm:w-[356px] bg-white dark:bg-[#1a1a20] rounded-2xl shadow-[0_12px_36px_rgba(0,0,0,0.18)] dark:shadow-[0_12px_36px_rgba(0,0,0,0.5)] border border-[var(--border-subtle)] p-3.5 items-center gap-3.5 transition-all duration-350 ease-in-out ${
+      className={`hidden md:flex fixed top-24 right-4 sm:right-6 z-40 w-[340px] sm:w-[356px] bg-[var(--bg-card)] rounded-2xl shadow-[0_12px_36px_rgba(0,0,0,0.18)] border border-[var(--border-subtle)] p-3.5 items-center gap-3.5 transition-all duration-350 ease-in-out ${
         isClosing
           ? 'translate-x-[140%] opacity-0 pointer-events-none'
           : 'translate-x-0 opacity-100 animate-slide-up'
       }`}
     >
       {/* Thumbnail with Blue Bag Badge */}
-      <div className="relative w-[72px] h-[72px] rounded-xl overflow-hidden shrink-0 border border-[var(--border-subtle)] bg-stone-100 dark:bg-neutral-800">
+      <div className="relative w-[72px] h-[72px] rounded-xl overflow-hidden shrink-0 border border-[var(--border-subtle)] bg-[var(--bg-wash)]">
         <img
           src={book.coverImage}
           alt={book.title}

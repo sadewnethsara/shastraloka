@@ -8,6 +8,7 @@ import BookModal from '../components/BookModal';
 import BoardsModal from '../components/BoardsModal';
 import Footer from '../components/Footer';
 import Toast from '../components/Toast';
+import CleanBookCard from '../components/CleanBookCard';
 import { BOOKS } from '../data/books';
 import { useApp } from '../context/AppContext';
 import { Button } from '../components/ui/Button';
@@ -435,7 +436,7 @@ export default function LandingPage() {
   };
 
   return (
-    <div className="min-h-screen bg-white dark:bg-[#121215] text-[#222222] dark:text-neutral-100 font-sans antialiased selection:bg-[#F1641E]/20 transition-colors duration-200">
+    <div className="min-h-screen bg-[var(--bg-main)] text-[var(--text-main)] font-sans antialiased selection:bg-[var(--color-primary-subtle)] transition-colors duration-200">
       {/* 1. Header & Navigation */}
       <Header />
 
@@ -448,12 +449,12 @@ export default function LandingPage() {
         <section>
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
             {/* Left / Main Banner Card ("Wonderfully Sacred Wisdom") */}
-            <div className="lg:col-span-8 bg-[#D3E1F6] dark:bg-[#1a2638] rounded-2xl overflow-hidden shadow-xs hover:shadow-md transition">
+            <div className="lg:col-span-8 bg-[var(--hero-banner-bg)] border border-[var(--hero-banner-border)] rounded-2xl overflow-hidden shadow-xs hover:shadow-md transition">
               {/* Desktop & Tablet Horizontal Split */}
               <div className="hidden md:grid md:grid-cols-12 items-center min-h-[280px] lg:min-h-[360px]">
                 <div className="md:col-span-6 p-6 lg:p-10 flex flex-col items-center text-center justify-center">
                   <h1
-                    className="text-[28px] lg:text-[42px] leading-[1.14] text-[#222222] dark:text-white mb-5 font-bold"
+                    className="text-[28px] lg:text-[42px] leading-[1.14] text-[var(--text-main)] mb-5 font-bold"
                     style={{ fontFamily: 'Georgia, Cambria, "Times New Roman", Times, serif' }}
                   >
                     Wonderfully
@@ -500,20 +501,20 @@ export default function LandingPage() {
               {/* Mobile Stacked Layout (< md) */}
               <div className="md:hidden flex flex-col items-center pt-6 px-4 pb-4 text-center">
                 <h1
-                  className="text-[28px] leading-[1.15] text-[#222222] dark:text-white mb-4 font-bold"
+                  className="text-[28px] leading-[1.15] text-[var(--text-main)] mb-4 font-bold"
                   style={{ fontFamily: 'Georgia, Cambria, "Times New Roman", Times, serif' }}
                 >
                   Wonderfully
                   <br />
                   sacred wisdom
                 </h1>
-                <div className="relative w-full max-w-[290px] h-[280px] rounded-xl overflow-hidden bg-[#8CA12E] p-2.5 shadow-md">
+                <div className="relative w-full max-w-[290px] h-[280px] rounded-xl overflow-hidden bg-[var(--banner-guild-bg)] border border-[var(--banner-guild-border)] p-2.5 shadow-md">
                   <div className="grid grid-cols-3 grid-rows-2 gap-1.5 w-full h-full">
                     {BOOKS.slice(0, 6).map((book) => (
                       <div
                         key={book.id}
                         onClick={() => router.push(`/books/${book.id}`)}
-                        className="relative rounded overflow-hidden cursor-pointer bg-neutral-900"
+                        className="relative rounded overflow-hidden cursor-pointer bg-[var(--bg-card)]"
                       >
                         <img
                           src={book.coverImage}
@@ -566,10 +567,63 @@ export default function LandingPage() {
         </section>
 
         {/* ===================================================================
+            1B. CLEAN BEST SELLERS & NEW ARRIVALS SECTIONS
+           =================================================================== */}
+        <section className="space-y-4">
+          <div className="flex items-end justify-between gap-4">
+            <div>
+              <h2 className="text-lg sm:text-xl font-bold text-[var(--text-main)]">
+                Best Sellers
+              </h2>
+              <p className="text-xs text-[var(--text-muted)] mt-0.5">
+                Most-read Sri Lankan chronicles &amp; literary editions •{' '}
+                <span className="font-sinhala">වැඩිම අලෙවියක් ඇති ග්‍රන්ථ</span>
+              </p>
+            </div>
+            <Link
+              href="/bestsellers"
+              className="text-xs sm:text-sm font-semibold text-[var(--color-primary)] hover:underline shrink-0"
+            >
+              View all &rarr;
+            </Link>
+          </div>
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-x-4 sm:gap-x-6 gap-y-7">
+            {BOOKS.slice(0, 5).map((book, idx) => (
+              <CleanBookCard key={book.id} book={book} rank={idx + 1} />
+            ))}
+          </div>
+        </section>
+
+        <section className="space-y-4">
+          <div className="flex items-end justify-between gap-4">
+            <div>
+              <h2 className="text-lg sm:text-xl font-bold text-[var(--text-main)]">
+                New Arrivals &amp; Releases
+              </h2>
+              <p className="text-xs text-[var(--text-muted)] mt-0.5">
+                Newly published editions &amp; restored manuscripts •{' '}
+                <span className="font-sinhala">නවතම ප්‍රකාශන</span>
+              </p>
+            </div>
+            <Link
+              href="/new-releases"
+              className="text-xs sm:text-sm font-semibold text-[var(--color-primary)] hover:underline shrink-0"
+            >
+              View all &rarr;
+            </Link>
+          </div>
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-x-4 sm:gap-x-6 gap-y-7">
+            {[...BOOKS].reverse().slice(0, 5).map((book) => (
+              <CleanBookCard key={book.id} book={book} badgeText="New" />
+            ))}
+          </div>
+        </section>
+
+        {/* ===================================================================
             2. JUMP INTO FEATURED INTERESTS (4 cols desktop/tablet, 2x2 mobile)
            =================================================================== */}
         <section>
-          <h2 className="text-lg sm:text-xl font-bold text-[#222222] dark:text-neutral-100 mb-4">
+          <h2 className="text-lg sm:text-xl font-bold text-[var(--text-main)] mb-4">
             Jump into featured interests
           </h2>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3.5 sm:gap-5">
@@ -579,7 +633,7 @@ export default function LandingPage() {
                 onClick={() => item.query && navigateToSearch(item.query)}
                 className="group cursor-pointer"
               >
-                <div className="aspect-[3/4] w-full rounded-2xl overflow-hidden bg-neutral-100 dark:bg-neutral-800 mb-2.5">
+                <div className="aspect-[3/4] w-full rounded-2xl overflow-hidden bg-[var(--bg-wash)] mb-2.5">
                   <img
                     src={item.image}
                     alt={item.title}
@@ -588,7 +642,7 @@ export default function LandingPage() {
                     className="w-full h-full object-cover group-hover:scale-105 transition duration-300"
                   />
                 </div>
-                <p className="text-xs sm:text-sm font-semibold text-center text-[#222222] dark:text-neutral-200 group-hover:underline">
+                <p className="text-xs sm:text-sm font-semibold text-center text-[var(--text-main)] group-hover:underline">
                   {item.title}
                 </p>
               </div>
@@ -600,7 +654,7 @@ export default function LandingPage() {
             3. DISCOVER OUR BEST COLLECTIONS (5 cols desktop/tablet, 2 cols mobile)
            =================================================================== */}
         <section>
-          <h2 className="text-lg sm:text-xl font-bold text-[#222222] dark:text-neutral-100 mb-4">
+          <h2 className="text-lg sm:text-xl font-bold text-[var(--text-main)] mb-4">
             Discover our best classical collections
           </h2>
           <div className="grid grid-cols-2 md:grid-cols-5 gap-3.5 sm:gap-4">
@@ -610,7 +664,7 @@ export default function LandingPage() {
                 onClick={() => item.query && navigateToSearch(item.query)}
                 className="group cursor-pointer"
               >
-                <div className="aspect-square w-full rounded-2xl overflow-hidden bg-neutral-100 dark:bg-neutral-800 mb-2">
+                <div className="aspect-square w-full rounded-2xl overflow-hidden bg-[var(--bg-wash)] mb-2">
                   <img
                     src={item.image}
                     alt={item.title}
@@ -619,7 +673,7 @@ export default function LandingPage() {
                     className="w-full h-full object-cover group-hover:scale-105 transition duration-300"
                   />
                 </div>
-                <p className="text-xs sm:text-[13px] font-semibold text-[#222222] dark:text-neutral-200 leading-snug group-hover:underline">
+                <p className="text-xs sm:text-[13px] font-semibold text-[var(--text-main)] leading-snug group-hover:underline">
                   {item.title}
                 </p>
               </div>
@@ -634,7 +688,7 @@ export default function LandingPage() {
           {/* Top Sub-Section: Desktop 4-col with title in Col 1 */}
           <div className="hidden lg:grid lg:grid-cols-4 gap-4 items-center">
             <div className="pr-4">
-              <h2 className="text-xl font-bold text-[#222222] dark:text-neutral-100 mb-3 leading-snug">
+              <h2 className="text-xl font-bold text-[var(--text-main)] mb-3 leading-snug">
                 Shastraloka-special treatises for scholars
               </h2>
               <Button
@@ -668,7 +722,7 @@ export default function LandingPage() {
           {/* Mobile / Tablet Sub-Section */}
           <div className="lg:hidden space-y-3">
             <div className="flex items-center justify-between gap-2">
-              <h2 className="text-base sm:text-lg font-bold text-[#222222] dark:text-neutral-100">
+              <h2 className="text-base sm:text-lg font-bold text-[var(--text-main)]">
                 Shastraloka-special treatises
               </h2>
               <Button
@@ -712,7 +766,7 @@ export default function LandingPage() {
                   else navigateToSearch(prod.title);
                 }}
                 className={`${prod.desktopOnly ? 'hidden lg:block' : 'block'
-                  } relative aspect-square rounded-2xl overflow-hidden bg-neutral-100 dark:bg-neutral-800 group cursor-pointer`}
+                  } relative aspect-square rounded-2xl overflow-hidden bg-[var(--bg-wash)] group cursor-pointer`}
               >
                 <img
                   src={prod.image}
@@ -727,12 +781,12 @@ export default function LandingPage() {
                   type="button"
                   onClick={(e) => toggleLocalFavorite(prod.bookId, e)}
                   aria-label="Save to favorites"
-                  className="absolute top-2.5 right-2.5 w-8 h-8 rounded-full bg-white/95 dark:bg-neutral-900/90 hover:bg-white shadow-xs flex items-center justify-center opacity-0 group-hover:opacity-100 transition z-10"
+                  className="absolute top-2.5 right-2.5 w-8 h-8 rounded-full bg-[var(--bg-card)]/95 hover:bg-[var(--bg-card)] shadow-xs flex items-center justify-center opacity-0 group-hover:opacity-100 transition z-10"
                 >
                   <svg
                     className={`w-4 h-4 ${favorites[prod.bookId] || isBookSaved(prod.bookId)
                         ? 'fill-[#F1641E] text-[#F1641E]'
-                        : 'text-neutral-700 dark:text-neutral-200'
+                        : 'text-[var(--text-main)]'
                       }`}
                     viewBox="0 0 24 24"
                     fill="none"
@@ -753,7 +807,7 @@ export default function LandingPage() {
 
           {/* Bottom Sub-Section: "Treatises as special as they are" compact pills */}
           <div className="pt-1">
-            <h3 className="text-xs sm:text-sm font-bold text-[#222222] dark:text-neutral-200 mb-3">
+            <h3 className="text-xs sm:text-sm font-bold text-[var(--text-main)] mb-3">
               Treatises as special as they are
             </h3>
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-2.5 sm:gap-3.5">
@@ -766,7 +820,7 @@ export default function LandingPage() {
                   <div
                     key={pill.id}
                     onClick={() => pill.query && navigateToSearch(pill.query)}
-                    className={`${responsiveVisibility} items-center gap-3 p-1.5 pr-3 rounded-xl border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-[#1a1a20] hover:shadow-md transition cursor-pointer`}
+                    className={`${responsiveVisibility} items-center gap-3 p-1.5 pr-3 rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-card)] hover:shadow-md transition cursor-pointer`}
                   >
                     <img
                       src={pill.image}
@@ -775,7 +829,7 @@ export default function LandingPage() {
                       onError={handleCoverError}
                       className="w-12 h-12 sm:w-14 sm:h-14 rounded-lg object-cover shrink-0"
                     />
-                    <span className="text-xs font-bold text-[#222222] dark:text-neutral-100 leading-snug">
+                    <span className="text-xs font-bold text-[var(--text-main)] leading-snug">
                       {pill.title}
                     </span>
                   </div>
@@ -789,7 +843,7 @@ export default function LandingPage() {
             5. SHOP OUR MOST-LOVED CATEGORIES (Responsive Carousel)
            =================================================================== */}
         <section>
-          <h2 className="text-lg sm:text-xl font-bold text-[#222222] dark:text-neutral-100 mb-4">
+          <h2 className="text-lg sm:text-xl font-bold text-[var(--text-main)] mb-4">
             Shop our most-loved categories
           </h2>
           <div className="flex md:grid md:grid-cols-3 lg:grid-cols-6 gap-3.5 sm:gap-4 overflow-x-auto md:overflow-visible pb-2 md:pb-0 -mx-4 px-4 md:mx-0 md:px-0">
@@ -799,7 +853,7 @@ export default function LandingPage() {
                 onClick={() => cat.query && navigateToSearch(cat.query)}
                 className="w-[140px] sm:w-[170px] md:w-auto shrink-0 group cursor-pointer"
               >
-                <div className="aspect-[4/5] w-full rounded-2xl overflow-hidden bg-neutral-100 dark:bg-neutral-800 mb-2">
+                <div className="aspect-[4/5] w-full rounded-2xl overflow-hidden bg-[var(--bg-wash)] mb-2">
                   <img
                     src={cat.image}
                     alt={cat.title}
@@ -808,7 +862,7 @@ export default function LandingPage() {
                     className="w-full h-full object-cover group-hover:scale-105 transition duration-300"
                   />
                 </div>
-                <p className="text-xs sm:text-[13px] font-bold text-[#222222] dark:text-neutral-200 leading-snug group-hover:underline">
+                <p className="text-xs sm:text-[13px] font-bold text-[var(--text-main)] leading-snug group-hover:underline">
                   {cat.title}
                 </p>
               </div>
@@ -821,11 +875,11 @@ export default function LandingPage() {
            =================================================================== */}
         <section className="relative">
           <div className="flex flex-wrap items-center gap-2.5 mb-4">
-            <h2 className="text-lg sm:text-xl font-bold text-[#222222] dark:text-neutral-100">
+            <h2 className="text-lg sm:text-xl font-bold text-[var(--text-main)]">
               Today&apos;s big deals
             </h2>
-            <div className="flex items-center gap-1.5 text-xs sm:text-sm text-neutral-600 dark:text-neutral-400">
-              <svg className="w-4 h-4 text-neutral-600 dark:text-neutral-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <div className="flex items-center gap-1.5 text-xs sm:text-sm text-[var(--text-muted)]">
+              <svg className="w-4 h-4 text-[var(--text-muted)]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <circle cx="12" cy="12" r="10" />
                 <polyline points="12 6 12 12 16 14" />
               </svg>
@@ -844,7 +898,7 @@ export default function LandingPage() {
                   onClick={() => handleOpenBookById(deal.bookId, deal.title)}
                   className="w-[46%] sm:w-[47%] lg:w-auto shrink-0 group cursor-pointer"
                 >
-                  <div className="relative aspect-square w-full rounded-2xl overflow-hidden bg-neutral-100 dark:bg-neutral-800 mb-2">
+                  <div className="relative aspect-square w-full rounded-2xl overflow-hidden bg-[var(--bg-wash)] mb-2">
                     <img
                       src={deal.image}
                       alt={deal.title}
@@ -856,12 +910,12 @@ export default function LandingPage() {
                       type="button"
                       onClick={(e) => toggleLocalFavorite(deal.bookId, e)}
                       aria-label="Save deal"
-                      className="absolute top-2.5 right-2.5 w-8 h-8 rounded-full bg-white/95 dark:bg-neutral-900/90 shadow-xs flex items-center justify-center opacity-0 group-hover:opacity-100 transition z-10"
+                      className="absolute top-2.5 right-2.5 w-8 h-8 rounded-full bg-[var(--bg-card)]/95 shadow-xs flex items-center justify-center opacity-0 group-hover:opacity-100 transition z-10"
                     >
                       <svg
                         className={`w-4 h-4 ${favorites[deal.bookId] || isBookSaved(deal.bookId)
                             ? 'fill-[#F1641E] text-[#F1641E]'
-                            : 'text-neutral-800 dark:text-neutral-200'
+                            : 'text-[var(--text-main)]'
                           }`}
                         viewBox="0 0 24 24"
                         fill="none"
@@ -872,14 +926,14 @@ export default function LandingPage() {
                       </svg>
                     </button>
                   </div>
-                  <p className="text-xs text-neutral-700 dark:text-neutral-300 truncate mb-1">
+                  <p className="text-xs text-[var(--text-body)] truncate mb-1">
                     {deal.title}
                   </p>
                   <div className="flex items-center flex-wrap gap-1.5">
-                    <span className="text-xs sm:text-sm font-bold text-[#0F743B] dark:text-[#76d691]">
+                    <span className="text-xs sm:text-sm font-bold text-[var(--color-emerald)]">
                       {deal.salePrice}
                     </span>
-                    <span className="text-[11px] text-neutral-500 line-through">
+                    <span className="text-[11px] text-[var(--text-muted)] line-through">
                       {deal.originalPrice}
                     </span>
                     <Badge variant="sale" size="sm" text={deal.discount} />
@@ -893,7 +947,7 @@ export default function LandingPage() {
               type="button"
               onClick={scrollDealsRight}
               aria-label="Next deals"
-              className="absolute right-1 lg:-right-4 top-[38%] -translate-y-1/2 w-10 h-10 rounded-full bg-[#222222] hover:bg-black text-white shadow-lg flex items-center justify-center transition z-20 cursor-pointer"
+              className="absolute right-1 lg:-right-4 top-[38%] -translate-y-1/2 w-10 h-10 rounded-full bg-[var(--pill-active-bg)] text-[var(--pill-active-text)] shadow-lg flex items-center justify-center transition z-20 cursor-pointer"
             >
               <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                 <polyline points="9 18 15 12 9 6" />
@@ -909,13 +963,13 @@ export default function LandingPage() {
           {/* DESKTOP LAYOUT (lg and up) */}
           <div className="hidden lg:grid lg:grid-cols-4 gap-4">
             <div className="lg:col-span-2 flex flex-col justify-center pr-8 py-4">
-              <span className="text-xs text-neutral-500 font-semibold uppercase tracking-wider mb-1">
+              <span className="text-xs text-[var(--text-muted)] font-semibold uppercase tracking-wider mb-1">
                 Editors&apos; Picks
               </span>
-              <h2 className="text-2xl font-bold text-[#222222] dark:text-white mb-2">
+              <h2 className="text-2xl font-bold text-[var(--text-main)] mb-2">
                 Shastraloka&apos;s Guide to Heritage
               </h2>
-              <p className="text-sm text-neutral-600 dark:text-neutral-400 mb-5 max-w-md leading-relaxed">
+              <p className="text-sm text-[var(--text-muted)] mb-5 max-w-md leading-relaxed">
                 Elevate your library with bestselling Sinhala novels, Pali translations, Ayurveda treatises, and classical editions from Sri Lanka&apos;s leading publishers.
               </p>
               <div>
@@ -932,7 +986,7 @@ export default function LandingPage() {
               <div
                 key={item.id}
                 onClick={() => handleOpenBookById(item.bookId, item.title)}
-                className="relative aspect-square rounded-2xl overflow-hidden bg-neutral-100 dark:bg-neutral-800 group cursor-pointer"
+                className="relative aspect-square rounded-2xl overflow-hidden bg-[var(--bg-wash)] group cursor-pointer"
               >
                 <img
                   src={item.image}
@@ -948,12 +1002,12 @@ export default function LandingPage() {
                   type="button"
                   onClick={(e) => toggleLocalFavorite(item.bookId, e)}
                   aria-label="Save item"
-                  className="absolute top-2.5 right-2.5 w-8 h-8 rounded-full bg-white/95 dark:bg-neutral-900/90 shadow-xs flex items-center justify-center opacity-0 group-hover:opacity-100 transition z-10"
+                  className="absolute top-2.5 right-2.5 w-8 h-8 rounded-full bg-[var(--bg-card)]/95 shadow-xs flex items-center justify-center opacity-0 group-hover:opacity-100 transition z-10"
                 >
                   <svg
                     className={`w-4 h-4 ${favorites[item.bookId] || isBookSaved(item.bookId)
                         ? 'fill-[#F1641E] text-[#F1641E]'
-                        : 'text-neutral-800 dark:text-neutral-200'
+                        : 'text-[var(--text-main)]'
                       }`}
                     viewBox="0 0 24 24"
                     fill="none"
@@ -970,10 +1024,10 @@ export default function LandingPage() {
           {/* TABLET LAYOUT (md only) */}
           <div className="hidden md:grid lg:hidden grid-cols-2 gap-4 items-center">
             <div className="flex flex-col justify-center p-4">
-              <span className="text-xs text-neutral-500 font-semibold uppercase tracking-wider mb-1">
+              <span className="text-xs text-[var(--text-muted)] font-semibold uppercase tracking-wider mb-1">
                 Editors&apos; Picks
               </span>
-              <h2 className="text-xl font-bold text-[#222222] dark:text-white mb-3">
+              <h2 className="text-xl font-bold text-[var(--text-main)] mb-3">
                 Shastraloka&apos;s Guide to Heritage
               </h2>
               <div>
@@ -990,7 +1044,7 @@ export default function LandingPage() {
               <div
                 key={item.id}
                 onClick={() => handleOpenBookById(item.bookId, item.title)}
-                className="relative aspect-square rounded-2xl overflow-hidden bg-neutral-100 dark:bg-neutral-800 group cursor-pointer"
+                className="relative aspect-square rounded-2xl overflow-hidden bg-[var(--bg-wash)] group cursor-pointer"
               >
                 <img
                   src={item.image}
@@ -1009,10 +1063,10 @@ export default function LandingPage() {
           {/* MOBILE LAYOUT (< md) */}
           <div className="md:hidden space-y-3">
             <div>
-              <span className="text-[11px] text-neutral-500 font-semibold uppercase block">
+              <span className="text-[11px] text-[var(--text-muted)] font-semibold uppercase block">
                 Editors&apos; Picks
               </span>
-              <h2 className="text-lg font-bold text-[#222222] dark:text-white">
+              <h2 className="text-lg font-bold text-[var(--text-main)]">
                 Shastraloka&apos;s Guide to Heritage
               </h2>
             </div>
@@ -1021,7 +1075,7 @@ export default function LandingPage() {
                 <div
                   key={item.id}
                   onClick={() => handleOpenBookById(item.bookId, item.title)}
-                  className="relative aspect-square rounded-2xl overflow-hidden bg-neutral-100 dark:bg-neutral-800 cursor-pointer"
+                  className="relative aspect-square rounded-2xl overflow-hidden bg-[var(--bg-wash)] cursor-pointer"
                 >
                   <img
                     src={item.image}
@@ -1051,7 +1105,7 @@ export default function LandingPage() {
             8. SAVE NOW ON STANDOUT STYLES (5 cols desktop/tablet, 2 cols mobile)
            =================================================================== */}
         <section>
-          <h2 className="text-lg sm:text-xl font-bold text-[#222222] dark:text-neutral-100 mb-4">
+          <h2 className="text-lg sm:text-xl font-bold text-[var(--text-main)] mb-4">
             Save now on standout treatises
           </h2>
           <div className="grid grid-cols-2 md:grid-cols-5 gap-3.5 sm:gap-4">
@@ -1061,7 +1115,7 @@ export default function LandingPage() {
                 onClick={() => style.query && navigateToSearch(style.query)}
                 className="group cursor-pointer"
               >
-                <div className="aspect-square w-full rounded-2xl overflow-hidden bg-neutral-100 dark:bg-neutral-800 mb-2">
+                <div className="aspect-square w-full rounded-2xl overflow-hidden bg-[var(--bg-wash)] mb-2">
                   <img
                     src={style.image}
                     alt={style.title}
@@ -1070,10 +1124,10 @@ export default function LandingPage() {
                     className="w-full h-full object-cover group-hover:scale-105 transition duration-300"
                   />
                 </div>
-                <p className="text-xs sm:text-[13px] font-bold text-[#222222] dark:text-neutral-200 leading-tight group-hover:underline">
+                <p className="text-xs sm:text-[13px] font-bold text-[var(--text-main)] leading-tight group-hover:underline">
                   {style.title}
                 </p>
-                <p className="text-xs text-neutral-500 mt-0.5">{style.subtitle}</p>
+                <p className="text-xs text-[var(--text-muted)] mt-0.5">{style.subtitle}</p>
               </div>
             ))}
           </div>
@@ -1083,17 +1137,17 @@ export default function LandingPage() {
       {/* =====================================================================
           9. "WHAT IS SHSTRALOKA?" BRAND STORY SECTION
          ===================================================================== */}
-      <section className="border-t border-neutral-200 dark:border-neutral-800 bg-white dark:bg-[#121215] py-12 sm:py-16 px-4 sm:px-6 lg:px-8">
+      <section className="border-t border-[var(--border-subtle)] bg-[var(--bg-surface)] py-12 sm:py-16 px-4 sm:px-6 lg:px-8">
         <div className="max-w-[1140px] mx-auto text-center">
           <h2
-            className="text-2xl sm:text-3xl lg:text-[36px] text-[#222222] dark:text-white mb-1.5"
+            className="text-2xl sm:text-3xl lg:text-[36px] text-[var(--text-main)] mb-1.5"
             style={{ fontFamily: 'Georgia, Cambria, "Times New Roman", Times, serif' }}
           >
             What is Shastraloka?
           </h2>
           <Link
             href="/search?q=gajaga"
-            className="inline-block text-xs sm:text-sm text-neutral-700 dark:text-neutral-300 underline hover:text-black dark:hover:text-white mb-8 sm:mb-10"
+            className="inline-block text-xs sm:text-sm text-[var(--text-body)] underline hover:text-[var(--text-main)] mb-8 sm:mb-10"
           >
             Read our wonderfully sacred story
           </Link>
@@ -1101,35 +1155,35 @@ export default function LandingPage() {
           {/* 3 Pillars */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-10 text-center lg:text-left max-w-xl lg:max-w-none mx-auto mb-10">
             <div>
-              <h3 className="text-base sm:text-lg font-bold text-[#222222] dark:text-white mb-2">
+              <h3 className="text-base sm:text-lg font-bold text-[var(--text-main)] mb-2">
                 A community preserving heritage
               </h3>
-              <p className="text-xs sm:text-[13px] text-neutral-600 dark:text-neutral-400 leading-relaxed">
+              <p className="text-xs sm:text-[13px] text-[var(--text-muted)] leading-relaxed">
                 Shastraloka is a global marketplace dedicated to Sri Lanka&apos;s ancient manuscripts, Buddhist treatises, and classical Sinhala literature. We bring together monks, scholars, and avid readers to safeguard centuries of wisdom.
               </p>
             </div>
 
             <div>
-              <h3 className="text-base sm:text-lg font-bold text-[#222222] dark:text-white mb-2">
+              <h3 className="text-base sm:text-lg font-bold text-[var(--text-main)] mb-2">
                 Support independent scholars
               </h3>
-              <p className="text-xs sm:text-[13px] text-neutral-600 dark:text-neutral-400 leading-relaxed">
+              <p className="text-xs sm:text-[13px] text-[var(--text-muted)] leading-relaxed">
                 There&apos;s no impersonal warehouse – every book supports the temples, monastic libraries, and master bookbinders who work tirelessly to restore and bind these precious texts.
               </p>
             </div>
 
             <div>
-              <h3 className="text-base sm:text-lg font-bold text-[#222222] dark:text-white mb-2">
+              <h3 className="text-base sm:text-lg font-bold text-[var(--text-main)] mb-2">
                 Authenticity & peace of mind
               </h3>
-              <p className="text-xs sm:text-[13px] text-neutral-600 dark:text-neutral-400 leading-relaxed">
+              <p className="text-xs sm:text-[13px] text-[var(--text-muted)] leading-relaxed">
                 All chronicles and translations are cross-referenced with verified archaeological records and academic editions. Our team ensures secure insured delivery across Sri Lanka and worldwide.
               </p>
             </div>
           </div>
 
           <div>
-            <p className="text-xs sm:text-sm font-bold text-[#222222] dark:text-white mb-3">
+            <p className="text-xs sm:text-sm font-bold text-[var(--text-main)] mb-3">
               Have a question about our manuscripts? We&apos;ve got answers.
             </p>
             <Button
