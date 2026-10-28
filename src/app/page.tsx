@@ -471,22 +471,22 @@ export default function LandingPage() {
                 {/* Featured Sri Lankan Book Covers Showcase Grid */}
                 <div className="md:col-span-6 h-full w-full flex items-center justify-center p-3 lg:p-4">
                   <div className="relative w-full h-[240px] lg:h-[330px] rounded-xl overflow-hidden bg-[#8CA12E] p-3 shadow-inner flex flex-col justify-between">
-                    <div className="grid grid-cols-4 grid-rows-2 gap-2 w-full h-full">
+                    <div className="grid grid-cols-4 grid-rows-2 gap-2 w-full h-full min-h-0">
                       {BOOKS.slice(0, 8).map((book) => (
                         <div
                           key={book.id}
                           onClick={() => router.push(`/books/${book.id}`)}
-                          className="relative rounded-md overflow-hidden border border-white/25 transition-transform hover:scale-105 cursor-pointer bg-neutral-900"
+                          className="relative w-full h-full min-h-0 min-w-0 rounded-md overflow-hidden border border-white/25 transition-transform hover:scale-105 cursor-pointer bg-neutral-900 group/thumb"
                         >
                           <img
                             src={book.coverImage}
                             alt={book.title}
                             referrerPolicy="no-referrer"
                             onError={handleCoverError}
-                            className="w-full h-full object-cover"
+                            className="absolute inset-0 w-full h-full object-cover"
                           />
-                          <div className="absolute inset-x-0 bottom-0 bg-black/75 px-1 py-0.5 text-center">
-                            <span className="text-[9px] font-bold text-white">
+                          <div className="absolute inset-x-0 bottom-0 bg-black/80 px-1 py-0.5 text-center z-10 pointer-events-none">
+                            <span className="text-[9px] font-bold text-white block truncate">
                               LKR {book.price.toLocaleString()}
                             </span>
                           </div>
@@ -508,19 +508,19 @@ export default function LandingPage() {
                   sacred wisdom
                 </h1>
                 <div className="relative w-full max-w-[290px] h-[280px] rounded-xl overflow-hidden bg-[#8CA12E] p-2.5 shadow-md">
-                  <div className="grid grid-cols-3 grid-rows-2 gap-1.5 w-full h-full">
+                  <div className="grid grid-cols-3 grid-rows-2 gap-1.5 w-full h-full min-h-0">
                     {BOOKS.slice(0, 6).map((book) => (
                       <div
                         key={book.id}
                         onClick={() => router.push(`/books/${book.id}`)}
-                        className="relative rounded overflow-hidden cursor-pointer bg-neutral-900"
+                        className="relative w-full h-full min-h-0 min-w-0 rounded overflow-hidden cursor-pointer bg-neutral-900"
                       >
                         <img
                           src={book.coverImage}
                           alt={book.title}
                           referrerPolicy="no-referrer"
                           onError={handleCoverError}
-                          className="w-full h-full object-cover"
+                          className="absolute inset-0 w-full h-full object-cover"
                         />
                       </div>
                     ))}
@@ -540,14 +540,14 @@ export default function LandingPage() {
             {/* Right Card: Desktop Only ("Gajaga Wannama & Manikkawatha Featured") */}
             <div
               onClick={() => router.push('/books/gajaga-wannama-royal-chronicle')}
-              className="hidden lg:block lg:col-span-4 relative rounded-2xl overflow-hidden group cursor-pointer shadow-xs hover:shadow-md transition min-h-[360px]"
+              className="hidden lg:block lg:col-span-4 relative rounded-2xl overflow-hidden group cursor-pointer shadow-xs hover:shadow-md transition h-[360px] max-h-[360px]"
             >
               <img
                 src="https://rasakatha.lk/media/covers/book-1793105930903-342489ab87-opt.webp"
                 alt="Gajaga Wannama & Sri Lankan Book Collection"
                 referrerPolicy="no-referrer"
                 onError={handleCoverError}
-                className="w-full h-full object-cover group-hover:scale-105 transition duration-500"
+                className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition duration-500"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/35 to-transparent" />
               <div className="absolute bottom-6 left-6 right-6 text-white">
