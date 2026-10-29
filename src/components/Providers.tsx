@@ -8,6 +8,7 @@ import BookModal from './BookModal';
 import Toast from './Toast';
 import MiniBagRail from './MiniBagRail';
 import HurryUrgencyCard from './HurryUrgencyCard';
+import AuthModal from './AuthModal';
 
 function MiniBagRailWrapper() {
   const { showMiniBagRail } = useApp();
@@ -38,6 +39,7 @@ function ProvidersContent({ children }: { children: React.ReactNode }) {
       </div>
       <BookModal />
       <BoardsModal />
+      <AuthModal />
       <Toast />
       <HurryUrgencyCard />
     </>

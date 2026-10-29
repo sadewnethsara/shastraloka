@@ -4,6 +4,7 @@ import React, { useState, useMemo } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useApp } from '../../context/AppContext';
+import Header from '../../components/Header';
 import {
     Search,
     Heart,
@@ -1300,277 +1301,55 @@ export default function Bag() {
             </div>
 
             {/* ------------------------------------------------------------------- */}
-            {/* MAIN HEADER BAR (Cloned from Screenshots + Bookstore & Pin Touches) */}
+            {/* UNIVERSAL HEADER WITH LIVE SEARCHBAR & 2-COLUMN CATEGORIES MENU     */}
             {/* ------------------------------------------------------------------- */}
-            <header className="sticky top-0 z-30 bg-[var(--header-bg)] border-b border-[var(--header-border)]">
-                <div className="max-w-[1280px] mx-auto px-4 sm:px-6">
-                    {/* Row 1: Brand + Desktop Search + Right Actions */}
-                    <div className="h-[64px] md:h-[72px] flex items-center justify-between gap-2 sm:gap-5 relative">
-                        {/* Left: Logo + Categories */}
-                        <div className="flex items-center gap-2 sm:gap-4 shrink-0">
-                            <Link
-                                href="/"
-                                className="flex flex-col shrink-0 select-none group focus:outline-none"
-                            >
-                                <span
-                                    className="text-[#F1641E] text-[24px] sm:text-[32px] leading-none font-bold tracking-tight transition-transform group-hover:scale-102"
-                                    style={{
-                                        fontFamily: 'Georgia, Cambria, "Times New Roman", Times, serif',
-                                    }}
-                                >
-                                    Shastraloka
-                                </span>
-                                <span className="text-[9.5px] text-stone-500 font-sinhala tracking-wider pl-0.5">
-                                    ශාස්ත්‍රලෝක • Classical Bookstore
-                                </span>
-                            </Link>
+            <Header isSticky />
 
-                            <div className="relative hidden md:block">
-                                <button
-                                    onClick={() => setShowCategoriesMenu((prev) => !prev)}
-                                    className="flex items-center gap-2 px-3 py-2 rounded-full text-[13.5px] font-medium text-[var(--text-main)] hover:bg-[var(--bg-hover)] transition-colors"
-                                >
-                                    <Menu className="w-4 h-4 stroke-[2.2]" />
-                                    <span>Categories</span>
-                                </button>
-
-                                {/* Amazon Bookstore + Pinterest Aesthetic Categories Dropdown */}
-                                {showCategoriesMenu && (
-                                    <div className="absolute left-0 mt-2 w-64 bg-[var(--bg-card)] rounded-2xl shadow-xl border border-[var(--border-subtle)] py-2 z-50">
-                                        <div className="px-4 py-1.5 text-[11px] font-bold uppercase tracking-wider text-[var(--text-dim)]">
-                                            Bookstore Departments
-                                        </div>
-                                        {[
-                                            'All Books & Editions',
-                                            'Collector Sprayed-Edge Hardcovers',
-                                            'Instant Kindle & Printable Coloring Books',
-                                            'Botanical & Pressed Flower Journals',
-                                            'Cozy Mystery & Autumn BookTok',
-                                            'Handmade Bookmarks & Ex-Libris Seals'
-                                        ].map((cat) => (
-                                            <button
-                                                key={cat}
-                                                onClick={() => {
-                                                    setSelectedBookDept(cat.split(' ')[0]);
-                                                    setShowCategoriesMenu(false);
-                                                    triggerToast(`Browsing category: ${cat}`);
-                                                }}
-                                                className="w-full text-left px-4 py-2 text-xs text-[var(--text-body)] hover:bg-[var(--bg-hover)] flex items-center justify-between"
-                                            >
-                                                <span>{cat}</span>
-                                                <BookOpen className="w-3.5 h-3.5 text-[var(--text-dim)]" />
-                                            </button>
-                                        ))}
-                                    </div>
-                                )}
-                            </div>
-                        </div>
-
-                        {/* Center: Desktop Pill Search Bar with Orange Circle Search Button */}
-                        <div className="hidden md:block flex-1 max-w-[740px]">
-                            <div className="relative flex items-center w-full h-[46px] rounded-full border-[1.5px] border-[var(--border-strong)] bg-[var(--bg-input)] hover:shadow-xs focus-within:ring-2 focus-within:ring-[#F1641E]/25 overflow-hidden transition-all">
-                                {/* Subtle Amazon-style book format filter inside search pill */}
-                                <div className="hidden lg:flex items-center pl-4 pr-2.5 h-full bg-[var(--bg-wash)] border-r border-[var(--border-subtle)] text-xs font-medium text-[var(--text-body)] shrink-0">
-                                    <span>{selectedBookDept}</span>
-                                    <ChevronDown className="w-3.5 h-3.5 ml-1 text-[var(--text-muted)]" />
-                                </div>
-
-                                <input
-                                    type="text"
-                                    value={searchQuery}
-                                    onChange={(e) => setSearchQuery(e.target.value)}
-                                    placeholder="Search for books, authors, ISBNs, or cozy reading pins..."
-                                    className="w-full h-full px-4 text-[14.5px] text-[var(--text-main)] placeholder-[var(--text-muted)] bg-transparent focus:outline-none"
-                                />
-
-                                {searchQuery && (
-                                    <button
-                                        onClick={() => setSearchQuery('')}
-                                        className="p-1.5 mr-1 text-[var(--text-muted)] hover:text-[var(--text-main)]"
-                                        title="Clear search"
-                                    >
-                                        <X className="w-4 h-4" />
-                                    </button>
-                                )}
-
-                                <button
-                                    onClick={() =>
-                                        triggerToast(
-                                            searchQuery
-                                                ? `Searching bookstore for "${searchQuery}"`
-                                                : 'Showing all curated books'
-                                        )
-                                    }
-                                    aria-label="Search"
-                                    className="mr-1.5 w-[36px] h-[36px] rounded-full bg-[#f1641e] hover:bg-[#d95616] text-white flex items-center justify-center shrink-0 transition-colors cursor-pointer"
-                                >
-                                    <Search className="w-4 h-4 stroke-[2.5]" />
-                                </button>
-                            </div>
-                        </div>
-
-                        {/* Right: Sign in, Heart (Saved Pins), and Bag Icon with Counter */}
-                        <div className="flex items-center gap-1.5 sm:gap-4 shrink-0">
-                            <button
-                                onClick={() => triggerToast('Signed in as Reader • Kindle & Print Sync Active')}
-                                className="px-2.5 sm:px-3 py-1.5 rounded-full text-xs sm:text-[13.5px] font-medium text-[var(--text-main)] hover:bg-[var(--bg-hover)] transition-colors"
-                            >
-                                Sign in
-                            </button>
-
-                            <button
-                                onClick={() =>
-                                    triggerToast(`You have ${pinnedBookIds.length} books pinned to your Reading Board`)
+            {/* FLOATING TOP-RIGHT URGENCY NOTIFICATION POPOVER */}
+            {showFloatingUrgency && bagItems.length > 0 && (
+                <div className="max-w-[1280px] mx-auto px-4 sm:px-6 relative">
+                    <div className="hidden md:flex items-center gap-3.5 absolute right-6 top-2 z-30 w-[348px] bg-[var(--bg-card)] rounded-2xl shadow-[0_10px_32px_rgba(0,0,0,0.16)] border border-[var(--border-subtle)] p-3 animate-in fade-in slide-in-from-top-2 duration-200">
+                        <div className="relative w-[74px] h-[74px] rounded-xl overflow-hidden shrink-0 border border-[var(--border-subtle)] bg-[var(--bg-wash)]">
+                            <BookCoverArtwork
+                                variant={
+                                    activePreset === 'screenshot-2'
+                                        ? 'spooky-girl-main'
+                                        : urgencyHighlight.coverType
                                 }
-                                className="relative p-2 rounded-full text-[var(--text-main)] hover:bg-[var(--bg-hover)] transition-colors"
-                                title="Pinned Reading List"
-                            >
-                                <Heart className="w-5 h-5 fill-current" />
-                                {pinnedBookIds.length > 0 && (
-                                    <span className=" -top-0.5 -right-0.5 absolute w-4 h-4 rounded-full bg-[#e60023] text-white text-[9.5px] font-bold flex items-center justify-center">
-                                        {pinnedBookIds.length}
-                                    </span>
-                                )}
-                            </button>
-
-                            <button
-                                onClick={() =>
-                                    window.scrollTo({ top: 0, behavior: 'smooth' })
-                                }
-                                className="relative p-2 rounded-full text-[var(--text-main)] hover:bg-[var(--bg-hover)] transition-colors flex items-center"
-                                title="Your Book Bag"
-                            >
-                                <Handbag className="w-5 h-5 stroke-[2.2]" />
-                                <span className=" -top-0.5 -right-1 absolute min-w-[18px] h-[18px] px-1 rounded-full bg-[#f1641e] text-white text-[10.5px] font-bold flex items-center justify-center shadow-xs">
-                                    {financials.totalCount}
-                                </span>
-                            </button>
-                        </div>
-
-                        {/* --------------------------------------------------------------- */}
-                        {/* FLOATING TOP-RIGHT URGENCY NOTIFICATION POPOVER (From Screenshots) */}
-                        {/* --------------------------------------------------------------- */}
-                        {showFloatingUrgency && bagItems.length > 0 && (
-                            <div className="hidden md:flex items-center gap-3.5 absolute right-4 top-[54px] z-40 w-[348px] bg-[var(--bg-card)] rounded-2xl shadow-[0_10px_32px_rgba(0,0,0,0.16)] border border-[var(--border-subtle)] p-3 animate-in fade-in slide-in-from-top-2 duration-200">
-                                {/* Thumbnail with Blue Bag Badge */}
-                                <div className="relative w-[74px] h-[74px] rounded-xl overflow-hidden shrink-0 border border-[var(--border-subtle)] bg-[var(--bg-wash)]">
-                                    <BookCoverArtwork
-                                        variant={
-                                            activePreset === 'screenshot-2'
-                                                ? 'spooky-girl-main'
-                                                : urgencyHighlight.coverType
-                                        }
-                                    />
-                                    {/* Blue corner circle with bag icon matching screenshot */}
-                                    <div className="absolute -bottom-1 -left-1 w-7 h-7 rounded-tr-xl bg-[#1e3a8a] text-white flex items-center justify-center shadow">
-                                        <Handbag className="w-3.5 h-3.5" />
-                                    </div>
-                                </div>
-
-                                {/* Content */}
-                                <div className="flex-1 min-w-0 pr-4">
-                                    <p className="text-[12.5px] font-bold text-[var(--text-main)] leading-snug">
-                                        Hurry! Shop this one while it lasts!
-                                    </p>
-                                    <p className="text-[11.5px] font-bold text-[#a61a2e] mt-0.5">
-                                        {activePreset === 'screenshot-1'
-                                            ? '23 sold in the past 24 hours'
-                                            : '4 sold in the past 24 hours'}
-                                    </p>
-                                    <button
-                                        onClick={() => router.push('/checkout')}
-                                        className="mt-2 w-full py-1.5 px-3 rounded-full bg-[var(--pill-active-bg)] text-[var(--pill-active-text)] hover:opacity-90 text-[12px] font-semibold flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
-                                    >
-                                        <span>Proceed to checkout</span>
-                                        <ArrowRight className="w-3.5 h-3.5" />
-                                    </button>
-                                </div>
-
-                                {/* Close X button */}
-                                <button
-                                    onClick={() => setShowFloatingUrgency(false)}
-                                    aria-label="Dismiss notification"
-                                    className="absolute top-2.5 right-2.5 p-1 text-[var(--text-muted)] hover:text-[var(--text-main)] rounded-full hover:bg-[var(--bg-hover)]"
-                                >
-                                    <X className="w-4 h-4" />
-                                </button>
-                            </div>
-                        )}
-                    </div>
-
-                    {/* Row 2: Mobile Categories + Search Bar (< md) */}
-                    <div className="md:hidden pb-3 flex items-center gap-2 relative">
-                        <button
-                            onClick={() => setShowCategoriesMenu((prev) => !prev)}
-                            className="flex items-center gap-1.5 px-3 h-[42px] rounded-full border border-[var(--border-subtle)] text-xs font-semibold text-[var(--text-main)] hover:bg-[var(--bg-hover)] transition-colors shrink-0"
-                        >
-                            <Menu className="w-4 h-4 stroke-[2.2]" />
-                            <span>Categories</span>
-                        </button>
-
-                        {showCategoriesMenu && (
-                            <div className="absolute left-0 top-full mt-1 w-64 bg-[var(--bg-card)] rounded-2xl shadow-xl border border-[var(--border-subtle)] py-2 z-50">
-                                <div className="px-4 py-1.5 text-[11px] font-bold uppercase tracking-wider text-[var(--text-dim)]">
-                                    Bookstore Departments
-                                </div>
-                                {[
-                                    'All Books & Editions',
-                                    'Collector Sprayed-Edge Hardcovers',
-                                    'Instant Kindle & Printable Coloring Books',
-                                    'Botanical & Pressed Flower Journals',
-                                    'Cozy Mystery & Autumn BookTok',
-                                    'Handmade Bookmarks & Ex-Libris Seals'
-                                ].map((cat) => (
-                                    <button
-                                        key={cat}
-                                        onClick={() => {
-                                            setSelectedBookDept(cat.split(' ')[0]);
-                                            setShowCategoriesMenu(false);
-                                            triggerToast(`Browsing category: ${cat}`);
-                                        }}
-                                        className="w-full text-left px-4 py-2 text-xs text-[var(--text-body)] hover:bg-[var(--bg-hover)] flex items-center justify-between"
-                                    >
-                                        <span>{cat}</span>
-                                        <BookOpen className="w-3.5 h-3.5 text-[var(--text-dim)]" />
-                                    </button>
-                                ))}
-                            </div>
-                        )}
-
-                        <div className="relative flex-1 flex items-center h-[42px] rounded-full border-[1.5px] border-[var(--border-strong)] bg-[var(--bg-input)] overflow-hidden">
-                            <input
-                                type="text"
-                                value={searchQuery}
-                                onChange={(e) => setSearchQuery(e.target.value)}
-                                placeholder="Search books, authors..."
-                                className="w-full h-full px-3.5 text-xs text-[var(--text-main)] placeholder-[var(--text-muted)] bg-transparent focus:outline-none"
                             />
-                            {searchQuery && (
-                                <button
-                                    onClick={() => setSearchQuery('')}
-                                    className="p-1 text-[var(--text-muted)] hover:text-[var(--text-main)]"
-                                    title="Clear search"
-                                >
-                                    <X className="w-3.5 h-3.5" />
-                                </button>
-                            )}
+                            <div className="absolute -bottom-1 -left-1 w-7 h-7 rounded-tr-xl bg-[#1e3a8a] text-white flex items-center justify-center shadow">
+                                <Handbag className="w-3.5 h-3.5" />
+                            </div>
+                        </div>
+
+                        <div className="flex-1 min-w-0 pr-4">
+                            <p className="text-[12.5px] font-bold text-[var(--text-main)] leading-snug">
+                                Hurry! Shop this one while it lasts!
+                            </p>
+                            <p className="text-[11.5px] font-bold text-[#a61a2e] mt-0.5">
+                                {activePreset === 'screenshot-1'
+                                    ? '23 sold in the past 24 hours'
+                                    : '4 sold in the past 24 hours'}
+                            </p>
                             <button
-                                onClick={() =>
-                                    triggerToast(
-                                        searchQuery
-                                            ? `Searching bookstore for "${searchQuery}"`
-                                            : 'Showing all curated books'
-                                    )
-                                }
-                                aria-label="Search"
-                                className="mr-1 w-[32px] h-[32px] rounded-full bg-[#f1641e] hover:bg-[#d95616] text-white flex items-center justify-center shrink-0 transition-colors cursor-pointer"
+                                onClick={() => router.push('/checkout')}
+                                className="mt-2 w-full py-1.5 px-3 rounded-full bg-[var(--pill-active-bg)] text-[var(--pill-active-text)] hover:opacity-90 text-[12px] font-semibold flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
                             >
-                                <Search className="w-3.5 h-3.5 stroke-[2.5]" />
+                                <span>Proceed to checkout</span>
+                                <ArrowRight className="w-3.5 h-3.5" />
                             </button>
                         </div>
+
+                        <button
+                            onClick={() => setShowFloatingUrgency(false)}
+                            aria-label="Dismiss notification"
+                            className="absolute top-2.5 right-2.5 p-1 text-[var(--text-muted)] hover:text-[var(--text-main)] rounded-full hover:bg-[var(--bg-hover)]"
+                        >
+                            <X className="w-4 h-4" />
+                        </button>
                     </div>
                 </div>
-            </header>
+            )}
 
             {/* ------------------------------------------------------------------- */}
             {/* MAIN BODY CONTAINER */}

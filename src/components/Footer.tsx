@@ -6,14 +6,14 @@ import { Accordion } from './ui/Accordion';
 
 export const FOOTER_COLUMNS = [
   {
-    title: 'Treatises',
+    title: 'Shop & Discover',
     links: [
-      'Mahavamsa & Chulavamsa',
-      'Buddhist Philosophy',
-      'Sinhala Classical Kavya',
-      'Indigenous Ayurveda',
-      'Temple Architecture',
-      'Ola Leaf Manuscripts',
+      'Gift cards',
+      'Books Storefront',
+      'Special Offers & Deals',
+      'Best Sellers',
+      'New Arrivals & Releases',
+      'Archival & Vintage Finds',
     ],
   },
   {
@@ -21,8 +21,8 @@ export const FOOTER_COLUMNS = [
     links: [
       'Submit a Manuscript',
       'Digitization Grants',
-      'University Affiliates',
-      'Temple Library Program',
+      'Authors & Scholars',
+      'Publishers & Guilds',
     ],
   },
   {
@@ -31,16 +31,44 @@ export const FOOTER_COLUMNS = [
       'Shastraloka Heritage Inc.',
       'Preservation Policies',
       'Historical Archives',
-      'Careers & Research',
-      'Press Releases',
-      'Cultural Impact',
+      'Terms of Use',
+      'Privacy Policy',
     ],
   },
   {
     title: 'Help',
-    links: ['Help Center', 'Shipping & Delivery', 'Privacy settings', 'Contact Us'],
+    links: [
+      'Help Center',
+      'Shipping & Delivery',
+      'Track Order',
+      'Privacy settings',
+      'Contact Us',
+    ],
   },
 ];
+
+const FOOTER_LINK_ROUTES: Record<string, string> = {
+  'Gift cards': '/gift-cards',
+  'Books Storefront': '/books',
+  'Special Offers & Deals': '/offers',
+  'Best Sellers': '/bestsellers',
+  'New Arrivals & Releases': '/new-releases',
+  'Archival & Vintage Finds': '/archives',
+  'Submit a Manuscript': '/scholars/submit-manuscript',
+  'Digitization Grants': '/scholars/grants',
+  'Authors & Scholars': '/authors',
+  'Publishers & Guilds': '/publishers',
+  'Shastraloka Heritage Inc.': '/about',
+  'Preservation Policies': '/terms',
+  'Historical Archives': '/archives',
+  'Terms of Use': '/terms',
+  'Privacy Policy': '/privacy',
+  'Help Center': '/help',
+  'Shipping & Delivery': '/shipping-returns',
+  'Track Order': '/track-order',
+  'Privacy settings': '/privacy',
+  'Contact Us': '/contact',
+};
 
 export default function Footer() {
   const router = useRouter();
@@ -51,7 +79,12 @@ export default function Footer() {
   };
 
   const navigateToSearch = (term: string) => {
-    router.push(`/search?q=${encodeURIComponent(term)}`);
+    const mappedRoute = FOOTER_LINK_ROUTES[term];
+    if (mappedRoute) {
+      router.push(mappedRoute);
+    } else {
+      router.push(`/search?q=${encodeURIComponent(term)}`);
+    }
   };
 
   return (

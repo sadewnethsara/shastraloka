@@ -52,6 +52,10 @@ export interface Review {
   comment: string;
 }
 
+export type ThemeMode = 'light' | 'dark' | 'sepia' | 'emerald';
+
+export type AuthModalMode = 'login' | 'register' | 'forgot-password' | null;
+
 export interface ThemeOption {
   id: string;
   label: string;
@@ -72,6 +76,11 @@ interface AppContextType {
   availableThemes: ThemeOption[];
   isDark: boolean;
   toggleTheme: () => void;
+
+  // Auth Dialog / Bottom Sheet
+  authModalMode: AuthModalMode;
+  openAuthModal: (mode?: 'login' | 'register' | 'forgot-password') => void;
+  closeAuthModal: () => void;
 
   // Search & Filtering
   searchQuery: string;
@@ -370,9 +379,18 @@ const AppContext = createContext<AppContextType | undefined>(undefined);
 export function AppProvider({ children }: { children: React.ReactNode }) {
   const [theme, setThemeState] = useState<string>('emerald');
   const [isDark, setIsDark] = useState(false);
+  const [authModalMode, setAuthModalMode] = useState<AuthModalMode>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All Treatises');
   const [selectedBook, setSelectedBook] = useState<Book | null>(null);
+
+  const openAuthModal = useCallback((mode: 'login' | 'register' | 'forgot-password' = 'login') => {
+    setAuthModalMode(mode);
+  }, []);
+
+  const closeAuthModal = useCallback(() => {
+    setAuthModalMode(null);
+  }, []);
 
   // Bag
   const [bag, setBag] = useState<BagItem[]>(INITIAL_SAMPLE_BAG);
@@ -723,6 +741,9 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         availableThemes: AVAILABLE_THEMES,
         isDark,
         toggleTheme,
+        authModalMode,
+        openAuthModal,
+        closeAuthModal,
         searchQuery,
         setSearchQuery,
         selectedCategory,
