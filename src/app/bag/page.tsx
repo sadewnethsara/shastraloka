@@ -993,7 +993,7 @@ const BookCoverArtwork: React.FC<{
 export default function Bag() {
     const router = useRouter();
     const { bag, removeFromBag, updateBagQuantity, clearBag } = useApp();
-    
+
     // Active preset view to let user inspect both uploaded screenshots or interact freely
     const [activePreset, setActivePreset] = useState<'screenshot-1' | 'screenshot-2'>('screenshot-1');
 
