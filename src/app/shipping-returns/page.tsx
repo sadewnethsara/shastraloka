@@ -1,87 +1,74 @@
 'use client';
 
 import React from 'react';
-import Header from '../../components/Header';
-import Footer from '../../components/Footer';
-import { Truck, RotateCcw, ShieldCheck, Clock, MapPin } from 'lucide-react';
+import Link from 'next/link';
+import HouseRulesLayout from '../../components/HouseRulesLayout';
+import { Truck, ShieldCheck, RotateCcw, PackageCheck } from 'lucide-react';
 
 export default function ShippingReturnsPage() {
   return (
-    <div className="min-h-screen bg-[var(--bg-main)] flex flex-col">
-      <Header />
-      <main className="page-container py-8 sm:py-16 flex-1">
-        <div className="max-w-3xl mx-auto space-y-12">
-          <div className="text-center space-y-3">
-            <h1 className="text-3xl sm:text-4xl font-heading font-bold text-[var(--text-main)]">
-              Islandwide Shipping & Returns Policy
-            </h1>
-            <p className="text-sm sm:text-base text-[var(--text-muted)]">
-              Fast, secure courier delivery across all 25 districts in Sri Lanka with dedicated book care packaging.
-            </p>
-          </div>
+    <HouseRulesLayout activeSlug="shipping-returns" title="Shipping & Returns Policy" lastUpdated="29 Oct, 2026">
+      <p>
+        Every volume ordered from <strong className="text-[var(--text-main)]">Shastraloka (ශාස්ත්‍රාලෝක)</strong> is wrapped in
+        moisture-resistant archival kraft paper and cushioned with corner protectors before leaving our Colombo &amp; Kandy
+        vaults.
+      </p>
 
-          {/* Delivery Rates Table */}
-          <div className="p-6 rounded-2xl bg-[var(--bg-card)] border border-[var(--border-subtle)] space-y-4">
-            <h2 className="text-xl font-heading font-bold text-[var(--text-main)] flex items-center gap-2">
-              <Truck className="w-5 h-5 text-[var(--color-primary)]" />
-              <span>Courier Delivery Schedule & Rates</span>
-            </h2>
-
-            <div className="overflow-x-auto">
-              <table className="w-full text-left text-sm">
-                <thead>
-                  <tr className="border-b border-[var(--border-subtle)] text-xs uppercase tracking-wider text-[var(--text-muted)]">
-                    <th className="py-3 px-4">Region</th>
-                    <th className="py-3 px-4">Delivery Time</th>
-                    <th className="py-3 px-4">Standard Rate</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-[var(--border-subtle)]">
-                  <tr>
-                    <td className="py-3 px-4 font-semibold text-[var(--text-main)]">Colombo & Greater Suburbs</td>
-                    <td className="py-3 px-4 text-[var(--text-muted)]">Next Business Day (24 hrs)</td>
-                    <td className="py-3 px-4 font-bold text-[var(--text-main)]">LKR 250</td>
-                  </tr>
-                  <tr>
-                    <td className="py-3 px-4 font-semibold text-[var(--text-main)]">Western Province (Gampaha, Kalutara)</td>
-                    <td className="py-3 px-4 text-[var(--text-muted)]">24 – 36 Hours</td>
-                    <td className="py-3 px-4 font-bold text-[var(--text-main)]">LKR 300</td>
-                  </tr>
-                  <tr>
-                    <td className="py-3 px-4 font-semibold text-[var(--text-main)]">All Other Districts (Kandy, Galle, Jaffna, etc.)</td>
-                    <td className="py-3 px-4 text-[var(--text-muted)]">48 – 72 Hours</td>
-                    <td className="py-3 px-4 font-bold text-[var(--text-main)]">LKR 350</td>
-                  </tr>
-                  <tr className="bg-[var(--color-primary-subtle)]/30">
-                    <td className="py-3 px-4 font-bold text-[var(--color-primary)]">Orders over LKR 3,500</td>
-                    <td className="py-3 px-4 text-[var(--color-primary)] font-medium">Any District in Sri Lanka</td>
-                    <td className="py-3 px-4 font-bold text-emerald-600 dark:text-emerald-400">FREE SHIPPING</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-
-          {/* Returns & Exchanges */}
-          <div className="p-6 rounded-2xl bg-[var(--bg-card)] border border-[var(--border-subtle)] space-y-4">
-            <h2 className="text-xl font-heading font-bold text-[var(--text-main)] flex items-center gap-2">
-              <RotateCcw className="w-5 h-5 text-[var(--color-primary)]" />
-              <span>7-Day Return & Replacement Guarantee</span>
-            </h2>
-            <div className="text-sm text-[var(--text-muted)] leading-relaxed space-y-3">
-              <p>
-                We inspect every copy before dispatch to ensure binding integrity and pristine page condition. In the rare event that your book arrives damaged or defective:
-              </p>
-              <ul className="list-disc pl-5 space-y-1.5">
-                <li>Contact our helpline at +94 11 258 9120 within 7 days of receiving your package.</li>
-                <li>Our courier will arrange a doorstep replacement pickup free of charge.</li>
-                <li>Digital audio chantings and digital e-book downloads are non-refundable once unlocked.</li>
-              </ul>
-            </div>
-          </div>
+      {/* Highlights Grid */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 my-6">
+        <div className="p-4 rounded-2xl bg-[var(--bg-surface)] border border-[var(--border-subtle)]">
+          <Truck className="w-5 h-5 text-[#F1641E] mb-2" />
+          <h3 className="text-sm font-bold text-[var(--text-main)]">All 25 Sri Lankan Districts</h3>
+          <p className="text-xs text-[var(--text-muted)] mt-1">
+            Next-day delivery in Colombo, Gampaha, Kalutara &amp; Kandy; 2–3 business days islandwide.
+          </p>
         </div>
-      </main>
-      <Footer />
-    </div>
+        <div className="p-4 rounded-2xl bg-[var(--bg-surface)] border border-[var(--border-subtle)]">
+          <PackageCheck className="w-5 h-5 text-[#F1641E] mb-2" />
+          <h3 className="text-sm font-bold text-[var(--text-main)]">Free Courier Over LKR 5,000</h3>
+          <p className="text-xs text-[var(--text-muted)] mt-1">
+            Complimentary insured delivery on all Shopping Bags over LKR 5,000 or with code FREEDELIVERYLK.
+          </p>
+        </div>
+        <div className="p-4 rounded-2xl bg-[var(--bg-surface)] border border-[var(--border-subtle)]">
+          <RotateCcw className="w-5 h-5 text-[#F1641E] mb-2" />
+          <h3 className="text-sm font-bold text-[var(--text-main)]">14-Day Archival Exchange</h3>
+          <p className="text-xs text-[var(--text-muted)] mt-1">
+            Easy replacement or full LKR refund if any book arrives with transit wear or binding defects.
+          </p>
+        </div>
+        <div className="p-4 rounded-2xl bg-[var(--bg-surface)] border border-[var(--border-subtle)]">
+          <ShieldCheck className="w-5 h-5 text-[#F1641E] mb-2" />
+          <h3 className="text-sm font-bold text-[var(--text-main)]">Worldwide Scholarly Air Post</h3>
+          <p className="text-xs text-[var(--text-muted)] mt-1">
+            Tracked DHL &amp; EMS dispatches to universities and readers in UK, US, Europe, India, and Japan.
+          </p>
+        </div>
+      </div>
+
+      <section className="space-y-2">
+        <h2 className="font-heading font-bold text-lg sm:text-xl font-bold text-[var(--text-main)]">
+          1. District Delivery Rates &amp; Timelines
+        </h2>
+        <p className="text-sm text-[var(--text-muted)] leading-relaxed">
+          Standard islandwide courier rates range from LKR 350 (Colombo &amp; suburbs) to LKR 450 (outstation districts). You can
+          track your parcel in real time via our{' '}
+          <Link href="/track-order" className="underline text-[var(--text-main)] hover:text-[#F1641E]">
+            Track Order
+          </Link>{' '}
+          page using your order reference.
+        </p>
+      </section>
+
+      <section className="space-y-2">
+        <h2 className="font-heading font-bold text-lg sm:text-xl font-bold text-[var(--text-main)]">
+          2. Returns, Replacements &amp; Collector Editions
+        </h2>
+        <p className="text-sm text-[var(--text-muted)] leading-relaxed">
+          Unmarked print editions may be returned within 14 days of delivery for a full refund or exchange. Custom-inscribed
+          brass-clasp collector slipcases are eligible for complimentary replacement if damaged in transit.
+        </p>
+      </section>
+    </HouseRulesLayout>
   );
 }

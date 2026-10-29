@@ -1,56 +1,75 @@
 'use client';
 
 import React from 'react';
-import Header from '../../components/Header';
-import Footer from '../../components/Footer';
+import Link from 'next/link';
+import HouseRulesLayout from '../../components/HouseRulesLayout';
 
 export default function TermsPage() {
   return (
-    <div className="min-h-screen bg-[var(--bg-main)] flex flex-col">
-      <Header />
-      <main className="page-container py-8 sm:py-16 flex-1">
-        <div className="max-w-3xl mx-auto space-y-8">
-          <div className="border-b border-[var(--border-subtle)] pb-6">
-            <h1 className="text-3xl sm:text-4xl font-heading font-bold text-[var(--text-main)] mb-2">
-              Terms & Conditions
-            </h1>
-            <p className="text-sm text-[var(--text-muted)]">
-              Last updated: October 2026 • Shastraloka Classical Bookstore (shastraloka.lk | ශාස්ත්රාලෝක.ලංකා)
-            </p>
-          </div>
+    <HouseRulesLayout activeSlug="terms" title="Terms of Use" lastUpdated="29 Oct, 2026">
+      <p>
+        Welcome to <strong className="text-[var(--text-main)]">Shastraloka (ශාස්ත්‍රාලෝක / ශාස්ත්රාලෝක)</strong>. These Terms of
+        Use govern your access to and purchases from our online bookstore, digital scriptorium, and archival facsimile catalog
+        at <span className="font-medium text-[var(--text-main)]">shastraloka.lk</span> and{' '}
+        <span className="font-medium font-sinhala text-[var(--text-main)]">ශාස්ත්රාලෝක.ලංකා</span>.
+      </p>
 
-          <div className="space-y-6 text-sm text-[var(--text-muted)] leading-relaxed">
-            <section className="space-y-2">
-              <h2 className="text-lg font-heading font-bold text-[var(--text-main)]">1. Acceptance of Terms</h2>
-              <p>
-                By accessing or placing an order through Shastraloka (accessible via shastraloka.lk and ශාස්ත්රාලෝක.ලංකා), you agree to be bound by these Terms and Conditions.
-              </p>
-            </section>
+      <section className="space-y-2 pt-2">
+        <h2 className="font-heading font-bold text-lg sm:text-xl font-bold text-[var(--text-main)]">
+          1. Editions, Pricing in LKR &amp; Authenticity Guarantee
+        </h2>
+        <p className="text-sm text-[var(--text-muted)] leading-relaxed">
+          All books, hardbound royal chronicles, and palm-leaf (ola) facsimiles listed on Shastraloka are priced in Sri Lankan
+          Rupees (LKR). Offer percentages reflect verified discounts off the publisher&apos;s recommended retail price. Every
+          collector edition is accompanied by an archival seal from the issuing guild or university press.
+        </p>
+      </section>
 
-            <section className="space-y-2">
-              <h2 className="text-lg font-heading font-bold text-[var(--text-main)]">2. Bookstore Catalog & Pricing</h2>
-              <p>
-                All book prices are quoted in Sri Lankan Rupees (LKR) inclusive of applicable taxes. We reserve the right to correct any typographical or pricing errors prior to dispatch.
-              </p>
-            </section>
+      <section className="space-y-2 pt-2">
+        <h2 className="font-heading font-bold text-lg sm:text-xl font-bold text-[var(--text-main)]">
+          2. Shopping Bag, Gift Cards &amp; Promotional Vouchers
+        </h2>
+        <p className="text-sm text-[var(--text-muted)] leading-relaxed">
+          Items placed in your Shopping Bag reserve current promotional pricing during your active session. Shastraloka Gift
+          Cards (<Link href="/gift-cards" className="underline text-[var(--text-main)]">view Gift Cards</Link>) are denominated
+          in LKR, never expire, and may be redeemed toward any print edition, slipcase set, or digital folio.
+        </p>
+      </section>
 
-            <section className="space-y-2">
-              <h2 className="text-lg font-heading font-bold text-[var(--text-main)]">3. Orders & Payment</h2>
-              <p>
-                Orders may be paid via Cash on Delivery (COD) or verified electronic payment gateways. Orders placed for physical delivery will be verified via SMS or phone confirmation when necessary.
-              </p>
-            </section>
+      <section className="space-y-2 pt-2">
+        <h2 className="font-heading font-bold text-lg sm:text-xl font-bold text-[var(--text-main)]">
+          3. Archival Copyright &amp; Scholarly Fair Use
+        </h2>
+        <p className="text-sm text-[var(--text-muted)] leading-relaxed">
+          While classical Pali, Sanskrit, and Sinhala root texts (such as the <em>Mahavamsa</em>, <em>Gajaga Wannama</em>, and{' '}
+          <em>Sarartha Sangrahaya</em>) belong to Sri Lanka&apos;s cultural heritage, modern critical commentaries, English
+          translations, and high-resolution folio photography remain protected by publisher copyright. Educators and pirivena
+          libraries may quote excerpts with attribution to Shastraloka Heritage Press.
+        </p>
+      </section>
 
-            <section className="space-y-2">
-              <h2 className="text-lg font-heading font-bold text-[var(--text-main)]">4. Intellectual Property & Digital Content</h2>
-              <p>
-                Digital manuscript scans, audio chantings, and scholarly annotations published on Shastraloka are protected by copyright. Unauthorized reproduction or commercial distribution without written consent is prohibited.
-              </p>
-            </section>
-          </div>
-        </div>
-      </main>
-      <Footer />
-    </div>
+      <section className="space-y-2 pt-2">
+        <h2 className="font-heading font-bold text-lg sm:text-xl font-bold text-[var(--text-main)]">
+          4. Related Policies
+        </h2>
+        <ul className="list-disc pl-6 space-y-1.5 text-sm">
+          <li>
+            <Link href="/privacy" className="underline text-[var(--text-main)] hover:text-[#F1641E]">
+              Shastraloka Global Privacy Policy
+            </Link>
+          </li>
+          <li>
+            <Link href="/shipping-returns" className="underline text-[var(--text-main)] hover:text-[#F1641E]">
+              Islandwide Shipping, Courier &amp; Returns Charter
+            </Link>
+          </li>
+          <li>
+            <Link href="/help" className="underline text-[var(--text-main)] hover:text-[#F1641E]">
+              Help Center &amp; Scholarly Support
+            </Link>
+          </li>
+        </ul>
+      </section>
+    </HouseRulesLayout>
   );
 }

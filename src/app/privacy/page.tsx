@@ -1,49 +1,91 @@
 'use client';
 
-import React from 'react';
-import Header from '../../components/Header';
-import Footer from '../../components/Footer';
+import React, { useState } from 'react';
+import Link from 'next/link';
+import HouseRulesLayout, { REGIONAL_POLICY_VARIATIONS } from '../../components/HouseRulesLayout';
 
 export default function PrivacyPage() {
+  const [selectedLang, setSelectedLang] = useState<string>('English - Sri Lanka');
+
   return (
-    <div className="min-h-screen bg-[var(--bg-main)] flex flex-col">
-      <Header />
-      <main className="page-container py-8 sm:py-16 flex-1">
-        <div className="max-w-3xl mx-auto space-y-8">
-          <div className="border-b border-[var(--border-subtle)] pb-6">
-            <h1 className="text-3xl sm:text-4xl font-heading font-bold text-[var(--text-main)] mb-2">
-              Privacy Policy
-            </h1>
-            <p className="text-sm text-[var(--text-muted)]">
-              Last updated: October 2026 • Shastraloka Classical Bookstore (shastraloka.lk | ශාස්ත්රාලෝක.ලංකා)
-            </p>
-          </div>
+    <HouseRulesLayout activeSlug="privacy" title="Privacy Policy" lastUpdated="29 Oct, 2026">
+      <p>
+        As Sri Lanka&apos;s premier classical bookstore and archival manuscript sanctuary (operating across{' '}
+        <span className="font-semibold text-[var(--text-main)]">shastraloka.lk</span> and{' '}
+        <span className="font-semibold font-sinhala text-[var(--text-main)]">ශාස්ත්රාලෝක.ලංකා</span>), we take our national and
+        international data protection obligations seriously. Our privacy policy includes this Global Privacy Policy, our{' '}
+        <Link href="/terms" className="underline text-[var(--text-main)] hover:text-[#F1641E]">
+          Cookie &amp; Local Storage Technologies Policy
+        </Link>
+        , and our{' '}
+        <Link href="/shipping-returns" className="underline text-[var(--text-main)] hover:text-[#F1641E]">
+          Islandwide Courier Dispatch Disclosures
+        </Link>
+        . Please select your preferred language (and, where applicable, regional variation) from the list below to view our
+        Global Privacy Policy.
+      </p>
 
-          <div className="space-y-6 text-sm text-[var(--text-muted)] leading-relaxed">
-            <section className="space-y-2">
-              <h2 className="text-lg font-heading font-bold text-[var(--text-main)]">1. Information We Collect</h2>
-              <p>
-                When you place a book order, save reading lists to your Pinterest-style boards, or create an account, we collect necessary shipping details including your full name, phone number, shipping address, and email.
-              </p>
-            </section>
+      {/* Regional & Language Variations List (Matches Etsy Privacy Policy bullet list) */}
+      <ul className="list-disc pl-6 space-y-2 py-2">
+        {REGIONAL_POLICY_VARIATIONS.map((item) => (
+          <li key={item.lang} className="text-sm text-[var(--text-main)]">
+            <span className="font-medium">{item.lang}</span> -{' '}
+            <button
+              type="button"
+              onClick={() => setSelectedLang(item.lang)}
+              className={`underline text-left transition-colors ${
+                selectedLang === item.lang ? 'text-[#F1641E] font-semibold' : 'hover:text-[#F1641E]'
+              }`}
+            >
+              {item.label}
+            </button>
+          </li>
+        ))}
+      </ul>
 
-            <section className="space-y-2">
-              <h2 className="text-lg font-heading font-bold text-[var(--text-main)]">2. How We Use Your Data</h2>
-              <p>
-                Your information is used strictly to fulfill book deliveries across Sri Lankan postal districts, notify you of courier transit updates, and provide personalized literary recommendations.
-              </p>
-            </section>
-
-            <section className="space-y-2">
-              <h2 className="text-lg font-heading font-bold text-[var(--text-main)]">3. Data Protection & Security</h2>
-              <p>
-                We do not sell, rent, or trade your personal information to third parties. Courier partners only receive the contact and address information required to complete delivery to your doorstep.
-              </p>
-            </section>
-          </div>
+      {/* Detailed Bookstore Privacy Sections */}
+      <div className="mt-8 pt-6 border-t border-[var(--border-subtle)] space-y-5">
+        <div className="inline-block px-3 py-1 rounded-full bg-[var(--bg-wash)] border border-[var(--border-subtle)] text-xs font-semibold text-[var(--text-main)]">
+          Viewing: {selectedLang} Edition
         </div>
-      </main>
-      <Footer />
-    </div>
+
+        <section className="space-y-2">
+          <h2 className="font-heading font-bold text-lg sm:text-xl font-bold text-[var(--text-main)]">
+            1. Information We Collect When You Browse or Order Books
+          </h2>
+          <p className="text-sm text-[var(--text-muted)] leading-relaxed">
+            When you add treatises to your Shopping Bag, curate reading boards, or place an islandwide LKR order, we collect
+            only the essential details required to fulfill your order: your name, Sri Lankan district delivery address, contact
+            telephone number for courier coordination, and payment confirmation. Saved reading boards and Bag items are also
+            persisted locally in your browser so you never lose your curated manuscripts.
+          </p>
+        </section>
+
+        <section className="space-y-2">
+          <h2 className="font-heading font-bold text-lg sm:text-xl font-bold text-[var(--text-main)]">
+            2. Scholarly Citations, Reviews &amp; Manuscript Submissions
+          </h2>
+          <p className="text-sm text-[var(--text-muted)] leading-relaxed">
+            If you submit a palm-leaf transcription, scholarly review, or digitization grant application, your attributed scholar
+            name and institutional affiliation (e.g., University of Peradeniya, Pirivena Archive) are displayed publicly only
+            with your explicit consent.
+          </p>
+        </section>
+
+        <section className="space-y-2">
+          <h2 className="font-heading font-bold text-lg sm:text-xl font-bold text-[var(--text-main)]">
+            3. Your Data Rights &amp; Privacy Settings
+          </h2>
+          <p className="text-sm text-[var(--text-muted)] leading-relaxed">
+            You may inspect, export, or clear your saved reading lists, Bag history, and marketing preferences at any time via{' '}
+            <Link href="/profile/settings" className="underline text-[var(--text-main)] hover:text-[#F1641E]">
+              Privacy Settings
+            </Link>{' '}
+            or by contacting our Data Protection Archivist at{' '}
+            <span className="font-medium text-[var(--text-main)]">privacy@shastraloka.lk</span>.
+          </p>
+        </section>
+      </div>
+    </HouseRulesLayout>
   );
 }

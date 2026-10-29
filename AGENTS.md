@@ -107,21 +107,40 @@ shastraloka/
 │   │   ├── globals.css           # Design tokens, @custom-variant dark & theme CSS imports
 │   │   ├── gestalt.css           # Local Gestalt styling bundle
 │   │   ├── bag/page.tsx          # Dedicated Shopping Bag page
+│   │   ├── books/page.tsx        # Amazon Books-inspired Storefront (shelves, format pills, Daily Deals)
 │   │   ├── bestsellers/page.tsx  # Clean Best Sellers catalog grid
 │   │   ├── new-releases/page.tsx # Clean New Arrivals & Releases catalog grid
-│   │   ├── gifts/page.tsx        # Clean Collector Editions & Gifts catalog grid
+│   │   ├── gifts/page.tsx        # Best Gift Guides hub (15 circular guides, personalized editions)
+│   │   ├── gift-cards/page.tsx   # Digital & Printable LKR Gift Cards builder + redeem drawer
+│   │   ├── offers/page.tsx       # Special Offers & Festival Vouchers hub + Popular Gifts grid
 │   │   ├── categories/page.tsx   # Clean Category browser grid
-│   │   ├── archives/page.tsx     # Clean Historical Archives grid
+│   │   ├── categories/[slug]/    # Dynamic Category catalog grid
+│   │   ├── archives/page.tsx     # Archival & Vintage Finds (5 square era cards, filters, related searches)
 │   │   ├── authors/page.tsx      # Clean Authors & Scholars grid
-│   │   ├── wishlist/page.tsx     # Clean Saved Reading List grid
+│   │   ├── authors/[id]/         # Dedicated Author profile & CleanBookCard catalog
+│   │   ├── wishlist/page.tsx     # Guest Favorites empty state & Populated Scholar Favorites collection
+│   │   ├── login/page.tsx        # Sign In card with Shastraloka emblem & social login
+│   │   ├── register/page.tsx     # Create Account card with Shastraloka emblem
+│   │   ├── forgot-password/      # Password recovery card
+│   │   ├── privacy/page.tsx      # Our House Rules / Global & Sri Lanka Privacy Policy
+│   │   ├── terms/page.tsx        # Our House Rules / Terms of Use
+│   │   ├── shipping-returns/     # Our House Rules / Islandwide Shipping & Returns Policy
+│   │   ├── help/page.tsx         # Our House Rules / Help Center & Policy Search
+│   │   ├── contact/page.tsx      # Flagship Scriptorium locations & Curator inquiry form
+│   │   ├── about/page.tsx        # Shastraloka Heritage Inc. mission & preservation stats
+│   │   ├── track-order/page.tsx  # Live islandwide courier order tracking lookup
 │   │   ├── books/[id]/page.tsx   # Product Detail Page (Dual-column classical layout)
 │   │   ├── checkout/page.tsx     # Multi-step checkout (District courier, payment, summary)
+│   │   ├── checkout/success/     # Order confirmation receipt & dispatch summary
 │   │   ├── orders/page.tsx       # Orders history
 │   │   ├── orders/[id]/page.tsx  # Order tracking & courier delivery timeline
 │   │   ├── profile/page.tsx      # User profile, saved collections
+│   │   ├── profile/settings/     # Sanctuary theme, courier address & privacy settings
 │   │   ├── profile/boards/[id]/  # Dedicated board reading list view
 │   │   ├── publishers/page.tsx   # Publishers & Press Houses directory
 │   │   ├── publishers/[id]/      # Dedicated Publisher catalog & profile
+│   │   ├── scholars/grants/      # Palm-leaf digitization & translation grants portal
+│   │   ├── scholars/submit-manuscript/ # Scholarly manuscript submission portal
 │   │   └── search/page.tsx       # Pinterest + Amazon visual search & filter discovery body
 │   ├── styles/
 │   │   └── themes/               # Centralized CSS Theme Token Files
@@ -130,17 +149,19 @@ shastraloka/
 │   │       ├── sepia.css         # Sepia theme variables (Palm-Leaf Ola Manuscript)
 │   │       └── emerald.css       # Emerald theme variables (Ceylon Sanctuary)
 │   ├── components/               # App Domain Components
-│   │   ├── Header.tsx            # Universal top navigation & live search autocomplete
+│   │   ├── Header.tsx            # Universal top navigation, 2-col Categories Mega-Menu & live autocomplete
 │   │   ├── Footer.tsx            # Universal footer with SEO directory & dual domains
+│   │   ├── AuthModal.tsx         # Sign In, Create Account & Forgot Password (Desktop Dialog + Mobile Bottom Sheet)
+│   │   ├── HouseRulesLayout.tsx  # Shared Our House Rules legal/policy layout & policy search bar
 │   │   ├── CleanBookCard.tsx     # Clean non-Pinterest bookstore card (hover Add on desktop, visible Add on mobile)
 │   │   ├── BookCard.tsx          # Masonry book item for /search visual discovery
 │   │   ├── BookModal.tsx         # Quick view modal with audio chanting & reviews
 │   │   ├── BoardsModal.tsx       # Save book to Pinterest-style Board dialog
 │   │   ├── Icons.tsx             # Shared icons (IconBag, IconHandbag use Lucide Handbag)
-│   │   ├── Providers.tsx         # AppProvider, BookModal, BagDrawer, Toast wrapper
+│   │   ├── Providers.tsx         # AppProvider, BookModal, BoardsModal, AuthModal, Toast wrapper
 │   │   └── ui/                   # Reusable UI Primitives
 │   ├── context/
-│   │   └── AppContext.tsx        # Global store: Bag, Boards, Likes, Orders, Theme, Toast
+│   │   └── AppContext.tsx        # Global store: Bag, Boards, Likes, Orders, Theme, AuthModal, Toast
 │   ├── data/
 │   │   └── books.ts              # Books catalog (Gajaga, Mahavamsa, Chulavamsa, Kavya, Ayurveda)
 │   └── utils/
@@ -177,8 +198,10 @@ pnpm build
 | **2026-10-28** | Removed npm `gestalt` & bundled UI locally | Avoided heavy external package locks while preserving all 99 Gestalt components locally in `src/components/ui/gestalt/`. |
 | **2026-10-28** | Added Pinterest search body, live autocomplete & LKR offer % tags | Implemented `src/utils/searchEngine.ts` and rebuilt `/search` with closest-book-first ranking and suggested books. |
 | **2026-10-28** | Added full SEO, Dual Domains (`shastraloka.lk` & `ශාස්ත්රාලෝක.ලංකා`), `llms.txt` & `guide.md` | Configured Schema.org `@graph`, `sitemap.ts`, `robots.ts`, competitive bookstore SEO keywords, and external Search Console guide. |
-| **2026-10-28** | Centralized all themes into `src/styles/themes/*.css` & removed hardcoded dark/light colors | Added `@custom-variant dark`, semantic `--banner-guild-*`, `--footer-bg`, `--hero-banner-bg` tokens across Light, Dark, Sepia, and Emerald themes. |
-| **2026-10-28** | Built `CleanBookCard` & clean non-Pinterest UI for catalog pages | Created uniform 3:4 bookstore grids across collection and archive pages. |
+| **2026-10-28** | Centralized all themes into `src/styles/themes/*.css` & removed hardcoded dark/light colors | Added `@custom-variant dark`, semantic `--banner-guild-*`, `--footer-bg`, `--hero-banner-bg` tokens across Light, Dark, Sepia, and Emerald themes, and fixed dark-only hardcoded sections on `/publishers`, `/books/[id]`, `/checkout`, `/bag`, and `/profile`. |
+| **2026-10-28** | Built `CleanBookCard` & clean non-Pinterest UI for catalog pages | Created uniform 3:4 bookstore grids with minimal details, desktop hover "Add to Bag", and mobile always-visible "Add to Bag" button across `/bestsellers`, `/new-releases`, `/gifts`, `/categories`, `/archives`, `/authors`, `/wishlist`, `/publishers/[id]`, and homepage sections. |
 | **2026-10-28** | Removed Sinhala text from App UI & Standardized Pinterest/Etsy fonts | Enforced English Pinterest + Etsy aesthetic across all components & removed Sinhala script from UI. |
 | **2026-10-28** | Standardized Universal PageContainer across all routes | Applied `page-container` and `PageContainer` (1440px + px-4 sm:px-6 lg:px-8) across all app routes. |
 | **2026-10-28** | Eliminated `font-serif` & Replaced with Professional `Outfit` | Removed traditional serif (Playfair/Georgia) across all components; introduced modern `Outfit` (`--font-heading`, `font-heading`) paired with `Plus Jakarta Sans`. |
+| **2026-10-29** | Upgraded all empty/stub pages & Header Mega-Menu to match 12 reference bookstore & marketplace UIs | Built 2-col visual Categories Mega-Menu (`Header.tsx`), Amazon Books Storefront (`/books`), Best Gift Guides Hub (`/gifts`), LKR Gift Cards Builder (`/gift-cards`), Special Offers & Vouchers (`/offers`), Archival & Vintage Finds (`/archives`), Guest & Collection Favorites (`/wishlist`), Our House Rules Legal & Help pages (`HouseRulesLayout.tsx`, `/privacy`, `/terms`, `/shipping-returns`, `/help`), and all dynamic/scholar pages (`/contact`, `/about`, `/track-order`, `/checkout/success`, `/categories/[slug]`, `/authors/[id]`, `/profile/settings`, `/scholars/*`). |
+| **2026-10-29** | Built `AuthModal.tsx` (Desktop Dialog + Mobile Bottom Sheet) & unified `<Header isSticky />` across all pages | Implemented Login, Register, and Forgot Password as an overlay dialog with outside top-right circular `(X)` close button and 3 horizontal pill social buttons on desktop, and a slide-up bottom sheet on mobile; replaced the static inline header on `/bag` and added `<Header isSticky />` to all new pages so `<SearchBar />` and the Categories Mega-Menu open everywhere. |

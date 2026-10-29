@@ -2,83 +2,64 @@
 
 import React, { use } from 'react';
 import Link from 'next/link';
+import { BOOKS_DATA, CATEGORIES } from '../../../data/books';
+import CleanBookCard from '../../../components/CleanBookCard';
 import Header from '../../../components/Header';
 import Footer from '../../../components/Footer';
-import BookCard from '../../../components/BookCard';
-import { BOOKS, CATEGORIES } from '../../../data/books';
-import { isBookMatchingCategory } from '../../../utils/searchEngine';
-import { ChevronRight, ArrowLeft } from 'lucide-react';
+import { ArrowLeft, BookOpen } from 'lucide-react';
 
-interface CategoryPageProps {
-  params: Promise<{ slug: string }>;
-}
+export default function CategorySlugPage({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = use(params);
+  const decodedSlug = decodeURIComponent(slug).replace(/-/g, ' ');
 
-export default function CategorySlugPage({ params }: CategoryPageProps) {
-  const resolvedParams = use(params);
-  const slug = decodeURIComponent(resolvedParams.slug || '');
-
-  // Find category matching the slug or query
   const matchedCategory =
-    CATEGORIES.find((c) => c.toLowerCase() === slug.toLowerCase()) ||
-    CATEGORIES.find((c) => c.toLowerCase().includes(slug.toLowerCase())) ||
-    slug;
+    CATEGORIES.find((c) => c.toLowerCase() === decodedSlug.toLowerCase()) ||
+    CATEGORIES.find((c) => c.toLowerCase().includes(decodedSlug.toLowerCase())) ||
+    decodedSlug;
 
-  const books = BOOKS.filter((b) => isBookMatchingCategory(b, matchedCategory));
+  const categoryBooks = BOOKS_DATA.filter(
+    (b) =>
+      b.category.toLowerCase() === matchedCategory.toLowerCase() ||
+      b.tags?.some((t) => t.toLowerCase().includes(decodedSlug.toLowerCase()))
+  );
+
+  const displayBooks = categoryBooks.length > 0 ? categoryBooks : BOOKS_DATA;
 
   return (
-    <div className="min-h-screen bg-[var(--bg-main)] flex flex-col">
-      <Header />
-      <main className="page-container py-8 sm:py-12 flex-1">
-        {/* Breadcrumb */}
-        <div className="flex items-center gap-2 text-xs text-[var(--text-muted)] mb-6">
-          <Link href="/" className="hover:text-[var(--text-main)]">
-            Home
-          </Link>
-          <ChevronRight className="w-3.5 h-3.5" />
-          <Link href="/categories" className="hover:text-[var(--text-main)]">
-            Categories
-          </Link>
-          <ChevronRight className="w-3.5 h-3.5" />
-          <span className="text-[var(--text-main)] font-semibold truncate">{matchedCategory}</span>
-        </div>
-
-        <div className="pb-6 border-b border-[var(--border-subtle)] mb-8 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <div>
-            <h1 className="text-2xl sm:text-4xl font-heading font-bold text-[var(--text-main)]">
-              {matchedCategory}
-            </h1>
-            <p className="text-sm text-[var(--text-muted)] mt-1.5">
-              Showing {books.length} publications in this category
-            </p>
-          </div>
+    <div className="min-h-screen bg-[var(--bg-main)] text-[var(--text-main)] flex flex-col">
+      <Header isSticky />
+      <main className="flex-1 pb-20">
+      <section className="bg-[var(--hero-banner-bg)] border-b border-[var(--border-subtle)] py-10">
+        <div className="page-container">
           <Link
             href="/categories"
-            className="inline-flex items-center gap-2 text-xs font-semibold text-[var(--color-primary)] hover:underline"
+            className="inline-flex items-center gap-1.5 text-xs font-semibold text-[var(--text-muted)] hover:text-[var(--text-main)] mb-3"
           >
-            <ArrowLeft className="w-3.5 h-3.5" />
-            <span>All Categories</span>
+            <ArrowLeft className="w-3.5 h-3.5" /> All Categories
           </Link>
+          <div className="flex flex-wrap items-end justify-between gap-4">
+            <div>
+              <span className="text-xs font-bold uppercase tracking-widest text-[#F1641E] block">
+                Shastraloka Curated Subject
+              </span>
+              <h1 className="font-heading font-bold text-3xl sm:text-4xl font-normal text-[var(--text-main)] capitalize mt-1">
+                {matchedCategory}
+              </h1>
+            </div>
+            <span className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-[var(--bg-surface)] border border-[var(--border-subtle)] text-xs font-semibold text-[var(--text-main)]">
+              <BookOpen className="w-3.5 h-3.5 text-[#F1641E]" /> {displayBooks.length} Editions Available
+            </span>
+          </div>
         </div>
+      </section>
 
-        {books.length === 0 ? (
-          <div className="py-16 text-center max-w-md mx-auto">
-            <p className="text-sm text-[var(--text-muted)] mb-4">
-              No direct matches found under this category filter.
-            </p>
-            <Link
-              href="/books"
-              className="inline-flex items-center px-5 py-2.5 rounded-full bg-[var(--color-primary)] text-white text-xs font-semibold"
-            >
-              Browse Complete Catalog
-            </Link>
-          </div>
-        ) : (
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 sm:gap-6">
-            {books.map((book) => (
-              <BookCard key={book.id} book={book} />
-            ))}
-          </div>
-        )}
+      <section className="page-container pt-10">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-x-5 gap-y-9">
+          {displayBooks.map((book) => (
+            <CleanBookCard key={book.id} book={book} />
+          ))}
+        </div>
+      </section>
       </main>
       <Footer />
     </div>

@@ -1,86 +1,122 @@
 'use client';
 
 import React, { useState } from 'react';
-import Header from '../../components/Header';
-import Footer from '../../components/Footer';
-import { HelpCircle, ChevronDown, Truck, CreditCard, RotateCcw, BookOpen } from 'lucide-react';
+import Link from 'next/link';
+import HouseRulesLayout from '../../components/HouseRulesLayout';
+import { Handbag, Truck, Gift, BookOpen, ShieldCheck, MessageSquare } from 'lucide-react';
 
-const FAQS = [
+const FAQ_ITEMS = [
   {
-    q: 'How long does islandwide courier delivery take?',
-    a: 'Deliveries within the Western Province (Colombo, Gampaha, Kalutara) typically arrive within 24 hours. Deliveries across all other islandwide districts (Kandy, Galle, Kurunegala, Jaffna, etc.) take 48 to 72 business hours via our tracked courier partners.',
+    q: 'How do I track my islandwide LKR book order?',
+    a: 'Visit the Track Order page (/track-order) or your Orders History (/orders) and enter your order ID (e.g., ORD-9482) to view live courier checkpoints across all 25 districts of Sri Lanka.',
   },
   {
-    q: 'Do you offer Cash on Delivery (COD)?',
-    a: 'Yes, Cash on Delivery is supported for all 25 districts in Sri Lanka. You can also pay securely online via Visa, MasterCard, and Koko / Mintpay installments.',
+    q: 'Can I order both Sinhala and English scholarly editions in the same Shopping Bag?',
+    a: 'Yes! Your Shopping Bag supports any combination of Sinhala, Pali, Sanskrit, and English critical editions, as well as Hardbound, Paperback, and Palm-Leaf Facsimile bindings.',
   },
   {
-    q: 'Are your classical chronicles authoritative and authentic?',
-    a: 'Every sacred treatise, Mahavamsa volume, and historical chronicle is sourced directly from accredited academic repositories including Buddhist Cultural Centre, M.D. Gunasena, and Godage Publishers with verified scholar annotations.',
+    q: 'How do Shastraloka Gift Cards and festival offer codes work?',
+    a: 'You can purchase instant digital or printable LKR Gift Cards on /gift-cards, or apply storewide promotional codes (like SHASTRA30) inside your Shopping Bag or Checkout.',
   },
   {
-    q: 'What is your return and exchange policy?',
-    a: 'If your book arrives damaged in transit or with printing defects, you can request an exchange within 7 days of delivery. We provide free doorstep courier pickup for approved exchanges.',
-  },
-  {
-    q: 'How does digital visual search work?',
-    a: 'Our Visual Manuscript Search allows you to upload a photo of a book cover, handwritten title, or ola leaf inscription. Our neural image engine recognizes the text and surfaces matching volumes from our catalog.',
+    q: 'Do you supply books in bulk to Pirivenas, schools, and university libraries?',
+    a: 'Yes. Institutional orders receive a 20%–35% academic grant discount and tax invoice. Contact our Curator Desk on /contact or apply via /scholars/grants.',
   },
 ];
 
 export default function HelpPage() {
-  const [openIndex, setOpenIndex] = useState<number | null>(0);
+  const [filterText, setFilterText] = useState('');
+
+  const filteredFaqs = FAQ_ITEMS.filter(
+    (item) =>
+      !filterText.trim() ||
+      item.q.toLowerCase().includes(filterText.toLowerCase()) ||
+      item.a.toLowerCase().includes(filterText.toLowerCase())
+  );
 
   return (
-    <div className="min-h-screen bg-[var(--bg-main)] flex flex-col">
-      <Header />
-      <main className="page-container py-8 sm:py-16 flex-1">
-        <div className="max-w-3xl mx-auto">
-          <div className="text-center mb-12">
-            <div className="w-14 h-14 rounded-2xl bg-[var(--color-primary-subtle)] text-[var(--color-primary)] flex items-center justify-center mx-auto mb-3">
-              <HelpCircle className="w-7 h-7" />
-            </div>
-            <h1 className="text-3xl sm:text-4xl font-heading font-bold text-[var(--text-main)]">
-              Frequently Asked Questions & Help Center
-            </h1>
-            <p className="text-sm sm:text-base text-[var(--text-muted)] mt-2">
-              Everything you need to know about purchasing, courier delivery, and classical text editions at Shastraloka.
-            </p>
-          </div>
+    <HouseRulesLayout activeSlug="help" title="Help Center & House Rules" lastUpdated="29 Oct, 2026">
+      <p>
+        Need assistance with an archival edition, islandwide courier dispatch, or gift card? Browse our quick help topics below
+        or filter frequently asked questions.
+      </p>
 
-          <div className="space-y-4">
-            {FAQS.map((faq, idx) => {
-              const isOpen = openIndex === idx;
-              return (
-                <div
-                  key={idx}
-                  className="rounded-2xl bg-[var(--bg-card)] border border-[var(--border-subtle)] overflow-hidden transition"
-                >
-                  <button
-                    onClick={() => setOpenIndex(isOpen ? null : idx)}
-                    className="w-full p-5 text-left flex items-center justify-between gap-4 cursor-pointer"
-                  >
-                    <span className="font-heading font-bold text-base text-[var(--text-main)]">
-                      {faq.q}
-                    </span>
-                    <ChevronDown
-                      className={`w-5 h-5 text-[var(--text-muted)] shrink-0 transition-transform ${
-                        isOpen ? 'rotate-180 text-[var(--color-primary)]' : ''
-                      }`}
-                    />
-                  </button>
-                  {isOpen && (
-                    <div className="px-5 pb-5 pt-1 text-sm text-[var(--text-muted)] leading-relaxed border-t border-[var(--border-subtle)] mt-1">
-                      {faq.a}
-                    </div>
-                  )}
-                </div>
-              );
-            })}
+      {/* Topic Cards */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5 my-6">
+        <Link
+          href="/track-order"
+          className="p-4 rounded-2xl bg-[var(--bg-surface)] border border-[var(--border-subtle)] hover:border-[var(--border-strong)] transition-all group"
+        >
+          <Truck className="w-5 h-5 text-[#F1641E] mb-2" />
+          <h3 className="text-sm font-bold text-[var(--text-main)] group-hover:text-[#F1641E]">Track a Dispatch</h3>
+          <p className="text-xs text-[var(--text-muted)] mt-1">Live Sri Lanka courier status &amp; delivery ETA</p>
+        </Link>
+
+        <Link
+          href="/bag"
+          className="p-4 rounded-2xl bg-[var(--bg-surface)] border border-[var(--border-subtle)] hover:border-[var(--border-strong)] transition-all group"
+        >
+          <Handbag className="w-5 h-5 text-[#F1641E] mb-2" />
+          <h3 className="text-sm font-bold text-[var(--text-main)] group-hover:text-[#F1641E]">Shopping Bag &amp; Payment</h3>
+          <p className="text-xs text-[var(--text-muted)] mt-1">LKR cards, LankaQR, Bank Transfer &amp; COD</p>
+        </Link>
+
+        <Link
+          href="/gift-cards"
+          className="p-4 rounded-2xl bg-[var(--bg-surface)] border border-[var(--border-subtle)] hover:border-[var(--border-strong)] transition-all group"
+        >
+          <Gift className="w-5 h-5 text-[#F1641E] mb-2" />
+          <h3 className="text-sm font-bold text-[var(--text-main)] group-hover:text-[#F1641E]">Gift Cards &amp; Vouchers</h3>
+          <p className="text-xs text-[var(--text-muted)] mt-1">Send or redeem a Shastraloka literary gift card</p>
+        </Link>
+      </div>
+
+      {/* Filter FAQ input */}
+      <div className="mb-4">
+        <input
+          type="text"
+          value={filterText}
+          onChange={(e) => setFilterText(e.target.value)}
+          placeholder="Filter help questions (e.g., courier, gift card, pirivena)..."
+          className="w-full px-4 py-2.5 rounded-xl border border-[var(--border-strong)] bg-[var(--bg-input)] text-xs sm:text-sm text-[var(--text-main)] placeholder:text-[var(--text-muted)] focus:outline-none"
+        />
+      </div>
+
+      {/* FAQ Accordion List */}
+      <div className="space-y-3">
+        {filteredFaqs.map((faq) => (
+          <div
+            key={faq.q}
+            className="p-4 rounded-2xl bg-[var(--bg-surface)] border border-[var(--border-subtle)] space-y-1.5"
+          >
+            <h3 className="text-sm font-bold text-[var(--text-main)] flex items-center gap-2">
+              <BookOpen className="w-4 h-4 text-[#F1641E] shrink-0" />
+              {faq.q}
+            </h3>
+            <p className="text-xs sm:text-sm text-[var(--text-muted)] leading-relaxed pl-6">{faq.a}</p>
           </div>
+        ))}
+      </div>
+
+      {/* Official House Rules Directory */}
+      <div className="mt-8 p-5 rounded-2xl bg-[var(--bg-wash)] border border-[var(--border-subtle)] flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div className="space-y-1">
+          <div className="flex items-center gap-2 text-sm font-bold text-[var(--text-main)]">
+            <ShieldCheck className="w-4 h-4 text-[#F1641E]" />
+            Still need a human archivist?
+          </div>
+          <p className="text-xs text-[var(--text-muted)]">
+            Our Colombo &amp; Peradeniya scholarly support desk responds within 4 hours.
+          </p>
         </div>
-      </main>
-      <Footer />
-    </div>
+        <Link
+          href="/contact"
+          className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-full bg-[var(--pill-active-bg)] text-[var(--pill-active-text)] text-xs font-semibold shrink-0"
+        >
+          <MessageSquare className="w-3.5 h-3.5" />
+          Contact Curator Desk
+        </Link>
+      </div>
+    </HouseRulesLayout>
   );
 }

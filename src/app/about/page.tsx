@@ -1,73 +1,119 @@
 'use client';
 
 import React from 'react';
+import Link from 'next/link';
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
-import { BookOpen, Award, ShieldCheck, HeartHandshake } from 'lucide-react';
+import { BookOpen, Award, Globe, Sparkles, ShieldCheck, ArrowRight } from 'lucide-react';
 
 export default function AboutPage() {
   return (
-    <div className="min-h-screen bg-[var(--bg-main)] flex flex-col">
-      <Header />
-      <main className="page-container py-8 sm:py-16 flex-1">
-        <div className="max-w-3xl mx-auto space-y-12">
-          {/* Header */}
-          <div className="text-center space-y-4">
-            <span className="text-xs font-bold uppercase tracking-widest text-[var(--color-primary)]">
-              Preserving Heritage • Inspiring Wisdom
-            </span>
-            <h1 className="text-3xl sm:text-5xl font-heading font-bold text-[var(--text-main)] tracking-tight">
-              About Shastraloka
-            </h1>
-            <p className="text-base sm:text-lg text-[var(--text-muted)] leading-relaxed">
-              Sri Lanka’s premier digital bookstore and scholarly preservation repository dedicated to reviving classical manuscripts, Mahavamsa chronicles, Buddhist philosophy, and mainstream literary masterpieces.
-            </p>
+    <div className="min-h-screen bg-[var(--bg-main)] text-[var(--text-main)] flex flex-col">
+      <Header isSticky />
+      <main className="flex-1 pb-20">
+      {/* Hero Banner */}
+      <section className="bg-[var(--hero-banner-bg)] border-b border-[var(--border-subtle)] py-14 sm:py-20">
+        <div className="page-container text-center">
+          <span className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-[var(--bg-surface)] border border-[var(--border-subtle)] text-xs font-semibold text-[#F1641E] mb-4">
+            <Sparkles className="w-3.5 h-3.5" /> Shastraloka • Heritage Inc.
+          </span>
+          <h1 className="font-heading font-bold text-3xl sm:text-5xl font-normal text-[var(--text-main)] leading-tight max-w-3xl mx-auto">
+            We&apos;re on a mission to keep Sri Lanka&apos;s literary heritage alive and accessible.
+          </h1>
+          <p className="text-sm sm:text-base text-[var(--text-muted)] max-w-2xl mx-auto mt-4 leading-relaxed">
+            Founded in Colombo and Kandy, Shastraloka bridges ancient palm-leaf (ola) scriptoriums, royal court chronicles,
+            and contemporary Sinhala, Pali, Sanskrit, and English scholarship in one curated bookstore.
+          </p>
+        </div>
+      </section>
+
+      {/* Stats Strip */}
+      <section className="page-container -mt-8">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 p-6 rounded-3xl bg-[var(--bg-surface)] border border-[var(--border-subtle)] shadow-sm">
+          <div className="text-center">
+            <p className="font-heading font-bold text-2xl sm:text-3xl font-bold text-[var(--text-main)]">12,400+</p>
+            <p className="text-xs text-[var(--text-muted)] mt-1">Catalogued Titles &amp; Folios</p>
           </div>
-
-          {/* Pillars */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 pt-6">
-            <div className="p-6 rounded-2xl bg-[var(--bg-card)] border border-[var(--border-subtle)] text-center space-y-3">
-              <div className="w-12 h-12 rounded-xl bg-[var(--color-primary-subtle)] text-[var(--color-primary)] flex items-center justify-center mx-auto">
-                <BookOpen className="w-6 h-6" />
-              </div>
-              <h3 className="font-heading font-bold text-lg text-[var(--text-main)]">Scholarly Preservation</h3>
-              <p className="text-xs text-[var(--text-muted)] leading-relaxed">
-                Digitizing and archiving rare ola leaf manuscripts and historical chronicles with scholarly precision.
-              </p>
-            </div>
-
-            <div className="p-6 rounded-2xl bg-[var(--bg-card)] border border-[var(--border-subtle)] text-center space-y-3">
-              <div className="w-12 h-12 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center mx-auto">
-                <Award className="w-6 h-6" />
-              </div>
-              <h3 className="font-heading font-bold text-lg text-[var(--text-main)]">Authoritative Editions</h3>
-              <p className="text-xs text-[var(--text-muted)] leading-relaxed">
-                Direct partnerships with Buddhist Cultural Centre, M.D. Gunasena, and Godage Publishers for verified texts.
-              </p>
-            </div>
-
-            <div className="p-6 rounded-2xl bg-[var(--bg-card)] border border-[var(--border-subtle)] text-center space-y-3">
-              <div className="w-12 h-12 rounded-xl bg-blue-500/10 text-blue-600 dark:text-blue-400 flex items-center justify-center mx-auto">
-                <ShieldCheck className="w-6 h-6" />
-              </div>
-              <h3 className="font-heading font-bold text-lg text-[var(--text-main)]">Islandwide Reach</h3>
-              <p className="text-xs text-[var(--text-muted)] leading-relaxed">
-                Reliable 24-48 hour tracked delivery across all 25 districts in Sri Lanka with Cash on Delivery support.
-              </p>
-            </div>
+          <div className="text-center">
+            <p className="font-heading font-bold text-2xl sm:text-3xl font-bold text-[var(--text-main)]">25 Districts</p>
+            <p className="text-xs text-[var(--text-muted)] mt-1">Insured Islandwide Delivery</p>
           </div>
-
-          {/* Story */}
-          <div className="space-y-6 text-sm sm:text-base text-[var(--text-main)] leading-relaxed border-t border-[var(--border-subtle)] pt-10">
-            <h2 className="text-2xl font-heading font-bold">Our Cultural Mission</h2>
-            <p>
-              For centuries, the knowledge systems of Sri Lanka—ranging from the Mahavamsa and Chulavamsa to indigenous Hela Veda medicine and Tripitaka philosophy—were inscribed onto durable ola palm leaves. As modern reading evolves, Shastraloka was founded to make these national treasures universally accessible.
-            </p>
-            <p>
-              Alongside classical heritage treatises, we curate high-demand contemporary fiction, translated world literature, educational past papers, and university textbooks, serving both Sri Lankan households and the worldwide diaspora.
-            </p>
+          <div className="text-center">
+            <p className="font-heading font-bold text-2xl sm:text-3xl font-bold text-[var(--text-main)]">48 Guilds</p>
+            <p className="text-xs text-[var(--text-muted)] mt-1">Partner Presses &amp; Pirivenas</p>
+          </div>
+          <div className="text-center">
+            <p className="font-heading font-bold text-2xl sm:text-3xl font-bold text-[var(--text-main)]">100% Archival</p>
+            <p className="text-xs text-[var(--text-muted)] mt-1">Acid-Free Paper &amp; Binding</p>
           </div>
         </div>
+      </section>
+
+      {/* Pillars */}
+      <section className="page-container py-16 grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="p-6 rounded-3xl bg-[var(--bg-surface)] border border-[var(--border-subtle)] space-y-3">
+          <BookOpen className="w-7 h-7 text-[#F1641E]" />
+          <h2 className="font-heading font-bold text-xl font-normal text-[var(--text-main)]">
+            Authentic Critical Editions
+          </h2>
+          <p className="text-xs sm:text-sm text-[var(--text-muted)] leading-relaxed">
+            Every edition of the <em>Mahavamsa</em>, <em>Chulavamsa</em>, <em>Sidatsangarava</em>, and <em>Sandesha Kavya</em>{' '}
+            is vetted by senior philologists and printed with complete word-for-word glossaries.
+          </p>
+        </div>
+
+        <div className="p-6 rounded-3xl bg-[var(--bg-surface)] border border-[var(--border-subtle)] space-y-3">
+          <Award className="w-7 h-7 text-[#F1641E]" />
+          <h2 className="font-heading font-bold text-xl font-normal text-[var(--text-main)]">
+            Supporting Local Artisans &amp; Scholars
+          </h2>
+          <p className="text-xs sm:text-sm text-[var(--text-muted)] leading-relaxed">
+            Royalties from every Shopping Bag directly fund palm-leaf conservation grants and traditional Kandyan bookbinders.
+          </p>
+        </div>
+
+        <div className="p-6 rounded-3xl bg-[var(--bg-surface)] border border-[var(--border-subtle)] space-y-3">
+          <Globe className="w-7 h-7 text-[#F1641E]" />
+          <h2 className="font-heading font-bold text-xl font-normal text-[var(--text-main)]">
+            Dual-Domain Cultural Access
+          </h2>
+          <p className="text-xs sm:text-sm text-[var(--text-muted)] leading-relaxed">
+            Accessible globally via both <strong>shastraloka.lk</strong> and native Sinhala IDN{' '}
+            <strong className="font-sinhala">ශාස්ත්රාලෝක.ලංකා</strong> for seamless discovery.
+          </p>
+        </div>
+      </section>
+
+      {/* CTA Banner */}
+      <section className="page-container">
+        <div className="p-8 sm:p-10 rounded-3xl bg-[var(--banner-guild-bg)] border border-[var(--banner-guild-border)] flex flex-col md:flex-row items-center justify-between gap-6">
+          <div className="space-y-2">
+            <div className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-[var(--banner-guild-accent)]">
+              <ShieldCheck className="w-4 h-4" /> Preservation Charter
+            </div>
+            <h2 className="font-heading font-bold text-2xl sm:text-3xl text-[var(--banner-guild-text)]">
+              Explore the Shastraloka Books Storefront
+            </h2>
+            <p className="text-xs sm:text-sm text-[var(--banner-guild-muted)] max-w-xl">
+              Browse our curated best sellers, rare archival facsimiles, or apply for a manuscript digitization grant.
+            </p>
+          </div>
+          <div className="flex flex-wrap gap-3 shrink-0">
+            <Link
+              href="/books"
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-[var(--pill-active-bg)] text-[var(--pill-active-text)] text-xs sm:text-sm font-semibold"
+            >
+              Browse Books Store <ArrowRight className="w-4 h-4" />
+            </Link>
+            <Link
+              href="/scholars/grants"
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-full border border-[var(--border-strong)] bg-[var(--bg-surface)] text-[var(--text-main)] text-xs sm:text-sm font-semibold"
+            >
+              Digitization Grants
+            </Link>
+          </div>
+        </div>
+      </section>
       </main>
       <Footer />
     </div>

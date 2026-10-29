@@ -959,3 +959,6 @@ export const BOOKS: Book[] = [
     sellerName: 'Buddhist Cultural Centre',
   }
 ];
+
+export const BOOKS_DATA = BOOKS;
+

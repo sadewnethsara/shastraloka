@@ -20,29 +20,18 @@ import {
   RotateCcw,
   BookOpen,
   Sparkles,
+  Tag,
 } from 'lucide-react';
 import { useApp } from '../context/AppContext';
-import { CATEGORIES, BOOKS } from '../data/books';
+import { BOOKS, CATEGORIES } from '../data/books';
 import { getAutocompleteSuggestions } from '../utils/searchEngine';
 import { SearchField } from './ui/SearchField';
 import VisualSearchModal from './VisualSearchModal';
 
-export interface NavLinkItem {
-  label: string;
-  hasIcon?: boolean;
-  query: string;
-  href: string;
-}
-
-export const NAV_LINKS: NavLinkItem[] = [
-  { label: 'Gifts', hasIcon: true, query: 'Gifts', href: '/gifts' },
-  { label: 'Best Sellers', hasIcon: false, query: 'Best Sellers', href: '/bestsellers' },
-  { label: 'New Arrivals', hasIcon: false, query: 'New Arrivals', href: '/new-releases' },
-];
-
 export interface RecentSearchData {
   id: string;
   label: string;
+  thumbType?: string;
   image?: string;
 }
 
@@ -70,8 +59,53 @@ export const INITIAL_RECENT_SEARCHES: RecentSearchData[] = [
   {
     id: 'rs-5',
     label: 'Dhammapada Pali Verses',
-    image: 'https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&w=120&q=80',
+    thumbType: 'dhammapada',
+    image: 'https://grantha.lk/media/catalog/product/cache/5fa2393eb818a642e720faf99039a3de/s/a/sanda_1.jpg',
   },
+];
+
+const FALLBACK_SEARCH_COVER =
+  'https://grantha.lk/media/catalog/product/cache/5fa2393eb818a642e720faf99039a3de/m/a/manikkawatha_1.jpg';
+
+function RecentSearchThumb({ image }: { type?: string; image?: string }) {
+  if (image) {
+    return (
+      <img
+        src={image}
+        alt="Search thumbnail"
+        referrerPolicy="no-referrer"
+        onError={(e) => {
+          const target = e.currentTarget;
+          if (target.src !== FALLBACK_SEARCH_COVER) {
+            target.src = FALLBACK_SEARCH_COVER;
+          }
+        }}
+        className="w-full h-full object-cover"
+      />
+    );
+  }
+  return (
+    <div className="w-full h-full bg-[var(--color-primary)]/15 flex items-center justify-center text-[var(--color-primary)]">
+      <BookOpen className="w-5 h-5" />
+    </div>
+  );
+}
+
+export interface NavLinkItem {
+  label: string;
+  hasIcon: boolean;
+  href: string;
+  query?: string;
+}
+
+export const NAV_LINKS: NavLinkItem[] = [
+  { label: 'Gifts', hasIcon: true, href: '/gifts' },
+  { label: 'Best Sellers', hasIcon: false, href: '/bestsellers' },
+  { label: 'New Arrivals & Releases', hasIcon: false, href: '/new-releases' },
+  { label: 'Books Store', hasIcon: false, href: '/books' },
+  { label: 'Archival & Vintage', hasIcon: false, href: '/archives' },
+  { label: 'Gift Cards', hasIcon: false, href: '/gift-cards' },
+  { label: 'Special Offers', hasIcon: false, href: '/offers' },
 ];
 
 
@@ -93,9 +127,12 @@ export default function Header({ isSticky = false }: HeaderProps = {}) {
     setIsBoardsModalOpen,
     setSelectedCategory,
     triggerNavigation,
+    showToast,
+    openAuthModal,
   } = useApp();
 
   const [categoriesOpen, setCategoriesOpen] = useState(false);
+  const [hoveredCategory, setHoveredCategory] = useState<string>('Recommended categories');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isVisualSearchOpen, setIsVisualSearchOpen] = useState(false);
   const [localSearch, setLocalSearch] = useState(searchQuery || '');
@@ -481,23 +518,139 @@ export default function Header({ isSticky = false }: HeaderProps = {}) {
                 />
               </button>
 
-              {/* Categories Menu */}
+              {/* Categories 2-Column Visual Mega-Menu (Matching Image 10) */}
               {categoriesOpen && (
-                <div className="absolute left-0 mt-2 w-72 max-h-96 overflow-y-auto bg-[var(--header-dropdown-bg)] text-[var(--header-text)] rounded-2xl shadow-xl border border-[var(--header-dropdown-border)] py-2 z-50 animate-fade-in">
-                  <div className="px-4 py-1.5 text-[11px] font-bold uppercase tracking-wider text-[var(--header-text-muted)]">
-                    Browse Categories
-                  </div>
-                  {CATEGORIES.map((cat) => (
+                <div className="absolute left-0 mt-2 w-[680px] max-w-[92vw] bg-[var(--header-dropdown-bg)] text-[var(--header-text)] rounded-2xl shadow-2xl border border-[var(--header-dropdown-border)] overflow-hidden z-50 animate-fade-in flex">
+                  {/* Left Column: Category List */}
+                  <div className="w-64 border-r border-[var(--border-subtle)] py-2 max-h-[440px] overflow-y-auto bg-[var(--bg-surface)]">
                     <button
-                      key={cat}
                       type="button"
-                      onClick={() => handleCategoryClick(cat)}
-                      className="w-full text-left px-4 py-2 text-sm text-[var(--header-text)] hover:bg-[var(--header-hover-bg)] flex items-center justify-between transition cursor-pointer"
+                      onMouseEnter={() => setHoveredCategory('Recommended categories')}
+                      onClick={() => {
+                        setCategoriesOpen(false);
+                        router.push('/categories');
+                      }}
+                      className={`w-full text-left px-4 py-2.5 text-sm font-medium flex items-center justify-between transition cursor-pointer ${hoveredCategory === 'Recommended categories'
+                          ? 'bg-[var(--bg-hover)] font-semibold text-[var(--text-main)]'
+                          : 'text-[var(--header-text)] hover:bg-[var(--header-hover-bg)]'
+                        }`}
                     >
-                      <span className="truncate">{cat}</span>
+                      <span className="flex items-center gap-2 truncate">
+                        <Sparkles className="w-4 h-4 text-[#F1641E] shrink-0" />
+                        <span className="truncate">Recommended categories</span>
+                      </span>
                       <ChevronRight className="w-3.5 h-3.5 text-[var(--header-text-muted)] shrink-0 ml-2" />
                     </button>
-                  ))}
+
+                    {CATEGORIES.filter((c: string) => c !== 'All Treatises').map((cat) => {
+                      const active = hoveredCategory === cat;
+                      return (
+                        <button
+                          key={cat}
+                          type="button"
+                          onMouseEnter={() => setHoveredCategory(cat)}
+                          onClick={() => handleCategoryClick(cat)}
+                          className={`w-full text-left px-4 py-2.5 text-sm flex items-center justify-between transition cursor-pointer ${active
+                              ? 'bg-[var(--bg-hover)] font-semibold text-[var(--text-main)]'
+                              : 'text-[var(--header-text)] hover:bg-[var(--header-hover-bg)]'
+                            }`}
+                        >
+                          <span className="truncate">{cat.split(' (')[0]}</span>
+                          <ChevronRight className="w-3.5 h-3.5 text-[var(--header-text-muted)] shrink-0 ml-2" />
+                        </button>
+                      );
+                    })}
+
+                    <div className="my-1.5 border-t border-[var(--border-subtle)]" />
+
+                    <Link
+                      href="/books"
+                      onClick={() => setCategoriesOpen(false)}
+                      className="w-full text-left px-4 py-2 text-sm text-[var(--header-text)] hover:bg-[var(--header-hover-bg)] flex items-center justify-between transition"
+                    >
+                      <span>Books, Chanting &amp; Audio</span>
+                      <ChevronRight className="w-3.5 h-3.5 text-[var(--header-text-muted)] shrink-0 ml-2" />
+                    </Link>
+                    <Link
+                      href="/gift-cards"
+                      onClick={() => setCategoriesOpen(false)}
+                      className="w-full text-left px-4 py-2 text-sm text-[var(--header-text)] hover:bg-[var(--header-hover-bg)] flex items-center justify-between transition"
+                    >
+                      <span>Shastraloka Gift Cards</span>
+                      <ChevronRight className="w-3.5 h-3.5 text-[var(--header-text-muted)] shrink-0 ml-2" />
+                    </Link>
+                  </div>
+
+                  {/* Right Column: 3 Visual Category Cards Preview */}
+                  <div className="flex-1 p-5 bg-[var(--bg-card)] flex flex-col justify-between">
+                    <div>
+                      <div className="grid grid-cols-3 gap-4">
+                        {(hoveredCategory === 'Recommended categories'
+                          ? [
+                            {
+                              title: 'Royal Chronicles',
+                              image: BOOKS[0]?.coverImage || FALLBACK_SEARCH_COVER,
+                              href: '/categories/ancient-chronicles',
+                            },
+                            {
+                              title: 'Sinhala Kavya & Verse',
+                              image: BOOKS[2]?.coverImage || FALLBACK_SEARCH_COVER,
+                              href: '/categories/classical-poetry',
+                            },
+                            {
+                              title: 'Books & Manuscripts',
+                              image: BOOKS[1]?.coverImage || FALLBACK_SEARCH_COVER,
+                              href: '/books',
+                            },
+                          ]
+                          : BOOKS.filter((b) => b.category === hoveredCategory)
+                            .slice(0, 3)
+                            .map((b) => ({
+                              title: b.title.split(':')[0],
+                              image: b.coverImage,
+                              href: `/books/${b.id}`,
+                            }))
+                        ).map((card, i) => (
+                          <Link
+                            key={i}
+                            href={card.href}
+                            onClick={() => setCategoriesOpen(false)}
+                            className="group text-center block"
+                          >
+                            <div className="aspect-square w-full rounded-xl overflow-hidden bg-[var(--bg-wash)] border border-[var(--border-subtle)] mb-2">
+                              <img
+                                src={card.image}
+                                alt={card.title}
+                                referrerPolicy="no-referrer"
+                                className="w-full h-full object-cover group-hover:scale-105 transition duration-300"
+                              />
+                            </div>
+                            <span className="text-xs font-semibold text-[var(--text-main)] group-hover:text-[var(--color-primary)] line-clamp-2 leading-snug">
+                              {card.title}
+                            </span>
+                          </Link>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div className="pt-4 mt-4 border-t border-[var(--border-subtle)] flex items-center justify-between text-xs">
+                      <Link
+                        href="/categories"
+                        onClick={() => setCategoriesOpen(false)}
+                        className="font-semibold text-[var(--text-main)] hover:text-[var(--color-primary)]"
+                      >
+                        Browse all categories &rarr;
+                      </Link>
+                      <Link
+                        href="/offers"
+                        onClick={() => setCategoriesOpen(false)}
+                        className="inline-flex items-center gap-1 font-semibold text-[var(--color-primary)] hover:underline"
+                      >
+                        <Tag className="w-3.5 h-3.5" />
+                        <span>Today&apos;s Special Offers</span>
+                      </Link>
+                    </div>
+                  </div>
                 </div>
               )}
             </div>
@@ -540,13 +693,14 @@ export default function Header({ isSticky = false }: HeaderProps = {}) {
                 )}
               </button>
 
-              {/* Sign in Button */}
-              <Link
-                href="/profile"
-                className="px-3.5 py-2 rounded-full text-sm font-semibold text-[var(--header-text)] hover:bg-[var(--header-hover-bg)] transition cursor-pointer"
+              {/* Sign in button (Opens Desktop Dialog / Mobile Bottom Sheet) */}
+              <button
+                type="button"
+                onClick={() => openAuthModal('login')}
+                className="px-3 py-1.5 rounded-full text-sm font-medium text-[var(--header-text)] hover:bg-[var(--header-hover-bg)] transition cursor-pointer"
               >
                 Sign in
-              </Link>
+              </button>
 
               {/* User Profile */}
               <Link
@@ -558,13 +712,12 @@ export default function Header({ isSticky = false }: HeaderProps = {}) {
                 <User className="w-5 h-5" />
               </Link>
 
-              {/* Favorites (Heart) Icon with Badge */}
-              <button
-                type="button"
-                onClick={() => setIsBoardsModalOpen(true)}
-                aria-label="Favorites"
+              {/* Favorites / Saved Reading List */}
+              <Link
+                href="/wishlist"
+                aria-label="Saved Favorites & Collections"
                 className="relative p-2.5 rounded-full hover:bg-[var(--header-hover-bg)] text-[var(--header-text)] transition cursor-pointer"
-                title="Boards & Saved Books"
+                title="Favorite Treatises"
               >
                 <Heart className="w-5 h-5" />
                 {totalFavorites > 0 && (
@@ -572,7 +725,7 @@ export default function Header({ isSticky = false }: HeaderProps = {}) {
                     {totalFavorites}
                   </span>
                 )}
-              </button>
+              </Link>
 
               {/* Highlighted Shopping Bag Button -> Navigates to Bag Page */}
               <Link
@@ -599,11 +752,11 @@ export default function Header({ isSticky = false }: HeaderProps = {}) {
           {/* =====================================================================
               DESKTOP SUB-NAVIGATION ROW
              ===================================================================== */}
-<nav className="hidden lg:flex items-center justify-start xl:justify-center gap-2 xl:gap-4 pb-2.5 pt-0.5 text-[12px] xl:text-[13px] font-medium text-[var(--header-text)] overflow-x-auto no-scrollbar">
+          <nav className="hidden lg:flex items-center justify-start xl:justify-center gap-2 xl:gap-4 pb-2.5 pt-0.5 text-[12px] xl:text-[13px] font-medium text-[var(--header-text)] overflow-x-auto no-scrollbar">
             {NAV_LINKS.map((item) => (
               <Link
                 key={item.label}
-href={item.href}
+                href={item.href}
                 className="flex items-center gap-1.5 px-3 py-1 rounded-full hover:bg-[var(--header-hover-bg)] text-[var(--header-text)] transition cursor-pointer whitespace-nowrap shrink-0"
               >
                 {item.hasIcon && (
@@ -645,12 +798,13 @@ href={item.href}
                   )}
                 </button>
 
-                <Link
-                  href="/profile"
-                  className="px-2 py-1 rounded-full text-xs font-semibold text-[var(--header-text)] hover:bg-[var(--header-hover-bg)]"
+                <button
+                  type="button"
+                  onClick={() => openAuthModal('login')}
+                  className="px-2 py-1 rounded-full text-xs font-semibold text-[var(--header-text)] hover:bg-[var(--header-hover-bg)] cursor-pointer"
                 >
                   Sign in
-                </Link>
+                </button>
 
                 <Link
                   href="/profile"
@@ -661,9 +815,8 @@ href={item.href}
                   <User className="w-4.5 h-4.5" />
                 </Link>
 
-                <button
-                  type="button"
-                  onClick={() => setIsBoardsModalOpen(true)}
+                <Link
+                  href="/wishlist"
                   aria-label="Favorites"
                   className="relative p-2 rounded-full hover:bg-[var(--header-hover-bg)] text-[var(--header-text)]"
                 >
@@ -673,7 +826,7 @@ href={item.href}
                       {totalFavorites}
                     </span>
                   )}
-                </button>
+                </Link>
 
                 {/* Highlighted Mobile Shopping Bag Button -> Go to Bag Page */}
                 <Link
@@ -712,9 +865,9 @@ href={item.href}
                   onChange={handleSearchInputChange}
                   onSubmit={handleSearchSubmit}
                   onClear={() => {
-                  setLocalSearch('');
-                  setSuggestionsOpen(false);
-                }}
+                    setLocalSearch('');
+                    setSuggestionsOpen(false);
+                  }}
                   onFocus={handleSearchFocus}
                   onClick={handleSearchFocus}
                   onImageSearchClick={() => setIsVisualSearchOpen(true)}
@@ -763,7 +916,7 @@ href={item.href}
               {NAV_LINKS.map((link) => (
                 <Link
                   key={link.label}
-href={link.href}
+                  href={link.href}
                   onClick={() => setMobileMenuOpen(false)}
                   className="w-full text-left px-5 py-2.5 text-sm font-medium text-[var(--header-text)] hover:bg-[var(--header-hover-bg)] flex items-center gap-2.5 transition"
                 >
