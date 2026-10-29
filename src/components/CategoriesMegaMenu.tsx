@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { Sparkles, ChevronRight, Tag } from 'lucide-react';
+import { ChevronRight } from 'lucide-react';
 
 export interface CategoryPreviewCard {
   title: string;
@@ -351,55 +351,68 @@ export default function CategoriesMegaMenu({ isOpen, onClose }: CategoriesMegaMe
   };
 
   return (
-    <div
-      role="menu"
-      aria-label="Category Navigation"
-      className="absolute left-0 top-full mt-2 w-[760px] max-w-[94vw] bg-white dark:bg-[#121215] text-[var(--text-main)] rounded-2xl shadow-[0_16px_50px_rgba(0,0,0,0.18)] border border-stone-200/90 dark:border-stone-800 overflow-hidden z-50 animate-in fade-in slide-in-from-top-1 duration-150 flex select-none"
-    >
-      {/* Top Blue Indicator Bar with Upward Triangle Caret (Matches Etsy Reference) */}
-      <div className="absolute top-0 left-0 w-64 h-[3px] bg-[#1e40af] z-20 pointer-events-none">
-        <div className="absolute -top-[5px] left-9 w-2.5 h-2.5 bg-[#1e40af] rotate-45 transform" />
-      </div>
+    <>
+      {/* Background Page Backdrop Overlay (dims the body content like Etsy) */}
+      <div
+        aria-hidden="true"
+        onClick={onClose}
+        className="fixed inset-0 z-40 bg-black/25 backdrop-blur-[1px] animate-in fade-in duration-150"
+      />
 
-      {/* Left Column: Vertical Category List */}
-      <div className="w-64 shrink-0 bg-[#f7f7f8] dark:bg-[#18181b] border-r border-stone-200/80 dark:border-stone-800 py-1.5 h-[460px] overflow-y-auto scrollbar-thin">
-        {MEGA_MENU_CATEGORIES.map((item) => {
-          const isSelected = selectedId === item.id;
-          return (
-            <button
-              key={item.id}
-              type="button"
-              onMouseEnter={() => setSelectedId(item.id)}
-              onClick={() => handleCategoryNavigate(item)}
-              className={`w-full text-left px-4 py-2.5 text-[13px] flex items-center justify-between transition-colors cursor-pointer group ${
-                isSelected
-                  ? 'bg-[#ececee] dark:bg-stone-800 text-stone-950 dark:text-white font-semibold'
-                  : 'text-stone-800 dark:text-stone-200 hover:bg-[#ebebee] dark:hover:bg-stone-800/60'
-              }`}
-            >
-              <span className="flex items-center gap-2 truncate">
-                {item.isRecommended && (
-                  <Sparkles className="w-3.5 h-3.5 text-[#F1641E] shrink-0" />
-                )}
-                <span className="truncate">{item.label}</span>
-              </span>
-              <ChevronRight
-                className={`w-3.5 h-3.5 shrink-0 ml-2 transition-colors ${
-                  isSelected
-                    ? 'text-stone-700 dark:text-stone-200'
-                    : 'text-stone-400 dark:text-stone-500 group-hover:text-stone-600 dark:group-hover:text-stone-300'
-                }`}
-              />
-            </button>
-          );
-        })}
-      </div>
+      {/* Mega Menu Popup Box */}
+      <div
+        role="menu"
+        aria-label="Category Navigation"
+        className="absolute left-0 top-full mt-2.5 w-[765px] max-w-[94vw] bg-white dark:bg-[#121215] rounded-b-xl rounded-tr-xl shadow-[0_10px_36px_rgba(0,0,0,0.16)] border border-stone-200/80 dark:border-stone-800 z-50 animate-in fade-in duration-150 flex select-none"
+      >
+        {/* Top Blue Indicator Bar + Upward Caret correctly aligned under Categories button */}
+        <div className="absolute -top-[1px] left-0 w-[254px] h-[2.5px] bg-[#2563eb] z-30 pointer-events-none">
+          <div className="absolute -top-[5px] left-[52px] w-2.5 h-2.5 bg-[#2563eb] rotate-45 transform" />
+        </div>
 
-      {/* Right Column: Visual Category Cards Preview */}
-      <div className="flex-1 p-6 sm:p-7 bg-white dark:bg-[#121215] flex flex-col justify-between h-[460px]">
-        <div>
-          {/* 3 Visual Cards in a Row */}
-          <div className="grid grid-cols-3 gap-5">
+        {/* Left Column: Vertical Category List */}
+        <div className="w-[254px] shrink-0 bg-white dark:bg-[#18181b] h-[548px] overflow-y-scroll rounded-bl-xl border-r border-stone-200 dark:border-stone-800">
+          {MEGA_MENU_CATEGORIES.map((item) => {
+            const isSelected = selectedId === item.id;
+            return (
+              <button
+                key={item.id}
+                type="button"
+                onMouseEnter={() => setSelectedId(item.id)}
+                onClick={() => handleCategoryNavigate(item)}
+                className={`w-full text-left px-4 py-[11px] text-[13.5px] leading-snug flex items-center justify-between transition-colors cursor-pointer ${item.isRecommended
+                    ? 'border-b border-stone-300 dark:border-stone-700'
+                    : ''
+                  } ${isSelected
+                    ? 'bg-[#eff1f5] dark:bg-stone-800 text-[#222222] dark:text-white'
+                    : 'bg-white dark:bg-[#18181b] text-[#222222] dark:text-stone-200 hover:bg-[#f4f5f7] dark:hover:bg-stone-800/60'
+                  }`}
+              >
+                <span className="flex items-center gap-2 truncate">
+                  {item.isRecommended && (
+                    <svg
+                      viewBox="0 0 24 24"
+                      fill="currentColor"
+                      className="w-4 h-4 text-[#F1641E] shrink-0"
+                      aria-hidden="true"
+                    >
+                      <path d="M14.5 4.5c0 4.14 3.36 7.5 7.5 7.5-4.14 0-7.5 3.36-7.5 7.5 0-4.14-3.36-7.5-7.5-7.5 4.14 0 7.5-3.36 7.5-7.5zm-9-2.5c.83 0 1.5.67 1.5 1.5v1h1c.83 0 1.5.67 1.5 1.5S8.83 7.5 8 7.5H7v1c0 .83-.67 1.5-1.5 1.5S4 9.33 4 8.5v-1H3c-.83 0-1.5-.67-1.5-1.5S2.17 4.5 3 4.5h1v-1C4 2.67 4.67 2 5.5 2z" />
+                    </svg>
+                  )}
+                  <span className="truncate font-normal">{item.label}</span>
+                </span>
+                <ChevronRight
+                  strokeWidth={2}
+                  className="w-3.5 h-3.5 shrink-0 ml-2 text-[#222222] dark:text-stone-300"
+                />
+              </button>
+            );
+          })}
+        </div>
+
+        {/* Right Column: 3 Square Cards at Top + Clean White Canvas */}
+        <div className="flex-1 p-7 bg-white dark:bg-[#121215] h-[548px] rounded-r-xl">
+          <div className="grid grid-cols-3 gap-4">
             {currentCategory.cards.map((card, idx) => (
               <Link
                 key={idx}
@@ -407,7 +420,7 @@ export default function CategoriesMegaMenu({ isOpen, onClose }: CategoriesMegaMe
                 onClick={onClose}
                 className="group block text-center"
               >
-                <div className="aspect-square w-full rounded-2xl overflow-hidden bg-[#f4f4f5] dark:bg-stone-800/80 border border-stone-200/80 dark:border-stone-800 shadow-xs group-hover:shadow-md transition-all duration-200">
+                <div className="aspect-square w-full rounded-[14px] overflow-hidden bg-[#f5f5f5] dark:bg-stone-800/80 transition-shadow duration-200 group-hover:shadow-md">
                   <img
                     src={card.image}
                     alt={card.title}
@@ -415,34 +428,14 @@ export default function CategoriesMegaMenu({ isOpen, onClose }: CategoriesMegaMe
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                   />
                 </div>
-                <p className="font-bold text-[13px] text-stone-900 dark:text-stone-100 mt-2.5 line-clamp-1 group-hover:text-[#F1641E] transition-colors">
+                <p className="font-bold text-[13px] text-[#222222] dark:text-stone-100 mt-2.5 line-clamp-1 group-hover:underline">
                   {card.title}
                 </p>
               </Link>
             ))}
           </div>
         </div>
-
-        {/* Bottom Utility Bar */}
-        <div className="pt-4 border-t border-stone-100 dark:border-stone-800 flex items-center justify-between text-xs">
-          <Link
-            href="/categories"
-            onClick={onClose}
-            className="font-semibold text-stone-700 dark:text-stone-300 hover:text-[#F1641E] transition-colors"
-          >
-            Browse all categories &rarr;
-          </Link>
-          <Link
-            href="/offers"
-            onClick={onClose}
-            className="inline-flex items-center gap-1.5 font-semibold text-[#F1641E] hover:underline"
-          >
-            <Tag className="w-3.5 h-3.5" />
-            <span>Today&apos;s Special Offers</span>
-          </Link>
-        </div>
       </div>
-    </div>
+    </>
   );
 }
-

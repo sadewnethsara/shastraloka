@@ -1308,8 +1308,8 @@ export default function Bag() {
             {/* FLOATING TOP-RIGHT URGENCY NOTIFICATION POPOVER */}
             {showFloatingUrgency && bagItems.length > 0 && (
                 <div className="page-container relative">
-                    <div className="hidden md:flex items-center gap-3.5 absolute right-6 top-2 z-30 w-[348px] bg-[var(--bg-card)] rounded-2xl shadow-[0_10px_32px_rgba(0,0,0,0.16)] border border-[var(--border-subtle)] p-3 animate-in fade-in slide-in-from-top-2 duration-200">
-                        <div className="relative w-[74px] h-[74px] rounded-xl overflow-hidden shrink-0 border border-[var(--border-subtle)] bg-[var(--bg-wash)]">
+                    <div className="hidden md:flex items-center gap-3.5 absolute right-4 sm:right-6 lg:right-8 top-2 z-30 w-[356px] bg-[var(--bg-card)] rounded-2xl shadow-[0_10px_32px_rgba(0,0,0,0.16)] border border-[var(--border-subtle)] p-4 animate-in fade-in slide-in-from-top-2 duration-200">
+                        <div className="relative w-[72px] h-[72px] rounded-xl overflow-hidden shrink-0 border border-[var(--border-subtle)] bg-[var(--bg-wash)]">
                             <BookCoverArtwork
                                 variant={
                                     activePreset === 'screenshot-2'
@@ -1317,23 +1317,23 @@ export default function Bag() {
                                         : urgencyHighlight.coverType
                                 }
                             />
-                            <div className="absolute -bottom-1 -left-1 w-7 h-7 rounded-tr-xl bg-[#1e3a8a] text-white flex items-center justify-center shadow">
-                                <Handbag className="w-3.5 h-3.5" />
+                            <div className="absolute -bottom-0.5 -left-0.5 w-6 h-6 rounded-tr-xl bg-[#1e3a8a] text-white flex items-center justify-center shadow-xs">
+                                <Handbag className="w-3 h-3" />
                             </div>
                         </div>
 
-                        <div className="flex-1 min-w-0 pr-4">
+                        <div className="flex-1 min-w-0 pr-6">
                             <p className="text-[12.5px] font-bold text-[var(--text-main)] leading-snug">
                                 Hurry! Shop this one while it lasts!
                             </p>
-                            <p className="text-[11.5px] font-bold text-[#a61a2e] mt-0.5">
+                            <p className="text-[11.5px] font-bold text-[#a61a2e] dark:text-[#ff6b6b] mt-0.5 truncate">
                                 {activePreset === 'screenshot-1'
                                     ? '23 sold in the past 24 hours'
                                     : '4 sold in the past 24 hours'}
                             </p>
                             <button
                                 onClick={() => router.push('/checkout')}
-                                className="mt-2 w-full py-1.5 px-3 rounded-full bg-[var(--pill-active-bg)] text-[var(--pill-active-text)] hover:opacity-90 text-[12px] font-semibold flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
+                                className="mt-2.5 w-full py-1.5 px-3 rounded-full bg-[var(--color-primary)] hover:bg-[var(--color-primary-hover)] text-white text-[12px] font-semibold flex items-center justify-center gap-1.5 transition-all cursor-pointer shadow-xs active:scale-98"
                             >
                                 <span>Proceed to checkout</span>
                                 <ArrowRight className="w-3.5 h-3.5" />
@@ -1343,7 +1343,8 @@ export default function Bag() {
                         <button
                             onClick={() => setShowFloatingUrgency(false)}
                             aria-label="Dismiss notification"
-                            className="absolute top-2.5 right-2.5 p-1 text-[var(--text-muted)] hover:text-[var(--text-main)] rounded-full hover:bg-[var(--bg-hover)]"
+                            className="absolute top-3 right-3 p-1 text-[var(--text-dim)] hover:text-[var(--text-main)] rounded-full hover:bg-[var(--header-hover-bg)] transition cursor-pointer"
+                            title="Dismiss notification"
                         >
                             <X className="w-4 h-4" />
                         </button>
