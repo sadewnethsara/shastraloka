@@ -310,10 +310,10 @@ export default function Footer() {
         </div>
 
         {/* BOTTOM LEGAL & REGION BAR */}
-        <div className="pt-4 border-t border-[var(--border-subtle)] flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 text-[11px] text-[var(--text-muted)]">
-          <div className="flex flex-wrap items-center gap-4">
+        <div className="pt-4 border-t border-[var(--border-subtle)] flex flex-col items-center text-center lg:flex-row lg:items-center lg:justify-between lg:text-left gap-4 text-[11px] text-[var(--text-muted)]">
+          <div className="flex flex-wrap items-center justify-center lg:justify-start gap-4">
             <span className="inline-flex items-center gap-1.5 font-semibold text-[var(--text-main)]">
-              <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <svg className="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <circle cx="12" cy="12" r="10" />
                 <line x1="2" y1="12" x2="22" y2="12" />
                 <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
@@ -322,8 +322,8 @@ export default function Footer() {
             </span>
           </div>
 
-          <div className="flex flex-wrap items-center gap-x-4 gap-y-1.5">
-<span>&copy; 2026 Shastraloka (ශාස්ත්රාලෝක) Heritage, Inc. All rights reserved.</span>
+          <div className="flex flex-wrap items-center justify-center lg:justify-end gap-x-4 gap-y-1.5 text-center lg:text-right">
+            <span>&copy; 2026 Shastraloka (ශාස්ත්රාලෝක) Heritage, Inc. All rights reserved.</span>
             <a href="/terms" className="underline hover:text-[var(--text-main)]">Terms of Use</a>
             <a href="/privacy" className="underline hover:text-[var(--text-main)]">Privacy Policy</a>
             <a href="/sitemap.xml" className="underline hover:text-[var(--text-main)]">Sitemap XML</a>

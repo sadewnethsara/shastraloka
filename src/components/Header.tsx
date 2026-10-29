@@ -18,6 +18,12 @@ import {
   ArrowUpRight,
   RotateCcw,
   BookOpen,
+  ScrollText,
+  Landmark,
+  Flower2,
+  Feather,
+  Leaf,
+  Compass,
 } from 'lucide-react';
 import { useApp } from '../context/AppContext';
 import { BOOKS } from '../data/books';
@@ -239,7 +245,7 @@ export default function Header({ isSticky = false }: HeaderProps = {}) {
         <div
           data-testid="search-autocomplete-dropdown"
           onClick={(e) => e.stopPropagation()}
-          className="absolute left-0 right-0 top-full mt-2 bg-[var(--header-dropdown-bg)] text-[var(--header-text)] rounded-2xl shadow-2xl border border-[var(--header-dropdown-border)] overflow-hidden z-50 animate-fade-in max-h-[78vh] overflow-y-auto"
+          className="absolute left-0 right-0 top-full mt-2 bg-[var(--header-dropdown-bg)] text-[var(--header-text)] rounded-2xl shadow-2xl border border-[var(--header-dropdown-border)] overflow-hidden z-50 animate-fade-in max-h-[78vh] overflow-y-auto overscroll-contain"
         >
           {/* Recent Searches */}
           <div className="p-3.5 sm:p-4">
@@ -349,7 +355,7 @@ export default function Header({ isSticky = false }: HeaderProps = {}) {
       <div
         data-testid="search-autocomplete-dropdown"
         onClick={(e) => e.stopPropagation()}
-        className="absolute left-0 right-0 top-full mt-2 bg-[var(--header-dropdown-bg)] text-[var(--header-text)] rounded-2xl shadow-2xl border border-[var(--header-dropdown-border)] overflow-hidden z-50 animate-fade-in max-h-[78vh] overflow-y-auto"
+        className="absolute left-0 right-0 top-full mt-2 bg-[var(--header-dropdown-bg)] text-[var(--header-text)] rounded-2xl shadow-2xl border border-[var(--header-dropdown-border)] overflow-hidden z-50 animate-fade-in max-h-[78vh] overflow-y-auto overscroll-contain"
       >
         {/* Keyword Search Suggestions */}
         <div className="p-2 border-b border-[var(--header-border)]">
@@ -653,27 +659,28 @@ export default function Header({ isSticky = false }: HeaderProps = {}) {
               </Link>
 
               <div className="flex items-center gap-2 shrink-0">
-                {/* If user is NOT signed in: show "Sign in" button. No standalone profile icon */}
+                {/* If user is NOT signed in: show "Sign in" button matching Bag button height, shape and theme */}
                 {!isLoggedIn ? (
                   <button
                     type="button"
                     onClick={() => openAuthModal('login')}
-                    className="px-3 py-1.5 rounded-full text-xs font-semibold text-[var(--header-text)] hover:bg-[var(--header-hover-bg)] border border-[var(--border-subtle)] transition cursor-pointer"
+                    aria-label="Sign in"
+                    className="h-9 px-3.5 rounded-full flex items-center justify-center bg-[var(--bag-btn-bg)] border-2 border-[var(--bag-btn-border)] text-[var(--bag-btn-text)] hover:bg-[var(--bag-btn-hover-bg)] hover:border-[var(--bag-btn-hover-border)] font-bold text-xs shadow-xs active:scale-95 transition cursor-pointer"
                   >
                     Sign in
                   </button>
                 ) : (
-                  /* If user IS signed in: replace Sign in button with Profile */
+                  /* If user IS signed in: replace Sign in button with Profile matching Bag button */
                   <Link
                     href="/profile"
                     aria-label="Profile"
-                    className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-full text-xs font-semibold text-[var(--header-text)] hover:bg-[var(--header-hover-bg)] border border-[var(--border-subtle)] transition cursor-pointer"
+                    className="h-9 px-3 rounded-full flex items-center gap-1.5 bg-[var(--bag-btn-bg)] border-2 border-[var(--bag-btn-border)] text-[var(--bag-btn-text)] hover:bg-[var(--bag-btn-hover-bg)] hover:border-[var(--bag-btn-hover-border)] font-bold text-xs shadow-xs active:scale-95 transition cursor-pointer"
                     title="Scholar Profile"
                   >
-                    <span className="w-5 h-5 rounded-full bg-[var(--color-primary)] text-white text-[10px] font-bold flex items-center justify-center">
+                    <span className="w-4 h-4 rounded-full bg-[var(--color-primary)] text-white text-[9px] font-bold flex items-center justify-center shrink-0">
                       {user?.name ? user.name.charAt(0).toUpperCase() : 'U'}
                     </span>
-                    <span className="hidden xs:inline max-w-[65px] truncate font-medium">
+                    <span className="max-w-[70px] truncate font-bold text-xs">
                       {user?.name?.split(' ')[0] || 'Profile'}
                     </span>
                   </Link>
@@ -703,38 +710,42 @@ export default function Header({ isSticky = false }: HeaderProps = {}) {
               </div>
             </div>
 
-            {/* Row 2: Categories Trigger + Search Bar */}
-            <div className="flex items-center gap-2">
-              <button
-                type="button"
-                onClick={() => setIsCategorySheetOpen(true)}
-                aria-label="Browse categories"
-                className="h-9 px-2.5 sm:px-3 rounded-full flex items-center gap-1.5 bg-[var(--header-hover-bg)] text-[var(--header-text)] border border-[var(--border-subtle)] text-xs font-semibold shrink-0 cursor-pointer transition active:scale-95"
-                title="Browse Categories"
-              >
-                <Menu className="w-4 h-4 text-[var(--color-primary)]" />
-                <span className="text-xs font-medium">Categories</span>
-              </button>
+            {/* Row 2: Categories Trigger + Search Bar with Full-Width Floating Dropdown */}
+            <div className="relative" ref={mobileSearchRef}>
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => setIsCategorySheetOpen(true)}
+                  aria-label="Browse categories"
+                  className="h-9 px-2.5 sm:px-3 rounded-full flex items-center gap-1.5 bg-[var(--header-hover-bg)] text-[var(--header-text)] border border-[var(--border-subtle)] text-xs font-semibold shrink-0 cursor-pointer transition active:scale-95"
+                  title="Browse Categories"
+                >
+                  <Menu className="w-4 h-4 text-[var(--color-primary)]" />
+                  <span className="text-xs font-medium">Categories</span>
+                </button>
 
-              <div className="relative flex-1" ref={mobileSearchRef}>
-                <SearchField
-                  value={localSearch}
-                  onChange={handleSearchInputChange}
-                  onSubmit={handleSearchSubmit}
-                  onClear={() => {
-                    setLocalSearch('');
-                    setSuggestionsOpen(false);
-                  }}
-                  onFocus={handleSearchFocus}
-                  onClick={handleSearchFocus}
-                  onImageSearchClick={() => setIsVisualSearchOpen(true)}
-                  placeholder="Search manuscripts, Ayurveda..."
-                  accessibilityLabel="Search manuscripts"
-                  submitButtonColor="orange"
-                  size="sm"
-                />
-                {renderAutocompleteDropdown()}
+                <div className="flex-1 min-w-0">
+                  <SearchField
+                    value={localSearch}
+                    onChange={handleSearchInputChange}
+                    onSubmit={handleSearchSubmit}
+                    onClear={() => {
+                      setLocalSearch('');
+                      setSuggestionsOpen(false);
+                    }}
+                    onFocus={handleSearchFocus}
+                    onClick={handleSearchFocus}
+                    onImageSearchClick={() => setIsVisualSearchOpen(true)}
+                    placeholder="Search manuscripts, Ayurveda..."
+                    accessibilityLabel="Search manuscripts"
+                    submitButtonColor="orange"
+                    size="sm"
+                  />
+                </div>
               </div>
+
+              {/* Full width floating dropdown with left and right padding inside container */}
+              {renderAutocompleteDropdown()}
             </div>
           </div>
         </div>
@@ -837,83 +848,88 @@ export default function Header({ isSticky = false }: HeaderProps = {}) {
             </div>
 
             {/* Categories List (Scrollable) */}
-            <div className="flex-1 overflow-y-auto px-5 py-2 divide-y divide-[var(--border-subtle)]">
+            <div className="flex-1 overflow-y-auto px-5 py-2 divide-y divide-[var(--border-subtle)] overscroll-contain">
               {[
                 {
                   title: 'All Treatises & Manuscripts',
                   desc: 'Complete palm-leaf folios, royal chronicles & classics',
-                  icon: '📜',
+                  Icon: ScrollText,
                   href: '/categories',
                   count: '42+ Editions',
                 },
                 {
                   title: 'Sacred Palm-Leaf Chronicles',
                   desc: 'Mahavamsa, Chulavamsa, Dipavamsa historical lore',
-                  icon: '🏛️',
+                  Icon: Landmark,
                   href: '/categories/sacred-palm-leaf-chronicles',
                   count: '14 Works',
                 },
                 {
                   title: 'Buddhist Philosophy & Treatises',
                   desc: 'Visuddhimagga, Abhidhamma, Pali Canon translations',
-                  icon: '🪷',
+                  Icon: Flower2,
                   href: '/categories/buddhist-philosophy',
                   count: '28 Works',
                 },
                 {
                   title: 'Classical Sinhala Poetry (Kavya)',
                   desc: 'Guttila, Selalihini, Sandesha & court verses',
-                  icon: '✍️',
+                  Icon: Feather,
                   href: '/categories/classical-sinhala-poetry',
                   count: '19 Works',
                 },
                 {
                   title: 'Indigenous Ayurveda & Healing',
                   desc: 'King Buddhadasa treatises, Sarartha & botanical medicine',
-                  icon: '🌿',
+                  Icon: Leaf,
                   href: '/categories/indigenous-ayurveda',
                   count: '16 Works',
                 },
                 {
                   title: 'Novels & Modern Literature',
                   desc: 'Martin Wickramasinghe, Sarachchandra & literary prose',
-                  icon: '📚',
+                  Icon: BookOpen,
                   href: '/categories/novels-literature',
                   count: '35 Works',
                 },
                 {
                   title: 'Inscriptions & Archaeology',
                   desc: 'Epigraphia Zeylanica, rock edicts & Brahmi scripts',
-                  icon: '🗿',
+                  Icon: Compass,
                   href: '/categories/inscriptions-archaeology',
                   count: '11 Works',
                 },
-              ].map((cat) => (
-                <Link
-                  key={cat.title}
-                  href={cat.href}
-                  onClick={() => setIsCategorySheetOpen(false)}
-                  className="flex items-center justify-between py-3.5 group transition"
-                >
-                  <div className="flex items-center gap-3 min-w-0 pr-3">
-                    <span className="text-xl shrink-0">{cat.icon}</span>
-                    <div className="min-w-0">
-                      <div className="text-sm font-bold text-[var(--text-main)] group-hover:text-[var(--color-primary)] transition-colors truncate">
-                        {cat.title}
+              ].map((cat) => {
+                const IconComponent = cat.Icon;
+                return (
+                  <Link
+                    key={cat.title}
+                    href={cat.href}
+                    onClick={() => setIsCategorySheetOpen(false)}
+                    className="flex items-center justify-between py-3.5 group transition"
+                  >
+                    <div className="flex items-center gap-3.5 min-w-0 pr-3">
+                      <div className="w-10 h-10 rounded-xl bg-[var(--bg-wash)] border border-[var(--border-subtle)] flex items-center justify-center text-[var(--color-primary)] shrink-0 group-hover:scale-105 group-hover:bg-[var(--color-primary-subtle)] group-hover:border-[var(--color-primary)] transition-all">
+                        <IconComponent className="w-5 h-5 stroke-[1.8]" />
                       </div>
-                      <div className="text-[11.5px] text-[var(--text-muted)] line-clamp-1">
-                        {cat.desc}
+                      <div className="min-w-0">
+                        <div className="text-sm font-bold text-[var(--text-main)] group-hover:text-[var(--color-primary)] transition-colors truncate">
+                          {cat.title}
+                        </div>
+                        <div className="text-[11.5px] text-[var(--text-muted)] line-clamp-1">
+                          {cat.desc}
+                        </div>
                       </div>
                     </div>
-                  </div>
-                  <div className="flex items-center gap-2 shrink-0">
-                    <span className="text-[11px] font-semibold text-[var(--text-muted)] bg-[var(--bg-wash)] px-2 py-0.5 rounded-full">
-                      {cat.count}
-                    </span>
-                    <ChevronRight className="w-4 h-4 text-[var(--text-muted)] group-hover:text-[var(--color-primary)] group-hover:translate-x-0.5 transition-all" />
-                  </div>
-                </Link>
-              ))}
+                    <div className="flex items-center gap-2 shrink-0">
+                      <span className="text-[11px] font-semibold text-[var(--text-muted)] bg-[var(--bg-wash)] border border-[var(--border-subtle)] px-2 py-0.5 rounded-full">
+                        {cat.count}
+                      </span>
+                      <ChevronRight className="w-4 h-4 text-[var(--text-muted)] group-hover:text-[var(--color-primary)] group-hover:translate-x-0.5 transition-all" />
+                    </div>
+                  </Link>
+                );
+              })}
             </div>
 
             {/* Bottom Footer */}

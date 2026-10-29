@@ -13,6 +13,7 @@ import { BOOKS } from '../data/books';
 import { useApp } from '../context/AppContext';
 import { Button } from '../components/ui/Button';
 import { Badge } from '../components/ui/Badge';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 const FALLBACK_BOOK_COVER =
   'https://grantha.lk/media/catalog/product/cache/5fa2393eb818a642e720faf99039a3de/m/a/manikkawatha_1.jpg';
@@ -393,6 +394,17 @@ export default function LandingPage() {
   const [timeLeft, setTimeLeft] = useState(12 * 3600 + 25 * 60 + 17); // 12:25:17 countdown
 
   const dealsScrollRef = useRef<HTMLDivElement>(null);
+  const bestSellersScrollRef = useRef<HTMLDivElement>(null);
+  const newReleasesScrollRef = useRef<HTMLDivElement>(null);
+
+  const scrollRow = (ref: React.RefObject<HTMLDivElement | null>, direction: 'left' | 'right') => {
+    if (ref.current) {
+      ref.current.scrollBy({
+        left: direction === 'left' ? -260 : 260,
+        behavior: 'smooth',
+      });
+    }
+  };
 
   // Live countdown timer for Today's Deals
   useEffect(() => {
@@ -567,53 +579,155 @@ className="relative w-full h-full min-h-0 min-w-0 rounded overflow-hidden cursor
         {/* ===================================================================
             1B. CLEAN BEST SELLERS & NEW ARRIVALS SECTIONS
            =================================================================== */}
-        <section className="space-y-4">
+        <section className="space-y-4 w-full max-w-full overflow-hidden">
           <div className="flex items-end justify-between gap-4">
             <div>
               <h2 className="text-lg sm:text-xl font-bold text-[var(--text-main)]">
                 Best Sellers
               </h2>
               <p className="text-xs text-[var(--text-muted)] mt-0.5">
-                Most-read Sri Lankan chronicles &amp; literary editions •{' '}
-                
+                Most-read Sri Lankan chronicles &amp; literary editions
               </p>
             </div>
-            <Link
-              href="/bestsellers"
-              className="text-xs sm:text-sm font-semibold text-[var(--color-primary)] hover:underline shrink-0"
-            >
-              View all &rarr;
-            </Link>
+            <div className="flex items-center gap-2 shrink-0">
+              {/* Responsive Scroll Arrow Buttons */}
+              <div className="flex items-center gap-1 lg:hidden">
+                <button
+                  type="button"
+                  onClick={() => scrollRow(bestSellersScrollRef, 'left')}
+                  aria-label="Scroll best sellers left"
+                  className="w-7 h-7 rounded-full border border-[var(--border-subtle)] bg-[var(--bg-card)] hover:bg-[var(--bg-hover)] text-[var(--text-main)] flex items-center justify-center transition active:scale-90 shadow-xs cursor-pointer"
+                  title="Previous"
+                >
+                  <ChevronLeft className="w-4 h-4" />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => scrollRow(bestSellersScrollRef, 'right')}
+                  aria-label="Scroll best sellers right"
+                  className="w-7 h-7 rounded-full border border-[var(--border-subtle)] bg-[var(--bg-card)] hover:bg-[var(--bg-hover)] text-[var(--text-main)] flex items-center justify-center transition active:scale-90 shadow-xs cursor-pointer"
+                  title="Next"
+                >
+                  <ChevronRight className="w-4 h-4" />
+                </button>
+              </div>
+              <Link
+                href="/bestsellers"
+                className="text-xs sm:text-sm font-semibold text-[var(--color-primary)] hover:underline shrink-0"
+              >
+                View all &rarr;
+              </Link>
+            </div>
           </div>
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-x-4 sm:gap-x-6 gap-y-7">
-            {BOOKS.slice(0, 5).map((book, idx) => (
-              <CleanBookCard key={book.id} book={book} rank={idx + 1} />
-            ))}
+
+          <div className="relative group">
+            {/* Floating Left Arrow Button */}
+            <button
+              type="button"
+              onClick={() => scrollRow(bestSellersScrollRef, 'left')}
+              aria-label="Scroll left"
+              className="absolute left-1 top-1/3 -translate-y-1/2 w-8 h-8 rounded-full bg-[var(--bg-card)]/90 hover:bg-[var(--bg-card)] border border-[var(--border-subtle)] text-[var(--text-main)] shadow-md flex items-center justify-center transition active:scale-90 z-20 cursor-pointer lg:hidden"
+            >
+              <ChevronLeft className="w-4 h-4" />
+            </button>
+
+            {/* One line on responsive screens with horizontal scroll */}
+            <div
+              ref={bestSellersScrollRef}
+              className="flex flex-nowrap overflow-x-auto scroll-smooth gap-3.5 sm:gap-5 pb-3 lg:pb-0 -mx-4 px-4 sm:-mx-6 sm:px-6 lg:mx-0 lg:px-0 lg:grid lg:grid-cols-5 overscroll-contain no-scrollbar"
+            >
+              {BOOKS.slice(0, 5).map((book, idx) => (
+                <div key={book.id} className="w-[165px] sm:w-[195px] md:w-[215px] lg:w-auto shrink-0 lg:shrink">
+                  <CleanBookCard book={book} rank={idx + 1} />
+                </div>
+              ))}
+            </div>
+
+            {/* Floating Right Arrow Button */}
+            <button
+              type="button"
+              onClick={() => scrollRow(bestSellersScrollRef, 'right')}
+              aria-label="Scroll right"
+              className="absolute right-1 top-1/3 -translate-y-1/2 w-8 h-8 rounded-full bg-[var(--bg-card)]/90 hover:bg-[var(--bg-card)] border border-[var(--border-subtle)] text-[var(--text-main)] shadow-md flex items-center justify-center transition active:scale-90 z-20 cursor-pointer lg:hidden"
+            >
+              <ChevronRight className="w-4 h-4" />
+            </button>
           </div>
         </section>
 
-        <section className="space-y-4">
+        <section className="space-y-4 w-full max-w-full overflow-hidden">
           <div className="flex items-end justify-between gap-4">
             <div>
               <h2 className="text-lg sm:text-xl font-bold text-[var(--text-main)]">
                 New Arrivals &amp; Releases
               </h2>
               <p className="text-xs text-[var(--text-muted)] mt-0.5">
-                Newly published editions &amp; restored manuscripts •{' '}
-                
+                Newly published editions &amp; restored manuscripts
               </p>
             </div>
-            <Link
-              href="/new-releases"
-              className="text-xs sm:text-sm font-semibold text-[var(--color-primary)] hover:underline shrink-0"
-            >
-              View all &rarr;
-            </Link>
+            <div className="flex items-center gap-2 shrink-0">
+              {/* Responsive Scroll Arrow Buttons */}
+              <div className="flex items-center gap-1 lg:hidden">
+                <button
+                  type="button"
+                  onClick={() => scrollRow(newReleasesScrollRef, 'left')}
+                  aria-label="Scroll new arrivals left"
+                  className="w-7 h-7 rounded-full border border-[var(--border-subtle)] bg-[var(--bg-card)] hover:bg-[var(--bg-hover)] text-[var(--text-main)] flex items-center justify-center transition active:scale-90 shadow-xs cursor-pointer"
+                  title="Previous"
+                >
+                  <ChevronLeft className="w-4 h-4" />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => scrollRow(newReleasesScrollRef, 'right')}
+                  aria-label="Scroll new arrivals right"
+                  className="w-7 h-7 rounded-full border border-[var(--border-subtle)] bg-[var(--bg-card)] hover:bg-[var(--bg-hover)] text-[var(--text-main)] flex items-center justify-center transition active:scale-90 shadow-xs cursor-pointer"
+                  title="Next"
+                >
+                  <ChevronRight className="w-4 h-4" />
+                </button>
+              </div>
+              <Link
+                href="/new-releases"
+                className="text-xs sm:text-sm font-semibold text-[var(--color-primary)] hover:underline shrink-0"
+              >
+                View all &rarr;
+              </Link>
+            </div>
           </div>
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-x-4 sm:gap-x-6 gap-y-7">
-            {[...BOOKS].reverse().slice(0, 5).map((book) => (
-              <CleanBookCard key={book.id} book={book} badgeText="New" />
-            ))}
+
+          <div className="relative group">
+            {/* Floating Left Arrow Button */}
+            <button
+              type="button"
+              onClick={() => scrollRow(newReleasesScrollRef, 'left')}
+              aria-label="Scroll left"
+              className="absolute left-1 top-1/3 -translate-y-1/2 w-8 h-8 rounded-full bg-[var(--bg-card)]/90 hover:bg-[var(--bg-card)] border border-[var(--border-subtle)] text-[var(--text-main)] shadow-md flex items-center justify-center transition active:scale-90 z-20 cursor-pointer lg:hidden"
+            >
+              <ChevronLeft className="w-4 h-4" />
+            </button>
+
+            {/* One line on responsive screens with horizontal scroll */}
+            <div
+              ref={newReleasesScrollRef}
+              className="flex flex-nowrap overflow-x-auto scroll-smooth gap-3.5 sm:gap-5 pb-3 lg:pb-0 -mx-4 px-4 sm:-mx-6 sm:px-6 lg:mx-0 lg:px-0 lg:grid lg:grid-cols-5 overscroll-contain no-scrollbar"
+            >
+              {[...BOOKS].reverse().slice(0, 5).map((book) => (
+                <div key={book.id} className="w-[165px] sm:w-[195px] md:w-[215px] lg:w-auto shrink-0 lg:shrink">
+                  <CleanBookCard book={book} badgeText="New" />
+                </div>
+              ))}
+            </div>
+
+            {/* Floating Right Arrow Button */}
+            <button
+              type="button"
+              onClick={() => scrollRow(newReleasesScrollRef, 'right')}
+              aria-label="Scroll right"
+              className="absolute right-1 top-1/3 -translate-y-1/2 w-8 h-8 rounded-full bg-[var(--bg-card)]/90 hover:bg-[var(--bg-card)] border border-[var(--border-subtle)] text-[var(--text-main)] shadow-md flex items-center justify-center transition active:scale-90 z-20 cursor-pointer lg:hidden"
+            >
+              <ChevronRight className="w-4 h-4" />
+            </button>
           </div>
         </section>
 
