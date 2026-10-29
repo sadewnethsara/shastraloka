@@ -5,7 +5,6 @@ import Link from 'next/link';
 import { useRouter, usePathname } from 'next/navigation';
 import {
   Menu,
-  ChevronDown,
   ChevronRight,
   Sun,
   Moon,
@@ -19,11 +18,9 @@ import {
   ArrowUpRight,
   RotateCcw,
   BookOpen,
-  Sparkles,
-  Tag,
 } from 'lucide-react';
 import { useApp } from '../context/AppContext';
-import { BOOKS, CATEGORIES } from '../data/books';
+import { BOOKS } from '../data/books';
 import { getAutocompleteSuggestions } from '../utils/searchEngine';
 import { SearchField } from './ui/SearchField';
 import VisualSearchModal from './VisualSearchModal';
@@ -130,10 +127,13 @@ export default function Header({ isSticky = false }: HeaderProps = {}) {
     triggerNavigation,
     showToast,
     openAuthModal,
+    user,
+    isLoggedIn,
+    setShowMiniBagRail,
   } = useApp();
 
   const [categoriesOpen, setCategoriesOpen] = useState(false);
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [isCategorySheetOpen, setIsCategorySheetOpen] = useState(false);
   const [isVisualSearchOpen, setIsVisualSearchOpen] = useState(false);
   const [localSearch, setLocalSearch] = useState(searchQuery || '');
   const [prevSearchQuery, setPrevSearchQuery] = useState(searchQuery);
@@ -198,7 +198,7 @@ export default function Header({ isSticky = false }: HeaderProps = {}) {
 
   const handleBookSuggestionClick = (bookId: string, title: string) => {
     setSuggestionsOpen(false);
-    setMobileMenuOpen(false);
+    setIsCategorySheetOpen(false);
     setLocalSearch(title);
     triggerNavigation();
     router.push(`/books/${bookId}`);
@@ -209,7 +209,7 @@ export default function Header({ isSticky = false }: HeaderProps = {}) {
     setSearchQuery(q);
     setLocalSearch(q);
     setSuggestionsOpen(false);
-    setMobileMenuOpen(false);
+    setIsCategorySheetOpen(false);
     triggerNavigation(); // Trigger navigation detection
     if (q) {
       router.push(`/search?q=${encodeURIComponent(q)}`);
@@ -221,7 +221,7 @@ export default function Header({ isSticky = false }: HeaderProps = {}) {
   const handleCategoryClick = (category: string) => {
     setSelectedCategory(category);
     setCategoriesOpen(false);
-    setMobileMenuOpen(false);
+    setIsCategorySheetOpen(false);
     triggerNavigation(); // Trigger navigation detection
     if (category === 'All Treatises') {
       router.push('/search');
@@ -477,9 +477,9 @@ export default function Header({ isSticky = false }: HeaderProps = {}) {
         className={`${isSticky
           ? 'sticky top-0 backdrop-blur-md bg-[var(--header-bg-glass)]'
           : 'relative bg-[var(--header-bg)]'
-          } z-40 border-b border-[var(--header-border)] text-[var(--header-text)] transition-colors duration-200`}
+          } z-40 border-b border-[var(--header-border)] text-[var(--header-text)] transition-colors duration-200 w-full max-w-full overflow-x-clip`}
       >
-        <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 w-full max-w-full box-border">
           {/* =====================================================================
               DESKTOP HEADER ROW (lg and up)
              ===================================================================== */}
@@ -639,7 +639,7 @@ export default function Header({ isSticky = false }: HeaderProps = {}) {
               TABLET & MOBILE HEADER (< lg)
              ===================================================================== */}
           <div className="lg:hidden py-2.5 space-y-2">
-            {/* Row 1: Logo on Left, Actions on Right */}
+            {/* Row 1: Logo on Left, Auth & Bag Actions on Right */}
             <div className="flex items-center justify-between">
               <Link
                 href="/"
@@ -647,60 +647,47 @@ export default function Header({ isSticky = false }: HeaderProps = {}) {
                   setSearchQuery('');
                   setLocalSearch('');
                 }}
-                className="text-[var(--color-primary)] text-[24px] sm:text-[26px] leading-none font-bold tracking-tight select-none font-heading shrink-0"
+                className="text-[var(--color-primary)] text-[22px] sm:text-[24px] leading-none font-bold tracking-tight select-none font-heading shrink-0"
               >
                 Shastraloka
               </Link>
 
-              <div className="flex items-center gap-1.5">
-                <button
-                  type="button"
-                  onClick={toggleTheme}
-                  aria-label="Toggle theme"
-                  className="p-2 rounded-full hover:bg-[var(--header-hover-bg)] text-[var(--header-text)]"
-                >
-                  {isDark ? (
-                    <Sun className="w-4 h-4 text-amber-300" />
-                  ) : (
-                    <Moon className="w-4 h-4 text-[var(--header-text)]" />
-                  )}
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => openAuthModal('login')}
-                  className="px-2 py-1 rounded-full text-xs font-semibold text-[var(--header-text)] hover:bg-[var(--header-hover-bg)] cursor-pointer"
-                >
-                  Sign in
-                </button>
-
-                <Link
-                  href="/profile"
-                  aria-label="Profile"
-                  className="p-1.5 rounded-full hover:bg-[var(--header-hover-bg)] text-[var(--header-text)]"
-                  title="Profile"
-                >
-                  <User className="w-4.5 h-4.5" />
-                </Link>
-
-                <Link
-                  href="/wishlist"
-                  aria-label="Favorites"
-                  className="relative p-2 rounded-full hover:bg-[var(--header-hover-bg)] text-[var(--header-text)]"
-                >
-                  <Heart className="w-4.5 h-4.5" />
-                  {totalFavorites > 0 && (
-                    <span className="absolute top-0.5 right-0.5 min-w-3.5 h-3.5 px-0.5 rounded-full bg-[var(--header-badge-fav-bg)] text-[var(--header-badge-text)] text-[9px] font-bold flex items-center justify-center leading-none">
-                      {totalFavorites}
+              <div className="flex items-center gap-2 shrink-0">
+                {/* If user is NOT signed in: show "Sign in" button. No standalone profile icon */}
+                {!isLoggedIn ? (
+                  <button
+                    type="button"
+                    onClick={() => openAuthModal('login')}
+                    className="px-3 py-1.5 rounded-full text-xs font-semibold text-[var(--header-text)] hover:bg-[var(--header-hover-bg)] border border-[var(--border-subtle)] transition cursor-pointer"
+                  >
+                    Sign in
+                  </button>
+                ) : (
+                  /* If user IS signed in: replace Sign in button with Profile */
+                  <Link
+                    href="/profile"
+                    aria-label="Profile"
+                    className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-full text-xs font-semibold text-[var(--header-text)] hover:bg-[var(--header-hover-bg)] border border-[var(--border-subtle)] transition cursor-pointer"
+                    title="Scholar Profile"
+                  >
+                    <span className="w-5 h-5 rounded-full bg-[var(--color-primary)] text-white text-[10px] font-bold flex items-center justify-center">
+                      {user?.name ? user.name.charAt(0).toUpperCase() : 'U'}
                     </span>
-                  )}
-                </Link>
+                    <span className="hidden xs:inline max-w-[65px] truncate font-medium">
+                      {user?.name?.split(' ')[0] || 'Profile'}
+                    </span>
+                  </Link>
+                )}
 
-                {/* Highlighted Mobile Shopping Bag Button -> Go to Bag Page */}
-                <Link
-                  href="/bag"
+                {/* Highlighted Mobile Shopping Bag Button -> Opens Mini Bag Bottom Sheet on mobile */}
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (pathname === '/bag') return;
+                    setShowMiniBagRail(true);
+                  }}
                   aria-label="Shopping Bag"
-                  className="h-9 px-2.5 sm:px-3 rounded-full flex items-center gap-1.5 bg-[var(--bag-btn-bg)] border-2 border-[var(--bag-btn-border)] text-[var(--bag-btn-text)] font-bold text-xs shadow-xs active:scale-95 transition cursor-pointer"
+                  className="h-9 px-3 rounded-full flex items-center gap-1.5 bg-[var(--bag-btn-bg)] border-2 border-[var(--bag-btn-border)] text-[var(--bag-btn-text)] font-bold text-xs shadow-xs active:scale-95 transition cursor-pointer"
                   title="Shopping Bag"
                 >
                   <div className="relative flex items-center justify-center">
@@ -712,19 +699,21 @@ export default function Header({ isSticky = false }: HeaderProps = {}) {
                     )}
                   </div>
                   <span className="font-bold text-xs">Bag</span>
-                </Link>
+                </button>
               </div>
             </div>
 
-            {/* Row 2: Hamburger Menu Button + Rounded Search Bar */}
+            {/* Row 2: Categories Trigger + Search Bar */}
             <div className="flex items-center gap-2">
               <button
                 type="button"
-                onClick={() => setMobileMenuOpen(true)}
-                aria-label="Open mobile navigation menu"
-                className="p-2 rounded-full hover:bg-[var(--header-hover-bg)] text-[var(--header-text)] shrink-0 cursor-pointer"
+                onClick={() => setIsCategorySheetOpen(true)}
+                aria-label="Browse categories"
+                className="h-9 px-2.5 sm:px-3 rounded-full flex items-center gap-1.5 bg-[var(--header-hover-bg)] text-[var(--header-text)] border border-[var(--border-subtle)] text-xs font-semibold shrink-0 cursor-pointer transition active:scale-95"
+                title="Browse Categories"
               >
-                <Menu className="w-5 h-5" />
+                <Menu className="w-4 h-4 text-[var(--color-primary)]" />
+                <span className="text-xs font-medium">Categories</span>
               </button>
 
               <div className="relative flex-1" ref={mobileSearchRef}>
@@ -739,7 +728,7 @@ export default function Header({ isSticky = false }: HeaderProps = {}) {
                   onFocus={handleSearchFocus}
                   onClick={handleSearchFocus}
                   onImageSearchClick={() => setIsVisualSearchOpen(true)}
-                  placeholder="Search Gajaga, Mahavamsa, Ayurveda..."
+                  placeholder="Search manuscripts, Ayurveda..."
                   accessibilityLabel="Search manuscripts"
                   submitButtonColor="orange"
                   size="sm"
@@ -752,63 +741,190 @@ export default function Header({ isSticky = false }: HeaderProps = {}) {
       </header>
 
       {/* =====================================================================
-          MOBILE DRAWER MENU (Etsy style slide-out)
+          MOBILE CATEGORY BOTTOM SHEET (< lg)
          ===================================================================== */}
-      {mobileMenuOpen && (
-        <div className="fixed inset-0 z-50 lg:hidden flex animate-fade-in">
+      {isCategorySheetOpen && (
+        <div
+          className="fixed inset-0 z-50 lg:hidden flex items-end animate-fade-in"
+          role="dialog"
+          aria-modal="true"
+          aria-label="Browse Categories"
+        >
+          {/* Dimmed Backdrop */}
           <div
-            className="fixed inset-0 bg-black/50 backdrop-blur-xs"
-            onClick={() => setMobileMenuOpen(false)}
+            className="fixed inset-0 bg-black/60 backdrop-blur-xs transition-opacity"
+            onClick={() => setIsCategorySheetOpen(false)}
           />
-          <div className="relative w-80 max-w-[85vw] bg-[var(--header-mobile-drawer-bg)] text-[var(--header-text)] h-full z-10 flex flex-col shadow-2xl animate-slide-up border-r border-[var(--header-border)]">
-            <div className="flex items-center justify-between px-5 py-4 border-b border-[var(--header-border)]">
-              <span
-                className="text-[var(--color-primary)] text-2xl font-bold font-heading"
-              >
-                Browse Shastraloka
-              </span>
+
+          {/* Slide-Up Bottom Sheet */}
+          <div className="relative z-10 w-full max-h-[85dvh] bg-[var(--bg-card)] text-[var(--text-main)] rounded-t-[28px] border-t border-[var(--border-subtle)] shadow-[0_-16px_48px_rgba(0,0,0,0.45)] flex flex-col overflow-hidden animate-slide-up">
+            {/* Mobile Drag Handle */}
+            <div className="pt-3 pb-1 flex justify-center bg-[var(--bg-surface)] shrink-0">
+              <div className="w-12 h-1.5 rounded-full bg-[var(--border-strong)] opacity-60" />
+            </div>
+
+            {/* Header */}
+            <div className="flex items-center justify-between px-5 py-3 border-b border-[var(--border-subtle)] bg-[var(--bg-surface)] shrink-0">
+              <div className="flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-full bg-[var(--color-primary-subtle)] flex items-center justify-center text-[var(--color-primary)]">
+                  <BookOpen className="w-4.5 h-4.5" />
+                </div>
+                <div>
+                  <h2 className="text-base font-bold font-heading text-[var(--text-main)] leading-none">
+                    Explore Categories
+                  </h2>
+                  <p className="text-[11px] text-[var(--text-muted)] mt-0.5">
+                    Sacred Sri Lankan manuscripts & literature
+                  </p>
+                </div>
+              </div>
+
               <button
                 type="button"
-                onClick={() => setMobileMenuOpen(false)}
-                aria-label="Close menu"
-                className="p-1.5 rounded-full hover:bg-[var(--header-hover-bg)] text-[var(--header-text-muted)]"
+                onClick={() => setIsCategorySheetOpen(false)}
+                className="p-1.5 rounded-full text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--header-hover-bg)] transition cursor-pointer"
+                aria-label="Close categories"
+                title="Close"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
 
-            <div className="flex-1 overflow-y-auto py-3">
-              <div className="px-5 py-2 text-xs font-semibold uppercase tracking-wider text-[var(--header-text-muted)]">
-                Featured Collections
-              </div>
-              {NAV_LINKS.map((link) => (
+            {/* Quick Collections Chips */}
+            <div className="px-5 py-2.5 overflow-x-auto no-scrollbar flex items-center gap-2 border-b border-[var(--border-subtle)] bg-[var(--bg-wash)] shrink-0">
+              <Link
+                href="/bestsellers"
+                onClick={() => setIsCategorySheetOpen(false)}
+                className="px-3 py-1.5 rounded-full text-xs font-semibold bg-[var(--bg-card)] hover:bg-[var(--bg-hover)] border border-[var(--border-subtle)] text-[var(--text-main)] whitespace-nowrap shrink-0 transition"
+              >
+                Best Sellers
+              </Link>
+              <Link
+                href="/new-releases"
+                onClick={() => setIsCategorySheetOpen(false)}
+                className="px-3 py-1.5 rounded-full text-xs font-semibold bg-[var(--bg-card)] hover:bg-[var(--bg-hover)] border border-[var(--border-subtle)] text-[var(--text-main)] whitespace-nowrap shrink-0 transition"
+              >
+                New Releases
+              </Link>
+              <Link
+                href="/gifts"
+                onClick={() => setIsCategorySheetOpen(false)}
+                className="px-3 py-1.5 rounded-full text-xs font-semibold bg-[var(--bg-card)] hover:bg-[var(--bg-hover)] border border-[var(--border-subtle)] text-[var(--text-main)] whitespace-nowrap shrink-0 transition"
+              >
+                Gift Guides
+              </Link>
+              <Link
+                href="/archives"
+                onClick={() => setIsCategorySheetOpen(false)}
+                className="px-3 py-1.5 rounded-full text-xs font-semibold bg-[var(--bg-card)] hover:bg-[var(--bg-hover)] border border-[var(--border-subtle)] text-[var(--text-main)] whitespace-nowrap shrink-0 transition"
+              >
+                Archival Finds
+              </Link>
+              <Link
+                href="/offers"
+                onClick={() => setIsCategorySheetOpen(false)}
+                className="px-3 py-1.5 rounded-full text-xs font-semibold bg-[var(--bg-card)] hover:bg-[var(--bg-hover)] border border-[var(--border-subtle)] text-[var(--text-main)] whitespace-nowrap shrink-0 transition"
+              >
+                Special Offers
+              </Link>
+              <Link
+                href="/authors"
+                onClick={() => setIsCategorySheetOpen(false)}
+                className="px-3 py-1.5 rounded-full text-xs font-semibold bg-[var(--bg-card)] hover:bg-[var(--bg-hover)] border border-[var(--border-subtle)] text-[var(--text-main)] whitespace-nowrap shrink-0 transition"
+              >
+                Authors
+              </Link>
+            </div>
+
+            {/* Categories List (Scrollable) */}
+            <div className="flex-1 overflow-y-auto px-5 py-2 divide-y divide-[var(--border-subtle)]">
+              {[
+                {
+                  title: 'All Treatises & Manuscripts',
+                  desc: 'Complete palm-leaf folios, royal chronicles & classics',
+                  icon: '📜',
+                  href: '/categories',
+                  count: '42+ Editions',
+                },
+                {
+                  title: 'Sacred Palm-Leaf Chronicles',
+                  desc: 'Mahavamsa, Chulavamsa, Dipavamsa historical lore',
+                  icon: '🏛️',
+                  href: '/categories/sacred-palm-leaf-chronicles',
+                  count: '14 Works',
+                },
+                {
+                  title: 'Buddhist Philosophy & Treatises',
+                  desc: 'Visuddhimagga, Abhidhamma, Pali Canon translations',
+                  icon: '🪷',
+                  href: '/categories/buddhist-philosophy',
+                  count: '28 Works',
+                },
+                {
+                  title: 'Classical Sinhala Poetry (Kavya)',
+                  desc: 'Guttila, Selalihini, Sandesha & court verses',
+                  icon: '✍️',
+                  href: '/categories/classical-sinhala-poetry',
+                  count: '19 Works',
+                },
+                {
+                  title: 'Indigenous Ayurveda & Healing',
+                  desc: 'King Buddhadasa treatises, Sarartha & botanical medicine',
+                  icon: '🌿',
+                  href: '/categories/indigenous-ayurveda',
+                  count: '16 Works',
+                },
+                {
+                  title: 'Novels & Modern Literature',
+                  desc: 'Martin Wickramasinghe, Sarachchandra & literary prose',
+                  icon: '📚',
+                  href: '/categories/novels-literature',
+                  count: '35 Works',
+                },
+                {
+                  title: 'Inscriptions & Archaeology',
+                  desc: 'Epigraphia Zeylanica, rock edicts & Brahmi scripts',
+                  icon: '🗿',
+                  href: '/categories/inscriptions-archaeology',
+                  count: '11 Works',
+                },
+              ].map((cat) => (
                 <Link
-                  key={link.label}
-                  href={link.href}
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="w-full text-left px-5 py-2.5 text-sm font-medium text-[var(--header-text)] hover:bg-[var(--header-hover-bg)] flex items-center gap-2.5 transition"
+                  key={cat.title}
+                  href={cat.href}
+                  onClick={() => setIsCategorySheetOpen(false)}
+                  className="flex items-center justify-between py-3.5 group transition"
                 >
-                  {link.hasIcon && (
-                    <Gift className="w-4 h-4 text-[var(--color-primary)]" />
-                  )}
-                  <span>{link.label}</span>
+                  <div className="flex items-center gap-3 min-w-0 pr-3">
+                    <span className="text-xl shrink-0">{cat.icon}</span>
+                    <div className="min-w-0">
+                      <div className="text-sm font-bold text-[var(--text-main)] group-hover:text-[var(--color-primary)] transition-colors truncate">
+                        {cat.title}
+                      </div>
+                      <div className="text-[11.5px] text-[var(--text-muted)] line-clamp-1">
+                        {cat.desc}
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2 shrink-0">
+                    <span className="text-[11px] font-semibold text-[var(--text-muted)] bg-[var(--bg-wash)] px-2 py-0.5 rounded-full">
+                      {cat.count}
+                    </span>
+                    <ChevronRight className="w-4 h-4 text-[var(--text-muted)] group-hover:text-[var(--color-primary)] group-hover:translate-x-0.5 transition-all" />
+                  </div>
                 </Link>
               ))}
+            </div>
 
-              <div className="px-5 pt-5 pb-2 text-xs font-semibold uppercase tracking-wider text-[var(--header-text-muted)]">
-                Browse Categories
-              </div>
-              {CATEGORIES.map((cat) => (
-                <button
-                  key={cat}
-                  type="button"
-                  onClick={() => handleCategoryClick(cat)}
-                  className="w-full text-left px-5 py-2.5 text-sm text-[var(--header-text)] hover:bg-[var(--header-hover-bg)] flex items-center justify-between transition"
-                >
-                  <span className="truncate">{cat}</span>
-                  <ChevronRight className="w-4 h-4 text-[var(--header-text-muted)] shrink-0" />
-                </button>
-              ))}
+            {/* Bottom Footer */}
+            <div className="p-4 border-t border-[var(--border-subtle)] bg-[var(--bg-surface)] shrink-0">
+              <Link
+                href="/categories"
+                onClick={() => setIsCategorySheetOpen(false)}
+                className="w-full py-2.5 rounded-full bg-[var(--pill-active-bg)] text-[var(--pill-active-text)] text-xs font-bold text-center block transition hover:opacity-95 shadow-xs"
+              >
+                View All Categories Directory
+              </Link>
             </div>
           </div>
         </div>

@@ -16,13 +16,14 @@ import {
   IconBookmark,
   IconZoomIn,
 } from './Icons';
-import { Handbag } from 'lucide-react';
+import { Handbag, Minus, Plus } from 'lucide-react';
 
 export default function BookModal() {
   const router = useRouter();
   const { selectedBook, closeBookModal, addToBag, saveToBoard, isBookSaved, boards, showToast } = useApp();
 
   const [selectedBinding, setSelectedBinding] = useState<string>('Deluxe Gold Embossed');
+  const [quantity, setQuantity] = useState<number>(1);
   const [isPlayingChant, setIsPlayingChant] = useState(false);
   const [activeTab, setActiveTab] = useState<'overview' | 'verses' | 'reviews'>('overview');
 
@@ -361,9 +362,35 @@ export default function BookModal() {
                 <span>Full Page</span>
               </Link>
 
+              {/* Bookstore Quantity Stepper */}
+              <div className="inline-flex items-center rounded-full border border-[var(--border-strong)] bg-[var(--bg-card)] overflow-hidden shrink-0">
+                <button
+                  type="button"
+                  onClick={() => setQuantity((q) => Math.max(1, q - 1))}
+                  disabled={quantity <= 1}
+                  aria-label="Decrease quantity"
+                  className="w-8 h-9 flex items-center justify-center text-[var(--text-main)] hover:bg-[var(--bg-hover)] disabled:opacity-35 disabled:pointer-events-none transition cursor-pointer"
+                >
+                  <Minus className="w-3.5 h-3.5" />
+                </button>
+                <span className="min-w-[1.75rem] text-center text-xs font-bold text-[var(--text-main)] select-none">
+                  {quantity}
+                </span>
+                <button
+                  type="button"
+                  onClick={() => setQuantity((q) => Math.min(20, q + 1))}
+                  disabled={quantity >= 20}
+                  aria-label="Increase quantity"
+                  className="w-8 h-9 flex items-center justify-center text-[var(--text-main)] hover:bg-[var(--bg-hover)] disabled:opacity-35 disabled:pointer-events-none transition cursor-pointer"
+                >
+                  <Plus className="w-3.5 h-3.5" />
+                </button>
+              </div>
+
               <button
                 onClick={() => {
-                  addToBag(selectedBook, selectedBinding);
+                  addToBag(selectedBook, selectedBinding, quantity);
+                  setQuantity(1);
                   closeBookModal();
                 }}
                 className="flex-1 py-2.5 px-3.5 rounded-full text-xs sm:text-sm font-semibold bg-[var(--bg-input)] hover:bg-[var(--bg-hover)] text-[var(--text-main)] cursor-pointer flex items-center justify-center gap-1.5 border border-[var(--border-subtle)] whitespace-nowrap"
@@ -374,13 +401,14 @@ export default function BookModal() {
 
               <button
                 onClick={() => {
-                  addToBag(selectedBook, selectedBinding);
+                  addToBag(selectedBook, selectedBinding, quantity);
+                  setQuantity(1);
                   closeBookModal();
                   router.push('/checkout');
                 }}
                 className="w-full sm:w-auto sm:flex-1 py-2.5 px-4 rounded-full text-xs sm:text-sm font-bold bg-[#F1641E] hover:bg-[#d45314] text-white cursor-pointer shadow-sm flex items-center justify-center gap-1.5 whitespace-nowrap"
               >
-                <span>Buy Now (Rs. {selectedBook.price.toLocaleString()})</span>
+                <span>Buy Now (Rs. {(selectedBook.price * quantity).toLocaleString()})</span>
               </button>
             </div>
 

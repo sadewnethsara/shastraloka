@@ -54,14 +54,55 @@
   --font-sinhala: var(--font-sinhala), "Noto Serif Sinhala", "Iskoola Pota", serif;
 }
 
-* {
+*,
+*::before,
+*::after {
   box-sizing: border-box;
+}
+
+html {
+  overflow-x: clip;
+  max-width: 100vw;
+  width: 100%;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
 }
 
 body {
   font-family: var(--font-sans);
   background-color: var(--bg-main);
   color: var(--text-main);
+  overflow-x: clip;
+  max-width: 100vw;
+  width: 100%;
+  min-height: 100vh;
+  position: relative;
+}
+
+@supports not (overflow: clip) {
+  html,
+  body {
+    overflow-x: hidden;
+  }
+}
+
+/* Ensure media and blocks never burst mobile viewport width */
+img,
+video,
+canvas,
+svg {
+  max-width: 100%;
+  height: auto;
+}
+
+main,
+section,
+article,
+header,
+footer,
+nav {
+  max-width: 100%;
+  min-width: 0;
 }
 
 .font-heading {

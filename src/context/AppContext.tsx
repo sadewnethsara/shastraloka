@@ -52,6 +52,13 @@ export interface Review {
   comment: string;
 }
 
+export interface UserProfile {
+  name: string;
+  email: string;
+  avatar?: string;
+  role?: string;
+}
+
 export type ThemeMode = 'light' | 'dark' | 'sepia' | 'emerald';
 
 export type AuthModalMode = 'login' | 'register' | 'forgot-password' | null;
@@ -70,6 +77,12 @@ export const AVAILABLE_THEMES: ThemeOption[] = [
 ];
 
 interface AppContextType {
+  // User Authentication
+  user: UserProfile | null;
+  isLoggedIn: boolean;
+  login: (email: string, name?: string) => void;
+  logout: () => void;
+
   // Theme Management
   theme: string;
   setTheme: (theme: string) => void;
@@ -254,123 +267,31 @@ const DEFAULT_SAMPLE_ORDER: Order = {
 export const INITIAL_SAMPLE_BAG: BagItem[] = [
   {
     book: {
-      id: 'custom-beaded-keychain',
-      title: 'Custom Beaded Keychain, Pastel Flower Wristlet, Cute Gift',
-      sinhalaTitle: 'Handcrafted Keychain',
-      author: 'AirilGiftsShop',
-      category: 'Gifts & Accessories',
-      price: 1250,
-      originalPrice: 1950,
+      ...BOOKS[0],
       usdPrice: 4.15,
       originalUsdPrice: 6.39,
-      urgencyText: 'In 835 bags, 37 bought in the past 24 hours',
-      sellerName: 'AirilGiftsShop',
-      sellerAvatar: 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?auto=format&fit=crop&w=120&q=80',
+      urgencyText: 'In 24+ bags, 14 bought in the past 24 hours',
+      sellerName: BOOKS[0].sellerName || 'Rasakatha Publications',
       sellerRating: 4.9,
       sellerReviews: '6.4k',
-      rating: 4.9,
-      reviewsCount: 6400,
-      heightRatio: 1.2,
-      coverImage: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=400&q=80',
-      themeColor: '#d4af37',
-      accentColor: '#F1641E',
-      bgGradient: 'linear-gradient(145deg, #fdfbf7 0%, #f7f1e5 100%)',
-      embossPattern: 'flower',
-      symbol: 'K',
-      description: 'Handmade customized beaded flower keychain and phone wristlet strap.',
-      versesSnippet: {
-        original: 'Mal mālāvak men sundarayi',
-        transliteration: 'mal mālāvak men sundarayi',
-        english: 'As delicate and vibrant as a hand-strung garland of jasmine flowers.',
-      },
-      pages: 1,
-      language: 'English',
-      binding: 'Deluxe Gold Embossed',
-      tags: ['Keychain', 'Gifts', 'Handmade'],
       isDigital: false,
     },
     quantity: 1,
-    binding: 'Custom Pastel Flower Wristlet',
+    binding: BOOKS[0].binding,
   },
   {
     book: {
-      id: 'slim-leather-wallet',
-      title: 'Minimalist Slim Cardholder & Travel Wallet',
-      sinhalaTitle: 'Slim Cardholder',
-      author: 'LeatherCraftLK',
-      category: 'Leather Crafts',
-      price: 1350,
-      originalPrice: 2550,
+      ...BOOKS[1],
       usdPrice: 4.42,
       originalUsdPrice: 8.50,
-      urgencyText: 'In 267 bags, 23 bought in the past 24 hours',
-      sellerName: 'LeatherCraftLK',
-      sellerAvatar: 'https://images.unsplash.com/photo-1507842217343-583bb7270b66?auto=format&fit=crop&w=120&q=80',
-      sellerRating: 4.8,
-      sellerReviews: '1.2k',
-      rating: 4.8,
-      reviewsCount: 1200,
-      heightRatio: 1.2,
-      coverImage: 'https://images.unsplash.com/photo-1627123424574-724758594e93?auto=format&fit=crop&w=400&q=80',
-      themeColor: '#8B5A2B',
-      accentColor: '#D2691E',
-      bgGradient: 'linear-gradient(145deg, #f8f6f0 0%, #ece5d8 100%)',
-      embossPattern: 'leather-grain',
-      symbol: 'W',
-      description: 'Hand-stitched full-grain leather pocket wallet and RFID-blocking cardholder.',
-      versesSnippet: {
-        original: 'Dhanaya ārakṣā karana nirmāṇaya',
-        transliteration: 'dhanaya ārakṣā karana suviśēṣī nirmāṇaya',
-        english: 'Crafted with timeless precision to carry your treasured daily essentials.',
-      },
-      pages: 1,
-      language: 'English',
-      binding: 'Clothbound Hardcover',
-      tags: ['Wallet', 'Leather', 'Cardholder'],
+      urgencyText: 'In 19 bags, 9 bought in the past 24 hours',
+      sellerName: BOOKS[1].sellerName || 'Santhawa Publications',
+      sellerRating: 4.9,
+      sellerReviews: '3.2k',
       isDigital: false,
     },
     quantity: 1,
-    binding: 'Multicolor Cardholder',
-  },
-  {
-    book: {
-      id: 'spooky-flora-coloring',
-      title: 'Cozy Flora & Spooky Moments: 6 Coloring Pages PDF',
-      sinhalaTitle: 'Cozy Flora Folios',
-      author: 'CocoWyo Archive',
-      category: 'Coloring Folios',
-      price: 450,
-      originalPrice: 1200,
-      usdPrice: 1.49,
-      originalUsdPrice: 3.99,
-      urgencyText: 'In 85 bags, 4 bought in the past 24 hours',
-      sellerName: 'CocoWyoColoring',
-      sellerAvatar: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=120&q=80',
-      sellerRating: 4.8,
-      sellerReviews: '5.1k',
-      rating: 4.9,
-      reviewsCount: 5100,
-      heightRatio: 1.2,
-      coverImage: 'https://images.unsplash.com/photo-1532012197267-da84d127e765?auto=format&fit=crop&w=400&q=80',
-      themeColor: '#4A5568',
-      accentColor: '#E2E8F0',
-      bgGradient: 'linear-gradient(145deg, #f7fafc 0%, #edf2f7 100%)',
-      embossPattern: 'botanical',
-      symbol: 'F',
-      description: 'Therapeutic and soothing printable line-art coloring folios featuring cozy flora.',
-      versesSnippet: {
-        original: 'Sita nivana varṇa raṭā',
-        transliteration: 'sita nivana nirmāṇaśīlī varṇa raṭā',
-        english: 'Mindful coloring pages designed for serene creative meditation and relaxation.',
-      },
-      pages: 6,
-      language: 'English & Sinhala',
-      binding: 'Royal Silkbound Edition',
-      tags: ['Coloring', 'Digital', 'Flora'],
-      isDigital: true,
-    },
-    quantity: 1,
-    binding: 'Instant PDF Download',
+    binding: BOOKS[1].binding,
   },
 ];
 
@@ -390,6 +311,31 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
 
   const closeAuthModal = useCallback(() => {
     setAuthModalMode(null);
+  }, []);
+
+  // User Authentication
+  const [user, setUser] = useState<UserProfile | null>(null);
+  const isLoggedIn = Boolean(user);
+
+  const login = useCallback((email: string, name?: string) => {
+    const rawName = name || email.split('@')[0] || 'Scholar';
+    const capitalized = rawName.charAt(0).toUpperCase() + rawName.slice(1);
+    const newUser: UserProfile = {
+      email,
+      name: capitalized,
+      role: 'Scholar Reader',
+    };
+    setUser(newUser);
+    try {
+      localStorage.setItem('shastraloka-user', JSON.stringify(newUser));
+    } catch { }
+  }, []);
+
+  const logout = useCallback(() => {
+    setUser(null);
+    try {
+      localStorage.removeItem('shastraloka-user');
+    } catch { }
   }, []);
 
   // Bag
@@ -482,6 +428,12 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       try {
         const savedOrders = localStorage.getItem('shastraloka-orders');
         if (savedOrders) setOrders(JSON.parse(savedOrders));
+      } catch { }
+
+      // User
+      try {
+        const savedUser = localStorage.getItem('shastraloka-user');
+        if (savedUser) setUser(JSON.parse(savedUser));
       } catch { }
 
       // Reviews
@@ -736,6 +688,10 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   return (
     <AppContext.Provider
       value={{
+        user,
+        isLoggedIn,
+        login,
+        logout,
         theme,
         setTheme,
         availableThemes: AVAILABLE_THEMES,

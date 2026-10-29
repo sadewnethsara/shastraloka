@@ -14,7 +14,7 @@ interface AuthModalProps {
 
 export default function AuthModal({ standaloneMode, onStandaloneClose }: AuthModalProps = {}) {
   const router = useRouter();
-  const { authModalMode, openAuthModal, closeAuthModal, showToast } = useApp();
+  const { authModalMode, openAuthModal, closeAuthModal, showToast, login } = useApp();
 
   const activeMode: AuthModalMode = standaloneMode || authModalMode;
 
@@ -73,6 +73,7 @@ export default function AuthModal({ standaloneMode, onStandaloneClose }: AuthMod
       showToast('Please enter your email address');
       return;
     }
+    login(email);
     showToast(`Welcome back to Shastraloka, ${email.split('@')[0]}!`);
     closeAuthModal();
     if (standaloneMode) {
@@ -86,6 +87,7 @@ export default function AuthModal({ standaloneMode, onStandaloneClose }: AuthMod
       showToast('Please fill in all required fields');
       return;
     }
+    login(email, firstName);
     showToast(`Welcome to Shastraloka, ${firstName}! Your reader account is ready.`);
     closeAuthModal();
     if (standaloneMode) {
@@ -104,6 +106,7 @@ export default function AuthModal({ standaloneMode, onStandaloneClose }: AuthMod
   };
 
   const handleSocialAuth = (provider: string) => {
+    login(`reader@${provider.toLowerCase()}.com`, `${provider} Scholar`);
     showToast(`Signed in with ${provider}`);
     closeAuthModal();
     if (standaloneMode) {

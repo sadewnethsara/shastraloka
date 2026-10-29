@@ -28,6 +28,7 @@ const STATIC_ROUTES = [
   { path: '/shipping-returns', priority: 0.6, changeFrequency: 'monthly' as const },
   { path: '/scholars/submit-manuscript', priority: 0.7, changeFrequency: 'monthly' as const },
   { path: '/scholars/grants', priority: 0.7, changeFrequency: 'monthly' as const },
+  { path: '/maintenance', priority: 0.3, changeFrequency: 'monthly' as const },
 ];
 
 export default function sitemap(): MetadataRoute.Sitemap {

@@ -1,34 +1,36 @@
-// app/not-found.tsx
+import React from 'react';
 import Link from 'next/link';
-import { BookMarked, Search, ArrowLeft, Sparkles } from 'lucide-react';
+import { BookMarked, Search, ArrowLeft, Sparkles, Handbag, Compass } from 'lucide-react';
 
 export default function NotFound() {
-  const popularCategories = [
-    { name: 'New Arrivals', href: '/?category=new-arrivals' },
-    { name: 'Bestsellers', href: '/?category=bestsellers' },
-    { name: ' Sinhala Literature', href: '/?category=sinhala' },
-    { name: 'Academic & Reference', href: '/?category=academic' },
+  const curatedShelves = [
+    { name: 'Best Sellers', href: '/bestsellers' },
+    { name: 'New Releases', href: '/new-releases' },
+    { name: 'Best Gift Guides', href: '/gifts' },
+    { name: 'Archival & Vintage', href: '/archives' },
+    { name: 'Browse Categories', href: '/categories' },
+    { name: 'Gajaga Wannama', href: '/books/gajaga-wannama-royal-chronicle' },
   ];
 
   return (
-    <div className="min-h-[80vh] bg-[#FAF8F5] flex items-center justify-center px-4 py-16 text-stone-800">
-      <div className="max-w-xl w-full bg-white border border-stone-200/90 rounded-2xl shadow-sm p-8 sm:p-12 text-center space-y-6">
-        {/* Icon */}
-        <div className="mx-auto w-16 h-16 rounded-2xl bg-stone-100 border border-stone-200 flex items-center justify-center text-amber-900">
-          <BookMarked className="w-8 h-8" />
+    <div className="min-h-[82vh] bg-[var(--bg-main)] text-[var(--text-main)] flex items-center justify-center px-4 py-12 sm:py-16 transition-colors duration-200">
+      <div className="max-w-xl w-full bg-[var(--bg-card)] border border-[var(--border-subtle)] rounded-3xl shadow-sm p-6 sm:p-12 text-center space-y-6">
+        {/* Emblem */}
+        <div className="mx-auto w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-[var(--color-primary-subtle)] border border-[var(--color-primary-border)] flex items-center justify-center text-[var(--color-primary)] shadow-inner">
+          <BookMarked className="w-8 h-8 sm:w-10 sm:h-10" />
         </div>
 
-        {/* Heading & Explanation */}
-        <div className="space-y-2">
-          <p className="text-xs font-semibold uppercase tracking-widest text-amber-800">
-            Error 404 — Page Not Found
-          </p>
-          <h1 className="text-2xl sm:text-3xl font-serif font-bold text-stone-900">
-            This book isn&apos;t on our shelf
+        {/* Heading & Notice */}
+        <div className="space-y-2.5">
+          <span className="inline-block px-3 py-1 rounded-full text-[11px] font-bold uppercase tracking-wider bg-[var(--color-primary-subtle)] text-[var(--color-primary)] border border-[var(--color-primary-border)]">
+            Error 404 — Volume Not Located
+          </span>
+          <h1 className="text-2xl sm:text-3xl font-heading font-bold text-[var(--text-main)] leading-tight">
+            This treatise isn&apos;t on our shelf
           </h1>
-          <p className="text-sm sm:text-base text-stone-600 leading-relaxed">
-            The page or book you are looking for may have been moved, sold out,
-            or had its title updated.
+          <p className="text-sm sm:text-base text-[var(--text-muted)] leading-relaxed max-w-md mx-auto">
+            The page, manuscript, or edition you requested may have been archived,
+            relocated, or is awaiting replenishment.
           </p>
         </div>
 
@@ -36,35 +38,43 @@ export default function NotFound() {
         <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
           <Link
             href="/"
-            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-amber-900 hover:bg-amber-800 text-white font-medium text-sm transition-colors shadow-xs"
+            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full bg-[var(--color-primary)] hover:opacity-90 text-white font-semibold text-sm transition-opacity shadow-xs"
           >
             <ArrowLeft className="w-4 h-4" />
             Explore Storefront
           </Link>
 
           <Link
-            href="/?search=true"
-            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-800 font-medium text-sm transition-colors"
+            href="/search"
+            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full bg-[var(--bg-wash)] hover:bg-[var(--bg-hover)] text-[var(--text-main)] border border-[var(--border-subtle)] font-medium text-sm transition-colors"
           >
             <Search className="w-4 h-4" />
             Search Catalog
           </Link>
+
+          <Link
+            href="/bag"
+            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full bg-[var(--bg-wash)] hover:bg-[var(--bg-hover)] text-[var(--text-main)] border border-[var(--border-subtle)] font-medium text-sm transition-colors"
+          >
+            <Handbag className="w-4 h-4" />
+            Shopping Bag
+          </Link>
         </div>
 
-        {/* Quick Category Chips to Retain Shoppers */}
-        <div className="pt-6 border-t border-stone-100 space-y-3">
-          <div className="inline-flex items-center gap-1.5 text-xs font-medium text-stone-500">
-            <Sparkles className="w-3.5 h-3.5 text-amber-700" />
-            <span>Or browse popular shelves:</span>
+        {/* Curated Shelves to Retain Shoppers */}
+        <div className="pt-6 border-t border-[var(--border-subtle)] space-y-3">
+          <div className="inline-flex items-center gap-1.5 text-xs font-semibold text-[var(--text-muted)]">
+            <Sparkles className="w-3.5 h-3.5 text-[var(--color-primary)]" />
+            <span>Discover active shelves &amp; curations:</span>
           </div>
           <div className="flex flex-wrap items-center justify-center gap-2">
-            {popularCategories.map((cat) => (
+            {curatedShelves.map((shelf) => (
               <Link
-                key={cat.name}
-                href={cat.href}
-                className="px-3.5 py-1.5 rounded-full text-xs font-medium bg-stone-100 hover:bg-amber-50 hover:text-amber-900 text-stone-700 border border-stone-200/70 transition-colors"
+                key={shelf.name}
+                href={shelf.href}
+                className="px-3.5 py-1.5 rounded-full text-xs font-medium bg-[var(--bg-wash)] hover:bg-[var(--color-primary-subtle)] hover:text-[var(--color-primary)] hover:border-[var(--color-primary-border)] text-[var(--text-main)] border border-[var(--border-subtle)] transition-colors"
               >
-                {cat.name}
+                {shelf.name}
               </Link>
             ))}
           </div>

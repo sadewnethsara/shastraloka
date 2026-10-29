@@ -840,7 +840,10 @@ className="relative w-full h-full min-h-0 min-w-0 rounded overflow-hidden cursor
         {/* ===================================================================
             5. SHOP OUR MOST-LOVED CATEGORIES (Responsive Carousel)
            =================================================================== */}
-        <section>
+        {/* ===================================================================
+            5. SHOP OUR MOST-LOVED CATEGORIES (Responsive Carousel)
+           =================================================================== */}
+        <section className="w-full max-w-full overflow-hidden">
           <h2 className="text-lg sm:text-xl font-bold text-[var(--text-main)] mb-4">
             Shop our most-loved categories
           </h2>
@@ -871,7 +874,7 @@ className="relative w-full h-full min-h-0 min-w-0 rounded overflow-hidden cursor
         {/* ===================================================================
             6. TODAY'S BIG DEALS (With Live Countdown Timer & Smooth Carousel)
            =================================================================== */}
-        <section className="relative">
+        <section className="relative w-full max-w-full overflow-hidden">
           <div className="flex flex-wrap items-center gap-2.5 mb-4">
             <h2 className="text-lg sm:text-xl font-bold text-[var(--text-main)]">
               Today&apos;s big deals
@@ -940,12 +943,12 @@ className="relative w-full h-full min-h-0 min-w-0 rounded overflow-hidden cursor
               ))}
             </div>
 
-            {/* Floating Dark Circular Next Button matching screenshots */}
+            {/* Floating Dark Circular Next Button (hidden on mobile, visible on desktop/tablet) */}
             <button
               type="button"
               onClick={scrollDealsRight}
               aria-label="Next deals"
-              className="absolute right-1 lg:-right-4 top-[38%] -translate-y-1/2 w-10 h-10 rounded-full bg-[var(--pill-active-bg)] text-[var(--pill-active-text)] shadow-lg flex items-center justify-center transition z-20 cursor-pointer"
+              className="hidden sm:flex absolute right-1 lg:-right-4 top-[38%] -translate-y-1/2 w-10 h-10 rounded-full bg-[var(--pill-active-bg)] text-[var(--pill-active-text)] shadow-lg items-center justify-center transition z-20 cursor-pointer"
             >
               <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                 <polyline points="9 18 15 12 9 6" />

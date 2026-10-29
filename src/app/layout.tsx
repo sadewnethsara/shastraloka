@@ -1,8 +1,15 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Plus_Jakarta_Sans, Outfit, Noto_Serif_Sinhala } from "next/font/google";
 import "./globals.css";
 import Providers from "../components/Providers";
 import { SEO_BRAND, SEO_KEYWORDS, buildGlobalSchemaGraph } from "../utils/seoConfig";
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 5,
+  viewportFit: "cover",
+};
 
 const jakarta = Plus_Jakarta_Sans({
   variable: "--font-sans",
@@ -116,19 +123,14 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${jakarta.variable} ${outfit.variable} ${notoSerifSinhala.variable} scroll-smooth`}
+      className={`${jakarta.variable} ${outfit.variable} ${notoSerifSinhala.variable} scroll-smooth overflow-x-clip max-w-[100vw] w-full`}
       suppressHydrationWarning
     >
-      <head>
-        <link rel="alternate" hrefLang="en-LK" href="https://shastraloka.lk" />
-        <link rel="alternate" hrefLang="si-LK" href="https://ශාස්ත්රාලෝක.ලංකා" />
-        <link rel="alternate" hrefLang="x-default" href="https://shastraloka.lk" />
+      <body className="font-sans antialiased bg-[var(--bg-main)] text-[var(--text-main)] transition-colors duration-300 overflow-x-clip max-w-[100vw] w-full relative">
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(schemaGraph) }}
         />
-      </head>
-      <body className="font-sans antialiased bg-[var(--bg-main)] text-[var(--text-main)] transition-colors duration-300">
         <Providers>{children}</Providers>
       </body>
     </html>

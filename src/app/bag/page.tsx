@@ -27,7 +27,10 @@ import {
     Info,
     ArrowRight,
     Eye,
-    SlidersHorizontal
+    SlidersHorizontal,
+    Minus,
+    Plus,
+    Trash2
 } from 'lucide-react';
 
 // ---------------------------------------------------------------------------
@@ -43,7 +46,7 @@ interface BagItem {
     shopAvatarIcon: 'minimal-book' | 'cute-ghost' | 'botanical' | 'ink';
     title: string;
     author: string;
-    bookFormat: 'Hardcover' | 'Digital PDF & Kindle' | 'Paperback' | 'Collector Edition';
+    bookFormat: 'Hardcover' | 'Digital PDF & Kindle' | 'Paperback' | 'Collector Edition' | string;
     isbn: string;
     note?: string;
     pills: { label: string; icon?: 'download' }[];
@@ -51,11 +54,14 @@ interface BagItem {
     urgencyRedText?: string;
     price: number;
     originalPrice?: number;
+    lkrPrice?: number;
+    originalLkrPrice?: number;
     discountPercent?: number;
     quantity: number;
     shippingCost: number;
     shippingEta?: string;
     isDigital: boolean;
+    coverImage?: string;
     coverType: 'mirror-books-grid' | 'spooky-girl-main' | 'spooky-bold' | 'spooky-life' | 'floral-grimoire' | 'daisy-journal';
     selectedEdition?: string;
     customOption?: string;
@@ -997,42 +1003,53 @@ export default function Bag() {
     // Active preset view to let user inspect both uploaded screenshots or interact freely
     const [activePreset, setActivePreset] = useState<'screenshot-1' | 'screenshot-2'>('screenshot-1');
 
-    // Bag Items State - Using global context bag when available, otherwise mock data
-    const [bagItems, setBagItems] = useState<BagItem[]>(INITIAL_BAG_SCREENSHOT_1);
+    const mapContextBagToItems = (contextBag: typeof bag): BagItem[] =>
+        contextBag.map((item) => ({
+            id: item.book.id,
+            shopName: item.book.sellerName || 'Shastraloka Guild Press',
+            shopRating: item.book.sellerRating || item.book.rating || 4.9,
+            shopReviews: item.book.sellerReviews || `${item.book.reviewsCount || 840}`,
+            shopAvatarBg: '#fef3c7',
+            shopAvatarIcon: 'botanical' as const,
+            title: item.book.title,
+            author: item.book.author,
+            bookFormat: item.binding || item.book.binding || 'Hardcover',
+            isbn: '978-955-54821-9-0',
+            pills: [
+                { label: `Binding: ${item.binding || item.book.binding || 'Collector Edition'}` },
+                { label: `Language: ${item.book.language || 'Sinhala & English'}` }
+            ],
+            saleEndsText: 'Archival Collector Offer',
+            urgencyRedText: item.book.urgencyText || 'In 24+ bags, 14 bought in the past 24 hours',
+            price: item.book.usdPrice ?? Number((item.book.price / 300).toFixed(2)),
+            originalPrice:
+                item.book.originalUsdPrice ??
+                (item.book.originalPrice ? Number((item.book.originalPrice / 300).toFixed(2)) : undefined),
+            lkrPrice: item.book.price,
+            originalLkrPrice: item.book.originalPrice,
+            discountPercent: item.book.originalPrice
+                ? Math.round((1 - item.book.price / item.book.originalPrice) * 100)
+                : undefined,
+            quantity: item.quantity,
+            shippingCost: 0,
+            shippingEta: 'Islandwide Delivery in 2–3 Days',
+            isDigital: item.book.isDigital || false,
+            coverImage: item.book.coverImage,
+            coverType: 'daisy-journal' as const,
+            selectedEdition: item.binding || item.book.binding,
+            customOption: 'Yes + Gift book bag'
+        }));
+
+    // Bag Items State - Initialized from global context bag when available
+    const [bagItems, setBagItems] = useState<BagItem[]>(() =>
+        bag.length > 0 ? mapContextBagToItems(bag) : INITIAL_BAG_SCREENSHOT_1
+    );
     const [prevBag, setPrevBag] = useState(bag);
 
     // Sync local bag items with global context during render
     if (bag !== prevBag) {
         setPrevBag(bag);
-        if (bag.length > 0) {
-            // Convert global bag items to local format for display
-            const convertedItems = bag.map((item, index) => ({
-                id: `bag-${index}`,
-                shopName: item.book.sellerName || 'Shastraloka Books',
-                shopRating: item.book.sellerRating || 4.9,
-                shopReviews: item.book.sellerReviews || '1.2k',
-                shopAvatarBg: '#fef3c7',
-                shopAvatarIcon: 'botanical' as const,
-                title: item.book.title,
-                author: item.book.author,
-                bookFormat: 'Hardcover' as const,
-                isbn: '978-1-954821-99-0',
-                pills: [
-                    { label: item.book.binding || 'Standard Edition' }
-                ],
-                urgencyRedText: item.book.urgencyText || 'In 85 carts, 4 bought in the past 24 hours',
-                price: item.book.usdPrice ?? (item.book.price / 300),
-                originalPrice: item.book.originalUsdPrice ?? (item.book.originalPrice ? item.book.originalPrice / 300 : undefined),
-                discountPercent: item.book.originalPrice ? Math.round((1 - item.book.price / item.book.originalPrice) * 100) : undefined,
-                quantity: item.quantity,
-                shippingCost: 0,
-                isDigital: item.book.isDigital || false,
-                coverType: 'daisy-journal' as const,
-                selectedEdition: item.binding,
-                customOption: undefined
-            }));
-            setBagItems(convertedItems);
-        }
+        setBagItems(bag.length > 0 ? mapContextBagToItems(bag) : []);
     }
 
     // Saved for Later Items State
@@ -1094,16 +1111,23 @@ export default function Bag() {
         }
     };
 
-    // Quantity update handler
+    // Quantity update handler (supports + / - stepper and direct selection)
     const handleUpdateQuantity = (id: string, newQty: number) => {
+        if (newQty < 1) {
+            handleRemoveFromBag(id);
+            return;
+        }
+        const cappedQty = Math.min(25, newQty);
+        const currentItem = bagItems.find((i) => i.id === id);
+        const currentQty = currentItem?.quantity || 1;
+        const delta = cappedQty - currentQty;
+
         setBagItems((prev) =>
-            prev.map((item) => (item.id === id ? { ...item, quantity: newQty } : item))
+            prev.map((item) => (item.id === id ? { ...item, quantity: cappedQty } : item))
         );
-        // Update global context
-        const bookId = id.startsWith('bag-') ? id.replace('bag-', '') : id;
-        const delta = newQty - (bagItems.find(i => i.id === id)?.quantity || 0);
+
         if (delta !== 0) {
-            updateBagQuantity(bookId, delta);
+            updateBagQuantity(id, delta);
         }
     };
 
@@ -1111,9 +1135,7 @@ export default function Bag() {
     const handleRemoveFromBag = (id: string) => {
         const target = bagItems.find((i) => i.id === id);
         setBagItems((prev) => prev.filter((item) => item.id !== id));
-        // Remove from global context using book ID
-        const bookId = id.startsWith('bag-') ? id.replace('bag-', '') : id;
-        removeFromBag(bookId);
+        removeFromBag(id);
         if (target) {
             triggerToast(`Removed "${target.title.slice(0, 32)}..." from your bag`);
         }
@@ -1262,45 +1284,6 @@ export default function Bag() {
     return (
         <div className="min-h-screen bg-[var(--bg-main)] text-[var(--text-main)] font-sans antialiased selection:bg-[#f1641e]/15 selection:text-[#f1641e] transition-colors duration-200">
             {/* ------------------------------------------------------------------- */}
-            {/* TOP INTERACTIVE PRESET SWITCHER BAR (Amazon + Pinterest + Etsy Hybrid) */}
-            {/* ------------------------------------------------------------------- */}
-            <div className="bg-[var(--bg-wash)] border-b border-[var(--border-subtle)] px-4 py-1.5 text-xs">
-                <div className="max-w-[1280px] mx-auto flex flex-wrap items-center justify-between gap-2">
-                    <div className="flex items-center gap-2 text-[var(--text-muted)]">
-                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-[#e60023]/10 text-[#e60023] font-semibold text-[11px]">
-                            <Bookmark className="w-3 h-3 fill-current" /> Pinterest Book Aesthetic
-                        </span>
-                        <span className="hidden sm:inline text-[var(--border-strong)]">•</span>
-                        <span className="hidden sm:inline-flex items-center gap-1 text-[var(--text-muted)] font-medium">
-                            <BookOpen className="w-3.5 h-3.5 text-[#f1641e]" /> Amazon Book Formats + Etsy Bag Layout
-                        </span>
-                    </div>
-
-                    <div className="flex flex-wrap items-center gap-1.5">
-                        <span className="text-[11px] text-[var(--text-muted)] font-medium mr-1">Reference Preset:</span>
-                        <button
-                            onClick={() => handleSwitchPreset('screenshot-1')}
-                            className={`px-2.5 py-1 rounded-full text-[11px] font-semibold transition-all ${activePreset === 'screenshot-1'
-                                ? 'bg-[var(--pill-active-bg)] text-[var(--pill-active-text)] shadow-xs'
-                                : 'bg-[var(--bg-input)] text-[var(--text-muted)] hover:bg-[var(--bg-hover)]'
-                                }`}
-                        >
-                            Screenshot 1 (2 Books in Bag • USD 10.90)
-                        </button>
-                        <button
-                            onClick={() => handleSwitchPreset('screenshot-2')}
-                            className={`px-2.5 py-1 rounded-full text-[11px] font-semibold transition-all ${activePreset === 'screenshot-2'
-                                ? 'bg-[var(--pill-active-bg)] text-[var(--pill-active-text)] shadow-xs'
-                                : 'bg-[var(--bg-input)] text-[var(--text-muted)] hover:bg-[var(--bg-hover)]'
-                                }`}
-                        >
-                            Screenshot 2 (1 Digital Book • USD 1.49)
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            {/* ------------------------------------------------------------------- */}
             {/* UNIVERSAL HEADER WITH LIVE SEARCHBAR & 2-COLUMN CATEGORIES MENU     */}
             {/* ------------------------------------------------------------------- */}
             <Header isSticky />
@@ -1310,13 +1293,21 @@ export default function Bag() {
                 <div className="page-container relative">
                     <div className="hidden md:flex items-center gap-3.5 absolute right-4 sm:right-6 lg:right-8 top-2 z-30 w-[356px] bg-[var(--bg-card)] rounded-2xl shadow-[0_10px_32px_rgba(0,0,0,0.16)] border border-[var(--border-subtle)] p-4 animate-in fade-in slide-in-from-top-2 duration-200">
                         <div className="relative w-[72px] h-[72px] rounded-xl overflow-hidden shrink-0 border border-[var(--border-subtle)] bg-[var(--bg-wash)]">
-                            <BookCoverArtwork
-                                variant={
-                                    activePreset === 'screenshot-2'
-                                        ? 'spooky-girl-main'
-                                        : urgencyHighlight.coverType
-                                }
-                            />
+                            {urgencyHighlight.coverImage ? (
+                                <img
+                                    src={urgencyHighlight.coverImage}
+                                    alt={urgencyHighlight.title}
+                                    className="w-full h-full object-cover"
+                                />
+                            ) : (
+                                <BookCoverArtwork
+                                    variant={
+                                        activePreset === 'screenshot-2'
+                                            ? 'spooky-girl-main'
+                                            : urgencyHighlight.coverType
+                                    }
+                                />
+                            )}
                             <div className="absolute -bottom-0.5 -left-0.5 w-6 h-6 rounded-tr-xl bg-[#1e3a8a] text-white flex items-center justify-center shadow-xs">
                                 <Handbag className="w-3 h-3" />
                             </div>
@@ -1388,17 +1379,17 @@ export default function Bag() {
                             Explore our Pinterest-curated indie books, botanical collector hardcovers, and cozy printable coloring editions below.
                         </p>
                         <div className="mt-4 flex justify-center gap-3">
-                            <button
-                                onClick={() => handleSwitchPreset('screenshot-1')}
+                            <Link
+                                href="/books"
                                 className="px-4 py-2 rounded-full bg-[var(--pill-active-bg)] text-[var(--pill-active-text)] text-xs font-semibold hover:opacity-90"
                             >
-                                Restore 2-Book Bag (Screenshot 1)
-                            </button>
+                                Browse Bookstore
+                            </Link>
                             <button
-                                onClick={() => handleSwitchPreset('screenshot-2')}
-                                className="px-4 py-2 rounded-full border border-[var(--border-subtle)] bg-[var(--bg-card)] text-[var(--text-main)] text-xs font-semibold hover:bg-[var(--bg-hover)]"
+                                onClick={() => handleSwitchPreset('screenshot-1')}
+                                className="px-4 py-2 rounded-full border border-[var(--border-subtle)] bg-[var(--bg-card)] text-[var(--text-main)] text-xs font-semibold hover:bg-[var(--bg-hover)] cursor-pointer"
                             >
-                                Restore 1-Book Bag (Screenshot 2)
+                                Restore Curated Bag
                             </button>
                         </div>
                     </div>
@@ -1446,9 +1437,17 @@ export default function Bag() {
 
                                         {/* Main Item Content Row */}
                                         <div className="flex flex-col sm:flex-row gap-4">
-                                            {/* Left: Square Book Thumbnail (with Pinterest Save & Amazon Look Inside) */}
-                                            <div className="relative w-full sm:w-[144px] h-[144px] rounded-lg overflow-hidden border border-stone-200/80 shrink-0 group">
-                                                <BookCoverArtwork variant={item.coverType} />
+                                            {/* Left: Book Cover Thumbnail (with Pinterest Save & Amazon Look Inside) */}
+                                            <div className="relative w-full sm:w-[144px] h-[164px] rounded-xl overflow-hidden border border-[var(--border-subtle)] bg-[var(--bg-wash)] shrink-0 group">
+                                                {item.coverImage ? (
+                                                    <img
+                                                        src={item.coverImage}
+                                                        alt={item.title}
+                                                        className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                                                    />
+                                                ) : (
+                                                    <BookCoverArtwork variant={item.coverType} />
+                                                )}
 
                                                 {/* Pinterest-style top-right Pin button on hover */}
                                                 <button
@@ -1479,29 +1478,21 @@ export default function Bag() {
                                             <div className="flex-1 min-w-0">
                                                 <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-2">
                                                     <div className="flex-1 min-w-0">
-                                                        <h2
-                                                            onClick={() =>
-                                                                setPreviewBook({
-                                                                    title: item.title,
-                                                                    author: item.author,
-                                                                    format: item.bookFormat,
-                                                                    price: item.price,
-                                                                    coverVariant: item.coverType
-                                                                })
-                                                            }
-                                                            className="text-[13.5px] font-normal text-[#222222] hover:underline cursor-pointer line-clamp-1 leading-snug"
+                                                        <Link
+                                                            href={`/books/${item.id}`}
+                                                            className="text-[14px] font-semibold text-[var(--text-main)] hover:text-[#F1641E] hover:underline cursor-pointer line-clamp-2 leading-snug block"
                                                         >
                                                             {item.title}
-                                                        </h2>
+                                                        </Link>
 
                                                         {/* Amazon-style subtle book author & format line */}
-                                                        <p className="text-[11.5px] text-stone-500 mt-0.5">
-                                                            by <span className="text-stone-700 font-medium">{item.author}</span> •{' '}
-                                                            <span className="text-[#007185] font-medium">{item.bookFormat}</span>
+                                                        <p className="text-[12px] text-[var(--text-muted)] mt-0.5">
+                                                            by <span className="text-[var(--text-main)] font-medium">{item.author}</span> •{' '}
+                                                            <span className="text-[#007185] dark:text-emerald-400 font-semibold">{item.bookFormat}</span>
                                                         </p>
 
                                                         {item.note && (
-                                                            <p className="text-[12px] text-stone-600 mt-1">
+                                                            <p className="text-[12px] text-[var(--text-muted)] mt-1">
                                                                 Note: Check{' '}
                                                                 <button
                                                                     onClick={() =>
@@ -1513,7 +1504,7 @@ export default function Bag() {
                                                                             coverVariant: item.coverType
                                                                         })
                                                                     }
-                                                                    className="underline hover:text-stone-900"
+                                                                    className="underline hover:text-[var(--text-main)]"
                                                                 >
                                                                     item details
                                                                 </button>{' '}
@@ -1521,15 +1512,15 @@ export default function Bag() {
                                                             </p>
                                                         )}
 
-                                                        {/* Gray Pill Badges (Exact match to screenshots) */}
+                                                        {/* Edition Pill Badges */}
                                                         <div className="flex flex-wrap items-center gap-1.5 mt-2">
                                                             {item.pills.map((pill, idx) => (
                                                                 <span
                                                                     key={idx}
-                                                                    className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-[#eaeaea] text-[#222222] text-[11px] font-semibold"
+                                                                    className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md bg-[var(--bg-input)] text-[var(--text-main)] text-[11px] font-semibold"
                                                                 >
                                                                     {pill.icon === 'download' && (
-                                                                        <CloudDownload className="w-3 h-3 text-stone-700" />
+                                                                        <CloudDownload className="w-3 h-3 text-[var(--text-muted)]" />
                                                                     )}
                                                                     {pill.label}
                                                                 </span>
@@ -1545,72 +1536,103 @@ export default function Bag() {
                                                             </span>
                                                         )}
                                                         <span
-                                                            className={`text-[16px] font-bold leading-tight ${item.discountPercent ? 'text-[#0f743b]' : 'text-[#222222]'
+                                                            className={`text-[16px] font-bold leading-tight ${item.discountPercent ? 'text-[#0f743b] dark:text-emerald-400' : 'text-[var(--text-main)]'
                                                                 }`}
                                                         >
                                                             USD {(item.price * item.quantity).toFixed(2)}
                                                         </span>
+                                                        {item.lkrPrice && (
+                                                            <span className="text-[11.5px] font-semibold text-[var(--text-muted)]">
+                                                                LKR {(item.lkrPrice * item.quantity).toLocaleString()}
+                                                            </span>
+                                                        )}
                                                         {item.originalPrice && (
-                                                            <span className="text-[12px] text-stone-500 line-through">
+                                                            <span className="text-[11.5px] text-[var(--text-dim)] line-through">
                                                                 USD {(item.originalPrice * item.quantity).toFixed(2)}
+                                                            </span>
+                                                        )}
+                                                        {item.quantity > 1 && (
+                                                            <span className="text-[11px] text-[var(--text-muted)] font-medium">
+                                                                (USD {item.price.toFixed(2)} each)
                                                             </span>
                                                         )}
                                                     </div>
                                                 </div>
 
-                                                {/* Urgency Text (Green "Sale ends November 3" or Red "In 85 bags, 4 bought in the past 24 hours") */}
+                                                {/* Urgency Text */}
                                                 {item.saleEndsText && (
-                                                    <p className="text-[12.5px] font-medium text-[#0f743b] mt-3">
+                                                    <p className="text-[12px] font-medium text-[#0f743b] dark:text-emerald-400 mt-2.5">
                                                         {item.saleEndsText}
                                                     </p>
                                                 )}
                                                 {item.urgencyRedText && (
-                                                    <p className="text-[12.5px] font-medium text-[#a61a2e] mt-3.5">
+                                                    <p className="text-[12px] font-medium text-[#a61a2e] dark:text-rose-400 mt-1">
                                                         {item.urgencyRedText}
                                                     </p>
                                                 )}
 
-                                                {/* Interactive Bottom Action Row */}
-                                                <div className="flex flex-wrap items-center gap-3 mt-3">
-                                                    {!item.isDigital && (
-                                                        <div className="relative inline-flex items-center">
-                                                            <select
-                                                                aria-label="Select quantity"
-                                                                value={item.quantity}
-                                                                onChange={(e) =>
-                                                                    handleUpdateQuantity(item.id, Number(e.target.value))
-                                                                }
-                                                                className="appearance-none h-[36px] pl-3.5 pr-8 rounded-lg border border-stone-300 bg-white text-[13px] font-medium text-[#222222] hover:border-stone-500 focus:outline-none cursor-pointer"
-                                                            >
-                                                                {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((num) => (
-                                                                    <option key={num} value={num}>
-                                                                        {num}
-                                                                    </option>
-                                                                ))}
-                                                            </select>
-                                                            <ChevronDown className="w-3.5 h-3.5 text-stone-600 absolute right-2.5 pointer-events-none" />
-                                                        </div>
-                                                    )}
+                                                {/* Bookstore Quantity Stepper (- / Qty / +) & Action Buttons */}
+                                                <div className="flex flex-wrap items-center gap-3 mt-3.5 pt-3 border-t border-[var(--border-subtle)]">
+                                                    <div className="inline-flex items-center rounded-full border border-[var(--border-strong)] bg-[var(--bg-card)] shadow-2xs overflow-hidden">
+                                                        <button
+                                                            type="button"
+                                                            onClick={() =>
+                                                                item.quantity > 1
+                                                                    ? handleUpdateQuantity(item.id, item.quantity - 1)
+                                                                    : handleRemoveFromBag(item.id)
+                                                            }
+                                                            aria-label={item.quantity > 1 ? 'Decrease quantity' : 'Remove item'}
+                                                            title={item.quantity > 1 ? 'Decrease quantity' : 'Remove from bag'}
+                                                            className="w-9 h-9 flex items-center justify-center text-[var(--text-main)] hover:bg-[var(--bg-hover)] active:scale-95 transition cursor-pointer"
+                                                        >
+                                                            {item.quantity === 1 ? (
+                                                                <Trash2 className="w-3.5 h-3.5 text-rose-600 dark:text-rose-400" />
+                                                            ) : (
+                                                                <Minus className="w-3.5 h-3.5" />
+                                                            )}
+                                                        </button>
+
+                                                        <span
+                                                            aria-live="polite"
+                                                            className="min-w-[2.5rem] px-2 text-center text-[13px] font-bold text-[var(--text-main)] select-none"
+                                                        >
+                                                            {item.quantity}
+                                                        </span>
+
+                                                        <button
+                                                            type="button"
+                                                            onClick={() => handleUpdateQuantity(item.id, item.quantity + 1)}
+                                                            disabled={item.quantity >= 25}
+                                                            aria-label="Increase quantity"
+                                                            title="Add another copy"
+                                                            className="w-9 h-9 flex items-center justify-center text-[var(--text-main)] hover:bg-[var(--bg-hover)] disabled:opacity-40 disabled:pointer-events-none active:scale-95 transition cursor-pointer"
+                                                        >
+                                                            <Plus className="w-3.5 h-3.5" />
+                                                        </button>
+                                                    </div>
 
                                                     {!item.isDigital && (
                                                         <button
+                                                            type="button"
                                                             onClick={() => setEditingItem(item)}
-                                                            className="text-[12.5px] font-semibold text-[#222222] hover:bg-stone-100 px-2.5 py-1.5 rounded-full transition-colors cursor-pointer"
+                                                            className="text-[12.5px] font-semibold text-[var(--text-main)] hover:bg-[var(--bg-hover)] px-3 py-1.5 rounded-full transition-colors cursor-pointer"
                                                         >
-                                                            Edit
+                                                            Edit Edition
                                                         </button>
                                                     )}
 
                                                     <button
+                                                        type="button"
                                                         onClick={() => handleSaveForLater(item.id)}
-                                                        className="text-[12.5px] font-semibold text-[#222222] hover:bg-stone-100 px-2.5 py-1.5 rounded-full transition-colors cursor-pointer"
+                                                        className="text-[12.5px] font-semibold text-[var(--text-main)] hover:bg-[var(--bg-hover)] px-3 py-1.5 rounded-full transition-colors cursor-pointer"
                                                     >
                                                         Save for later
                                                     </button>
 
                                                     <button
+                                                        type="button"
                                                         onClick={() => handleRemoveFromBag(item.id)}
-                                                        className="text-[12.5px] font-semibold text-[#222222] hover:bg-stone-100 px-2.5 py-1.5 rounded-full transition-colors cursor-pointer"
+                                                        className="text-[12.5px] font-semibold text-rose-600 dark:text-rose-400 hover:bg-rose-500/10 px-3 py-1.5 rounded-full transition-colors cursor-pointer"
                                                     >
                                                         Remove
                                                     </button>
@@ -1930,32 +1952,32 @@ export default function Bag() {
                             </span>
                         </div>
 
-                        {/* Aesthetic Pinterest / Collection Filter Pills */}
+                        {/* Aesthetic Collection Filter Pills */}
                         <div className="flex items-center gap-1.5 text-xs overflow-x-auto no-scrollbar max-w-full pb-1">
-                            <SlidersHorizontal className="w-3.5 h-3.5 text-stone-400 mr-1 shrink-0" />
+                            <SlidersHorizontal className="w-3.5 h-3.5 text-[var(--text-dim)] mr-1 shrink-0" />
                             <button
                                 onClick={() => setRelatedTab('screenshot-1')}
                                 className={`px-3 py-1 rounded-full text-[11.5px] font-semibold transition-colors cursor-pointer whitespace-nowrap shrink-0 ${relatedTab === 'screenshot-1'
-                                    ? 'bg-[#222222] text-white'
-                                    : 'bg-stone-100 text-stone-700 hover:bg-stone-200'
+                                    ? 'bg-[var(--pill-active-bg)] text-[var(--pill-active-text)]'
+                                    : 'bg-[var(--bg-input)] text-[var(--text-muted)] hover:bg-[var(--bg-hover)]'
                                     }`}
                             >
-                                Botanical Pocket Books (Screenshot 1)
+                                Botanical Pocket Editions
                             </button>
                             <button
                                 onClick={() => setRelatedTab('screenshot-2')}
                                 className={`px-3 py-1 rounded-full text-[11.5px] font-semibold transition-colors cursor-pointer whitespace-nowrap shrink-0 ${relatedTab === 'screenshot-2'
-                                    ? 'bg-[#222222] text-white'
-                                    : 'bg-stone-100 text-stone-700 hover:bg-stone-200'
+                                    ? 'bg-[var(--pill-active-bg)] text-[var(--pill-active-text)]'
+                                    : 'bg-[var(--bg-input)] text-[var(--text-muted)] hover:bg-[var(--bg-hover)]'
                                     }`}
                             >
-                                Spooky Cozy Coloring Books (Screenshot 2)
+                                Cozy Illustrated & Digital Folios
                             </button>
                             <button
                                 onClick={() => setRelatedTab('all')}
                                 className={`px-3 py-1 rounded-full text-[11.5px] font-semibold transition-colors cursor-pointer whitespace-nowrap shrink-0 ${relatedTab === 'all'
-                                    ? 'bg-[#222222] text-white'
-                                    : 'bg-stone-100 text-stone-700 hover:bg-stone-200'
+                                    ? 'bg-[var(--pill-active-bg)] text-[var(--pill-active-text)]'
+                                    : 'bg-[var(--bg-input)] text-[var(--text-muted)] hover:bg-[var(--bg-hover)]'
                                     }`}
                             >
                                 All 20 Books

@@ -149,8 +149,8 @@ export default function VisualSearchModal({ isOpen, onClose }: VisualSearchModal
       }
     }
 
-    // Randomized high confidence between 96.5% and 99.4%
-    const conf = Number((96.5 + Math.random() * 2.9).toFixed(1));
+    // High confidence score between 96.5% and 99.4%
+    const conf = Number((96.5 + ((name.length * 7) % 30) / 10).toFixed(1));
     setMatchConfidence(conf);
 
     // Animate across stages
@@ -221,17 +221,22 @@ export default function VisualSearchModal({ isOpen, onClose }: VisualSearchModal
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-5 bg-black/65 backdrop-blur-xs animate-fade-in"
+      className="fixed inset-0 z-50 flex items-end sm:items-center justify-center sm:p-5 bg-black/65 backdrop-blur-xs animate-fade-in"
       onClick={handleClose}
       aria-modal="true"
       role="dialog"
     >
       <div
-        className="relative w-full max-w-2xl max-h-[90vh] flex flex-col bg-[var(--bg-card)] text-[var(--text-main)] rounded-2xl sm:rounded-3xl border border-[var(--border-subtle)] shadow-2xl overflow-hidden animate-slide-up"
+        className="relative w-full sm:max-w-2xl max-h-[92dvh] sm:max-h-[90vh] flex flex-col bg-[var(--bg-card)] text-[var(--text-main)] rounded-t-3xl sm:rounded-3xl border-t sm:border border-[var(--border-subtle)] shadow-[0_-16px_48px_rgba(0,0,0,0.4)] sm:shadow-2xl overflow-hidden animate-slide-up"
         onClick={(e) => e.stopPropagation()}
       >
+        {/* Mobile Bottom Sheet Drag Handle */}
+        <div className="sm:hidden pt-3 pb-1 flex justify-center bg-[var(--bg-surface)] shrink-0">
+          <div className="w-12 h-1.5 rounded-full bg-[var(--border-strong)] opacity-60" />
+        </div>
+
         {/* Modal Header */}
-        <div className="flex items-center justify-between px-5 sm:px-7 py-4 border-b border-[var(--border-subtle)] bg-[var(--bg-surface)]">
+        <div className="flex items-center justify-between px-5 sm:px-7 py-3.5 sm:py-4 border-b border-[var(--border-subtle)] bg-[var(--bg-surface)] shrink-0">
           <div className="flex items-center gap-2.5">
             <div className="w-9 h-9 rounded-full bg-[var(--color-primary-subtle)] flex items-center justify-center text-[var(--color-primary)]">
               <Camera className="w-5 h-5 stroke-[2.2]" />

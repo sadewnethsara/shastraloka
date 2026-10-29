@@ -88,8 +88,8 @@ export default function Footer() {
   };
 
   return (
-    <footer className="bg-[var(--footer-bg)] text-[var(--text-main)] pt-10 sm:pt-12 pb-8 border-t border-[var(--border-subtle)] transition-colors">
-      <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8">
+    <footer className="bg-[var(--footer-bg)] text-[var(--text-main)] pt-10 sm:pt-12 pb-8 border-t border-[var(--border-subtle)] transition-colors w-full max-w-full overflow-hidden">
+      <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 w-full max-w-full box-border">
         {/* DESKTOP FOOTER */}
         <div className="hidden lg:block">
           <h2

@@ -14,9 +14,8 @@ function MiniBagRailWrapper() {
   const { showMiniBagRail } = useApp();
   const pathname = usePathname();
 
-  // Hide mini bag rail on landing page ('/'), dedicated bag page, and checkout flow
-  const isLandingPage = !pathname || pathname === '/';
-  const isHiddenPage = isLandingPage || pathname === '/bag' || pathname.startsWith('/checkout');
+  // Hide mini bag rail only on dedicated bag page and checkout flow
+  const isHiddenPage = pathname === '/bag' || pathname.startsWith('/checkout');
 
   if (!showMiniBagRail || isHiddenPage) return null;
 
@@ -26,9 +25,9 @@ function MiniBagRailWrapper() {
 function ProvidersContent({ children }: { children: React.ReactNode }) {
   return (
     <>
-      <div className="min-h-screen flex bg-[var(--bg-main)] text-[var(--text-main)]">
+      <div className="min-h-screen flex flex-col lg:flex-row bg-[var(--bg-main)] text-[var(--text-main)] w-full max-w-full overflow-x-clip">
         {/* Left Column: Page Content */}
-        <div className="flex-1 min-w-0">
+        <div className="flex-1 min-w-0 w-full max-w-full overflow-x-clip">
           {children}
         </div>
 

@@ -37,6 +37,7 @@ import {
   Volume2,
   X,
   Plus,
+  Minus,
   Filter,
   Camera,
   CheckCircle2,
@@ -547,7 +548,10 @@ function ProductDetailContent() {
   const params = useParams();
   const router = useRouter();
   const {
+    bag,
     addToBag,
+    updateBagQuantity,
+    removeFromBag,
     saveToBoard,
     isBookSaved,
     boards,
@@ -1619,44 +1623,123 @@ function ProductDetailContent() {
                 </div>
               </div>
 
-              {/* Price & Quantity Box */}
-              <div className="p-4 rounded-2xl bg-[#FAF8F5] dark:bg-[#151518] border border-neutral-200/80 dark:border-neutral-800 space-y-2">
-                <div className="flex flex-wrap items-baseline justify-between gap-2">
-                  <div className="flex flex-wrap items-baseline gap-2">
-                    <span className="text-2xl sm:text-3xl font-bold text-[#0F743B] dark:text-[#76d691]">
-                      LKR {(currentFormatObj.price * quantity).toLocaleString()}
-                    </span>
-                    <span className="text-sm text-neutral-400 line-through">
-                      LKR {(currentFormatObj.originalPrice * quantity).toLocaleString()}
-                    </span>
-                    <Badge variant="sale" size="sm" text={`Save ${savingsPercent}%`} />
+              {/* Price & Bookstore Quantity Box */}
+              <div className="p-4 rounded-2xl bg-[var(--bg-wash)] border border-[var(--border-subtle)] space-y-3">
+                <div className="flex flex-wrap items-center justify-between gap-3">
+                  <div>
+                    <div className="flex flex-wrap items-baseline gap-2">
+                      <span className="text-2xl sm:text-3xl font-bold text-[#0F743B] dark:text-[#76d691]">
+                        LKR {(currentFormatObj.price * quantity).toLocaleString()}
+                      </span>
+                      <span className="text-sm text-[var(--text-dim)] line-through">
+                        LKR {(currentFormatObj.originalPrice * quantity).toLocaleString()}
+                      </span>
+                      <Badge variant="sale" size="sm" text={`Save ${savingsPercent}%`} />
+                    </div>
+                    {quantity > 1 && (
+                      <p className="text-[11px] font-medium text-[var(--text-muted)] mt-0.5">
+                        LKR {currentFormatObj.price.toLocaleString()} each × {quantity} copies
+                      </p>
+                    )}
                   </div>
 
-                  <div className="flex items-center gap-1.5">
-                    <label htmlFor="qty" className="text-xs text-neutral-500">
-                      Qty:
-                    </label>
-                    <select
-                      id="qty"
-                      value={quantity}
-                      onChange={(e) => setQuantity(Number(e.target.value))}
-                      className="bg-white dark:bg-neutral-800 border border-neutral-300 dark:border-neutral-700 rounded-lg px-2 py-1 text-xs font-bold focus:outline-hidden text-neutral-800 dark:text-neutral-200"
-                    >
-                      {[1, 2, 3, 4, 5].map((n) => (
-                        <option key={n} value={n}>
-                          {n}
-                        </option>
-                      ))}
-                    </select>
+                  {/* Bookstore Quantity Stepper (- / Qty / +) */}
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs font-semibold text-[var(--text-muted)]">
+                      Quantity:
+                    </span>
+                    <div className="inline-flex items-center rounded-full border border-[var(--border-strong)] bg-[var(--bg-card)] shadow-2xs overflow-hidden">
+                      <button
+                        type="button"
+                        onClick={() => setQuantity((prev) => Math.max(1, prev - 1))}
+                        disabled={quantity <= 1}
+                        aria-label="Decrease quantity"
+                        className="w-8 h-8 flex items-center justify-center text-[var(--text-main)] hover:bg-[var(--bg-hover)] disabled:opacity-35 disabled:pointer-events-none active:scale-95 transition cursor-pointer"
+                      >
+                        <Minus className="w-3.5 h-3.5" />
+                      </button>
+                      <span
+                        aria-live="polite"
+                        className="min-w-[2.25rem] px-2 text-center text-xs font-bold text-[var(--text-main)] select-none"
+                      >
+                        {quantity}
+                      </span>
+                      <button
+                        type="button"
+                        onClick={() => setQuantity((prev) => Math.min(20, prev + 1))}
+                        disabled={quantity >= 20}
+                        aria-label="Increase quantity"
+                        className="w-8 h-8 flex items-center justify-center text-[var(--text-main)] hover:bg-[var(--bg-hover)] disabled:opacity-35 disabled:pointer-events-none active:scale-95 transition cursor-pointer"
+                      >
+                        <Plus className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
                   </div>
                 </div>
+
+                {/* Live In-Bag Status & Direct Bag Quantity Adjuster if already in Bag */}
+                {(() => {
+                  const existingBagItem = bag.find((item) => item.book.id === activeBook.id);
+                  if (!existingBagItem) return null;
+                  return (
+                    <div className="flex flex-wrap items-center justify-between gap-2 pt-2.5 border-t border-[var(--border-subtle)] text-xs">
+                      <span className="inline-flex items-center gap-1.5 font-semibold text-[var(--text-main)]">
+                        <Handbag className="w-3.5 h-3.5 text-[#F1641E]" />
+                        <span>
+                          In your Bag: <strong>{existingBagItem.quantity}</strong>{' '}
+                          {existingBagItem.quantity === 1 ? 'copy' : 'copies'}
+                        </span>
+                      </span>
+                      <div className="inline-flex items-center gap-1.5">
+                        <button
+                          type="button"
+                          onClick={() => {
+                            if (existingBagItem.quantity > 1) {
+                              updateBagQuantity(activeBook.id, -1);
+                              triggerToast(`Updated "${activeBook.title}" to ${existingBagItem.quantity - 1} in Bag`);
+                            } else {
+                              removeFromBag(activeBook.id);
+                              triggerToast(`Removed "${activeBook.title}" from Bag`);
+                            }
+                          }}
+                          className="w-7 h-7 rounded-full border border-[var(--border-subtle)] bg-[var(--bg-card)] hover:bg-[var(--bg-hover)] flex items-center justify-center text-[var(--text-main)] transition cursor-pointer"
+                          title="Reduce quantity in Bag"
+                          aria-label="Reduce quantity in Bag"
+                        >
+                          <Minus className="w-3 h-3" />
+                        </button>
+                        <span className="min-w-[1.5rem] text-center font-bold text-[var(--text-main)]">
+                          {existingBagItem.quantity}
+                        </span>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            updateBagQuantity(activeBook.id, 1);
+                            triggerToast(`Added another copy of "${activeBook.title}" (${existingBagItem.quantity + 1} in Bag)`);
+                          }}
+                          className="w-7 h-7 rounded-full border border-[var(--border-subtle)] bg-[var(--bg-card)] hover:bg-[var(--bg-hover)] flex items-center justify-center text-[var(--text-main)] transition cursor-pointer"
+                          title="Add another copy to Bag"
+                          aria-label="Add another copy to Bag"
+                        >
+                          <Plus className="w-3 h-3" />
+                        </button>
+                        <Link
+                          href="/bag"
+                          className="ml-1 text-[11px] font-semibold text-[#F1641E] hover:underline"
+                        >
+                          View Bag →
+                        </Link>
+                      </div>
+                    </div>
+                  );
+                })()}
 
                 <p className="text-xs font-semibold text-amber-800 dark:text-amber-400 flex items-center gap-1.5">
                   <Sparkles className="w-3.5 h-3.5" />
                   <span>{currentFormatObj.stockText}</span>
                 </p>
-                <p className="text-xs text-neutral-600 dark:text-neutral-400 flex items-center gap-1.5">
-                  <Truck className="w-3.5 h-3.5 text-neutral-700 dark:text-neutral-300 shrink-0" />
+                <p className="text-xs text-[var(--text-muted)] flex items-center gap-1.5">
+                  <Truck className="w-3.5 h-3.5 text-[var(--text-main)] shrink-0" />
                   <span>{currentFormatObj.deliveryText}</span>
                 </p>
               </div>

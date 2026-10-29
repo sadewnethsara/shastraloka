@@ -23,7 +23,7 @@ import Footer from '../../../components/Footer';
 import CleanBookCard from '../../../components/CleanBookCard';
 import { useApp } from '../../../context/AppContext';
 import { BOOKS } from '../../../data/books';
-import { PUBLISHERS } from '../page';
+import { PUBLISHERS } from '../../../data/publishers';
 
 export default function PublisherDetailPage() {
     const params = useParams();
