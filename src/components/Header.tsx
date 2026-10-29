@@ -27,6 +27,7 @@ import { BOOKS, CATEGORIES } from '../data/books';
 import { getAutocompleteSuggestions } from '../utils/searchEngine';
 import { SearchField } from './ui/SearchField';
 import VisualSearchModal from './VisualSearchModal';
+import CategoriesMegaMenu from './CategoriesMegaMenu';
 
 export interface RecentSearchData {
   id: string;
@@ -132,7 +133,6 @@ export default function Header({ isSticky = false }: HeaderProps = {}) {
   } = useApp();
 
   const [categoriesOpen, setCategoriesOpen] = useState(false);
-  const [hoveredCategory, setHoveredCategory] = useState<string>('Recommended categories');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isVisualSearchOpen, setIsVisualSearchOpen] = useState(false);
   const [localSearch, setLocalSearch] = useState(searchQuery || '');
@@ -508,151 +508,19 @@ export default function Header({ isSticky = false }: HeaderProps = {}) {
               <button
                 type="button"
                 onClick={() => setCategoriesOpen(!categoriesOpen)}
-                className="flex items-center gap-2 px-3.5 py-2 rounded-full text-sm font-medium text-[var(--header-text)] hover:bg-[var(--header-hover-bg)] transition cursor-pointer"
+                className="flex items-center gap-2 px-3 py-1.5 rounded-full text-sm font-semibold text-[var(--header-text)] hover:bg-[var(--header-hover-bg)] transition cursor-pointer"
+                aria-expanded={categoriesOpen}
+                aria-haspopup="true"
               >
                 <Menu className="w-4 h-4 text-[var(--header-text)]" />
                 <span>Categories</span>
-                <ChevronDown
-                  className={`w-3.5 h-3.5 text-[var(--header-text-muted)] transition-transform ${categoriesOpen ? 'rotate-180' : ''
-                    }`}
-                />
               </button>
 
-              {/* Categories 2-Column Visual Mega-Menu (Matching Image 10) */}
-              {categoriesOpen && (
-                <div className="absolute left-0 mt-2 w-[680px] max-w-[92vw] bg-[var(--header-dropdown-bg)] text-[var(--header-text)] rounded-2xl shadow-2xl border border-[var(--header-dropdown-border)] overflow-hidden z-50 animate-fade-in flex">
-                  {/* Left Column: Category List */}
-                  <div className="w-64 border-r border-[var(--border-subtle)] py-2 max-h-[440px] overflow-y-auto bg-[var(--bg-surface)]">
-                    <button
-                      type="button"
-                      onMouseEnter={() => setHoveredCategory('Recommended categories')}
-                      onClick={() => {
-                        setCategoriesOpen(false);
-                        router.push('/categories');
-                      }}
-                      className={`w-full text-left px-4 py-2.5 text-sm font-medium flex items-center justify-between transition cursor-pointer ${hoveredCategory === 'Recommended categories'
-                          ? 'bg-[var(--bg-hover)] font-semibold text-[var(--text-main)]'
-                          : 'text-[var(--header-text)] hover:bg-[var(--header-hover-bg)]'
-                        }`}
-                    >
-                      <span className="flex items-center gap-2 truncate">
-                        <Sparkles className="w-4 h-4 text-[#F1641E] shrink-0" />
-                        <span className="truncate">Recommended categories</span>
-                      </span>
-                      <ChevronRight className="w-3.5 h-3.5 text-[var(--header-text-muted)] shrink-0 ml-2" />
-                    </button>
-
-                    {CATEGORIES.filter((c: string) => c !== 'All Treatises').map((cat) => {
-                      const active = hoveredCategory === cat;
-                      return (
-                        <button
-                          key={cat}
-                          type="button"
-                          onMouseEnter={() => setHoveredCategory(cat)}
-                          onClick={() => handleCategoryClick(cat)}
-                          className={`w-full text-left px-4 py-2.5 text-sm flex items-center justify-between transition cursor-pointer ${active
-                              ? 'bg-[var(--bg-hover)] font-semibold text-[var(--text-main)]'
-                              : 'text-[var(--header-text)] hover:bg-[var(--header-hover-bg)]'
-                            }`}
-                        >
-                          <span className="truncate">{cat.split(' (')[0]}</span>
-                          <ChevronRight className="w-3.5 h-3.5 text-[var(--header-text-muted)] shrink-0 ml-2" />
-                        </button>
-                      );
-                    })}
-
-                    <div className="my-1.5 border-t border-[var(--border-subtle)]" />
-
-                    <Link
-                      href="/books"
-                      onClick={() => setCategoriesOpen(false)}
-                      className="w-full text-left px-4 py-2 text-sm text-[var(--header-text)] hover:bg-[var(--header-hover-bg)] flex items-center justify-between transition"
-                    >
-                      <span>Books, Chanting &amp; Audio</span>
-                      <ChevronRight className="w-3.5 h-3.5 text-[var(--header-text-muted)] shrink-0 ml-2" />
-                    </Link>
-                    <Link
-                      href="/gift-cards"
-                      onClick={() => setCategoriesOpen(false)}
-                      className="w-full text-left px-4 py-2 text-sm text-[var(--header-text)] hover:bg-[var(--header-hover-bg)] flex items-center justify-between transition"
-                    >
-                      <span>Shastraloka Gift Cards</span>
-                      <ChevronRight className="w-3.5 h-3.5 text-[var(--header-text-muted)] shrink-0 ml-2" />
-                    </Link>
-                  </div>
-
-                  {/* Right Column: 3 Visual Category Cards Preview */}
-                  <div className="flex-1 p-5 bg-[var(--bg-card)] flex flex-col justify-between">
-                    <div>
-                      <div className="grid grid-cols-3 gap-4">
-                        {(hoveredCategory === 'Recommended categories'
-                          ? [
-                            {
-                              title: 'Royal Chronicles',
-                              image: BOOKS[0]?.coverImage || FALLBACK_SEARCH_COVER,
-                              href: '/categories/ancient-chronicles',
-                            },
-                            {
-                              title: 'Sinhala Kavya & Verse',
-                              image: BOOKS[2]?.coverImage || FALLBACK_SEARCH_COVER,
-                              href: '/categories/classical-poetry',
-                            },
-                            {
-                              title: 'Books & Manuscripts',
-                              image: BOOKS[1]?.coverImage || FALLBACK_SEARCH_COVER,
-                              href: '/books',
-                            },
-                          ]
-                          : BOOKS.filter((b) => b.category === hoveredCategory)
-                            .slice(0, 3)
-                            .map((b) => ({
-                              title: b.title.split(':')[0],
-                              image: b.coverImage,
-                              href: `/books/${b.id}`,
-                            }))
-                        ).map((card, i) => (
-                          <Link
-                            key={i}
-                            href={card.href}
-                            onClick={() => setCategoriesOpen(false)}
-                            className="group text-center block"
-                          >
-                            <div className="aspect-square w-full rounded-xl overflow-hidden bg-[var(--bg-wash)] border border-[var(--border-subtle)] mb-2">
-                              <img
-                                src={card.image}
-                                alt={card.title}
-                                referrerPolicy="no-referrer"
-                                className="w-full h-full object-cover group-hover:scale-105 transition duration-300"
-                              />
-                            </div>
-                            <span className="text-xs font-semibold text-[var(--text-main)] group-hover:text-[var(--color-primary)] line-clamp-2 leading-snug">
-                              {card.title}
-                            </span>
-                          </Link>
-                        ))}
-                      </div>
-                    </div>
-
-                    <div className="pt-4 mt-4 border-t border-[var(--border-subtle)] flex items-center justify-between text-xs">
-                      <Link
-                        href="/categories"
-                        onClick={() => setCategoriesOpen(false)}
-                        className="font-semibold text-[var(--text-main)] hover:text-[var(--color-primary)]"
-                      >
-                        Browse all categories &rarr;
-                      </Link>
-                      <Link
-                        href="/offers"
-                        onClick={() => setCategoriesOpen(false)}
-                        className="inline-flex items-center gap-1 font-semibold text-[var(--color-primary)] hover:underline"
-                      >
-                        <Tag className="w-3.5 h-3.5" />
-                        <span>Today&apos;s Special Offers</span>
-                      </Link>
-                    </div>
-                  </div>
-                </div>
-              )}
+              {/* Categories 2-Column Visual Mega-Menu (Matching Etsy Reference) */}
+              <CategoriesMegaMenu
+                isOpen={categoriesOpen}
+                onClose={() => setCategoriesOpen(false)}
+              />
             </div>
 
             {/* Search Input Bar with Orange Pill Button */}
