@@ -395,7 +395,7 @@ export default function BooksStorefrontPage() {
             </div>
           </div>
 
-          <div className="flex lg:grid lg:grid-cols-7 gap-4 overflow-x-auto lg:overflow-visible pb-2 no-scrollbar">
+          <div className="flex lg:grid lg:grid-cols-7 gap-4 overflow-x-auto overflow-y-hidden lg:overflow-visible pb-2 no-scrollbar">
             {shelfBooks(2).map((book) => (
               <StorefrontShelfCard key={`reading-${book.id}`} book={book} />
             ))}
@@ -417,7 +417,7 @@ export default function BooksStorefrontPage() {
             </Link>
           </div>
 
-          <div className="flex lg:grid lg:grid-cols-7 gap-4 overflow-x-auto lg:overflow-visible pb-2 no-scrollbar">
+          <div className="flex lg:grid lg:grid-cols-7 gap-4 overflow-x-auto overflow-y-hidden lg:overflow-visible pb-2 no-scrollbar">
             {shelfBooks(4).map((book) => (
               <StorefrontShelfCard key={`bestseller-${book.id}`} book={book} />
             ))}
@@ -439,7 +439,7 @@ export default function BooksStorefrontPage() {
             </Link>
           </div>
 
-          <div className="flex lg:grid lg:grid-cols-7 gap-4 overflow-x-auto lg:overflow-visible pb-2 no-scrollbar">
+          <div className="flex lg:grid lg:grid-cols-7 gap-4 overflow-x-auto overflow-y-hidden lg:overflow-visible pb-2 no-scrollbar">
             {shelfBooks(6).map((book) => (
               <StorefrontShelfCard key={`print-${book.id}`} book={book} />
             ))}
@@ -461,7 +461,7 @@ export default function BooksStorefrontPage() {
             </Link>
           </div>
 
-          <div className="flex lg:grid lg:grid-cols-7 gap-4 overflow-x-auto lg:overflow-visible pb-2 no-scrollbar">
+          <div className="flex lg:grid lg:grid-cols-7 gap-4 overflow-x-auto overflow-y-hidden lg:overflow-visible pb-2 no-scrollbar">
             {shelfBooks(1).map((book) => (
               <StorefrontShelfCard
                 key={`deal-${book.id}`}
@@ -492,7 +492,7 @@ export default function BooksStorefrontPage() {
             </div>
           </div>
 
-          <div className="flex lg:grid lg:grid-cols-7 gap-4 overflow-x-auto lg:overflow-visible pb-2 no-scrollbar">
+          <div className="flex lg:grid lg:grid-cols-7 gap-4 overflow-x-auto overflow-y-hidden lg:overflow-visible pb-2 no-scrollbar">
             {shelfBooks(3).map((book) => (
               <StorefrontShelfCard
                 key={`first-${book.id}`}

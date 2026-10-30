@@ -67,7 +67,8 @@ export const SearchField = forwardRef<HTMLInputElement, SearchFieldProps>(
     };
 
     const submitColorClasses = {
-      orange: 'bg-[var(--color-primary)] hover:bg-[var(--color-primary-hover)] text-white',
+      orange:
+        'bg-[#F1641E] group-hover/search:bg-[#f38b53] hover:!bg-[#e05612] text-white',
       dark: 'bg-[var(--text-main)] hover:opacity-90 text-[var(--bg-main)]',
       red: 'bg-[var(--color-accent-badge)] hover:opacity-90 text-white',
     }[submitButtonColor];
@@ -76,24 +77,27 @@ export const SearchField = forwardRef<HTMLInputElement, SearchFieldProps>(
       sm: {
         container: 'h-9',
         input: 'text-xs pl-4 pr-18 py-1.5',
-        button: 'w-7 h-7 right-1',
+        button:
+          'w-7 h-7 right-1 rounded-full group-hover/search:right-[2px] group-hover/search:w-9 group-hover/search:h-[calc(100%-4px)] group-hover/search:rounded-l-none group-hover/search:rounded-r-full hover:right-[2px] hover:w-9 hover:h-[calc(100%-4px)] hover:rounded-l-none hover:rounded-r-full',
       },
       md: {
         container: 'h-11',
         input: 'text-sm pl-5 pr-22 py-2.5',
-        button: 'w-9 h-9 right-1.5',
+        button:
+          'w-9 h-9 right-1.5 rounded-full group-hover/search:right-[2px] group-hover/search:w-12 group-hover/search:h-[calc(100%-4px)] group-hover/search:rounded-l-none group-hover/search:rounded-r-full hover:right-[2px] hover:w-12 hover:h-[calc(100%-4px)] hover:rounded-l-none hover:rounded-r-full',
       },
       lg: {
         container: 'h-13',
         input: 'text-base pl-6 pr-24 py-3',
-        button: 'w-10 h-10 right-1.5',
+        button:
+          'w-10 h-10 right-1.5 rounded-full group-hover/search:right-[2px] group-hover/search:w-14 group-hover/search:h-[calc(100%-4px)] group-hover/search:rounded-l-none group-hover/search:rounded-r-full hover:right-[2px] hover:w-14 hover:h-[calc(100%-4px)] hover:rounded-l-none hover:rounded-r-full',
       },
     }[size];
 
     return (
       <div
         onClick={onClick}
-        className={`relative flex items-center w-full transition-all duration-150 cursor-text ${sizeClasses.container} ${className}`}
+        className={`group/search relative flex items-center w-full transition-all duration-150 cursor-text ${sizeClasses.container} ${className}`}
       >
         <input
           ref={ref}
@@ -116,7 +120,7 @@ export const SearchField = forwardRef<HTMLInputElement, SearchFieldProps>(
           autoFocus={autoFocus}
           className={`w-full h-full bg-[var(--bg-input)] text-[var(--text-main)] placeholder:text-[var(--text-dim)] border-2 rounded-full transition-all duration-200 outline-hidden ${isFocused
               ? 'border-[var(--border-focus)] shadow-sm'
-              : 'border-[var(--border-strong)] hover:border-[var(--border-focus)]'
+              : 'border-[var(--border-strong)] group-hover/search:border-[var(--border-focus)] hover:border-[var(--border-focus)]'
             } ${sizeClasses.input}`}
         />
 
@@ -148,7 +152,7 @@ export const SearchField = forwardRef<HTMLInputElement, SearchFieldProps>(
             }}
             title="Search sacred manuscripts by image"
             aria-label="Search sacred manuscripts by image"
-            className={`absolute flex items-center justify-center p-1.5 rounded-full text-[var(--text-dim)] hover:text-[var(--color-primary)] hover:bg-[var(--header-hover-bg)] transition-colors cursor-pointer group ${showSubmitButton ? 'right-11 sm:right-13' : 'right-2 sm:right-2.5'
+            className={`absolute flex items-center justify-center p-1.5 rounded-full text-[var(--text-dim)] hover:text-[var(--color-primary)] hover:bg-[var(--header-hover-bg)] transition-colors cursor-pointer group ${showSubmitButton ? 'right-12 sm:right-13.5' : 'right-2 sm:right-2.5'
               }`}
           >
             <Camera className="w-4 h-4 stroke-[2.2] group-hover:scale-110 transition-transform" />
@@ -165,9 +169,9 @@ export const SearchField = forwardRef<HTMLInputElement, SearchFieldProps>(
               onSubmit?.(value);
             }}
             aria-label="Submit search"
-            className={`absolute rounded-full flex items-center justify-center transition-transform active:scale-90 shadow-xs cursor-pointer ${sizeClasses.button} ${submitColorClasses}`}
+            className={`absolute flex items-center justify-center transition-all duration-150 active:scale-95 cursor-pointer ${sizeClasses.button} ${submitColorClasses}`}
           >
-            <Search className="w-4 h-4" />
+            <Search className="w-4 h-4 stroke-[2.4]" />
           </button>
         )}
       </div>

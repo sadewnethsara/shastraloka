@@ -24,6 +24,16 @@ import {
   Feather,
   Leaf,
   Compass,
+  Bell,
+  ChevronDown,
+  Tag,
+  ClipboardList,
+  MessageSquare,
+  CreditCard,
+  Settings,
+  LogOut,
+  Truck,
+  Store,
 } from 'lucide-react';
 import { useApp } from '../context/AppContext';
 import { BOOKS } from '../data/books';
@@ -135,12 +145,16 @@ export default function Header({ isSticky = false }: HeaderProps = {}) {
     openAuthModal,
     user,
     isLoggedIn,
+    logout,
+    addToBag,
     setShowMiniBagRail,
   } = useApp();
 
   const [categoriesOpen, setCategoriesOpen] = useState(false);
   const [isCategorySheetOpen, setIsCategorySheetOpen] = useState(false);
   const [isVisualSearchOpen, setIsVisualSearchOpen] = useState(false);
+  const [notificationsOpen, setNotificationsOpen] = useState(false);
+  const [profileMenuOpen, setProfileMenuOpen] = useState(false);
   const [localSearch, setLocalSearch] = useState(searchQuery || '');
   const [prevSearchQuery, setPrevSearchQuery] = useState(searchQuery);
   const [suggestionsOpen, setSuggestionsOpen] = useState(false);
@@ -152,8 +166,13 @@ export default function Header({ isSticky = false }: HeaderProps = {}) {
   }
 
   const categoriesRef = useRef<HTMLDivElement>(null);
+  const tabletCategoriesRef = useRef<HTMLDivElement>(null);
   const desktopSearchRef = useRef<HTMLDivElement>(null);
   const mobileSearchRef = useRef<HTMLDivElement>(null);
+  const desktopNotificationsRef = useRef<HTMLDivElement>(null);
+  const mobileNotificationsRef = useRef<HTMLDivElement>(null);
+  const desktopProfileRef = useRef<HTMLDivElement>(null);
+  const mobileProfileRef = useRef<HTMLDivElement>(null);
 
   const totalFavorites = boards.reduce((acc, b) => acc + b.bookIds.length, 0);
   const autocompleteData = React.useMemo(
@@ -166,23 +185,42 @@ export default function Header({ isSticky = false }: HeaderProps = {}) {
     triggerNavigation();
   }, [pathname, triggerNavigation]);
 
-  // Close categories and search suggestions dropdown on outside click
+  // Close categories, notifications, profile menu and search suggestions dropdown on outside click
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
-      if (
-        categoriesRef.current &&
-        !categoriesRef.current.contains(event.target as Node)
-      ) {
+      const target = event.target as Node;
+      const inDesktopCat =
+        categoriesRef.current && categoriesRef.current.contains(target);
+      const inTabletCat =
+        tabletCategoriesRef.current && tabletCategoriesRef.current.contains(target);
+      if (!inDesktopCat && !inTabletCat) {
         setCategoriesOpen(false);
       }
+
       const inDesktopSearch =
-        desktopSearchRef.current &&
-        desktopSearchRef.current.contains(event.target as Node);
+        desktopSearchRef.current && desktopSearchRef.current.contains(target);
       const inMobileSearch =
-        mobileSearchRef.current &&
-        mobileSearchRef.current.contains(event.target as Node);
+        mobileSearchRef.current && mobileSearchRef.current.contains(target);
       if (!inDesktopSearch && !inMobileSearch) {
         setSuggestionsOpen(false);
+      }
+
+      const inDesktopNotif =
+        desktopNotificationsRef.current &&
+        desktopNotificationsRef.current.contains(target);
+      const inMobileNotif =
+        mobileNotificationsRef.current &&
+        mobileNotificationsRef.current.contains(target);
+      if (!inDesktopNotif && !inMobileNotif) {
+        setNotificationsOpen(false);
+      }
+
+      const inDesktopProfile =
+        desktopProfileRef.current && desktopProfileRef.current.contains(target);
+      const inMobileProfile =
+        mobileProfileRef.current && mobileProfileRef.current.contains(target);
+      if (!inDesktopProfile && !inMobileProfile) {
+        setProfileMenuOpen(false);
       }
     }
     document.addEventListener('mousedown', handleClickOutside);
@@ -248,7 +286,7 @@ export default function Header({ isSticky = false }: HeaderProps = {}) {
           className="absolute left-0 right-0 top-full mt-2 bg-[var(--header-dropdown-bg)] text-[var(--header-text)] rounded-2xl shadow-2xl border border-[var(--header-dropdown-border)] overflow-hidden z-50 animate-fade-in max-h-[78vh] overflow-y-auto overscroll-contain"
         >
           {/* Recent Searches */}
-          <div className="p-3.5 sm:p-4">
+          <div className="px-3.5 sm:px-6 py-3.5 sm:py-4">
             <div className="flex items-center justify-between mb-3 px-1">
               <span className="text-xs font-bold uppercase tracking-wider text-[var(--header-text-muted)] flex items-center gap-1.5">
                 <RotateCcw className="w-3.5 h-3.5 text-[var(--color-primary)]" />
@@ -358,7 +396,7 @@ export default function Header({ isSticky = false }: HeaderProps = {}) {
         className="absolute left-0 right-0 top-full mt-2 bg-[var(--header-dropdown-bg)] text-[var(--header-text)] rounded-2xl shadow-2xl border border-[var(--header-dropdown-border)] overflow-hidden z-50 animate-fade-in max-h-[78vh] overflow-y-auto overscroll-contain"
       >
         {/* Keyword Search Suggestions */}
-        <div className="p-2 border-b border-[var(--header-border)]">
+        <div className="px-3 sm:px-6 py-2.5 border-b border-[var(--header-border)]">
           <div className="px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-[var(--header-text-muted)] flex items-center justify-between">
             <span>Search Pinterest Book Feed</span>
             <button
@@ -395,7 +433,7 @@ export default function Header({ isSticky = false }: HeaderProps = {}) {
 
         {/* Category Matches */}
         {autocompleteData.categoryMatches.length > 0 && (
-          <div className="p-2 border-b border-[var(--header-border)] bg-[var(--bg-wash)]/40">
+          <div className="px-3 sm:px-6 py-2.5 border-b border-[var(--header-border)] bg-[var(--bg-wash)]/40">
             <div className="px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-[var(--header-text-muted)]">
               Categories
             </div>
@@ -415,7 +453,7 @@ export default function Header({ isSticky = false }: HeaderProps = {}) {
         )}
 
         {/* Direct Book Matches */}
-        <div className="p-2">
+        <div className="px-3 sm:px-6 py-2.5">
           <div className="px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-[var(--header-text-muted)] flex items-center justify-between">
             <span>Books & Manuscripts ({autocompleteData.bookMatches.length})</span>
             {autocompleteData.bookMatches.length > 0 && (
@@ -477,13 +515,290 @@ export default function Header({ isSticky = false }: HeaderProps = {}) {
     );
   };
 
+  const handleApplyDealCoupon = (bookIndex: number, code: string, discountLabel: string) => {
+    const targetBook = BOOKS[bookIndex] || BOOKS[0];
+    addToBag(targetBook, targetBook.binding, 1);
+    if (typeof navigator !== 'undefined' && navigator.clipboard) {
+      navigator.clipboard.writeText(code);
+    }
+    setNotificationsOpen(false);
+    showToast(`Applied ${code} (${discountLabel}) to your Shopping Bag!`);
+    router.push('/bag');
+  };
+
+  const renderNotificationsDropdown = () => {
+    if (!notificationsOpen) return null;
+    const offerBook1 = BOOKS[0];
+    const offerBook2 = BOOKS[1] || BOOKS[0];
+
+    return (
+      <div
+        role="dialog"
+        aria-label="Deals and Notifications"
+        onClick={(e) => e.stopPropagation()}
+        className="absolute right-0 top-full mt-3 w-[310px] sm:w-[356px] bg-[var(--bg-card)] text-[var(--text-main)] rounded-2xl shadow-[0_14px_44px_rgba(0,0,0,0.22)] border border-[var(--border-subtle)] z-50 animate-fade-in select-none"
+      >
+        {/* Top Upward Diamond Caret Pointer */}
+        <div className="absolute -top-2 right-6 w-4 h-4 rotate-45 bg-[var(--bg-card)] border-l border-t border-[var(--border-subtle)] pointer-events-none" />
+
+        {/* Centered "Deals" Title */}
+        <div className="py-3.5 px-4 text-center bg-[var(--bg-card)] rounded-t-2xl">
+          <h3 className="text-sm font-bold text-[var(--text-main)]">Deals</h3>
+        </div>
+
+        {/* "Seen" Divider Pill + Notification Items */}
+        <div className="relative border-t border-[var(--border-subtle)] bg-[var(--bg-wash)]/75 rounded-b-2xl pt-5 pb-4 px-4 space-y-5 max-h-[72vh] overflow-y-auto">
+          <span className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-0.5 rounded-full bg-[var(--bg-card)] border border-[var(--border-subtle)] text-xs font-bold text-[var(--text-main)] shadow-2xs">
+            Seen
+          </span>
+
+          {/* Deal Notification 1 */}
+          <div className="flex items-start gap-3">
+            <div className="w-7 h-7 rounded-full bg-[#dcfce7] text-[#15803d] flex items-center justify-center shrink-0 mt-0.5">
+              <Tag className="w-3.5 h-3.5 fill-current" />
+            </div>
+
+            <div className="flex-1 min-w-0">
+              <div className="flex items-start justify-between gap-2">
+                <p className="text-xs sm:text-[13px] text-[var(--text-main)] leading-snug">
+                  Royal Kandy Scriptorium sent an offer for an item you left in your bag.
+                </p>
+                <span className="text-xs text-[var(--text-muted)] shrink-0">3d</span>
+              </div>
+
+              <Link
+                href={`/books/${offerBook1.id}`}
+                onClick={() => setNotificationsOpen(false)}
+                className="block w-20 h-20 rounded-xl overflow-hidden border border-[var(--border-subtle)] bg-[var(--bg-card)] my-2.5 shadow-2xs hover:opacity-95 transition"
+              >
+                <img
+                  src={offerBook1.coverImage}
+                  alt={offerBook1.title}
+                  referrerPolicy="no-referrer"
+                  className="w-full h-full object-cover"
+                />
+              </Link>
+
+              <p className="text-xs sm:text-[13px] font-extrabold text-[#15803d] dark:text-emerald-400">
+                30% off with code SHASTRA30
+              </p>
+
+              <button
+                type="button"
+                onClick={() => handleApplyDealCoupon(0, 'SHASTRA30', '30% off')}
+                className="mt-2 px-4 py-2 rounded-full bg-[#222222] dark:bg-white text-white dark:text-[#222222] text-xs font-bold hover:opacity-90 active:scale-95 transition cursor-pointer"
+              >
+                Apply to bag
+              </button>
+
+              <p className="text-[11px] text-[var(--text-muted)] mt-2">
+                Terms may apply.{' '}
+                <Link
+                  href="/offers"
+                  onClick={() => setNotificationsOpen(false)}
+                  className="underline hover:text-[var(--text-main)]"
+                >
+                  Visit shop for details.
+                </Link>
+              </p>
+            </div>
+          </div>
+
+          {/* Deal Notification 2 */}
+          <div className="pt-4 border-t border-[var(--border-subtle)] flex items-start gap-3">
+            <div className="w-7 h-7 rounded-full bg-[#dcfce7] text-[#15803d] flex items-center justify-center shrink-0 mt-0.5">
+              <Tag className="w-3.5 h-3.5 fill-current" />
+            </div>
+
+            <div className="flex-1 min-w-0">
+              <div className="flex items-start justify-between gap-2">
+                <p className="text-xs sm:text-[13px] text-[var(--text-main)] leading-snug">
+                  Sarasaviya &amp; Grantha Press sent a voucher for your saved favorites.
+                </p>
+                <span className="text-xs text-[var(--text-muted)] shrink-0">5d</span>
+              </div>
+
+              <Link
+                href={`/books/${offerBook2.id}`}
+                onClick={() => setNotificationsOpen(false)}
+                className="block w-20 h-20 rounded-xl overflow-hidden border border-[var(--border-subtle)] bg-[var(--bg-card)] my-2.5 shadow-2xs hover:opacity-95 transition"
+              >
+                <img
+                  src={offerBook2.coverImage}
+                  alt={offerBook2.title}
+                  referrerPolicy="no-referrer"
+                  className="w-full h-full object-cover"
+                />
+              </Link>
+
+              <p className="text-xs sm:text-[13px] font-extrabold text-[#15803d] dark:text-emerald-400">
+                25% off with code PALMLEAF500
+              </p>
+
+              <button
+                type="button"
+                onClick={() => handleApplyDealCoupon(1, 'PALMLEAF500', '25% off')}
+                className="mt-2 px-4 py-2 rounded-full bg-[#222222] dark:bg-white text-white dark:text-[#222222] text-xs font-bold hover:opacity-90 active:scale-95 transition cursor-pointer"
+              >
+                Apply to bag
+              </button>
+
+              <p className="text-[11px] text-[var(--text-muted)] mt-2">
+                Terms may apply.{' '}
+                <Link
+                  href="/offers"
+                  onClick={() => setNotificationsOpen(false)}
+                  className="underline hover:text-[var(--text-main)]"
+                >
+                  Visit shop for details.
+                </Link>
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  const renderProfileDropdown = () => {
+    if (!profileMenuOpen) return null;
+    const displayName = user?.name || 'Sadew Nethsara';
+    const userInitial = displayName.charAt(0).toUpperCase();
+
+    return (
+      <div
+        role="menu"
+        aria-label="Account navigation"
+        onClick={(e) => e.stopPropagation()}
+        className="absolute right-0 top-full mt-3 w-[275px] sm:w-[295px] bg-[var(--bg-card)] text-[var(--text-main)] rounded-2xl shadow-[0_14px_44px_rgba(0,0,0,0.22)] border border-[var(--border-subtle)] z-50 animate-fade-in select-none"
+      >
+        {/* Top Upward Caret Pointer */}
+        <div className="absolute -top-2 right-5 w-4 h-4 rotate-45 bg-[var(--bg-card)] border-l border-t border-[var(--border-subtle)] pointer-events-none" />
+
+        <div className="pt-2 pb-1.5 overflow-hidden rounded-2xl">
+          {/* Profile Header Row with Blue Top/Bottom Accent Border (Matching Reference Screenshot) */}
+          <Link
+            href="/profile"
+            onClick={() => setProfileMenuOpen(false)}
+            className="flex items-center gap-3 px-4 py-3 border-y-2 border-[#3b82f6] bg-[var(--bg-card)] hover:bg-[var(--bg-hover)] transition"
+          >
+            <span className="w-8 h-8 rounded-full bg-[#606c38] text-white text-xs font-bold flex items-center justify-center shrink-0">
+              {userInitial}
+            </span>
+            <div className="min-w-0">
+              <p className="text-sm font-bold text-[var(--text-main)] truncate leading-tight">
+                {displayName}
+              </p>
+              <p className="text-xs text-[var(--text-muted)] mt-0.5">
+                View your profile
+              </p>
+            </div>
+          </Link>
+
+          {/* Group 1: Purchases, Track Order & Messages */}
+          <div className="py-1.5 border-b border-[var(--border-subtle)]">
+            <Link
+              href="/orders"
+              onClick={() => setProfileMenuOpen(false)}
+              className="flex items-center gap-3.5 px-4 py-2.5 text-sm text-[var(--text-main)] hover:bg-[var(--bg-hover)] transition"
+            >
+              <ClipboardList className="w-4.5 h-4.5 text-[var(--text-main)] shrink-0" />
+              <span>Purchases and reviews</span>
+            </Link>
+
+            <Link
+              href="/track-order"
+              onClick={() => setProfileMenuOpen(false)}
+              className="flex items-center gap-3.5 px-4 py-2.5 text-sm text-[var(--text-main)] hover:bg-[var(--bg-hover)] transition"
+            >
+              <Truck className="w-4.5 h-4.5 text-[var(--text-main)] shrink-0" />
+              <span>Track order</span>
+            </Link>
+
+            <Link
+              href="/contact"
+              onClick={() => setProfileMenuOpen(false)}
+              className="flex items-center gap-3.5 px-4 py-2.5 text-sm text-[var(--text-main)] hover:bg-[var(--bg-hover)] transition"
+            >
+              <MessageSquare className="w-4.5 h-4.5 text-[var(--text-main)] shrink-0" />
+              <span>Messages</span>
+            </Link>
+          </div>
+
+          {/* Group 2: Credit Balance, Special Offers, Gifts & Wishlist */}
+          <div className="py-1.5 border-b border-[var(--border-subtle)]">
+            <Link
+              href="/gift-cards"
+              onClick={() => setProfileMenuOpen(false)}
+              className="flex items-center gap-3.5 px-4 py-2.5 text-sm text-[var(--text-main)] hover:bg-[var(--bg-hover)] transition"
+            >
+              <CreditCard className="w-4.5 h-4.5 text-[var(--text-main)] shrink-0" />
+              <span>Credit balance: LKR 0.00</span>
+            </Link>
+
+            <Link
+              href="/offers"
+              onClick={() => setProfileMenuOpen(false)}
+              className="flex items-center gap-3.5 px-4 py-2.5 text-sm text-[var(--text-main)] hover:bg-[var(--bg-hover)] transition"
+            >
+              <Tag className="w-4.5 h-4.5 text-[var(--text-main)] shrink-0" />
+              <span>Special offers</span>
+            </Link>
+
+            <Link
+              href="/gifts"
+              onClick={() => setProfileMenuOpen(false)}
+              className="flex items-center gap-3.5 px-4 py-2.5 text-sm text-[var(--text-main)] hover:bg-[var(--bg-hover)] transition"
+            >
+              <Gift className="w-4.5 h-4.5 text-[var(--text-main)] shrink-0" />
+              <span>Shastraloka Registry &amp; Gifts</span>
+            </Link>
+
+            <Link
+              href="/wishlist"
+              onClick={() => setProfileMenuOpen(false)}
+              className="flex items-center gap-3.5 px-4 py-2.5 text-sm text-[var(--text-main)] hover:bg-[var(--bg-hover)] transition"
+            >
+              <Heart className="w-4.5 h-4.5 text-[var(--text-main)] shrink-0" />
+              <span>Wishlist &amp; saved boards</span>
+            </Link>
+          </div>
+
+          {/* Group 3: Account Settings & Sign Out */}
+          <div className="py-1.5">
+            <Link
+              href="/profile/settings"
+              onClick={() => setProfileMenuOpen(false)}
+              className="flex items-center gap-3.5 px-4 py-2.5 text-sm text-[var(--text-main)] hover:bg-[var(--bg-hover)] transition"
+            >
+              <Settings className="w-4.5 h-4.5 text-[var(--text-main)] shrink-0" />
+              <span>Account settings</span>
+            </Link>
+
+            <button
+              type="button"
+              onClick={() => {
+                setProfileMenuOpen(false);
+                logout();
+              }}
+              className="w-full flex items-center gap-3.5 px-4 py-2.5 text-sm text-[var(--text-main)] hover:bg-[var(--bg-hover)] transition cursor-pointer text-left"
+            >
+              <LogOut className="w-4.5 h-4.5 text-[var(--text-main)] shrink-0" />
+              <span>Sign out</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
   return (
     <>
       <header
         className={`${isSticky
           ? 'sticky top-0 backdrop-blur-md bg-[var(--header-bg-glass)]'
           : 'relative bg-[var(--header-bg)]'
-          } z-40 border-b border-[var(--header-border)] text-[var(--header-text)] transition-colors duration-200 w-full max-w-full overflow-x-clip`}
+          } z-40 border-b border-[var(--header-border)] text-[var(--header-text)] transition-colors duration-200 w-full max-w-full`}
       >
         <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 w-full max-w-full box-border">
           {/* =====================================================================
@@ -551,7 +866,7 @@ export default function Header({ isSticky = false }: HeaderProps = {}) {
             </div>
 
             {/* Right User Actions */}
-            <div className="flex items-center gap-2 shrink-0">
+            <div className="flex items-center gap-1.5 shrink-0">
               {/* Theme Toggle */}
               <button
                 type="button"
@@ -567,25 +882,6 @@ export default function Header({ isSticky = false }: HeaderProps = {}) {
                 )}
               </button>
 
-              {/* Sign in button (Opens Desktop Dialog / Mobile Bottom Sheet) */}
-              <button
-                type="button"
-                onClick={() => openAuthModal('login')}
-                className="px-3 py-1.5 rounded-full text-sm font-medium text-[var(--header-text)] hover:bg-[var(--header-hover-bg)] transition cursor-pointer"
-              >
-                Sign in
-              </button>
-
-              {/* User Profile */}
-              <Link
-                href="/profile"
-                aria-label="Profile"
-                className="p-2.5 rounded-full hover:bg-[var(--header-hover-bg)] text-[var(--header-text)] transition cursor-pointer"
-                title="Profile"
-              >
-                <User className="w-5 h-5" />
-              </Link>
-
               {/* Favorites / Saved Reading List */}
               <Link
                 href="/wishlist"
@@ -600,6 +896,77 @@ export default function Header({ isSticky = false }: HeaderProps = {}) {
                   </span>
                 )}
               </Link>
+
+              {/* Notifications / Deals Bell Dropdown */}
+              <div className="relative" ref={desktopNotificationsRef}>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setNotificationsOpen(!notificationsOpen);
+                    setProfileMenuOpen(false);
+                  }}
+                  aria-label="Deals and Notifications"
+                  aria-expanded={notificationsOpen}
+                  className={`h-10 px-3 rounded-full flex items-center gap-1 transition cursor-pointer ${
+                    notificationsOpen
+                      ? 'bg-[#dbeafe] dark:bg-blue-950/60 text-[#1e3a8a] dark:text-blue-200 ring-2 ring-[#3b82f6]/60'
+                      : 'hover:bg-[var(--header-hover-bg)] text-[var(--header-text)]'
+                  }`}
+                  title="Deals & Notifications"
+                >
+                  <div className="relative">
+                    <Bell className="w-5 h-5 fill-current" />
+                    <span className="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full bg-[#e60023]" />
+                  </div>
+                  <ChevronDown className="w-3.5 h-3.5" />
+                </button>
+                {renderNotificationsDropdown()}
+              </div>
+
+              {/* Publishers / Scriptorium Icon (Matching Storefront Icon in Reference) */}
+              <Link
+                href="/publishers"
+                aria-label="Publishers & Scriptoriums"
+                className="p-2.5 rounded-full hover:bg-[var(--header-hover-bg)] text-[var(--header-text)] transition cursor-pointer"
+                title="Publishers & Scriptoriums"
+              >
+                <Store className="w-5 h-5" />
+              </Link>
+
+              {/* Signed-Out: Sign in Button | Signed-In: Profile Avatar Pill + Dropdown Box */}
+              {!isLoggedIn ? (
+                <button
+                  type="button"
+                  onClick={() => openAuthModal('login')}
+                  className="h-10 px-4 rounded-full text-sm font-bold text-[var(--header-text)] hover:bg-[var(--header-hover-bg)] transition cursor-pointer"
+                >
+                  Sign in
+                </button>
+              ) : (
+                <div className="relative" ref={desktopProfileRef}>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setProfileMenuOpen(!profileMenuOpen);
+                      setNotificationsOpen(false);
+                    }}
+                    aria-label="Your account menu"
+                    aria-expanded={profileMenuOpen}
+                    className={`h-10 px-2.5 rounded-full flex items-center gap-1.5 transition cursor-pointer ${
+                      profileMenuOpen
+                        ? 'bg-[#dbeafe] dark:bg-blue-950/60 text-[#1e3a8a] dark:text-blue-200 ring-2 ring-[#3b82f6]/60'
+                        : 'hover:bg-[var(--header-hover-bg)] text-[var(--header-text)]'
+                    }`}
+                    title={user?.name || 'Your Profile'}
+                  >
+                    <span className="w-7 h-7 rounded-full bg-[#606c38] text-white text-xs font-bold flex items-center justify-center shrink-0">
+                      {(user?.name || 'S').charAt(0).toUpperCase()}
+                    </span>
+                    <ChevronDown className="w-3.5 h-3.5" />
+                  </button>
+                  {renderProfileDropdown()}
+                </div>
+              )}
 
               {/* Highlighted Shopping Bag Button -> Navigates to Bag Page */}
               <Link
@@ -645,7 +1012,7 @@ export default function Header({ isSticky = false }: HeaderProps = {}) {
               TABLET & MOBILE HEADER (< lg)
              ===================================================================== */}
           <div className="lg:hidden py-2.5 space-y-2">
-            {/* Row 1: Logo on Left, Auth & Bag Actions on Right */}
+            {/* Row 1: Logo on Left, Notifications, Auth/Profile & Bag Actions on Right */}
             <div className="flex items-center justify-between">
               <Link
                 href="/"
@@ -658,7 +1025,32 @@ export default function Header({ isSticky = false }: HeaderProps = {}) {
                 Shastraloka
               </Link>
 
-              <div className="flex items-center gap-2 shrink-0">
+              <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
+                {/* Mobile/Tablet Notifications Bell Dropdown */}
+                <div className="relative" ref={mobileNotificationsRef}>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setNotificationsOpen(!notificationsOpen);
+                      setProfileMenuOpen(false);
+                    }}
+                    aria-label="Deals and Notifications"
+                    aria-expanded={notificationsOpen}
+                    className={`h-9 px-2.5 rounded-full flex items-center gap-1 transition cursor-pointer ${
+                      notificationsOpen
+                        ? 'bg-[#dbeafe] dark:bg-blue-950/60 text-[#1e3a8a] dark:text-blue-200 ring-2 ring-[#3b82f6]/60'
+                        : 'hover:bg-[var(--header-hover-bg)] text-[var(--header-text)]'
+                    }`}
+                  >
+                    <div className="relative">
+                      <Bell className="w-4.5 h-4.5 fill-current" />
+                      <span className="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full bg-[#e60023]" />
+                    </div>
+                    <ChevronDown className="w-3 h-3" />
+                  </button>
+                  {renderNotificationsDropdown()}
+                </div>
+
                 {/* If user is NOT signed in: show "Sign in" button matching Bag button height, shape and theme */}
                 {!isLoggedIn ? (
                   <button
@@ -670,20 +1062,29 @@ export default function Header({ isSticky = false }: HeaderProps = {}) {
                     Sign in
                   </button>
                 ) : (
-                  /* If user IS signed in: replace Sign in button with Profile matching Bag button */
-                  <Link
-                    href="/profile"
-                    aria-label="Profile"
-                    className="h-9 px-3 rounded-full flex items-center gap-1.5 bg-[var(--bag-btn-bg)] border-2 border-[var(--bag-btn-border)] text-[var(--bag-btn-text)] hover:bg-[var(--bag-btn-hover-bg)] hover:border-[var(--bag-btn-hover-border)] font-bold text-xs shadow-xs active:scale-95 transition cursor-pointer"
-                    title="Scholar Profile"
-                  >
-                    <span className="w-4 h-4 rounded-full bg-[var(--color-primary)] text-white text-[9px] font-bold flex items-center justify-center shrink-0">
-                      {user?.name ? user.name.charAt(0).toUpperCase() : 'U'}
-                    </span>
-                    <span className="max-w-[70px] truncate font-bold text-xs">
-                      {user?.name?.split(' ')[0] || 'Profile'}
-                    </span>
-                  </Link>
+                  /* If user IS signed in: show Profile Avatar Pill + Dropdown Box */
+                  <div className="relative" ref={mobileProfileRef}>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setProfileMenuOpen(!profileMenuOpen);
+                        setNotificationsOpen(false);
+                      }}
+                      aria-label="Account menu"
+                      aria-expanded={profileMenuOpen}
+                      className={`h-9 px-2 rounded-full flex items-center gap-1 transition cursor-pointer ${
+                        profileMenuOpen
+                          ? 'bg-[#dbeafe] dark:bg-blue-950/60 text-[#1e3a8a] dark:text-blue-200 ring-2 ring-[#3b82f6]/60'
+                          : 'bg-[var(--bag-btn-bg)] border-2 border-[var(--bag-btn-border)] text-[var(--bag-btn-text)]'
+                      }`}
+                    >
+                      <span className="w-6 h-6 rounded-full bg-[#606c38] text-white text-[11px] font-bold flex items-center justify-center shrink-0">
+                        {(user?.name || 'S').charAt(0).toUpperCase()}
+                      </span>
+                      <ChevronDown className="w-3 h-3" />
+                    </button>
+                    {renderProfileDropdown()}
+                  </div>
                 )}
 
                 {/* Highlighted Mobile Shopping Bag Button -> Opens Mini Bag Bottom Sheet on mobile */}
@@ -713,16 +1114,33 @@ export default function Header({ isSticky = false }: HeaderProps = {}) {
             {/* Row 2: Categories Trigger + Search Bar with Full-Width Floating Dropdown */}
             <div className="relative" ref={mobileSearchRef}>
               <div className="flex items-center gap-2">
-                <button
-                  type="button"
-                  onClick={() => setIsCategorySheetOpen(true)}
-                  aria-label="Browse categories"
-                  className="h-9 px-2.5 sm:px-3 rounded-full flex items-center gap-1.5 bg-[var(--header-hover-bg)] text-[var(--header-text)] border border-[var(--border-subtle)] text-xs font-semibold shrink-0 cursor-pointer transition active:scale-95"
-                  title="Browse Categories"
-                >
-                  <Menu className="w-4 h-4 text-[var(--color-primary)]" />
-                  <span className="text-xs font-medium">Categories</span>
-                </button>
+                <div className="relative shrink-0" ref={tabletCategoriesRef}>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (typeof window !== 'undefined' && window.innerWidth >= 768) {
+                        setCategoriesOpen(!categoriesOpen);
+                      } else {
+                        setIsCategorySheetOpen(true);
+                      }
+                    }}
+                    aria-label="Browse categories"
+                    aria-expanded={categoriesOpen || isCategorySheetOpen}
+                    className="h-9 px-2.5 sm:px-3 rounded-full flex items-center gap-1.5 bg-[var(--header-hover-bg)] text-[var(--header-text)] border border-[var(--border-subtle)] text-xs font-semibold shrink-0 cursor-pointer transition active:scale-95"
+                    title="Browse Categories"
+                  >
+                    <Menu className="w-4 h-4 text-[var(--color-primary)]" />
+                    <span className="text-xs font-medium">Categories</span>
+                  </button>
+
+                  {/* Tablet Categories 2-Column Visual Mega-Menu (md to lg) */}
+                  <div className="hidden md:block">
+                    <CategoriesMegaMenu
+                      isOpen={categoriesOpen}
+                      onClose={() => setCategoriesOpen(false)}
+                    />
+                  </div>
+                </div>
 
                 <div className="flex-1 min-w-0">
                   <SearchField
@@ -752,11 +1170,11 @@ export default function Header({ isSticky = false }: HeaderProps = {}) {
       </header>
 
       {/* =====================================================================
-          MOBILE CATEGORY BOTTOM SHEET (< lg)
+          MOBILE CATEGORY BOTTOM SHEET (< md)
          ===================================================================== */}
       {isCategorySheetOpen && (
         <div
-          className="fixed inset-0 z-50 lg:hidden flex items-end animate-fade-in"
+          className="fixed inset-0 z-50 md:hidden flex items-end justify-center sm:px-6 animate-fade-in"
           role="dialog"
           aria-modal="true"
           aria-label="Browse Categories"

@@ -105,10 +105,10 @@ export default function MiniBagRail() {
       </aside>
 
       {/* =====================================================================
-          MOBILE MINI BAG BOTTOM SHEET (< lg)
+          MOBILE & TABLET MINI BAG BOTTOM SHEET (< lg)
          ===================================================================== */}
       <div
-        className="fixed inset-0 z-50 lg:hidden flex items-end animate-fade-in"
+        className="fixed inset-0 z-50 lg:hidden flex items-end justify-center sm:px-6 md:px-8 animate-fade-in"
         role="dialog"
         aria-modal="true"
         aria-label="Shopping Bag Preview"
@@ -120,14 +120,14 @@ export default function MiniBagRail() {
         />
 
         {/* Slide-Up Bottom Sheet */}
-        <div className="relative z-10 w-full max-h-[85dvh] bg-[var(--bg-card)] text-[var(--text-main)] rounded-t-[28px] border-t border-[var(--border-subtle)] shadow-[0_-16px_48px_rgba(0,0,0,0.45)] flex flex-col overflow-hidden animate-slide-up">
+        <div className="relative z-10 w-full max-h-[85dvh] bg-[var(--bg-card)] text-[var(--text-main)] rounded-t-[28px] border-t sm:border-x border-[var(--border-subtle)] shadow-[0_-16px_48px_rgba(0,0,0,0.45)] flex flex-col overflow-hidden animate-slide-up">
           {/* Mobile Drag Handle */}
           <div className="pt-3 pb-1 flex justify-center bg-[var(--bg-surface)] shrink-0">
             <div className="w-12 h-1.5 rounded-full bg-[var(--border-strong)] opacity-60" />
           </div>
 
           {/* Bottom Sheet Header */}
-          <div className="flex items-center justify-between px-5 py-3 border-b border-[var(--border-subtle)] bg-[var(--bg-surface)] shrink-0">
+          <div className="flex items-center justify-between px-5 sm:px-7 py-3 border-b border-[var(--border-subtle)] bg-[var(--bg-surface)] shrink-0">
             <div className="flex items-center gap-2.5">
               <div className="w-8 h-8 rounded-full bg-[var(--color-primary-subtle)] flex items-center justify-center text-[var(--color-primary)]">
                 <Handbag className="w-4.5 h-4.5" />
@@ -154,7 +154,7 @@ export default function MiniBagRail() {
           </div>
 
           {/* Scrollable Items List */}
-          <div className="flex-1 overflow-y-auto px-5 py-4 divide-y divide-[var(--border-subtle)]">
+          <div className="flex-1 overflow-y-auto px-5 sm:px-7 py-4 divide-y divide-[var(--border-subtle)]">
             {bag.length === 0 ? (
               <div className="py-12 text-center space-y-3">
                 <div className="w-14 h-14 rounded-full bg-[var(--bg-wash)] flex items-center justify-center mx-auto text-[var(--text-dim)]">
@@ -245,7 +245,7 @@ export default function MiniBagRail() {
 
           {/* Bottom Summary & CTAs */}
           {bag.length > 0 && (
-            <div className="p-4 border-t border-[var(--border-subtle)] bg-[var(--bg-surface)] shrink-0 space-y-3">
+            <div className="px-5 sm:px-7 py-4 border-t border-[var(--border-subtle)] bg-[var(--bg-surface)] shrink-0 space-y-3">
               <div className="flex items-center justify-between">
                 <span className="text-xs text-[var(--text-muted)] font-medium">Subtotal:</span>
                 <div className="text-right">

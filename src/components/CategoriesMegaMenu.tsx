@@ -363,15 +363,15 @@ export default function CategoriesMegaMenu({ isOpen, onClose }: CategoriesMegaMe
       <div
         role="menu"
         aria-label="Category Navigation"
-        className="absolute left-0 top-full mt-2.5 w-[765px] max-w-[94vw] bg-white dark:bg-[#121215] rounded-b-xl rounded-tr-xl shadow-[0_10px_36px_rgba(0,0,0,0.16)] border border-stone-200/80 dark:border-stone-800 z-50 animate-in fade-in duration-150 flex select-none"
+        className="absolute left-0 top-full mt-2.5 w-[calc(100vw-3rem)] lg:w-[765px] max-w-[765px] bg-white dark:bg-[#121215] rounded-b-xl rounded-tr-xl shadow-[0_10px_36px_rgba(0,0,0,0.16)] border border-stone-200/80 dark:border-stone-800 z-50 animate-in fade-in duration-150 flex select-none"
       >
         {/* Top Blue Indicator Bar + Upward Caret correctly aligned under Categories button */}
-        <div className="absolute -top-[1px] left-0 w-[254px] h-[2.5px] bg-[#2563eb] z-30 pointer-events-none">
+        <div className="absolute -top-[1px] left-0 w-[230px] lg:w-[254px] h-[2.5px] bg-[#2563eb] z-30 pointer-events-none">
           <div className="absolute -top-[5px] left-[52px] w-2.5 h-2.5 bg-[#2563eb] rotate-45 transform" />
         </div>
 
         {/* Left Column: Vertical Category List */}
-        <div className="w-[254px] shrink-0 bg-white dark:bg-[#18181b] h-[548px] overflow-y-scroll rounded-bl-xl border-r border-stone-200 dark:border-stone-800">
+        <div className="w-[230px] lg:w-[254px] shrink-0 bg-white dark:bg-[#18181b] h-[520px] lg:h-[548px] overflow-y-scroll rounded-bl-xl border-r border-stone-200 dark:border-stone-800">
           {MEGA_MENU_CATEGORIES.map((item) => {
             const isSelected = selectedId === item.id;
             return (
@@ -411,7 +411,7 @@ export default function CategoriesMegaMenu({ isOpen, onClose }: CategoriesMegaMe
         </div>
 
         {/* Right Column: 3 Square Cards at Top + Clean White Canvas */}
-        <div className="flex-1 p-7 bg-white dark:bg-[#121215] h-[548px] rounded-r-xl">
+        <div className="flex-1 p-5 lg:p-7 bg-white dark:bg-[#121215] h-[520px] lg:h-[548px] rounded-r-xl">
           <div className="grid grid-cols-3 gap-4">
             {currentCategory.cards.map((card, idx) => (
               <Link
