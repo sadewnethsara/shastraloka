@@ -101,7 +101,6 @@ article,
 header,
 footer,
 nav {
-  max-width: 100%;
   min-width: 0;
 }
 

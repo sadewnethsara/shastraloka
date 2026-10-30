@@ -33,7 +33,6 @@ import {
   Settings,
   LogOut,
   Truck,
-  Store,
 } from 'lucide-react';
 import { useApp } from '../context/AppContext';
 import { BOOKS } from '../data/books';
@@ -229,6 +228,8 @@ export default function Header({ isSticky = false }: HeaderProps = {}) {
 
   const handleSearchFocus = () => {
     setSuggestionsOpen(true);
+    setNotificationsOpen(false);
+    setProfileMenuOpen(false);
   };
 
   const handleSearchInputChange = (val: string) => {
@@ -526,7 +527,7 @@ export default function Header({ isSticky = false }: HeaderProps = {}) {
     router.push('/bag');
   };
 
-  const renderNotificationsDropdown = () => {
+  const renderNotificationsDropdown = (isMobile = false) => {
     if (!notificationsOpen) return null;
     const offerBook1 = BOOKS[0];
     const offerBook2 = BOOKS[1] || BOOKS[0];
@@ -536,10 +537,16 @@ export default function Header({ isSticky = false }: HeaderProps = {}) {
         role="dialog"
         aria-label="Deals and Notifications"
         onClick={(e) => e.stopPropagation()}
-        className="absolute right-0 top-full mt-3 w-[310px] sm:w-[356px] bg-[var(--bg-card)] text-[var(--text-main)] rounded-2xl shadow-[0_14px_44px_rgba(0,0,0,0.22)] border border-[var(--border-subtle)] z-50 animate-fade-in select-none"
+        className={
+          isMobile
+            ? 'absolute left-0 right-0 top-full mt-2.5 w-full bg-[var(--bg-card)] text-[var(--text-main)] rounded-2xl shadow-[0_14px_44px_rgba(0,0,0,0.22)] border border-[var(--border-subtle)] z-50 animate-fade-in select-none'
+            : 'absolute right-0 top-full mt-3 w-[356px] bg-[var(--bg-card)] text-[var(--text-main)] rounded-2xl shadow-[0_14px_44px_rgba(0,0,0,0.22)] border border-[var(--border-subtle)] z-50 animate-fade-in select-none'
+        }
       >
-        {/* Top Upward Diamond Caret Pointer */}
-        <div className="absolute -top-2 right-6 w-4 h-4 rotate-45 bg-[var(--bg-card)] border-l border-t border-[var(--border-subtle)] pointer-events-none" />
+        {/* Top Upward Diamond Caret Pointer (Desktop) */}
+        {!isMobile && (
+          <div className="absolute -top-2 right-6 w-4 h-4 rotate-45 bg-[var(--bg-card)] border-l border-t border-[var(--border-subtle)] pointer-events-none" />
+        )}
 
         {/* Centered "Deals" Title */}
         <div className="py-3.5 px-4 text-center bg-[var(--bg-card)] rounded-t-2xl">
@@ -660,7 +667,7 @@ export default function Header({ isSticky = false }: HeaderProps = {}) {
     );
   };
 
-  const renderProfileDropdown = () => {
+  const renderProfileDropdown = (isMobile = false) => {
     if (!profileMenuOpen) return null;
     const displayName = user?.name || 'Sadew Nethsara';
     const userInitial = displayName.charAt(0).toUpperCase();
@@ -670,10 +677,16 @@ export default function Header({ isSticky = false }: HeaderProps = {}) {
         role="menu"
         aria-label="Account navigation"
         onClick={(e) => e.stopPropagation()}
-        className="absolute right-0 top-full mt-3 w-[275px] sm:w-[295px] bg-[var(--bg-card)] text-[var(--text-main)] rounded-2xl shadow-[0_14px_44px_rgba(0,0,0,0.22)] border border-[var(--border-subtle)] z-50 animate-fade-in select-none"
+        className={
+          isMobile
+            ? 'absolute left-0 right-0 top-full mt-2.5 w-full bg-[var(--bg-card)] text-[var(--text-main)] rounded-2xl shadow-[0_14px_44px_rgba(0,0,0,0.22)] border border-[var(--border-subtle)] z-50 animate-fade-in select-none'
+            : 'absolute right-0 top-full mt-3 w-[295px] bg-[var(--bg-card)] text-[var(--text-main)] rounded-2xl shadow-[0_14px_44px_rgba(0,0,0,0.22)] border border-[var(--border-subtle)] z-50 animate-fade-in select-none'
+        }
       >
-        {/* Top Upward Caret Pointer */}
-        <div className="absolute -top-2 right-5 w-4 h-4 rotate-45 bg-[var(--bg-card)] border-l border-t border-[var(--border-subtle)] pointer-events-none" />
+        {/* Top Upward Caret Pointer (Desktop) */}
+        {!isMobile && (
+          <div className="absolute -top-2 right-5 w-4 h-4 rotate-45 bg-[var(--bg-card)] border-l border-t border-[var(--border-subtle)] pointer-events-none" />
+        )}
 
         <div className="pt-2 pb-1.5 overflow-hidden rounded-2xl">
           {/* Profile Header Row with Blue Top/Bottom Accent Border (Matching Reference Screenshot) */}
@@ -798,9 +811,9 @@ export default function Header({ isSticky = false }: HeaderProps = {}) {
         className={`${isSticky
           ? 'sticky top-0 backdrop-blur-md bg-[var(--header-bg-glass)]'
           : 'relative bg-[var(--header-bg)]'
-          } z-40 border-b border-[var(--header-border)] text-[var(--header-text)] transition-colors duration-200 w-full max-w-full`}
+          } z-40 border-b border-[var(--header-border)] text-[var(--header-text)] transition-colors duration-200 w-full`}
       >
-        <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 w-full max-w-full box-border">
+        <div className="page-container box-border">
           {/* =====================================================================
               DESKTOP HEADER ROW (lg and up)
              ===================================================================== */}
@@ -920,18 +933,8 @@ export default function Header({ isSticky = false }: HeaderProps = {}) {
                   </div>
                   <ChevronDown className="w-3.5 h-3.5" />
                 </button>
-                {renderNotificationsDropdown()}
+                {renderNotificationsDropdown(false)}
               </div>
-
-              {/* Publishers / Scriptorium Icon (Matching Storefront Icon in Reference) */}
-              <Link
-                href="/publishers"
-                aria-label="Publishers & Scriptoriums"
-                className="p-2.5 rounded-full hover:bg-[var(--header-hover-bg)] text-[var(--header-text)] transition cursor-pointer"
-                title="Publishers & Scriptoriums"
-              >
-                <Store className="w-5 h-5" />
-              </Link>
 
               {/* Signed-Out: Sign in Button | Signed-In: Profile Avatar Pill + Dropdown Box */}
               {!isLoggedIn ? (
@@ -964,7 +967,7 @@ export default function Header({ isSticky = false }: HeaderProps = {}) {
                     </span>
                     <ChevronDown className="w-3.5 h-3.5" />
                   </button>
-                  {renderProfileDropdown()}
+                  {renderProfileDropdown(false)}
                 </div>
               )}
 
@@ -1013,7 +1016,7 @@ export default function Header({ isSticky = false }: HeaderProps = {}) {
              ===================================================================== */}
           <div className="lg:hidden py-2.5 space-y-2">
             {/* Row 1: Logo on Left, Notifications, Auth/Profile & Bag Actions on Right */}
-            <div className="flex items-center justify-between">
+            <div className="relative flex items-center justify-between">
               <Link
                 href="/"
                 onClick={() => {
@@ -1026,13 +1029,14 @@ export default function Header({ isSticky = false }: HeaderProps = {}) {
               </Link>
 
               <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
-                {/* Mobile/Tablet Notifications Bell Dropdown */}
-                <div className="relative" ref={mobileNotificationsRef}>
+                {/* Mobile/Tablet Notifications Bell Dropdown (Centered Full-Width Card like Search Bar) */}
+                <div ref={mobileNotificationsRef}>
                   <button
                     type="button"
                     onClick={() => {
                       setNotificationsOpen(!notificationsOpen);
                       setProfileMenuOpen(false);
+                      setSuggestionsOpen(false);
                     }}
                     aria-label="Deals and Notifications"
                     aria-expanded={notificationsOpen}
@@ -1048,7 +1052,7 @@ export default function Header({ isSticky = false }: HeaderProps = {}) {
                     </div>
                     <ChevronDown className="w-3 h-3" />
                   </button>
-                  {renderNotificationsDropdown()}
+                  {renderNotificationsDropdown(true)}
                 </div>
 
                 {/* If user is NOT signed in: show "Sign in" button matching Bag button height, shape and theme */}
@@ -1062,13 +1066,14 @@ export default function Header({ isSticky = false }: HeaderProps = {}) {
                     Sign in
                   </button>
                 ) : (
-                  /* If user IS signed in: show Profile Avatar Pill + Dropdown Box */
-                  <div className="relative" ref={mobileProfileRef}>
+                  /* If user IS signed in: show Profile Avatar Pill + Centered Full-Width Dropdown Box */
+                  <div ref={mobileProfileRef}>
                     <button
                       type="button"
                       onClick={() => {
                         setProfileMenuOpen(!profileMenuOpen);
                         setNotificationsOpen(false);
+                        setSuggestionsOpen(false);
                       }}
                       aria-label="Account menu"
                       aria-expanded={profileMenuOpen}
@@ -1083,7 +1088,7 @@ export default function Header({ isSticky = false }: HeaderProps = {}) {
                       </span>
                       <ChevronDown className="w-3 h-3" />
                     </button>
-                    {renderProfileDropdown()}
+                    {renderProfileDropdown(true)}
                   </div>
                 )}
 

@@ -1687,8 +1687,8 @@ className="relative w-full h-full min-h-0 min-w-0 rounded overflow-hidden cursor
       {/* =====================================================================
           9. "WHAT IS SHSTRALOKA?" BRAND STORY SECTION
          ===================================================================== */}
-      <section className="border-t border-[var(--border-subtle)] bg-[var(--bg-surface)] py-12 sm:py-16 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-[1140px] mx-auto text-center">
+      <section className="border-t border-[var(--border-subtle)] bg-[var(--bg-surface)] py-12 sm:py-16">
+        <div className="page-container text-center">
           <h2
 className="text-2xl sm:text-3xl lg:text-[36px] font-heading font-bold text-[var(--text-main)] mb-1.5"
           >

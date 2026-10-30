@@ -19,7 +19,7 @@ export function PageContainer({
 }: PageContainerProps) {
   return (
     <Component
-      className={`max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 w-full ${className}`}
+      className={`page-container ${className}`}
       {...props}
     >
       {children}
