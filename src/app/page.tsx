@@ -11,11 +11,10 @@ import Toast from '../components/Toast';
 import CleanBookCard from '../components/CleanBookCard';
 import LoggedInLandingFeed from '../components/LoggedInLandingFeed';
 import { BOOKS } from '../data/books';
-import { CELEBRATION_EVENTS } from '../data/celebrations';
 import { useApp } from '../context/AppContext';
 import { Button } from '../components/ui/Button';
 import { Badge } from '../components/ui/Badge';
-import { ChevronLeft, ChevronRight, Handbag, Check, Flame, Star, Clock, Sparkles, CalendarHeart, TicketPercent } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Handbag, Check, Flame, Star, Clock, Sparkles } from 'lucide-react';
 
 const FALLBACK_BOOK_COVER =
   'https://grantha.lk/media/catalog/product/cache/5fa2393eb818a642e720faf99039a3de/m/a/manikkawatha_1.jpg';
@@ -555,7 +554,6 @@ export default function LandingPage() {
     isBookSaved,
     activeCelebration,
     isCelebrationMode,
-    setActiveCelebrationById,
   } = useApp();
 
   const [favorites, setFavorites] = useState<Record<string, boolean>>({});
@@ -642,8 +640,6 @@ export default function LandingPage() {
     Math.round(((heroFeaturedBook.originalPrice - heroFeaturedBook.price) / heroFeaturedBook.originalPrice) * 100)
   );
 
-  const quickCelebrations = CELEBRATION_EVENTS.filter((ev) => ev.featuredInQuickSwitch);
-
   return (
     <div className="min-h-screen bg-[var(--bg-main)] text-[var(--text-main)] font-sans antialiased selection:bg-[var(--color-primary-subtle)] transition-colors duration-200">
       {/* 1. Header & Navigation */}
@@ -651,60 +647,6 @@ export default function LandingPage() {
 
       {/* Main Content Container */}
       <main className="page-container pt-4 sm:pt-6 pb-16 space-y-10 sm:space-y-14">
-        {/* Celebration & Cultural Calendar Theme Switcher Bar */}
-        <section
-          aria-label="Celebration themes and date offers"
-          className="rounded-2xl bg-[var(--bg-surface)] border border-[var(--border-subtle)] px-3.5 py-2.5 flex flex-wrap items-center justify-between gap-2.5 shadow-2xs"
-        >
-          <div className="flex items-center gap-2 overflow-x-auto no-scrollbar py-0.5 max-w-full">
-            <span className="inline-flex items-center gap-1.5 text-xs font-extrabold text-[var(--color-primary)] shrink-0 pr-1">
-              <CalendarHeart className="w-4 h-4" />
-              <span>Celebration Themes:</span>
-            </span>
-
-            <button
-              type="button"
-              onClick={() => setActiveCelebrationById(null)}
-              className={`px-3 py-1.5 rounded-full text-xs font-bold transition cursor-pointer shrink-0 ${
-                !isCelebrationMode
-                  ? 'bg-[var(--pill-active-bg)] text-[var(--pill-active-text)] shadow-2xs'
-                  : 'bg-[var(--bg-card)] text-[var(--text-body)] hover:bg-[var(--bg-hover)] border border-[var(--border-subtle)]'
-              }`}
-            >
-              Classic Sanctuary
-            </button>
-
-            {quickCelebrations.map((ev) => {
-              const active = isCelebrationMode && activeCelebration.id === ev.id;
-              return (
-                <button
-                  key={ev.id}
-                  type="button"
-                  onClick={() => setActiveCelebrationById(ev.id)}
-                  className={`px-3 py-1.5 rounded-full text-xs font-bold transition cursor-pointer shrink-0 flex items-center gap-1.5 ${
-                    active
-                      ? 'bg-[var(--color-primary)] text-white shadow-xs'
-                      : 'bg-[var(--bg-card)] text-[var(--text-body)] hover:bg-[var(--bg-hover)] border border-[var(--border-subtle)]'
-                  }`}
-                >
-                  <span>{ev.title}</span>
-                  <span className={`text-[10px] font-semibold ${active ? 'text-white/90' : 'text-[var(--text-muted)]'}`}>
-                    ({ev.dateLabel})
-                  </span>
-                </button>
-              );
-            })}
-          </div>
-
-          <Link
-            href={`/offers?celebration=${activeCelebration.id}`}
-            className="inline-flex items-center gap-1.5 text-xs font-extrabold text-[var(--color-primary)] hover:underline shrink-0 ml-auto"
-          >
-            <TicketPercent className="w-3.5 h-3.5" />
-            <span>{activeCelebration.title} Offers &amp; Calendar &rarr;</span>
-          </Link>
-        </section>
-
         {isLoggedIn ? (
           <LoggedInLandingFeed
             timeLeft={timeLeft}

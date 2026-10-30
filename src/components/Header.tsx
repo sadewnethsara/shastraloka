@@ -1187,13 +1187,13 @@ export default function Header({ isSticky = false }: HeaderProps = {}) {
                     aria-expanded={notificationsOpen}
                     className={`h-10 px-3 rounded-full flex items-center gap-1 transition cursor-pointer ${
                       notificationsOpen
-                        ? 'bg-[#dbeafe] dark:bg-blue-950/60 text-[#1e3a8a] dark:text-blue-200 ring-2 ring-[#3b82f6]/60'
+                        ? 'bg-[var(--color-primary-subtle)] text-[var(--color-primary)] ring-2 ring-[var(--color-primary-border)]'
                         : 'hover:bg-[var(--header-hover-bg)] text-[var(--header-text)]'
                     }`}
                   >
                     <div className="relative">
-                      <Bell className="w-5 h-5 fill-current" />
-                      <span className="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full bg-[#e60023]" />
+                      <Bell className="w-5 h-5" />
+                      <span className="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full bg-[var(--header-badge-fav-bg)]" />
                     </div>
                     <ChevronDown className="w-3.5 h-3.5" />
                   </button>
@@ -1223,7 +1223,7 @@ export default function Header({ isSticky = false }: HeaderProps = {}) {
                       aria-expanded={profileMenuOpen}
                       className={`h-10 px-2.5 rounded-full flex items-center gap-1.5 transition cursor-pointer ${
                         profileMenuOpen
-                          ? 'bg-[#dbeafe] dark:bg-blue-950/60 text-[#1e3a8a] dark:text-blue-200 ring-2 ring-[#3b82f6]/60'
+                          ? 'bg-[var(--color-primary-subtle)] text-[var(--color-primary)] ring-2 ring-[var(--color-primary-border)]'
                           : 'hover:bg-[var(--header-hover-bg)] text-[var(--header-text)]'
                       }`}
                     >
@@ -1309,13 +1309,13 @@ export default function Header({ isSticky = false }: HeaderProps = {}) {
                     aria-expanded={notificationsOpen}
                     className={`h-9 px-2.5 rounded-full flex items-center gap-1 transition cursor-pointer ${
                       notificationsOpen
-                        ? 'bg-[#dbeafe] dark:bg-blue-950/60 text-[#1e3a8a] dark:text-blue-200 ring-2 ring-[#3b82f6]/60'
+                        ? 'bg-[var(--color-primary-subtle)] text-[var(--color-primary)] ring-2 ring-[var(--color-primary-border)]'
                         : 'hover:bg-[var(--header-hover-bg)] text-[var(--header-text)]'
                     }`}
                   >
                     <div className="relative">
-                      <Bell className="w-4.5 h-4.5 fill-current" />
-                      <span className="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full bg-[#e60023]" />
+                      <Bell className="w-4.5 h-4.5" />
+                      <span className="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full bg-[var(--header-badge-fav-bg)]" />
                     </div>
                     <ChevronDown className="w-3 h-3" />
                   </button>
@@ -1346,7 +1346,7 @@ export default function Header({ isSticky = false }: HeaderProps = {}) {
                       aria-expanded={profileMenuOpen}
                       className={`h-9 px-2 rounded-full flex items-center gap-1 transition cursor-pointer ${
                         profileMenuOpen
-                          ? 'bg-[#dbeafe] dark:bg-blue-950/60 text-[#1e3a8a] dark:text-blue-200 ring-2 ring-[#3b82f6]/60'
+                          ? 'bg-[var(--color-primary-subtle)] text-[var(--color-primary)] ring-2 ring-[var(--color-primary-border)]'
                           : 'bg-[var(--bag-btn-bg)] border-2 border-[var(--bag-btn-border)] text-[var(--bag-btn-text)]'
                       }`}
                     >
