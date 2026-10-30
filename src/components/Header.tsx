@@ -33,11 +33,15 @@ import {
   Settings,
   LogOut,
   Truck,
+  CalendarHeart,
+  Sparkles,
+  AlertCircle,
 } from 'lucide-react';
 import { useApp } from '../context/AppContext';
 import { BOOKS } from '../data/books';
 import { getAutocompleteSuggestions } from '../utils/searchEngine';
 import { SearchField } from './ui/SearchField';
+import { Tooltip } from './ui/Tooltip';
 import VisualSearchModal from './VisualSearchModal';
 import CategoriesMegaMenu from './CategoriesMegaMenu';
 
@@ -147,6 +151,10 @@ export default function Header({ isSticky = false }: HeaderProps = {}) {
     logout,
     addToBag,
     setShowMiniBagRail,
+    activeCelebration,
+    isCelebrationMode,
+    setActiveCelebrationById,
+    requestConfirmation,
   } = useApp();
 
   const [categoriesOpen, setCategoriesOpen] = useState(false);
@@ -238,7 +246,17 @@ export default function Header({ isSticky = false }: HeaderProps = {}) {
   };
 
   const handleRemoveRecent = (id: string) => {
-    setRecentSearches((prev) => prev.filter((r) => r.id !== id));
+    const target = recentSearches.find((r) => r.id === id);
+    requestConfirmation({
+      title: 'Remove recent search?',
+      message: `Are you sure you want to remove "${target?.label || 'this search'}" from your recent searches?`,
+      confirmLabel: 'Remove',
+      cancelLabel: 'Cancel',
+      onConfirm: () => {
+        setRecentSearches((prev) => prev.filter((r) => r.id !== id));
+        showToast('Removed recent search');
+      },
+    });
   };
 
   const handleBookSuggestionClick = (bookId: string, title: string) => {
@@ -313,7 +331,16 @@ export default function Header({ isSticky = false }: HeaderProps = {}) {
                     onClick={(e) => {
                       e.preventDefault();
                       e.stopPropagation();
-                      setRecentSearches([]);
+                      requestConfirmation({
+                        title: 'Clear all recent searches?',
+                        message: 'Are you sure you want to clear your entire recent search history?',
+                        confirmLabel: 'Clear all',
+                        cancelLabel: 'Cancel',
+                        onConfirm: () => {
+                          setRecentSearches([]);
+                          showToast('Cleared recent search history');
+                        },
+                      });
                     }}
                     className="text-xs font-semibold text-[var(--text-muted)] hover:text-[var(--text-main)] cursor-pointer"
                   >
@@ -531,6 +558,16 @@ export default function Header({ isSticky = false }: HeaderProps = {}) {
     if (!notificationsOpen) return null;
     const offerBook1 = BOOKS[0];
     const offerBook2 = BOOKS[1] || BOOKS[0];
+    const offerBook3 = BOOKS[2] || BOOKS[0];
+    const outOfStockBook1 =
+      BOOKS.find((b) => b.id === 'chaddanta-gajaga-jataka-illustrated') || BOOKS[3];
+    const outOfStockBook2 =
+      BOOKS.find((b) => b.id === 'guttila-kavyaya') || BOOKS[4];
+    const celebCoupon = activeCelebration.coupons[0] || {
+      code: 'DEEPAVALI35',
+      discount: '35% OFF',
+      title: activeCelebration.title,
+    };
 
     return (
       <div
@@ -540,7 +577,7 @@ export default function Header({ isSticky = false }: HeaderProps = {}) {
         className={
           isMobile
             ? 'absolute left-0 right-0 top-full mt-2.5 w-full bg-[var(--bg-card)] text-[var(--text-main)] rounded-2xl shadow-[0_14px_44px_rgba(0,0,0,0.22)] border border-[var(--border-subtle)] z-50 animate-fade-in select-none'
-            : 'absolute right-0 top-full mt-3 w-[356px] bg-[var(--bg-card)] text-[var(--text-main)] rounded-2xl shadow-[0_14px_44px_rgba(0,0,0,0.22)] border border-[var(--border-subtle)] z-50 animate-fade-in select-none'
+            : 'absolute right-0 top-full mt-3 w-[368px] bg-[var(--bg-card)] text-[var(--text-main)] rounded-2xl shadow-[0_14px_44px_rgba(0,0,0,0.22)] border border-[var(--border-subtle)] z-50 animate-fade-in select-none'
         }
       >
         {/* Top Upward Diamond Caret Pointer (Desktop) */}
@@ -549,117 +586,282 @@ export default function Header({ isSticky = false }: HeaderProps = {}) {
         )}
 
         {/* Centered "Deals" Title */}
-        <div className="py-3.5 px-4 text-center bg-[var(--bg-card)] rounded-t-2xl">
+        <div className="py-3.5 px-4 text-center bg-[var(--bg-card)] rounded-t-2xl flex items-center justify-between">
+          <span className="text-[11px] font-bold text-[var(--text-muted)]">6 Updates</span>
           <h3 className="text-sm font-bold text-[var(--text-main)]">Deals</h3>
+          <Link
+            href={`/offers?celebration=${activeCelebration.id}`}
+            onClick={() => setNotificationsOpen(false)}
+            className="text-[11px] font-bold text-[var(--color-primary)] hover:underline"
+          >
+            All offers
+          </Link>
         </div>
 
-        {/* "Seen" Divider Pill + Notification Items */}
-        <div className="relative border-t border-[var(--border-subtle)] bg-[var(--bg-wash)]/75 rounded-b-2xl pt-5 pb-4 px-4 space-y-5 max-h-[72vh] overflow-y-auto">
-          <span className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-0.5 rounded-full bg-[var(--bg-card)] border border-[var(--border-subtle)] text-xs font-bold text-[var(--text-main)] shadow-2xs">
+        {/* Outer wrapper so "Seen" pill is never clipped by overflow-y-auto */}
+        <div className="relative border-t border-[var(--border-subtle)] bg-[var(--bg-wash)]/75 rounded-b-2xl">
+          <span className="absolute -top-3 left-1/2 -translate-x-1/2 z-10 px-3 py-0.5 rounded-full bg-[var(--bg-card)] border border-[var(--border-subtle)] text-xs font-bold text-[var(--text-main)] shadow-2xs">
             Seen
           </span>
 
-          {/* Deal Notification 1 */}
-          <div className="flex items-start gap-3">
-            <div className="w-7 h-7 rounded-full bg-[#dcfce7] text-[#15803d] flex items-center justify-center shrink-0 mt-0.5">
-              <Tag className="w-3.5 h-3.5 fill-current" />
-            </div>
-
-            <div className="flex-1 min-w-0">
-              <div className="flex items-start justify-between gap-2">
-                <p className="text-xs sm:text-[13px] text-[var(--text-main)] leading-snug">
-                  Royal Kandy Scriptorium sent an offer for an item you left in your bag.
-                </p>
-                <span className="text-xs text-[var(--text-muted)] shrink-0">3d</span>
+          {/* Scrollable Inner Container */}
+          <div className="max-h-[360px] sm:max-h-[410px] overflow-y-auto overscroll-contain pt-5 pb-4 px-4 space-y-4">
+            {/* Deal 1: 45% off with code ABCOUPON45 (Matches Screenshot 1) */}
+            <div className="flex items-start gap-3">
+              <div className="w-7 h-7 rounded-full bg-[#dcfce7] text-[#15803d] flex items-center justify-center shrink-0 mt-0.5">
+                <Tag className="w-3.5 h-3.5 fill-current" />
               </div>
 
-              <Link
-                href={`/books/${offerBook1.id}`}
-                onClick={() => setNotificationsOpen(false)}
-                className="block w-20 h-20 rounded-xl overflow-hidden border border-[var(--border-subtle)] bg-[var(--bg-card)] my-2.5 shadow-2xs hover:opacity-95 transition"
-              >
-                <img
-                  src={offerBook1.coverImage}
-                  alt={offerBook1.title}
-                  referrerPolicy="no-referrer"
-                  className="w-full h-full object-cover"
-                />
-              </Link>
+              <div className="flex-1 min-w-0">
+                <div className="flex items-start justify-between gap-2">
+                  <p className="text-xs sm:text-[13px] text-[var(--text-main)] leading-snug">
+                    Rasakatha Press sent an offer for an item you left in your bag.
+                  </p>
+                  <span className="text-xs text-[var(--text-muted)] shrink-0">1d</span>
+                </div>
 
-              <p className="text-xs sm:text-[13px] font-extrabold text-[#15803d] dark:text-emerald-400">
-                30% off with code SHASTRA30
-              </p>
-
-              <button
-                type="button"
-                onClick={() => handleApplyDealCoupon(0, 'SHASTRA30', '30% off')}
-                className="mt-2 px-4 py-2 rounded-full bg-[#222222] dark:bg-white text-white dark:text-[#222222] text-xs font-bold hover:opacity-90 active:scale-95 transition cursor-pointer"
-              >
-                Apply to bag
-              </button>
-
-              <p className="text-[11px] text-[var(--text-muted)] mt-2">
-                Terms may apply.{' '}
                 <Link
-                  href="/offers"
+                  href={`/books/${offerBook1.id}`}
                   onClick={() => setNotificationsOpen(false)}
-                  className="underline hover:text-[var(--text-main)]"
+                  className="block w-20 h-20 rounded-xl overflow-hidden border border-[var(--border-subtle)] bg-[var(--bg-card)] my-2.5 shadow-2xs hover:opacity-95 transition"
                 >
-                  Visit shop for details.
+                  <img
+                    src={offerBook1.coverImage}
+                    alt={offerBook1.title}
+                    referrerPolicy="no-referrer"
+                    className="w-full h-full object-cover"
+                  />
                 </Link>
-              </p>
-            </div>
-          </div>
 
-          {/* Deal Notification 2 */}
-          <div className="pt-4 border-t border-[var(--border-subtle)] flex items-start gap-3">
-            <div className="w-7 h-7 rounded-full bg-[#dcfce7] text-[#15803d] flex items-center justify-center shrink-0 mt-0.5">
-              <Tag className="w-3.5 h-3.5 fill-current" />
-            </div>
-
-            <div className="flex-1 min-w-0">
-              <div className="flex items-start justify-between gap-2">
-                <p className="text-xs sm:text-[13px] text-[var(--text-main)] leading-snug">
-                  Sarasaviya &amp; Grantha Press sent a voucher for your saved favorites.
+                <p className="text-xs sm:text-[13px] font-extrabold text-[var(--color-success)]">
+                  45% off with code ABCOUPON45
                 </p>
-                <span className="text-xs text-[var(--text-muted)] shrink-0">5d</span>
+
+                <button
+                  type="button"
+                  onClick={() => handleApplyDealCoupon(0, 'ABCOUPON45', '45% off')}
+                  className="mt-2 px-4 py-2 rounded-full bg-[var(--pill-active-bg)] text-[var(--pill-active-text)] text-xs font-bold hover:opacity-90 active:scale-95 transition cursor-pointer"
+                >
+                  Apply to bag
+                </button>
+
+                <p className="text-[11px] text-[var(--text-muted)] mt-2">
+                  Terms may apply.{' '}
+                  <Link
+                    href="/offers"
+                    onClick={() => setNotificationsOpen(false)}
+                    className="underline hover:text-[var(--text-main)]"
+                  >
+                    Visit shop for details.
+                  </Link>
+                </p>
+              </div>
+            </div>
+
+            {/* Deal 2: Out-of-Stock Book Deal Notification (May Mara Prasangaya) */}
+            <div className="pt-4 border-t border-[var(--border-subtle)] flex items-start gap-3">
+              <div className="w-7 h-7 rounded-full bg-[var(--color-danger-bg)] text-[var(--color-danger)] flex items-center justify-center shrink-0 mt-0.5">
+                <AlertCircle className="w-3.5 h-3.5" />
               </div>
 
-              <Link
-                href={`/books/${offerBook2.id}`}
-                onClick={() => setNotificationsOpen(false)}
-                className="block w-20 h-20 rounded-xl overflow-hidden border border-[var(--border-subtle)] bg-[var(--bg-card)] my-2.5 shadow-2xs hover:opacity-95 transition"
-              >
-                <img
-                  src={offerBook2.coverImage}
-                  alt={offerBook2.title}
-                  referrerPolicy="no-referrer"
-                  className="w-full h-full object-cover"
-                />
-              </Link>
+              <div className="flex-1 min-w-0">
+                <div className="flex items-start justify-between gap-2">
+                  <p className="text-xs sm:text-[13px] text-[var(--text-main)] leading-snug">
+                    Flash deal on <strong>{outOfStockBook1.title}</strong> is currently sold out.
+                  </p>
+                  <span className="text-xs text-[var(--text-muted)] shrink-0">2d</span>
+                </div>
 
-              <p className="text-xs sm:text-[13px] font-extrabold text-[#15803d] dark:text-emerald-400">
-                25% off with code PALMLEAF500
-              </p>
+                <div className="relative w-20 h-20 rounded-xl overflow-hidden border border-[var(--border-subtle)] bg-[var(--bg-card)] my-2.5 shadow-2xs">
+                  <img
+                    src={outOfStockBook1.coverImage}
+                    alt={outOfStockBook1.title}
+                    referrerPolicy="no-referrer"
+                    className="w-full h-full object-cover grayscale opacity-75"
+                  />
+                  <span className="absolute inset-x-0 bottom-0 bg-[#e60023] text-white text-[9px] font-extrabold text-center py-0.5 uppercase">
+                    Out of stock
+                  </span>
+                </div>
 
-              <button
-                type="button"
-                onClick={() => handleApplyDealCoupon(1, 'PALMLEAF500', '25% off')}
-                className="mt-2 px-4 py-2 rounded-full bg-[#222222] dark:bg-white text-white dark:text-[#222222] text-xs font-bold hover:opacity-90 active:scale-95 transition cursor-pointer"
-              >
-                Apply to bag
-              </button>
+                <p className="text-xs text-[var(--text-muted)] line-through">
+                  40% off with code JATAKA40
+                </p>
+                <p className="text-[11px] font-bold text-[var(--color-danger)] mt-0.5">
+                  {outOfStockBook1.stockNote || 'Archival batch sold out — restocking soon'}
+                </p>
 
-              <p className="text-[11px] text-[var(--text-muted)] mt-2">
-                Terms may apply.{' '}
-                <Link
-                  href="/offers"
-                  onClick={() => setNotificationsOpen(false)}
-                  className="underline hover:text-[var(--text-main)]"
+                <button
+                  type="button"
+                  onClick={() => {
+                    showToast(`We'll notify you as soon as "${outOfStockBook1.title}" is back in stock with the 40% deal!`);
+                  }}
+                  className="mt-2 px-4 py-1.5 rounded-full bg-[var(--bg-card)] border border-[var(--border-strong)] text-[var(--text-main)] text-xs font-bold hover:bg-[var(--bg-hover)] transition cursor-pointer"
                 >
-                  Visit shop for details.
+                  Out of stock • Notify me
+                </button>
+              </div>
+            </div>
+
+            {/* Deal 3: Active Celebration Date Special Offer */}
+            <div className="pt-4 border-t border-[var(--border-subtle)] flex items-start gap-3">
+              <div className="w-7 h-7 rounded-full bg-[var(--color-primary-subtle)] text-[var(--color-primary)] flex items-center justify-center shrink-0 mt-0.5">
+                <CalendarHeart className="w-3.5 h-3.5" />
+              </div>
+
+              <div className="flex-1 min-w-0">
+                <div className="flex items-start justify-between gap-2">
+                  <p className="text-xs sm:text-[13px] text-[var(--text-main)] leading-snug">
+                    <strong>{activeCelebration.title}</strong> ({activeCelebration.dateLabel}) special voucher unlocked!
+                  </p>
+                  <span className="text-xs text-[var(--text-muted)] shrink-0">New</span>
+                </div>
+
+                <p className="text-xs sm:text-[13px] font-extrabold text-[var(--color-success)] mt-1.5">
+                  {celebCoupon.discount} with code {celebCoupon.code}
+                </p>
+
+                <div className="mt-2 flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => handleApplyDealCoupon(1, celebCoupon.code, celebCoupon.discount)}
+                    className="px-4 py-1.5 rounded-full bg-[var(--pill-active-bg)] text-[var(--pill-active-text)] text-xs font-bold hover:opacity-90 transition cursor-pointer"
+                  >
+                    Apply to bag
+                  </button>
+                  <Link
+                    href={`/offers?celebration=${activeCelebration.id}`}
+                    onClick={() => setNotificationsOpen(false)}
+                    className="text-xs font-bold text-[var(--color-primary)] hover:underline"
+                  >
+                    View date offers &rarr;
+                  </Link>
+                </div>
+              </div>
+            </div>
+
+            {/* Deal 4: 30% off with code SHASTRA30 */}
+            <div className="pt-4 border-t border-[var(--border-subtle)] flex items-start gap-3">
+              <div className="w-7 h-7 rounded-full bg-[#dcfce7] text-[#15803d] flex items-center justify-center shrink-0 mt-0.5">
+                <Tag className="w-3.5 h-3.5 fill-current" />
+              </div>
+
+              <div className="flex-1 min-w-0">
+                <div className="flex items-start justify-between gap-2">
+                  <p className="text-xs sm:text-[13px] text-[var(--text-main)] leading-snug">
+                    Royal Kandy Scriptorium sent an offer for an item in your bag.
+                  </p>
+                  <span className="text-xs text-[var(--text-muted)] shrink-0">3d</span>
+                </div>
+
+                <Link
+                  href={`/books/${offerBook2.id}`}
+                  onClick={() => setNotificationsOpen(false)}
+                  className="block w-20 h-20 rounded-xl overflow-hidden border border-[var(--border-subtle)] bg-[var(--bg-card)] my-2.5 shadow-2xs hover:opacity-95 transition"
+                >
+                  <img
+                    src={offerBook2.coverImage}
+                    alt={offerBook2.title}
+                    referrerPolicy="no-referrer"
+                    className="w-full h-full object-cover"
+                  />
                 </Link>
-              </p>
+
+                <p className="text-xs sm:text-[13px] font-extrabold text-[var(--color-success)]">
+                  30% off with code SHASTRA30
+                </p>
+
+                <button
+                  type="button"
+                  onClick={() => handleApplyDealCoupon(1, 'SHASTRA30', '30% off')}
+                  className="mt-2 px-4 py-2 rounded-full bg-[var(--pill-active-bg)] text-[var(--pill-active-text)] text-xs font-bold hover:opacity-90 active:scale-95 transition cursor-pointer"
+                >
+                  Apply to bag
+                </button>
+              </div>
+            </div>
+
+            {/* Deal 5: Second Out-of-Stock Book Deal Notification (Glasera & Guttila Kavyaya) */}
+            <div className="pt-4 border-t border-[var(--border-subtle)] flex items-start gap-3">
+              <div className="w-7 h-7 rounded-full bg-[var(--color-danger-bg)] text-[var(--color-danger)] flex items-center justify-center shrink-0 mt-0.5">
+                <AlertCircle className="w-3.5 h-3.5" />
+              </div>
+
+              <div className="flex-1 min-w-0">
+                <div className="flex items-start justify-between gap-2">
+                  <p className="text-xs sm:text-[13px] text-[var(--text-main)] leading-snug">
+                    Collector deal on <strong>{outOfStockBook2.title}</strong> is temporarily out of stock.
+                  </p>
+                  <span className="text-xs text-[var(--text-muted)] shrink-0">4d</span>
+                </div>
+
+                <div className="relative w-20 h-20 rounded-xl overflow-hidden border border-[var(--border-subtle)] bg-[var(--bg-card)] my-2.5 shadow-2xs">
+                  <img
+                    src={outOfStockBook2.coverImage}
+                    alt={outOfStockBook2.title}
+                    referrerPolicy="no-referrer"
+                    className="w-full h-full object-cover grayscale opacity-75"
+                  />
+                  <span className="absolute inset-x-0 bottom-0 bg-[#e60023] text-white text-[9px] font-extrabold text-center py-0.5 uppercase">
+                    Out of stock
+                  </span>
+                </div>
+
+                <p className="text-xs text-[var(--text-muted)] line-through">
+                  35% off with code KAVYA35
+                </p>
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    showToast(`Restock alert enabled for "${outOfStockBook2.title}"!`);
+                  }}
+                  className="mt-2 px-4 py-1.5 rounded-full bg-[var(--bg-card)] border border-[var(--border-strong)] text-[var(--text-main)] text-xs font-bold hover:bg-[var(--bg-hover)] transition cursor-pointer"
+                >
+                  Out of stock • Notify me
+                </button>
+              </div>
+            </div>
+
+            {/* Deal 6: 25% off with code PALMLEAF500 */}
+            <div className="pt-4 border-t border-[var(--border-subtle)] flex items-start gap-3">
+              <div className="w-7 h-7 rounded-full bg-[#dcfce7] text-[#15803d] flex items-center justify-center shrink-0 mt-0.5">
+                <Tag className="w-3.5 h-3.5 fill-current" />
+              </div>
+
+              <div className="flex-1 min-w-0">
+                <div className="flex items-start justify-between gap-2">
+                  <p className="text-xs sm:text-[13px] text-[var(--text-main)] leading-snug">
+                    Sarasaviya &amp; Grantha Press sent a voucher for your saved favorites.
+                  </p>
+                  <span className="text-xs text-[var(--text-muted)] shrink-0">5d</span>
+                </div>
+
+                <Link
+                  href={`/books/${offerBook3.id}`}
+                  onClick={() => setNotificationsOpen(false)}
+                  className="block w-20 h-20 rounded-xl overflow-hidden border border-[var(--border-subtle)] bg-[var(--bg-card)] my-2.5 shadow-2xs hover:opacity-95 transition"
+                >
+                  <img
+                    src={offerBook3.coverImage}
+                    alt={offerBook3.title}
+                    referrerPolicy="no-referrer"
+                    className="w-full h-full object-cover"
+                  />
+                </Link>
+
+                <p className="text-xs sm:text-[13px] font-extrabold text-[var(--color-success)]">
+                  25% off with code PALMLEAF500
+                </p>
+
+                <button
+                  type="button"
+                  onClick={() => handleApplyDealCoupon(2, 'PALMLEAF500', '25% off')}
+                  className="mt-2 px-4 py-2 rounded-full bg-[var(--pill-active-bg)] text-[var(--pill-active-text)] text-xs font-bold hover:opacity-90 active:scale-95 transition cursor-pointer"
+                >
+                  Apply to bag
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -671,6 +873,7 @@ export default function Header({ isSticky = false }: HeaderProps = {}) {
     if (!profileMenuOpen) return null;
     const displayName = user?.name || 'Sadew Nethsara';
     const userInitial = displayName.charAt(0).toUpperCase();
+    const mainCelebCoupon = activeCelebration.coupons[0];
 
     return (
       <div
@@ -680,7 +883,7 @@ export default function Header({ isSticky = false }: HeaderProps = {}) {
         className={
           isMobile
             ? 'absolute left-0 right-0 top-full mt-2.5 w-full bg-[var(--bg-card)] text-[var(--text-main)] rounded-2xl shadow-[0_14px_44px_rgba(0,0,0,0.22)] border border-[var(--border-subtle)] z-50 animate-fade-in select-none'
-            : 'absolute right-0 top-full mt-3 w-[295px] bg-[var(--bg-card)] text-[var(--text-main)] rounded-2xl shadow-[0_14px_44px_rgba(0,0,0,0.22)] border border-[var(--border-subtle)] z-50 animate-fade-in select-none'
+            : 'absolute right-0 top-full mt-3 w-[315px] bg-[var(--bg-card)] text-[var(--text-main)] rounded-2xl shadow-[0_14px_44px_rgba(0,0,0,0.22)] border border-[var(--border-subtle)] z-50 animate-fade-in select-none'
         }
       >
         {/* Top Upward Caret Pointer (Desktop) */}
@@ -688,8 +891,8 @@ export default function Header({ isSticky = false }: HeaderProps = {}) {
           <div className="absolute -top-2 right-5 w-4 h-4 rotate-45 bg-[var(--bg-card)] border-l border-t border-[var(--border-subtle)] pointer-events-none" />
         )}
 
-        <div className="pt-2 pb-1.5 overflow-hidden rounded-2xl">
-          {/* Profile Header Row with Blue Top/Bottom Accent Border (Matching Reference Screenshot) */}
+        <div className="pt-2 pb-1.5 overflow-hidden rounded-2xl max-h-[82vh] overflow-y-auto overscroll-contain">
+          {/* Profile Header Row with Blue Top/Bottom Accent Border */}
           <Link
             href="/profile"
             onClick={() => setProfileMenuOpen(false)}
@@ -707,6 +910,60 @@ export default function Header({ isSticky = false }: HeaderProps = {}) {
               </p>
             </div>
           </Link>
+
+          {/* Celebration Date Special Page & Theme Button (Requested in Profile Dropdown) */}
+          <div className="px-3 py-2.5 border-b border-[var(--border-subtle)] bg-[var(--bg-surface)]/70">
+            <Link
+              href={`/offers?celebration=${activeCelebration.id}`}
+              onClick={() => setProfileMenuOpen(false)}
+              className="w-full p-2.5 rounded-xl bg-[var(--color-primary-subtle)] border border-[var(--color-primary-border)] hover:opacity-95 transition flex items-center justify-between gap-2"
+            >
+              <div className="flex items-center gap-2.5 min-w-0">
+                <div className="w-8 h-8 rounded-lg bg-[var(--color-primary)] text-white flex items-center justify-center shrink-0">
+                  <CalendarHeart className="w-4 h-4" />
+                </div>
+                <div className="min-w-0">
+                  <p className="text-xs font-extrabold text-[var(--text-main)] truncate">
+                    {activeCelebration.title}
+                  </p>
+                  <p className="text-[11px] font-semibold text-[var(--color-primary)] truncate">
+                    {activeCelebration.dateLabel} • {mainCelebCoupon ? mainCelebCoupon.discount : 'Date Offers'}
+                  </p>
+                </div>
+              </div>
+              <ArrowUpRight className="w-4 h-4 text-[var(--color-primary)] shrink-0" />
+            </Link>
+
+            {/* Quick Celebration Theme Switcher Pills inside Profile Dropdown */}
+            <div className="mt-2 flex items-center gap-1.5 overflow-x-auto no-scrollbar">
+              {[
+                { id: 'womens-day', label: "Women's Day" },
+                { id: 'childrens-day', label: "Children's Day" },
+                { id: 'teachers-day', label: "Teachers' Day" },
+                { id: 'deepavali-halloween-season', label: 'Oct 30 Festival' },
+              ].map((item) => {
+                const active = isCelebrationMode && activeCelebration.id === item.id;
+                return (
+                  <button
+                    key={item.id}
+                    type="button"
+                    onClick={() => {
+                      setActiveCelebrationById(item.id);
+                      setProfileMenuOpen(false);
+                      router.push(`/offers?celebration=${item.id}`);
+                    }}
+                    className={`px-2 py-1 rounded-full text-[10px] font-bold shrink-0 transition cursor-pointer ${
+                      active
+                        ? 'bg-[var(--color-primary)] text-white'
+                        : 'bg-[var(--bg-card)] text-[var(--text-body)] border border-[var(--border-subtle)] hover:bg-[var(--bg-hover)]'
+                    }`}
+                  >
+                    {item.label}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
 
           {/* Group 1: Purchases, Track Order & Messages */}
           <div className="py-1.5 border-b border-[var(--border-subtle)]">
@@ -750,12 +1007,17 @@ export default function Header({ isSticky = false }: HeaderProps = {}) {
             </Link>
 
             <Link
-              href="/offers"
+              href={`/offers?celebration=${activeCelebration.id}`}
               onClick={() => setProfileMenuOpen(false)}
-              className="flex items-center gap-3.5 px-4 py-2.5 text-sm text-[var(--text-main)] hover:bg-[var(--bg-hover)] transition"
+              className="flex items-center justify-between gap-2 px-4 py-2.5 text-sm text-[var(--text-main)] hover:bg-[var(--bg-hover)] transition"
             >
-              <Tag className="w-4.5 h-4.5 text-[var(--text-main)] shrink-0" />
-              <span>Special offers</span>
+              <div className="flex items-center gap-3.5">
+                <Tag className="w-4.5 h-4.5 text-[var(--text-main)] shrink-0" />
+                <span>Special offers</span>
+              </div>
+              <span className="px-2 py-0.5 rounded-full bg-[var(--color-primary-subtle)] text-[var(--color-primary)] text-[10px] font-extrabold">
+                {activeCelebration.dateLabel}
+              </span>
             </Link>
 
             <Link
@@ -881,58 +1143,61 @@ export default function Header({ isSticky = false }: HeaderProps = {}) {
             {/* Right User Actions */}
             <div className="flex items-center gap-1.5 shrink-0">
               {/* Theme Toggle */}
-              <button
-                type="button"
-                onClick={toggleTheme}
-                aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
-                className="p-2.5 rounded-full hover:bg-[var(--header-hover-bg)] text-[var(--header-text)] transition cursor-pointer"
-                title={isDark ? 'Light Mode' : 'Dark Mode'}
-              >
-                {isDark ? (
-                  <Sun className="w-5 h-5 text-amber-300" />
-                ) : (
-                  <Moon className="w-5 h-5 text-[var(--header-text)]" />
-                )}
-              </button>
+              <Tooltip text={isDark ? 'Switch to Light Mode' : 'Switch to Dark Mode'}>
+                <button
+                  type="button"
+                  onClick={toggleTheme}
+                  aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
+                  className="p-2.5 rounded-full hover:bg-[var(--header-hover-bg)] text-[var(--header-text)] transition cursor-pointer"
+                >
+                  {isDark ? (
+                    <Sun className="w-5 h-5 text-amber-300" />
+                  ) : (
+                    <Moon className="w-5 h-5 text-[var(--header-text)]" />
+                  )}
+                </button>
+              </Tooltip>
 
               {/* Favorites / Saved Reading List */}
-              <Link
-                href="/wishlist"
-                aria-label="Saved Favorites & Collections"
-                className="relative p-2.5 rounded-full hover:bg-[var(--header-hover-bg)] text-[var(--header-text)] transition cursor-pointer"
-                title="Favorite Treatises"
-              >
-                <Heart className="w-5 h-5" />
-                {totalFavorites > 0 && (
-                  <span className="absolute top-1.5 right-1.5 min-w-4 h-4 px-1 rounded-full bg-[var(--header-badge-fav-bg)] text-[var(--header-badge-text)] text-[10px] font-bold flex items-center justify-center leading-none">
-                    {totalFavorites}
-                  </span>
-                )}
-              </Link>
+              <Tooltip text="Favorites & Saved Boards">
+                <Link
+                  href="/wishlist"
+                  aria-label="Saved Favorites & Collections"
+                  className="relative p-2.5 rounded-full hover:bg-[var(--header-hover-bg)] text-[var(--header-text)] transition cursor-pointer"
+                >
+                  <Heart className="w-5 h-5" />
+                  {totalFavorites > 0 && (
+                    <span className="absolute top-1.5 right-1.5 min-w-4 h-4 px-1 rounded-full bg-[var(--header-badge-fav-bg)] text-[var(--header-badge-text)] text-[10px] font-bold flex items-center justify-center leading-none">
+                      {totalFavorites}
+                    </span>
+                  )}
+                </Link>
+              </Tooltip>
 
               {/* Notifications / Deals Bell Dropdown */}
               <div className="relative" ref={desktopNotificationsRef}>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setNotificationsOpen(!notificationsOpen);
-                    setProfileMenuOpen(false);
-                  }}
-                  aria-label="Deals and Notifications"
-                  aria-expanded={notificationsOpen}
-                  className={`h-10 px-3 rounded-full flex items-center gap-1 transition cursor-pointer ${
-                    notificationsOpen
-                      ? 'bg-[#dbeafe] dark:bg-blue-950/60 text-[#1e3a8a] dark:text-blue-200 ring-2 ring-[#3b82f6]/60'
-                      : 'hover:bg-[var(--header-hover-bg)] text-[var(--header-text)]'
-                  }`}
-                  title="Deals & Notifications"
-                >
-                  <div className="relative">
-                    <Bell className="w-5 h-5 fill-current" />
-                    <span className="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full bg-[#e60023]" />
-                  </div>
-                  <ChevronDown className="w-3.5 h-3.5" />
-                </button>
+                <Tooltip text="Deals & Notifications">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setNotificationsOpen(!notificationsOpen);
+                      setProfileMenuOpen(false);
+                    }}
+                    aria-label="Deals and Notifications"
+                    aria-expanded={notificationsOpen}
+                    className={`h-10 px-3 rounded-full flex items-center gap-1 transition cursor-pointer ${
+                      notificationsOpen
+                        ? 'bg-[#dbeafe] dark:bg-blue-950/60 text-[#1e3a8a] dark:text-blue-200 ring-2 ring-[#3b82f6]/60'
+                        : 'hover:bg-[var(--header-hover-bg)] text-[var(--header-text)]'
+                    }`}
+                  >
+                    <div className="relative">
+                      <Bell className="w-5 h-5 fill-current" />
+                      <span className="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full bg-[#e60023]" />
+                    </div>
+                    <ChevronDown className="w-3.5 h-3.5" />
+                  </button>
+                </Tooltip>
                 {renderNotificationsDropdown(false)}
               </div>
 
@@ -947,49 +1212,51 @@ export default function Header({ isSticky = false }: HeaderProps = {}) {
                 </button>
               ) : (
                 <div className="relative" ref={desktopProfileRef}>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setProfileMenuOpen(!profileMenuOpen);
-                      setNotificationsOpen(false);
-                    }}
-                    aria-label="Your account menu"
-                    aria-expanded={profileMenuOpen}
-                    className={`h-10 px-2.5 rounded-full flex items-center gap-1.5 transition cursor-pointer ${
-                      profileMenuOpen
-                        ? 'bg-[#dbeafe] dark:bg-blue-950/60 text-[#1e3a8a] dark:text-blue-200 ring-2 ring-[#3b82f6]/60'
-                        : 'hover:bg-[var(--header-hover-bg)] text-[var(--header-text)]'
-                    }`}
-                    title={user?.name || 'Your Profile'}
-                  >
-                    <span className="w-7 h-7 rounded-full bg-[#606c38] text-white text-xs font-bold flex items-center justify-center shrink-0">
-                      {(user?.name || 'S').charAt(0).toUpperCase()}
-                    </span>
-                    <ChevronDown className="w-3.5 h-3.5" />
-                  </button>
+                  <Tooltip text={user?.name || 'Your Profile & Celebration Offers'}>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setProfileMenuOpen(!profileMenuOpen);
+                        setNotificationsOpen(false);
+                      }}
+                      aria-label="Your account menu"
+                      aria-expanded={profileMenuOpen}
+                      className={`h-10 px-2.5 rounded-full flex items-center gap-1.5 transition cursor-pointer ${
+                        profileMenuOpen
+                          ? 'bg-[#dbeafe] dark:bg-blue-950/60 text-[#1e3a8a] dark:text-blue-200 ring-2 ring-[#3b82f6]/60'
+                          : 'hover:bg-[var(--header-hover-bg)] text-[var(--header-text)]'
+                      }`}
+                    >
+                      <span className="w-7 h-7 rounded-full bg-[#606c38] text-white text-xs font-bold flex items-center justify-center shrink-0">
+                        {(user?.name || 'S').charAt(0).toUpperCase()}
+                      </span>
+                      <ChevronDown className="w-3.5 h-3.5" />
+                    </button>
+                  </Tooltip>
                   {renderProfileDropdown(false)}
                 </div>
               )}
 
               {/* Highlighted Shopping Bag Button -> Navigates to Bag Page */}
-              <Link
-                href="/bag"
-                aria-label="Shopping Bag"
-                className="h-10 px-4 rounded-full flex items-center gap-2 bg-[var(--bag-btn-bg)] hover:bg-[var(--bag-btn-hover-bg)] border-2 border-[var(--bag-btn-border)] hover:border-[var(--bag-btn-hover-border)] transition-all cursor-pointer shadow-xs active:scale-95 group ml-1"
-                title="Shopping Bag"
-              >
-                <div className="relative flex items-center justify-center">
-                  <Handbag className="w-4.5 h-4.5 transition-transform group-hover:scale-110 text-[var(--bag-btn-text)] group-hover:text-[var(--color-primary)]" />
-                  {bagCount > 0 && (
-                    <span className="absolute -top-1.5 -right-2 min-w-4 h-4 px-1 rounded-full bg-[var(--header-badge-bag-bg)] text-[var(--header-badge-text)] text-[10px] font-bold flex items-center justify-center shadow-xs leading-none">
-                      {bagCount}
-                    </span>
-                  )}
-                </div>
-                <span className="font-bold text-sm tracking-tight transition-colors text-[var(--bag-btn-text)] group-hover:text-[var(--color-primary)]">
-                  Bag
-                </span>
-              </Link>
+              <Tooltip text={`Shopping Bag (${bagCount} items)`}>
+                <Link
+                  href="/bag"
+                  aria-label="Shopping Bag"
+                  className="h-10 px-4 rounded-full flex items-center gap-2 bg-[var(--bag-btn-bg)] hover:bg-[var(--bag-btn-hover-bg)] border-2 border-[var(--bag-btn-border)] hover:border-[var(--bag-btn-hover-border)] transition-all cursor-pointer shadow-xs active:scale-95 group ml-1"
+                >
+                  <div className="relative flex items-center justify-center">
+                    <Handbag className="w-4.5 h-4.5 transition-transform group-hover:scale-110 text-[var(--bag-btn-text)] group-hover:text-[var(--color-primary)]" />
+                    {bagCount > 0 && (
+                      <span className="absolute -top-1.5 -right-2 min-w-4 h-4 px-1 rounded-full bg-[var(--header-badge-bag-bg)] text-[var(--header-badge-text)] text-[10px] font-bold flex items-center justify-center shadow-xs leading-none">
+                        {bagCount}
+                      </span>
+                    )}
+                  </div>
+                  <span className="font-bold text-sm tracking-tight transition-colors text-[var(--bag-btn-text)] group-hover:text-[var(--color-primary)]">
+                    Bag
+                  </span>
+                </Link>
+              </Tooltip>
             </div>
           </div>
 

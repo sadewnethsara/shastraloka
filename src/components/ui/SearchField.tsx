@@ -150,7 +150,6 @@ export const SearchField = forwardRef<HTMLInputElement, SearchFieldProps>(
               e.stopPropagation();
               onImageSearchClick();
             }}
-            title="Search sacred manuscripts by image"
             aria-label="Search sacred manuscripts by image"
             className={`absolute flex items-center justify-center p-1.5 rounded-full text-[var(--text-dim)] hover:text-[var(--color-primary)] hover:bg-[var(--header-hover-bg)] transition-colors cursor-pointer group ${showSubmitButton ? 'right-12 sm:right-13.5' : 'right-2 sm:right-2.5'
               }`}

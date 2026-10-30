@@ -10,11 +10,13 @@ import BookCover from '../../components/BookCover';
 import { useApp } from '../../context/AppContext';
 import { BOOKS } from '../../data/books';
 import { IconCheck, IconHeart, IconBookmark, IconBook, IconClose, IconShare } from '../../components/Icons';
+import { Trash2 } from 'lucide-react';
 
 export default function ProfilePage() {
   const {
     boards,
     createBoard,
+    deleteBoard,
     likedBookIds,
     orders,
     showToast,
@@ -172,61 +174,77 @@ export default function ProfilePage() {
                 const subBook2 = boardBooks[2];
 
                 return (
-                  <Link
-                    key={board.id}
-                    href={`/profile/boards/${board.id}`}
-                    className="group block space-y-2 cursor-pointer"
-                  >
-                    {/* Pinterest Board Collage (1 large cover + 2 small covers) with real photographs */}
-                    <div className="h-60 rounded-2xl overflow-hidden bg-[var(--bg-input)] border border-[var(--border-subtle)] p-1.5 grid grid-cols-3 gap-1.5 group-hover:shadow-md transition-shadow">
-                      
-                      {/* Main Cover (Span 2 cols) */}
-                      <div className="col-span-2 h-full rounded-xl overflow-hidden bg-neutral-100 relative">
-                        {mainBook ? (
-                          <img src={mainBook.coverImage} alt={mainBook.title} className="w-full h-full object-cover" />
-                        ) : (
-                          <div className="h-full w-full bg-[var(--bg-wash)] flex items-center justify-center text-[#a66523]">
-                            <IconBook size={24} />
+                  <div key={board.id} className="group relative space-y-2">
+                    <Link
+                      href={`/profile/boards/${board.id}`}
+                      className="block space-y-2 cursor-pointer"
+                    >
+                      {/* Pinterest Board Collage (1 large cover + 2 small covers) with real photographs */}
+                      <div className="h-60 rounded-2xl overflow-hidden bg-[var(--bg-input)] border border-[var(--border-subtle)] p-1.5 grid grid-cols-3 gap-1.5 group-hover:shadow-md transition-shadow">
+                        
+                        {/* Main Cover (Span 2 cols) */}
+                        <div className="col-span-2 h-full rounded-xl overflow-hidden bg-neutral-100 relative">
+                          {mainBook ? (
+                            <img src={mainBook.coverImage} alt={mainBook.title} className="w-full h-full object-cover" />
+                          ) : (
+                            <div className="h-full w-full bg-[var(--bg-wash)] flex items-center justify-center text-[#a66523]">
+                              <IconBook size={24} />
+                            </div>
+                          )}
+                        </div>
+
+                        {/* 2 Small Thumbnail Covers */}
+                        <div className="col-span-1 h-full flex flex-col gap-1.5">
+                          <div className="flex-1 rounded-lg overflow-hidden bg-neutral-100">
+                            {subBook1 ? (
+                              <img src={subBook1.coverImage} alt={subBook1.title} className="w-full h-full object-cover" />
+                            ) : (
+                              <div className="h-full w-full bg-[var(--bg-surface)]" />
+                            )}
                           </div>
-                        )}
-                      </div>
-
-                      {/* 2 Small Thumbnail Covers */}
-                      <div className="col-span-1 h-full flex flex-col gap-1.5">
-                        <div className="flex-1 rounded-lg overflow-hidden bg-neutral-100">
-                          {subBook1 ? (
-                            <img src={subBook1.coverImage} alt={subBook1.title} className="w-full h-full object-cover" />
-                          ) : (
-                            <div className="h-full w-full bg-[var(--bg-surface)]" />
-                          )}
+                          <div className="flex-1 rounded-lg overflow-hidden bg-neutral-100">
+                            {subBook2 ? (
+                              <img src={subBook2.coverImage} alt={subBook2.title} className="w-full h-full object-cover" />
+                            ) : (
+                              <div className="h-full w-full bg-[var(--bg-surface)]" />
+                            )}
+                          </div>
                         </div>
-                        <div className="flex-1 rounded-lg overflow-hidden bg-neutral-100">
-                          {subBook2 ? (
-                            <img src={subBook2.coverImage} alt={subBook2.title} className="w-full h-full object-cover" />
-                          ) : (
-                            <div className="h-full w-full bg-[var(--bg-surface)]" />
-                          )}
+
+                      </div>
+
+                      {/* Board Info */}
+                      <div className="px-1">
+                        <div className="flex items-center justify-between">
+                          <h3 className="font-heading font-bold text-sm text-[var(--text-main)] group-hover:text-[#e60023] transition-colors truncate">
+                            {board.name}
+                          </h3>
+                          <span className="text-[11px] font-semibold text-[var(--text-muted)]">
+                            {board.bookIds.length} Pins
+                          </span>
                         </div>
+                        <p className="text-xs text-[var(--text-muted)] line-clamp-1">
+                          {board.description || 'Curated Sri Lankan collection'}
+                        </p>
                       </div>
+                    </Link>
 
-                    </div>
-
-                    {/* Board Info */}
-                    <div className="px-1">
-                      <div className="flex items-center justify-between">
-                        <h3 className="font-heading font-bold text-sm text-[var(--text-main)] group-hover:text-[#e60023] transition-colors truncate">
-                          {board.name}
-                        </h3>
-                        <span className="text-[11px] font-semibold text-[var(--text-muted)]">
-                          {board.bookIds.length} Pins
-                        </span>
-                      </div>
-                      <p className="text-xs text-[var(--text-muted)] line-clamp-1">
-                        {board.description || 'Curated Sri Lankan collection'}
-                      </p>
-                    </div>
-
-                  </Link>
+                    {boards.length > 1 && (
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          deleteBoard(board.id);
+                        }}
+                        aria-label={`Delete ${board.name} board`}
+                        title="Delete board"
+                        className="absolute top-3 right-3 w-8 h-8 rounded-full bg-black/65 hover:bg-rose-600 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all cursor-pointer shadow-sm z-10"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                      </button>
+                    )}
+                  </div>
                 );
               })}
 

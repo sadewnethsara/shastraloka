@@ -1,0 +1,417 @@
+/* =========================================================================
+   CELEBRATION & CULTURAL CALENDAR THEMES
+   Includes:
+   - International Women's Day (womens-day) — March 8
+   - World & Sri Lankan Children's Day (childrens-day) — Oct 1 / Nov 20
+   - World Teachers' Day / Guru Puja (teachers-day) — Oct 5–6
+   - Vesak & Sacred Lotus Festival (vesak) — May
+   - Sinhala & Tamil New Year (avurudu) — April 13–14
+   - Deepavali & Autumn Folklore Eve (halloween) — Oct 30–31
+   - Earth, Wildlife & Nature Days (earth-nature) — Apr 22 / Jun 5
+   - Christmas & Year-End Season (christmas) — Dec 25 / Dec 31
+   ========================================================================= */
+
+/* 1. International Women's Day (March 8) — Royal Mimosa Gold & Violet Orchid */
+[data-theme="womens-day"] {
+  --color-primary: #7e22ce;
+  --color-primary-hover: #6b21a8;
+  --color-primary-subtle: rgba(126, 34, 206, 0.12);
+  --color-primary-border: rgba(126, 34, 206, 0.42);
+  --color-accent-badge: #be185d;
+  --color-accent-badge-text: #ffffff;
+  --color-emerald: #047857;
+
+  --header-bg: #fdf8ff;
+  --header-bg-glass: rgba(253, 248, 255, 0.96);
+  --header-border: #f3e8ff;
+  --header-text: #3b0764;
+  --header-text-muted: #7e22ce;
+  --header-hover-bg: #f5ecff;
+  --header-dropdown-bg: #ffffff;
+  --header-dropdown-border: #e9d5ff;
+  --header-mobile-drawer-bg: #fdf8ff;
+  --header-search-bg: #ffffff;
+  --header-search-border: #d8b4fe;
+
+  --header-badge-fav-bg: #7e22ce;
+  --header-badge-bag-bg: #be185d;
+  --header-badge-text: #ffffff;
+  --bag-btn-bg: #f3e8ff;
+  --bag-btn-border: rgba(126, 34, 206, 0.45);
+  --bag-btn-hover-bg: rgba(126, 34, 206, 0.16);
+  --bag-btn-hover-border: #7e22ce;
+  --bag-btn-text: #3b0764;
+
+  --bg-main: #fffaff;
+  --bg-surface: #fdf4ff;
+  --bg-wash: #fae8ff;
+  --bg-card: #ffffff;
+  --bg-hover: #f3e8ff;
+  --bg-input: #ffffff;
+  --bg-badge: #3b0764;
+
+  --text-main: #2e1065;
+  --text-body: #4c1d95;
+  --text-muted: #6b21a8;
+  --text-dim: #9333ea;
+
+  --border-subtle: #f3e8ff;
+  --border-strong: #d8b4fe;
+  --border-focus: #581c87;
+
+  --surface-cream: #fdf2f8;
+  --surface-cream-strong: #fce7f3;
+  --brand-brown: #9d174d;
+  --footer-bg: #f5ecff;
+  --hero-banner-bg: #f5e8ff;
+  --hero-banner-border: #e9d5ff;
+  --hero-showcase-bg: linear-gradient(135deg, #6b21a8 0%, #9d174d 55%, #d97706 100%);
+  --hero-showcase-border: rgba(255, 255, 255, 0.3);
+  --hero-banner-pattern: radial-gradient(circle at 18% 22%, rgba(219, 39, 119, 0.10) 0%, transparent 45%), radial-gradient(circle at 85% 75%, rgba(126, 34, 206, 0.12) 0%, transparent 50%);
+
+  --banner-guild-bg: #fae8ff;
+  --banner-guild-surface: #f3e8ff;
+  --banner-guild-border: #e9d5ff;
+  --banner-guild-text: #3b0764;
+  --banner-guild-muted: #6b21a8;
+  --banner-guild-accent: #be185d;
+
+  --color-success: #047857;
+  --color-success-bg: #ecfdf5;
+  --color-warning: #b45309;
+  --color-warning-bg: #fffbeb;
+  --color-danger: #be123c;
+  --color-danger-bg: #fff1f2;
+
+  --pill-bg: #f3e8ff;
+  --pill-hover: #e9d5ff;
+  --pill-active-bg: #3b0764;
+  --pill-active-text: #ffffff;
+
+  --card-shadow: 0 2px 8px rgba(107, 33, 168, 0.06);
+  --card-shadow-hover: 0 8px 20px rgba(107, 33, 168, 0.14);
+}
+
+/* 2. World & Sri Lankan Children's Day (Oct 1 / Nov 20) — Joyful Sky & Sunshine Wonder */
+[data-theme="childrens-day"] {
+  --color-primary: #0284c7;
+  --color-primary-hover: #0369a1;
+  --color-primary-subtle: rgba(2, 132, 199, 0.12);
+  --color-primary-border: rgba(2, 132, 199, 0.42);
+  --color-accent-badge: #ea580c;
+  --color-accent-badge-text: #ffffff;
+  --color-emerald: #047857;
+
+  --header-bg: #f0f9ff;
+  --header-bg-glass: rgba(240, 249, 255, 0.96);
+  --header-border: #bae6fd;
+  --header-text: #0c4a6e;
+  --header-text-muted: #0369a1;
+  --header-hover-bg: #e0f2fe;
+  --header-dropdown-bg: #ffffff;
+  --header-dropdown-border: #bae6fd;
+  --header-mobile-drawer-bg: #f0f9ff;
+  --header-search-bg: #ffffff;
+  --header-search-border: #7dd3fc;
+
+  --header-badge-fav-bg: #0284c7;
+  --header-badge-bag-bg: #ea580c;
+  --header-badge-text: #ffffff;
+  --bag-btn-bg: #e0f2fe;
+  --bag-btn-border: rgba(2, 132, 199, 0.45);
+  --bag-btn-hover-bg: rgba(2, 132, 199, 0.15);
+  --bag-btn-hover-border: #0284c7;
+  --bag-btn-text: #0c4a6e;
+
+  --bg-main: #f8fcff;
+  --bg-surface: #f0f9ff;
+  --bg-wash: #e0f2fe;
+  --bg-card: #ffffff;
+  --bg-hover: #e0f2fe;
+  --bg-input: #ffffff;
+  --bg-badge: #0c4a6e;
+
+  --text-main: #0c4a6e;
+  --text-body: #075985;
+  --text-muted: #0369a1;
+  --text-dim: #0284c7;
+
+  --border-subtle: #bae6fd;
+  --border-strong: #7dd3fc;
+  --border-focus: #0c4a6e;
+
+  --surface-cream: #fef9c3;
+  --surface-cream-strong: #fef08a;
+  --brand-brown: #d97706;
+  --footer-bg: #e0f2fe;
+  --hero-banner-bg: #e0f2fe;
+  --hero-banner-border: #bae6fd;
+  --hero-showcase-bg: linear-gradient(135deg, #0284c7 0%, #0ea5e9 50%, #f59e0b 100%);
+  --hero-showcase-border: rgba(255, 255, 255, 0.35);
+  --hero-banner-pattern: radial-gradient(circle at 15% 25%, rgba(245, 158, 11, 0.16) 0%, transparent 40%), radial-gradient(circle at 82% 75%, rgba(2, 132, 199, 0.14) 0%, transparent 45%);
+
+  --banner-guild-bg: #fef9c3;
+  --banner-guild-surface: #fef08a;
+  --banner-guild-border: #fde047;
+  --banner-guild-text: #0c4a6e;
+  --banner-guild-muted: #0369a1;
+  --banner-guild-accent: #ea580c;
+
+  --color-success: #047857;
+  --color-success-bg: #ecfdf5;
+  --color-warning: #b45309;
+  --color-warning-bg: #fffbeb;
+  --color-danger: #be123c;
+  --color-danger-bg: #fff1f2;
+
+  --pill-bg: #e0f2fe;
+  --pill-hover: #bae6fd;
+  --pill-active-bg: #0c4a6e;
+  --pill-active-text: #ffffff;
+
+  --card-shadow: 0 2px 8px rgba(2, 132, 199, 0.06);
+  --card-shadow-hover: 0 8px 20px rgba(2, 132, 199, 0.14);
+}
+
+/* 3. World Teachers' Day / Guru Puja (Oct 5–6) — Scholarly Indigo & Classical Saffron */
+[data-theme="teachers-day"] {
+  --color-primary: #b45309;
+  --color-primary-hover: #92400e;
+  --color-primary-subtle: rgba(180, 83, 9, 0.12);
+  --color-primary-border: rgba(180, 83, 9, 0.42);
+  --color-accent-badge: #1e3a8a;
+  --color-accent-badge-text: #ffffff;
+  --color-emerald: #047857;
+
+  --header-bg: #fffbeb;
+  --header-bg-glass: rgba(255, 251, 235, 0.96);
+  --header-border: #fde68a;
+  --header-text: #1e293b;
+  --header-text-muted: #92400e;
+  --header-hover-bg: #fef3c7;
+  --header-dropdown-bg: #ffffff;
+  --header-dropdown-border: #fcd34d;
+  --header-mobile-drawer-bg: #fffbeb;
+  --header-search-bg: #ffffff;
+  --header-search-border: #fbbf24;
+
+  --header-badge-fav-bg: #b45309;
+  --header-badge-bag-bg: #1e3a8a;
+  --header-badge-text: #ffffff;
+  --bag-btn-bg: #fef3c7;
+  --bag-btn-border: rgba(180, 83, 9, 0.45);
+  --bag-btn-hover-bg: rgba(180, 83, 9, 0.15);
+  --bag-btn-hover-border: #b45309;
+  --bag-btn-text: #1e293b;
+
+  --bg-main: #fffdf9;
+  --bg-surface: #fffbeb;
+  --bg-wash: #fef3c7;
+  --bg-card: #ffffff;
+  --bg-hover: #fde68a;
+  --bg-input: #ffffff;
+  --bg-badge: #1e3a8a;
+
+  --text-main: #1e293b;
+  --text-body: #334155;
+  --text-muted: #78350f;
+  --text-dim: #92400e;
+
+  --border-subtle: #fde68a;
+  --border-strong: #fbbf24;
+  --border-focus: #1e3a8a;
+
+  --surface-cream: #eff6ff;
+  --surface-cream-strong: #dbeafe;
+  --brand-brown: #1e3a8a;
+  --footer-bg: #fef3c7;
+  --hero-banner-bg: #fef3c7;
+  --hero-banner-border: #fde68a;
+  --hero-showcase-bg: linear-gradient(135deg, #1e3a8a 0%, #312e81 50%, #b45309 100%);
+  --hero-showcase-border: rgba(255, 255, 255, 0.3);
+  --hero-banner-pattern: radial-gradient(circle at 20% 20%, rgba(30, 58, 138, 0.09) 0%, transparent 45%), radial-gradient(circle at 80% 80%, rgba(180, 83, 9, 0.14) 0%, transparent 50%);
+
+  --banner-guild-bg: #eff6ff;
+  --banner-guild-surface: #dbeafe;
+  --banner-guild-border: #bfdbfe;
+  --banner-guild-text: #1e293b;
+  --banner-guild-muted: #1e40af;
+  --banner-guild-accent: #b45309;
+
+  --color-success: #047857;
+  --color-success-bg: #ecfdf5;
+  --color-warning: #b45309;
+  --color-warning-bg: #fffbeb;
+  --color-danger: #be123c;
+  --color-danger-bg: #fff1f2;
+
+  --pill-bg: #fef3c7;
+  --pill-hover: #fde68a;
+  --pill-active-bg: #1e3a8a;
+  --pill-active-text: #ffffff;
+
+  --card-shadow: 0 2px 8px rgba(30, 58, 138, 0.06);
+  --card-shadow-hover: 0 8px 20px rgba(30, 58, 138, 0.12);
+}
+
+/* 4. Sinhala & Tamil New Year (Avurudu — April 13–14) & Deepavali Festival */
+[data-theme="avurudu"] {
+  --color-primary: #c2410c;
+  --color-primary-hover: #9a3412;
+  --color-primary-subtle: rgba(194, 65, 12, 0.12);
+  --color-primary-border: rgba(194, 65, 12, 0.42);
+  --color-accent-badge: #b91c1c;
+  --color-accent-badge-text: #ffffff;
+  --color-emerald: #047857;
+
+  --header-bg: #fff7ed;
+  --header-bg-glass: rgba(255, 247, 237, 0.96);
+  --header-border: #fed7aa;
+  --header-text: #431407;
+  --header-text-muted: #9a3412;
+  --header-hover-bg: #ffedd5;
+  --header-dropdown-bg: #ffffff;
+  --header-dropdown-border: #fdba74;
+  --header-mobile-drawer-bg: #fff7ed;
+  --header-search-bg: #ffffff;
+  --header-search-border: #fb923c;
+
+  --header-badge-fav-bg: #c2410c;
+  --header-badge-bag-bg: #b91c1c;
+  --header-badge-text: #ffffff;
+  --bag-btn-bg: #ffedd5;
+  --bag-btn-border: rgba(194, 65, 12, 0.45);
+  --bag-btn-hover-bg: rgba(194, 65, 12, 0.16);
+  --bag-btn-hover-border: #c2410c;
+  --bag-btn-text: #431407;
+
+  --bg-main: #fffcf7;
+  --bg-surface: #fff7ed;
+  --bg-wash: #ffedd5;
+  --bg-card: #ffffff;
+  --bg-hover: #fed7aa;
+  --bg-input: #ffffff;
+  --bg-badge: #7c2d12;
+
+  --text-main: #431407;
+  --text-body: #7c2d12;
+  --text-muted: #9a3412;
+  --text-dim: #c2410c;
+
+  --border-subtle: #fed7aa;
+  --border-strong: #fdba74;
+  --border-focus: #7c2d12;
+
+  --surface-cream: #fef3c7;
+  --surface-cream-strong: #fde68a;
+  --brand-brown: #b45309;
+  --footer-bg: #ffedd5;
+  --hero-banner-bg: #ffedd5;
+  --hero-banner-border: #fed7aa;
+  --hero-showcase-bg: linear-gradient(135deg, #991b1b 0%, #c2410c 55%, #d97706 100%);
+  --hero-showcase-border: rgba(255, 255, 255, 0.32);
+  --hero-banner-pattern: radial-gradient(circle at 18% 24%, rgba(220, 38, 38, 0.11) 0%, transparent 42%), radial-gradient(circle at 82% 76%, rgba(217, 119, 6, 0.15) 0%, transparent 46%);
+
+  --banner-guild-bg: #fef3c7;
+  --banner-guild-surface: #fde68a;
+  --banner-guild-border: #fcd34d;
+  --banner-guild-text: #431407;
+  --banner-guild-muted: #9a3412;
+  --banner-guild-accent: #b91c1c;
+
+  --color-success: #047857;
+  --color-success-bg: #ecfdf5;
+  --color-warning: #b45309;
+  --color-warning-bg: #fffbeb;
+  --color-danger: #be123c;
+  --color-danger-bg: #fff1f2;
+
+  --pill-bg: #ffedd5;
+  --pill-hover: #fed7aa;
+  --pill-active-bg: #7c2d12;
+  --pill-active-text: #ffffff;
+
+  --card-shadow: 0 2px 8px rgba(154, 52, 18, 0.06);
+  --card-shadow-hover: 0 8px 20px rgba(154, 52, 18, 0.14);
+}
+
+/* 5. Vesak & Sacred Lotus Season (May) — Serene Bodhi Gold & Temple Ivory */
+[data-theme="vesak"] {
+  --color-primary: #d97706;
+  --color-primary-hover: #b45309;
+  --color-primary-subtle: rgba(217, 119, 6, 0.12);
+  --color-primary-border: rgba(217, 119, 6, 0.42);
+  --color-accent-badge: #9333ea;
+  --color-accent-badge-text: #ffffff;
+  --color-emerald: #047857;
+
+  --header-bg: #fefce8;
+  --header-bg-glass: rgba(254, 252, 232, 0.96);
+  --header-border: #fef08a;
+  --header-text: #422006;
+  --header-text-muted: #a16207;
+  --header-hover-bg: #fef9c3;
+  --header-dropdown-bg: #ffffff;
+  --header-dropdown-border: #fde047;
+  --header-mobile-drawer-bg: #fefce8;
+  --header-search-bg: #ffffff;
+  --header-search-border: #facc15;
+
+  --header-badge-fav-bg: #d97706;
+  --header-badge-bag-bg: #9333ea;
+  --header-badge-text: #ffffff;
+  --bag-btn-bg: #fef9c3;
+  --bag-btn-border: rgba(217, 119, 6, 0.45);
+  --bag-btn-hover-bg: rgba(217, 119, 6, 0.16);
+  --bag-btn-hover-border: #d97706;
+  --bag-btn-text: #422006;
+
+  --bg-main: #fffef7;
+  --bg-surface: #fefce8;
+  --bg-wash: #fef9c3;
+  --bg-card: #ffffff;
+  --bg-hover: #fef08a;
+  --bg-input: #ffffff;
+  --bg-badge: #422006;
+
+  --text-main: #422006;
+  --text-body: #713f12;
+  --text-muted: #854d0e;
+  --text-dim: #a16207;
+
+  --border-subtle: #fef08a;
+  --border-strong: #fde047;
+  --border-focus: #713f12;
+
+  --surface-cream: #fef3c7;
+  --surface-cream-strong: #fde68a;
+  --brand-brown: #b45309;
+  --footer-bg: #fef9c3;
+  --hero-banner-bg: #fef9c3;
+  --hero-banner-border: #fef08a;
+  --hero-showcase-bg: linear-gradient(135deg, #b45309 0%, #d97706 50%, #7e22ce 100%);
+  --hero-showcase-border: rgba(255, 255, 255, 0.35);
+  --hero-banner-pattern: radial-gradient(circle at 20% 20%, rgba(217, 119, 6, 0.15) 0%, transparent 45%), radial-gradient(circle at 80% 75%, rgba(147, 51, 234, 0.10) 0%, transparent 45%);
+
+  --banner-guild-bg: #fef3c7;
+  --banner-guild-surface: #fde68a;
+  --banner-guild-border: #fcd34d;
+  --banner-guild-text: #422006;
+  --banner-guild-muted: #854d0e;
+  --banner-guild-accent: #d97706;
+
+  --color-success: #047857;
+  --color-success-bg: #ecfdf5;
+  --color-warning: #b45309;
+  --color-warning-bg: #fffbeb;
+  --color-danger: #be123c;
+  --color-danger-bg: #fff1f2;
+
+  --pill-bg: #fef9c3;
+  --pill-hover: #fef08a;
+  --pill-active-bg: #422006;
+  --pill-active-text: #ffffff;
+
+  --card-shadow: 0 2px 8px rgba(161, 98, 7, 0.06);
+  --card-shadow-hover: 0 8px 20px rgba(161, 98, 7, 0.14);
+}

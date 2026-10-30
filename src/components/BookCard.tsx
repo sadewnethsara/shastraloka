@@ -5,18 +5,20 @@ import { Book } from '../data/books';
 import { useApp } from '../context/AppContext';
 import BookCover from './BookCover';
 import { IconHeart, IconStar, IconCheck, IconChevronDown, IconZoomIn } from './Icons';
-import { Handbag } from 'lucide-react';
+import { Handbag, Bell } from 'lucide-react';
+import { Tooltip } from './ui/Tooltip';
 
 interface BookCardProps {
   book: Book;
 }
 
 export default function BookCard({ book }: BookCardProps) {
-  const { openBookModal, addToBag, saveToBoard, isBookSaved, boards } = useApp();
+  const { openBookModal, addToBag, saveToBoard, isBookSaved, boards, showToast } = useApp();
   const [isHovered, setIsHovered] = useState(false);
   const [isBoardDropdownOpen, setIsBoardDropdownOpen] = useState(false);
 
   const saved = isBookSaved(book.id);
+  const isOutOfStock = book.inStock === false;
   const discountPercent = Math.round(((book.originalPrice - book.price) / book.originalPrice) * 100);
 
   return (
@@ -35,30 +37,37 @@ export default function BookCard({ book }: BookCardProps) {
       >
         <BookCover book={book} />
 
-        {/* Top-Right Favorite Heart Chip (Always accessible, Etsy & Pinterest standard) */}
-        <button
-          type="button"
-          onClick={(e) => {
-            e.stopPropagation();
-            saveToBoard(book.id);
-          }}
-          className={`absolute top-2.5 right-2.5 z-20 w-8 h-8 rounded-full flex items-center justify-center shadow-md transition-all duration-150 cursor-pointer ${
-            saved
-              ? 'bg-[#e60023] text-white'
-              : 'bg-white/95 text-neutral-700 hover:text-[#e60023] hover:bg-white'
-          }`}
-          title={saved ? 'Saved to reading board' : 'Save to board'}
-          aria-label="Save book"
-        >
-          <IconHeart size={16} fill={saved} />
-        </button>
+        {/* Top-Right Favorite Heart Chip */}
+        <div className="absolute top-2.5 right-2.5 z-20">
+          <Tooltip text={saved ? 'Remove from board' : 'Save to reading board'} idealDirection="left">
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                saveToBoard(book.id);
+              }}
+              className={`w-8 h-8 rounded-full flex items-center justify-center shadow-md transition-all duration-150 cursor-pointer ${
+                saved
+                  ? 'bg-[#e60023] text-white'
+                  : 'bg-white/95 text-neutral-700 hover:text-[#e60023] hover:bg-white'
+              }`}
+              aria-label="Save book"
+            >
+              <IconHeart size={16} fill={saved} />
+            </button>
+          </Tooltip>
+        </div>
 
-        {/* Top-Left Bestseller / Archival Tag (Etsy surface-cream token) */}
-        {book.featured && (
-          <div className="absolute top-2.5 left-2.5 z-20 px-2 py-0.5 rounded text-[10px] font-semibold tracking-wide bg-[#fdf6e8] text-[#a66523] border border-[#f5e8c8] shadow-xs">
+        {/* Top-Left Out of Stock or Bestseller Tag */}
+        {isOutOfStock ? (
+          <div className="absolute top-2.5 left-2.5 z-20 px-2.5 py-0.5 rounded text-[10px] font-extrabold uppercase tracking-wide bg-[#e60023] text-white shadow-xs">
+            Out of Stock
+          </div>
+        ) : book.featured ? (
+          <div className="absolute top-2.5 left-2.5 z-20 px-2 py-0.5 rounded text-[10px] font-semibold tracking-wide bg-[var(--surface-cream)] text-[var(--brand-brown)] border border-[var(--surface-cream-strong)] shadow-xs">
             Bestseller
           </div>
-        )}
+        ) : null}
 
         {/* Small LKR Price Tag with Offer Percentage on Cover Bottom-Left */}
         <div className="absolute bottom-2 left-2 z-20 inline-flex items-center gap-1 px-2 py-0.5 rounded-lg bg-black/80 backdrop-blur-xs text-white border border-white/15 shadow-xs pointer-events-none">
@@ -78,7 +87,6 @@ export default function BookCard({ book }: BookCardProps) {
         >
           {/* Top Bar: Board Picker & Save CTA Pill */}
           <div className="flex items-center justify-between gap-2 z-20 pr-10">
-            {/* Board Selector */}
             <div className="relative">
               <button
                 type="button"
@@ -121,7 +129,6 @@ export default function BookCard({ book }: BookCardProps) {
               )}
             </div>
 
-            {/* Red Save Pill */}
             <button
               type="button"
               onClick={(e) => {
@@ -147,30 +154,29 @@ export default function BookCard({ book }: BookCardProps) {
 
           {/* Bottom Bar: Quick Inspect Button */}
           <div className="flex items-center justify-end z-20">
-            <button
-              type="button"
-              onClick={(e) => {
-                e.stopPropagation();
-                openBookModal(book);
-              }}
-              className="h-8 px-3 rounded-full bg-white/95 hover:bg-white text-neutral-900 text-xs font-semibold flex items-center gap-1.5 shadow-lg cursor-pointer"
-              title="Inspect inside"
-            >
-              <IconZoomIn size={14} />
-              <span>Inspect</span>
-            </button>
+            <Tooltip text="Quick inspect manuscript" idealDirection="up">
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  openBookModal(book);
+                }}
+                className="h-8 px-3 rounded-full bg-white/95 hover:bg-white text-neutral-900 text-xs font-semibold flex items-center gap-1.5 shadow-lg cursor-pointer"
+              >
+                <IconZoomIn size={14} />
+                <span>Inspect</span>
+              </button>
+            </Tooltip>
           </div>
         </div>
       </div>
 
-      {/* Book Metadata Underneath (Etsy Restraint) */}
+      {/* Book Metadata Underneath */}
       <div className="pt-2.5 pb-1 px-1">
-        {/* Classical Sinhala Subtitle */}
         <p className="text-xs text-[var(--color-primary)] font-medium truncate mb-0.5">
           {book.category} • {book.binding}
         </p>
 
-        {/* English Title in Disciplined Literary Serif */}
         <h4
           onClick={() => openBookModal(book)}
           className="font-heading font-bold text-sm sm:text-base text-[var(--text-main)] hover:text-[#e60023] transition-colors line-clamp-1 cursor-pointer leading-snug"
@@ -178,12 +184,10 @@ export default function BookCard({ book }: BookCardProps) {
           {book.title}
         </h4>
 
-        {/* Author */}
         <p className="text-xs text-[var(--text-muted)] truncate mt-0.5 font-normal">
           {book.author}
         </p>
 
-        {/* Rating and Price row in LKR */}
         <div className="flex items-center justify-between mt-2 pt-1.5 border-t border-[var(--border-subtle)]">
           <div className="flex items-baseline gap-1 flex-wrap">
             <span className="font-bold text-xs sm:text-sm text-[var(--text-main)]">
@@ -206,13 +210,32 @@ export default function BookCard({ book }: BookCardProps) {
           </div>
         </div>
 
-        {/* Add to Bag Button */}
+        {/* Add to Bag or Notify Me Button */}
         <button
-          onClick={() => addToBag(book)}
-          className="w-full mt-2 py-1.5 px-3 rounded-full text-xs font-semibold bg-[var(--bg-input)] hover:bg-[#F1641E] hover:text-white text-[var(--text-main)] transition-colors duration-150 cursor-pointer flex items-center justify-center gap-1.5"
+          onClick={() => {
+            if (isOutOfStock) {
+              showToast(`We'll notify you when "${book.title}" is back in stock!`);
+            } else {
+              addToBag(book);
+            }
+          }}
+          className={`w-full mt-2 py-1.5 px-3 rounded-full text-xs font-semibold transition-colors duration-150 cursor-pointer flex items-center justify-center gap-1.5 ${
+            isOutOfStock
+              ? 'bg-[var(--bg-surface)] text-[var(--color-danger)] border border-[var(--color-danger)]/30 hover:bg-[var(--color-danger-bg)]'
+              : 'bg-[var(--bg-input)] hover:bg-[var(--color-primary)] hover:text-white text-[var(--text-main)]'
+          }`}
         >
-          <Handbag size={13} />
-          <span>Add to Bag</span>
+          {isOutOfStock ? (
+            <>
+              <Bell size={13} />
+              <span>Out of Stock • Notify Me</span>
+            </>
+          ) : (
+            <>
+              <Handbag size={13} />
+              <span>Add to Bag</span>
+            </>
+          )}
         </button>
       </div>
     </div>

@@ -998,7 +998,7 @@ const BookCoverArtwork: React.FC<{
 
 export default function Bag() {
     const router = useRouter();
-    const { bag, removeFromBag, updateBagQuantity, clearBag } = useApp();
+    const { bag, removeFromBag, updateBagQuantity, clearBag, requestConfirmation } = useApp();
 
     // Active preset view to let user inspect both uploaded screenshots or interact freely
     const [activePreset, setActivePreset] = useState<'screenshot-1' | 'screenshot-2'>('screenshot-1');
@@ -1131,14 +1131,25 @@ export default function Bag() {
         }
     };
 
-    // Remove item from bag
+    // Remove item from bag with Are You Sure confirmation dialog
     const handleRemoveFromBag = (id: string) => {
         const target = bagItems.find((i) => i.id === id);
-        setBagItems((prev) => prev.filter((item) => item.id !== id));
-        removeFromBag(id);
-        if (target) {
-            triggerToast(`Removed "${target.title.slice(0, 32)}..." from your bag`);
-        }
+        requestConfirmation({
+            title: 'Remove from Shopping Bag?',
+            message: target
+                ? `Are you sure you want to remove "${target.title}" from your shopping bag?`
+                : 'Are you sure you want to remove this treatise from your shopping bag?',
+            confirmLabel: 'Yes, Remove',
+            cancelLabel: 'Keep in Bag',
+            variant: 'danger',
+            onConfirm: () => {
+                setBagItems((prev) => prev.filter((item) => item.id !== id));
+                removeFromBag(id, true);
+                if (target) {
+                    triggerToast(`Removed "${target.title.slice(0, 32)}..." from your bag`);
+                }
+            },
+        });
     };
 
     // Save item for later
@@ -1147,9 +1158,9 @@ export default function Bag() {
         if (!target) return;
         setBagItems((prev) => prev.filter((item) => item.id !== id));
         setSavedForLater((prev) => [target, ...prev]);
-        // Also remove from global context
+        // Also remove from global context without double confirmation since it's saved for later
         const bookId = id.startsWith('bag-') ? id.replace('bag-', '') : id;
-        removeFromBag(bookId);
+        removeFromBag(bookId, true);
         triggerToast(`Saved "${target.title.slice(0, 28)}..." for later`);
     };
 

@@ -2,6 +2,7 @@
 
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { Book, BOOKS } from '../data/books';
+import { CelebrationEvent, CELEBRATION_EVENTS } from '../data/celebrations';
 
 export interface BagItem {
   book: Book;
@@ -59,7 +60,16 @@ export interface UserProfile {
   role?: string;
 }
 
-export type ThemeMode = 'light' | 'dark' | 'sepia' | 'emerald';
+export type ThemeMode =
+  | 'light'
+  | 'dark'
+  | 'sepia'
+  | 'emerald'
+  | 'womens-day'
+  | 'childrens-day'
+  | 'teachers-day'
+  | 'avurudu'
+  | 'vesak';
 
 export type AuthModalMode = 'login' | 'register' | 'forgot-password' | null;
 
@@ -67,6 +77,9 @@ export interface ThemeOption {
   id: string;
   label: string;
   isDark?: boolean;
+  isCelebration?: boolean;
+  celebrationId?: string;
+  badge?: string;
 }
 
 export const AVAILABLE_THEMES: ThemeOption[] = [
@@ -74,7 +87,56 @@ export const AVAILABLE_THEMES: ThemeOption[] = [
   { id: 'dark', label: 'Sacred Dark', isDark: true },
   { id: 'sepia', label: 'Palm Leaf Sepia', isDark: false },
   { id: 'emerald', label: 'Royal Temple Emerald', isDark: false },
+  {
+    id: 'womens-day',
+    label: "Women's Day Rose",
+    isDark: false,
+    isCelebration: true,
+    celebrationId: 'womens-day',
+    badge: 'Mar 8',
+  },
+  {
+    id: 'childrens-day',
+    label: "Children's Day Joy",
+    isDark: false,
+    isCelebration: true,
+    celebrationId: 'childrens-day',
+    badge: 'Nov 20',
+  },
+  {
+    id: 'teachers-day',
+    label: "Teachers' Day Scholar",
+    isDark: false,
+    isCelebration: true,
+    celebrationId: 'teachers-day',
+    badge: 'Oct 5',
+  },
+  {
+    id: 'avurudu',
+    label: 'Avurudu Harvest Gold',
+    isDark: false,
+    isCelebration: true,
+    celebrationId: 'sinhala-tamil-new-year',
+    badge: 'Apr 13–14',
+  },
+  {
+    id: 'vesak',
+    label: 'Sacred Vesak Lotus',
+    isDark: false,
+    isCelebration: true,
+    celebrationId: 'vesak-festival',
+    badge: 'May',
+  },
 ];
+
+export interface ConfirmDialogOptions {
+  title: string;
+  message: string;
+  confirmLabel?: string;
+  cancelLabel?: string;
+  variant?: 'danger' | 'warning';
+  onConfirm: () => void;
+}
 
 interface AppContextType {
   // User Authentication
@@ -83,12 +145,15 @@ interface AppContextType {
   login: (email: string, name?: string) => void;
   logout: () => void;
 
-  // Theme Management
+  // Theme & Celebration Management
   theme: string;
   setTheme: (theme: string) => void;
   availableThemes: ThemeOption[];
   isDark: boolean;
   toggleTheme: () => void;
+  activeCelebration: CelebrationEvent;
+  setActiveCelebrationById: (celebrationId: string | null) => void;
+  isCelebrationMode: boolean;
 
   // Auth Dialog / Bottom Sheet
   authModalMode: AuthModalMode;
@@ -109,9 +174,9 @@ interface AppContextType {
   // Shopping Bag
   bag: BagItem[];
   addToBag: (book: Book, binding?: string, quantity?: number) => void;
-  removeFromBag: (bookId: string) => void;
+  removeFromBag: (bookId: string, skipConfirm?: boolean) => void;
   updateBagQuantity: (bookId: string, delta: number) => void;
-  clearBag: () => void;
+  clearBag: (skipConfirm?: boolean) => void;
   isBagOpen: boolean;
   setIsBagOpen: (open: boolean) => void;
   bagCount: number;
@@ -124,9 +189,9 @@ interface AppContextType {
   // Compatibility Cart Aliases
   cart: BagItem[];
   addToCart: (book: Book, binding?: string, quantity?: number) => void;
-  removeFromCart: (bookId: string) => void;
+  removeFromCart: (bookId: string, skipConfirm?: boolean) => void;
   updateQuantity: (bookId: string, delta: number) => void;
-  clearCart: () => void;
+  clearCart: (skipConfirm?: boolean) => void;
   isCartOpen: boolean;
   setIsCartOpen: (open: boolean) => void;
   cartCount: number;
@@ -137,6 +202,7 @@ interface AppContextType {
   saveToBoard: (bookId: string, boardId?: string) => void;
   isBookSaved: (bookId: string) => boolean;
   createBoard: (name: string, description?: string) => void;
+  deleteBoard: (boardId: string) => void;
   isBoardsModalOpen: boolean;
   setIsBoardsModalOpen: (open: boolean) => void;
   activeBoardFilter: string | null;
@@ -166,6 +232,11 @@ interface AppContextType {
   // Toast Notification
   toastMessage: string | null;
   showToast: (msg: string) => void;
+
+  // Global Delete / Action Confirmation Dialog
+  confirmDialog: ConfirmDialogOptions | null;
+  requestConfirmation: (options: ConfirmDialogOptions) => void;
+  closeConfirmation: () => void;
 }
 
 const DEFAULT_BOARDS: Board[] = [
@@ -293,17 +364,43 @@ export const INITIAL_SAMPLE_BAG: BagItem[] = [
     quantity: 1,
     binding: BOOKS[1].binding,
   },
+  {
+    book: {
+      ...BOOKS[2],
+      usdPrice: 3.85,
+      originalUsdPrice: 5.50,
+      urgencyText: 'In 15 bags, 7 bought in the past 24 hours',
+      sellerName: BOOKS[2].sellerName || 'Vidyalankara Press',
+      sellerRating: 4.9,
+      sellerReviews: '4.1k',
+      isDigital: false,
+    },
+    quantity: 1,
+    binding: BOOKS[2].binding,
+  },
 ];
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
 
 export function AppProvider({ children }: { children: React.ReactNode }) {
-  const [theme, setThemeState] = useState<string>('emerald');
+  const [theme, setThemeState] = useState<string>('light');
   const [isDark, setIsDark] = useState(false);
+  const [activeCelebrationId, setActiveCelebrationId] = useState<string>('deepavali-halloween-season');
+  const [isCelebrationMode, setIsCelebrationMode] = useState<boolean>(false);
+  const [confirmDialog, setConfirmDialog] = useState<ConfirmDialogOptions | null>(null);
+
   const [authModalMode, setAuthModalMode] = useState<AuthModalMode>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All Books');
   const [selectedBook, setSelectedBook] = useState<Book | null>(null);
+
+  const requestConfirmation = useCallback((options: ConfirmDialogOptions) => {
+    setConfirmDialog(options);
+  }, []);
+
+  const closeConfirmation = useCallback(() => {
+    setConfirmDialog(null);
+  }, []);
 
   const openAuthModal = useCallback((mode: 'login' | 'register' | 'forgot-password' = 'login') => {
     setAuthModalMode(mode);
@@ -383,7 +480,45 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
 
   const setTheme = useCallback((targetTheme: string) => {
     applyTheme(targetTheme);
+    const matchedThemeOption = AVAILABLE_THEMES.find((t) => t.id === targetTheme);
+    if (matchedThemeOption?.celebrationId) {
+      setActiveCelebrationId(matchedThemeOption.celebrationId);
+      setIsCelebrationMode(true);
+      try {
+        localStorage.setItem('shastraloka-celebration', matchedThemeOption.celebrationId);
+        localStorage.setItem('shastraloka-celebration-mode', 'true');
+      } catch { }
+    } else if (['light', 'dark', 'sepia', 'emerald'].includes(targetTheme)) {
+      setIsCelebrationMode(false);
+      try {
+        localStorage.setItem('shastraloka-celebration-mode', 'false');
+      } catch { }
+    }
   }, [applyTheme]);
+
+  const setActiveCelebrationById = useCallback((id: string | null) => {
+    if (!id) {
+      setIsCelebrationMode(false);
+      applyTheme('light');
+      try {
+        localStorage.setItem('shastraloka-celebration-mode', 'false');
+      } catch { }
+      return;
+    }
+    const found = CELEBRATION_EVENTS.find((ev) => ev.id === id);
+    if (found) {
+      setActiveCelebrationId(found.id);
+      setIsCelebrationMode(true);
+      applyTheme(found.themeId);
+      try {
+        localStorage.setItem('shastraloka-celebration', found.id);
+        localStorage.setItem('shastraloka-celebration-mode', 'true');
+      } catch { }
+    }
+  }, [applyTheme]);
+
+  const activeCelebration =
+    CELEBRATION_EVENTS.find((ev) => ev.id === activeCelebrationId) || CELEBRATION_EVENTS[0];
 
   const toggleTheme = useCallback(() => {
     applyTheme(isDark ? 'light' : 'dark');
@@ -392,8 +527,17 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   // Hydrate from LocalStorage on mount
   useEffect(() => {
     const timer = setTimeout(() => {
-      // Theme
+      // Theme & Celebration
       try {
+        const savedCelebration = localStorage.getItem('shastraloka-celebration');
+        const savedCelebMode = localStorage.getItem('shastraloka-celebration-mode');
+        if (savedCelebration) {
+          setActiveCelebrationId(savedCelebration);
+        }
+        if (savedCelebMode === 'true') {
+          setIsCelebrationMode(true);
+        }
+
         const savedTheme = localStorage.getItem('shastraloka-theme');
         if (savedTheme) {
           applyTheme(savedTheme);
@@ -490,6 +634,10 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
 
   // Bag Handlers
   const addToBag = (book: Book, binding?: string, quantity = 1) => {
+    if (book.inStock === false) {
+      showToast(`"${book.title}" is currently out of stock. We'll notify you when it returns!`);
+      return;
+    }
     const selectedBinding = binding || book.binding;
     setBag((prev) => {
       const existing = prev.find((item) => item.book.id === book.id && item.binding === selectedBinding);
@@ -502,15 +650,34 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       }
       return [...prev, { book, quantity, binding: selectedBinding }];
     });
-    setShowMiniBagRail(true); // Show rail when item is added
+    setShowMiniBagRail(true);
     showToast(`Added ${quantity > 1 ? `${quantity}x ` : ''}"${book.title}" to Bag`);
   };
 
-  const removeFromBag = (bookId: string) => {
+  const removeFromBag = (bookId: string, skipConfirm = false) => {
+    const targetItem = bag.find((item) => item.book.id === bookId);
+    if (!skipConfirm && targetItem) {
+      requestConfirmation({
+        title: 'Remove item from your bag?',
+        message: `Are you sure you want to remove "${targetItem.book.title}" from your Shopping Bag?`,
+        confirmLabel: 'Remove from bag',
+        cancelLabel: 'Keep in bag',
+        onConfirm: () => {
+          setBag((prev) => prev.filter((item) => item.book.id !== bookId));
+          showToast(`Removed "${targetItem.book.title}" from your bag`);
+        },
+      });
+      return;
+    }
     setBag((prev) => prev.filter((item) => item.book.id !== bookId));
   };
 
   const updateBagQuantity = (bookId: string, delta: number) => {
+    const targetItem = bag.find((item) => item.book.id === bookId);
+    if (targetItem && targetItem.quantity + delta <= 0) {
+      removeFromBag(bookId, false);
+      return;
+    }
     setBag((prev) =>
       prev
         .map((item) => {
@@ -524,10 +691,23 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     );
   };
 
-  const clearBag = () => setBag([]);
+  const clearBag = (skipConfirm = false) => {
+    if (!skipConfirm && bag.length > 0) {
+      requestConfirmation({
+        title: 'Clear your entire bag?',
+        message: `Are you sure you want to remove all ${bag.length} treatises from your Shopping Bag?`,
+        confirmLabel: 'Yes, clear bag',
+        cancelLabel: 'Cancel',
+        onConfirm: () => {
+          setBag([]);
+          showToast('Cleared all items from your Shopping Bag');
+        },
+      });
+      return;
+    }
+    setBag([]);
+  };
 
-  // Auto-hide rail when bag is empty and navigation happens
-  // Auto-hide rail when bag is empty and navigation happens
   const triggerNavigation = useCallback(() => {
     if (bag.length === 0) {
       setShowMiniBagRail(false);
@@ -562,24 +742,34 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
 
     const isAlreadySaved = targetBoard.bookIds.includes(bookId);
 
+    if (isAlreadySaved) {
+      const bookObj = BOOKS.find((b) => b.id === bookId);
+      requestConfirmation({
+        title: 'Remove from saved collection?',
+        message: `Are you sure you want to remove "${bookObj?.title || 'this book'}" from "${targetBoard.name}"?`,
+        confirmLabel: 'Remove',
+        cancelLabel: 'Cancel',
+        onConfirm: () => {
+          setBoards((prev) =>
+            prev.map((b) =>
+              b.id === boardId ? { ...b, bookIds: b.bookIds.filter((id) => id !== bookId) } : b
+            )
+          );
+          showToast(`Removed from "${targetBoard.name}"`);
+        },
+      });
+      return;
+    }
+
     setBoards((prev) =>
       prev.map((b) => {
         if (b.id === boardId) {
-          if (isAlreadySaved) {
-            return { ...b, bookIds: b.bookIds.filter((id) => id !== bookId) };
-          } else {
-            return { ...b, bookIds: [...b.bookIds, bookId] };
-          }
+          return { ...b, bookIds: [...b.bookIds, bookId] };
         }
         return b;
       })
     );
-
-    if (isAlreadySaved) {
-      showToast(`Removed from "${targetBoard.name}"`);
-    } else {
-      showToast(`Saved to "${targetBoard.name}"`);
-    }
+    showToast(`Saved to "${targetBoard.name}"`);
   };
 
   const isBookSaved = (bookId: string) => {
@@ -597,18 +787,41 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     showToast(`Created collection: "${name}"`);
   };
 
+  const deleteBoard = (boardId: string) => {
+    const target = boards.find((b) => b.id === boardId);
+    if (!target) return;
+    requestConfirmation({
+      title: 'Delete reading board?',
+      message: `Are you sure you want to permanently delete the collection "${target.name}"?`,
+      confirmLabel: 'Delete board',
+      cancelLabel: 'Cancel',
+      onConfirm: () => {
+        setBoards((prev) => prev.filter((b) => b.id !== boardId));
+        if (activeBoardFilter === boardId) setActiveBoardFilter(null);
+        showToast(`Deleted collection "${target.name}"`);
+      },
+    });
+  };
+
   // Likes
   const toggleLikeBook = (bookId: string) => {
-    setLikedBookIds((prev) => {
-      const isLiked = prev.includes(bookId);
-      if (isLiked) {
-        showToast('Removed from liked treatises');
-        return prev.filter((id) => id !== bookId);
-      } else {
-        showToast('Saved to your liked treatises');
-        return [...prev, bookId];
-      }
-    });
+    const isLiked = likedBookIds.includes(bookId);
+    if (isLiked) {
+      const bookObj = BOOKS.find((b) => b.id === bookId);
+      requestConfirmation({
+        title: 'Remove from Favorites?',
+        message: `Are you sure you want to remove "${bookObj?.title || 'this treatise'}" from your liked treatises?`,
+        confirmLabel: 'Remove',
+        cancelLabel: 'Keep',
+        onConfirm: () => {
+          setLikedBookIds((prev) => prev.filter((id) => id !== bookId));
+          showToast('Removed from liked treatises');
+        },
+      });
+      return;
+    }
+    setLikedBookIds((prev) => [...prev, bookId]);
+    showToast('Saved to your liked treatises');
   };
 
   const isBookLiked = (bookId: string) => likedBookIds.includes(bookId);
@@ -656,7 +869,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     };
 
     setOrders((prev) => [newOrder, ...prev]);
-    clearBag();
+    clearBag(true);
     showToast(`Order #${orderId} confirmed successfully!`);
     return newOrder;
   };
@@ -697,6 +910,12 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         availableThemes: AVAILABLE_THEMES,
         isDark,
         toggleTheme,
+        activeCelebration,
+        isCelebrationMode,
+        setActiveCelebrationById,
+        confirmDialog,
+        requestConfirmation,
+        closeConfirmation,
         authModalMode,
         openAuthModal,
         closeAuthModal,
@@ -733,6 +952,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         saveToBoard,
         isBookSaved,
         createBoard,
+        deleteBoard,
         isBoardsModalOpen,
         setIsBoardsModalOpen,
         activeBoardFilter,

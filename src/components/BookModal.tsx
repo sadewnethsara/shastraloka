@@ -213,10 +213,16 @@ export default function BookModal() {
                 <span className="px-2 py-0.5 rounded text-emerald-700 bg-emerald-50 dark:bg-emerald-950/40 dark:text-emerald-300 font-semibold text-xs">
                   Save {discountPercent}% Today
                 </span>
-                <span className="ml-auto text-xs font-semibold text-emerald-700 dark:text-emerald-400 flex items-center gap-1">
-                  <IconCheck size={13} />
-                  <span>In Stock</span>
-                </span>
+                {selectedBook.inStock === false ? (
+                  <span className="ml-auto text-xs font-bold text-rose-600 dark:text-rose-400 bg-rose-500/10 px-2.5 py-0.5 rounded-full">
+                    Out of Stock
+                  </span>
+                ) : (
+                  <span className="ml-auto text-xs font-semibold text-emerald-700 dark:text-emerald-400 flex items-center gap-1">
+                    <IconCheck size={13} />
+                    <span>In Stock</span>
+                  </span>
+                )}
               </div>
 
               {/* Edition Selector */}

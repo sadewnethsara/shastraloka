@@ -11,10 +11,11 @@ import Toast from '../components/Toast';
 import CleanBookCard from '../components/CleanBookCard';
 import LoggedInLandingFeed from '../components/LoggedInLandingFeed';
 import { BOOKS } from '../data/books';
+import { CELEBRATION_EVENTS } from '../data/celebrations';
 import { useApp } from '../context/AppContext';
 import { Button } from '../components/ui/Button';
 import { Badge } from '../components/ui/Badge';
-import { ChevronLeft, ChevronRight, Handbag, Check, Flame, Star, Clock } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Handbag, Check, Flame, Star, Clock, Sparkles, CalendarHeart, TicketPercent } from 'lucide-react';
 
 const FALLBACK_BOOK_COVER =
   'https://grantha.lk/media/catalog/product/cache/5fa2393eb818a642e720faf99039a3de/m/a/manikkawatha_1.jpg';
@@ -73,7 +74,7 @@ const FEATURED_INTERESTS: SimpleCardItem[] = [
     salePrice: 'LKR 950',
     originalPrice: 'LKR 1,350',
     discount: '30% off',
-    image: 'https://rasakatha.lk/media/covers/book-1793105930903-342489ab87-opt.webp',
+    image: 'https://grantha.lk/media/catalog/product/cache/5fa2393eb818a642e720faf99039a3de/m/a/manikkawatha_1.jpg',
     query: 'gajaga',
   },
   {
@@ -200,7 +201,7 @@ const FEATURED_TREATISE_PRODUCTS: ProductItem[] = [
     price: 'LKR 950',
     originalPrice: 'LKR 1,350',
     discount: '30% off',
-    image: 'https://rasakatha.lk/media/covers/book-1793105930903-342489ab87-opt.webp',
+    image: 'https://grantha.lk/media/catalog/product/cache/5fa2393eb818a642e720faf99039a3de/m/a/manikkawatha_1.jpg',
   },
   {
     id: 'cp-2',
@@ -257,7 +258,7 @@ const SPECIAL_TREATISE_PILLS: SimpleCardItem[] = [
     title: 'Gajaga & Royal Lore',
     salePrice: 'LKR 950',
     originalPrice: 'LKR 1,350',
-    image: 'https://rasakatha.lk/media/covers/book-1793105930903-342489ab87-opt.webp',
+    image: 'https://grantha.lk/media/catalog/product/cache/5fa2393eb818a642e720faf99039a3de/m/a/manikkawatha_1.jpg',
     query: 'gajaga',
   },
   {
@@ -364,7 +365,7 @@ const TODAY_DEALS: DealItem[] = [
     rating: 4.9,
     reviewsCount: 184,
     claimedPercent: 82,
-    image: 'https://rasakatha.lk/media/covers/book-1793105930903-342489ab87-opt.webp',
+    image: 'https://grantha.lk/media/catalog/product/cache/5fa2393eb818a642e720faf99039a3de/m/a/manikkawatha_1.jpg',
   },
   {
     id: 'td-2',
@@ -489,7 +490,7 @@ const STANDOUT_STYLES: SimpleCardItem[] = [
     originalPrice: 'LKR 1,350',
     discount: '30% off',
     subtitle: 'LKR 950 (30% off)',
-    image: 'https://rasakatha.lk/media/covers/book-1793105930903-342489ab87-opt.webp',
+    image: 'https://grantha.lk/media/catalog/product/cache/5fa2393eb818a642e720faf99039a3de/m/a/manikkawatha_1.jpg',
     query: 'gajaga',
   },
   {
@@ -546,7 +547,16 @@ const STANDOUT_STYLES: SimpleCardItem[] = [
 
 export default function LandingPage() {
   const router = useRouter();
-  const { isLoggedIn, openBookModal, addToBag, saveToBoard, isBookSaved } = useApp();
+  const {
+    isLoggedIn,
+    openBookModal,
+    addToBag,
+    saveToBoard,
+    isBookSaved,
+    activeCelebration,
+    isCelebrationMode,
+    setActiveCelebrationById,
+  } = useApp();
 
   const [favorites, setFavorites] = useState<Record<string, boolean>>({});
   const [addedDeals, setAddedDeals] = useState<Record<string, boolean>>({});
@@ -611,13 +621,90 @@ export default function LandingPage() {
     }
   };
 
+  // Resolve date-matched books for the Hero showcase & right featured card
+  const heroShowcaseBooks = React.useMemo(() => {
+    if (!isCelebrationMode) return BOOKS.slice(0, 8);
+    const matched = activeCelebration.matchingBookIds
+      .map((id) => BOOKS.find((b) => b.id === id))
+      .filter((b): b is (typeof BOOKS)[number] => Boolean(b));
+    if (matched.length >= 8) return matched.slice(0, 8);
+    const remaining = BOOKS.filter((b) => !matched.some((m) => m.id === b.id));
+    return [...matched, ...remaining].slice(0, 8);
+  }, [isCelebrationMode, activeCelebration]);
+
+  const heroFeaturedBook = React.useMemo(() => {
+    if (!isCelebrationMode) return BOOKS[0];
+    return BOOKS.find((b) => b.id === activeCelebration.heroFeaturedBookId) || BOOKS[0];
+  }, [isCelebrationMode, activeCelebration]);
+
+  const heroDiscountPct = Math.max(
+    15,
+    Math.round(((heroFeaturedBook.originalPrice - heroFeaturedBook.price) / heroFeaturedBook.originalPrice) * 100)
+  );
+
+  const quickCelebrations = CELEBRATION_EVENTS.filter((ev) => ev.featuredInQuickSwitch);
+
   return (
     <div className="min-h-screen bg-[var(--bg-main)] text-[var(--text-main)] font-sans antialiased selection:bg-[var(--color-primary-subtle)] transition-colors duration-200">
       {/* 1. Header & Navigation */}
       <Header />
 
       {/* Main Content Container */}
-      <main className="page-container pt-4 sm:pt-6 pb-16 space-y-12 sm:space-y-16">
+      <main className="page-container pt-4 sm:pt-6 pb-16 space-y-10 sm:space-y-14">
+        {/* Celebration & Cultural Calendar Theme Switcher Bar */}
+        <section
+          aria-label="Celebration themes and date offers"
+          className="rounded-2xl bg-[var(--bg-surface)] border border-[var(--border-subtle)] px-3.5 py-2.5 flex flex-wrap items-center justify-between gap-2.5 shadow-2xs"
+        >
+          <div className="flex items-center gap-2 overflow-x-auto no-scrollbar py-0.5 max-w-full">
+            <span className="inline-flex items-center gap-1.5 text-xs font-extrabold text-[var(--color-primary)] shrink-0 pr-1">
+              <CalendarHeart className="w-4 h-4" />
+              <span>Celebration Themes:</span>
+            </span>
+
+            <button
+              type="button"
+              onClick={() => setActiveCelebrationById(null)}
+              className={`px-3 py-1.5 rounded-full text-xs font-bold transition cursor-pointer shrink-0 ${
+                !isCelebrationMode
+                  ? 'bg-[var(--pill-active-bg)] text-[var(--pill-active-text)] shadow-2xs'
+                  : 'bg-[var(--bg-card)] text-[var(--text-body)] hover:bg-[var(--bg-hover)] border border-[var(--border-subtle)]'
+              }`}
+            >
+              Classic Sanctuary
+            </button>
+
+            {quickCelebrations.map((ev) => {
+              const active = isCelebrationMode && activeCelebration.id === ev.id;
+              return (
+                <button
+                  key={ev.id}
+                  type="button"
+                  onClick={() => setActiveCelebrationById(ev.id)}
+                  className={`px-3 py-1.5 rounded-full text-xs font-bold transition cursor-pointer shrink-0 flex items-center gap-1.5 ${
+                    active
+                      ? 'bg-[var(--color-primary)] text-white shadow-xs'
+                      : 'bg-[var(--bg-card)] text-[var(--text-body)] hover:bg-[var(--bg-hover)] border border-[var(--border-subtle)]'
+                  }`}
+                >
+                  <span>{ev.title}</span>
+                  <span className={`text-[10px] font-semibold ${active ? 'text-white/90' : 'text-[var(--text-muted)]'}`}>
+                    ({ev.dateLabel})
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+
+          <Link
+            href={`/offers?celebration=${activeCelebration.id}`}
+            className="inline-flex items-center gap-1.5 text-xs font-extrabold text-[var(--color-primary)] hover:underline shrink-0 ml-auto"
+          >
+            <TicketPercent className="w-3.5 h-3.5" />
+            <span>{activeCelebration.title} Offers &amp; Calendar &rarr;</span>
+          </Link>
+        </section>
+
         {isLoggedIn ? (
           <LoggedInLandingFeed
             timeLeft={timeLeft}
@@ -633,35 +720,77 @@ export default function LandingPage() {
            =================================================================== */}
         <section>
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
-            {/* Left / Main Banner Card ("Wonderfully Sacred Wisdom") */}
-            <div className="lg:col-span-8 bg-[var(--hero-banner-bg)] border border-[var(--hero-banner-border)] rounded-2xl overflow-hidden shadow-xs hover:shadow-md transition">
+            {/* Left / Main Banner Card ("Wonderfully Sacred Wisdom" / Celebration Matched) */}
+            <div
+              className="lg:col-span-8 bg-[var(--hero-banner-bg)] border border-[var(--hero-banner-border)] rounded-2xl overflow-hidden shadow-xs hover:shadow-md transition"
+              style={{ backgroundImage: 'var(--hero-banner-pattern)' }}
+            >
               {/* Desktop & Tablet Horizontal Split */}
               <div className="hidden md:grid md:grid-cols-12 items-center min-h-[280px] lg:min-h-[360px]">
-                <div className="md:col-span-6 p-6 lg:p-10 flex flex-col items-center text-center justify-center">
-                  <h1
-className="text-[28px] lg:text-[42px] leading-[1.14] text-[var(--text-main)] mb-5 font-heading font-bold"
+                <div className="md:col-span-6 p-6 lg:p-9 flex flex-col items-center text-center justify-center">
+                  <button
+                    type="button"
+                    onClick={() => router.push(`/offers?celebration=${activeCelebration.id}`)}
+                    className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[var(--color-primary-subtle)] border border-[var(--color-primary-border)] text-[var(--color-primary)] text-[11px] font-extrabold mb-3 hover:opacity-90 transition cursor-pointer"
                   >
-                    Wonderfully
-                    <br />
-                    sacred wisdom
+                    <Sparkles className="w-3 h-3" />
+                    <span>{isCelebrationMode ? activeCelebration.heroBadge : `${activeCelebration.dateLabel} • ${activeCelebration.title}`}</span>
+                  </button>
+
+                  <h1 className="text-[28px] lg:text-[40px] leading-[1.12] text-[var(--text-main)] mb-2.5 font-heading font-bold">
+                    {isCelebrationMode ? (
+                      <>
+                        {activeCelebration.heroHeadlineTop}
+                        <br />
+                        {activeCelebration.heroHeadlineBottom}
+                      </>
+                    ) : (
+                      <>
+                        Wonderfully
+                        <br />
+                        sacred wisdom
+                      </>
+                    )}
                   </h1>
-                  <Button
-                    variant="primary"
-                    size="md"
-                    text="Shop unique treatises"
-                    onClick={() => navigateToSearch('gajaga')}
-                  />
+
+                  <p className="text-xs text-[var(--text-body)] max-w-[290px] mb-4 line-clamp-2">
+                    {activeCelebration.heroSubtitle}
+                  </p>
+
+                  <div className="flex flex-wrap items-center justify-center gap-2">
+                    <Button
+                      variant="primary"
+                      size="md"
+                      text={isCelebrationMode ? activeCelebration.heroButtonText : 'Shop unique treatises'}
+                      onClick={() =>
+                        isCelebrationMode
+                          ? router.push(`/offers?celebration=${activeCelebration.id}`)
+                          : navigateToSearch(activeCelebration.heroSearchQuery || 'gajaga')
+                      }
+                    />
+                    {activeCelebration.coupons[0] && (
+                      <Link
+                        href={`/offers?celebration=${activeCelebration.id}`}
+                        className="px-3 py-2 rounded-full bg-[var(--bg-card)] border border-[var(--border-subtle)] text-[11px] font-extrabold text-[var(--color-success)] hover:bg-[var(--bg-hover)] transition"
+                      >
+                        {activeCelebration.coupons[0].discount}: {activeCelebration.coupons[0].code}
+                      </Link>
+                    )}
+                  </div>
                 </div>
 
-                {/* Featured Sri Lankan Book Covers Showcase Grid */}
+                {/* Featured Sri Lankan Book Covers Showcase Grid (Bound to CSS Theme Tokens & Date-Matched Books) */}
                 <div className="md:col-span-6 h-full w-full flex items-center justify-center p-3 lg:p-4">
-                  <div className="relative w-full h-[240px] lg:h-[330px] rounded-xl overflow-hidden bg-[#8CA12E] p-3 shadow-inner flex flex-col justify-between">
+                  <div
+                    className="relative w-full h-[240px] lg:h-[330px] rounded-xl overflow-hidden p-3 shadow-inner flex flex-col justify-between transition-colors duration-300"
+                    style={{ background: 'var(--hero-showcase-bg)' }}
+                  >
                     <div className="grid grid-cols-4 grid-rows-2 gap-2 w-full h-full min-h-0">
-                      {BOOKS.slice(0, 8).map((book) => (
+                      {heroShowcaseBooks.map((book) => (
                         <div
                           key={book.id}
                           onClick={() => router.push(`/books/${book.id}`)}
-                          className="relative w-full h-full min-h-0 min-w-0 rounded-md overflow-hidden border border-white/25 transition-transform hover:scale-105 cursor-pointer bg-neutral-900 group/thumb"
+                          className="relative w-full h-full min-h-0 min-w-0 rounded-md overflow-hidden border border-[var(--hero-showcase-border)] transition-transform hover:scale-105 cursor-pointer bg-[var(--bg-card)] group/thumb"
                         >
                           <img
                             src={book.coverImage}
@@ -683,21 +812,36 @@ className="text-[28px] lg:text-[42px] leading-[1.14] text-[var(--text-main)] mb-
               </div>
 
               {/* Mobile Stacked Layout (< md) */}
-              <div className="md:hidden flex flex-col items-center pt-6 px-4 pb-4 text-center">
-                <h1
-className="text-[28px] leading-[1.15] text-[var(--text-main)] mb-4 font-heading font-bold"
-                >
-                  Wonderfully
-                  <br />
-                  sacred wisdom
+              <div className="md:hidden flex flex-col items-center pt-5 px-4 pb-4 text-center">
+                <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-[var(--color-primary-subtle)] text-[var(--color-primary)] text-[10px] font-bold mb-2">
+                  <Sparkles className="w-3 h-3" />
+                  <span>{activeCelebration.dateLabel} • {activeCelebration.title}</span>
+                </span>
+                <h1 className="text-[26px] leading-[1.15] text-[var(--text-main)] mb-3 font-heading font-bold">
+                  {isCelebrationMode ? (
+                    <>
+                      {activeCelebration.heroHeadlineTop}
+                      <br />
+                      {activeCelebration.heroHeadlineBottom}
+                    </>
+                  ) : (
+                    <>
+                      Wonderfully
+                      <br />
+                      sacred wisdom
+                    </>
+                  )}
                 </h1>
-<div className="relative w-full max-w-[290px] h-[280px] rounded-xl overflow-hidden bg-[var(--banner-guild-bg)] border border-[var(--banner-guild-border)] p-2.5 shadow-md">
+                <div
+                  className="relative w-full max-w-[290px] h-[280px] rounded-xl overflow-hidden border border-[var(--banner-guild-border)] p-2.5 shadow-md"
+                  style={{ background: 'var(--hero-showcase-bg)' }}
+                >
                   <div className="grid grid-cols-3 grid-rows-2 gap-1.5 w-full h-full min-h-0">
-                    {BOOKS.slice(0, 6).map((book) => (
+                    {heroShowcaseBooks.slice(0, 6).map((book) => (
                       <div
                         key={book.id}
                         onClick={() => router.push(`/books/${book.id}`)}
-className="relative w-full h-full min-h-0 min-w-0 rounded overflow-hidden cursor-pointer bg-[var(--bg-card)]"
+                        className="relative w-full h-full min-h-0 min-w-0 rounded overflow-hidden cursor-pointer bg-[var(--bg-card)]"
                       >
                         <img
                           src={book.coverImage}
@@ -713,36 +857,42 @@ className="relative w-full h-full min-h-0 min-w-0 rounded overflow-hidden cursor
                     <Button
                       variant="primary"
                       size="sm"
-                      text="Shop unique treatises"
-                      onClick={() => navigateToSearch('gajaga')}
+                      text={isCelebrationMode ? activeCelebration.heroButtonText : 'Shop unique treatises'}
+                      onClick={() =>
+                        isCelebrationMode
+                          ? router.push(`/offers?celebration=${activeCelebration.id}`)
+                          : navigateToSearch(activeCelebration.heroSearchQuery || 'gajaga')
+                      }
                     />
                   </div>
                 </div>
               </div>
             </div>
 
-            {/* Right Card: Desktop Only ("Gajaga Wannama & Manikkawatha Featured") */}
+            {/* Right Card: Desktop Only (Dynamic Featured Celebration Book) */}
             <div
-              onClick={() => router.push('/books/gajaga-wannama-royal-chronicle')}
+              onClick={() => router.push(`/books/${heroFeaturedBook.id}`)}
               className="hidden lg:block lg:col-span-4 relative rounded-2xl overflow-hidden group cursor-pointer shadow-xs hover:shadow-md transition h-[360px] max-h-[360px]"
             >
               <img
-                src="https://rasakatha.lk/media/covers/book-1793105930903-342489ab87-opt.webp"
-                alt="Gajaga Wannama & Sri Lankan Book Collection"
+                src={heroFeaturedBook.coverImage}
+                alt={heroFeaturedBook.title}
                 referrerPolicy="no-referrer"
                 onError={handleCoverError}
                 className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition duration-500"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/35 to-transparent" />
               <div className="absolute bottom-6 left-6 right-6 text-white">
-                <span className="inline-block px-2.5 py-0.5 rounded-full bg-[#e60023] text-white text-[11px] font-extrabold mb-2">
-                  LKR 950 • 30% OFF
+                <span className="inline-block px-2.5 py-0.5 rounded-full bg-[var(--color-accent-badge)] text-white text-[11px] font-extrabold mb-2">
+                  LKR {heroFeaturedBook.price.toLocaleString()} • {heroDiscountPct}% OFF
                 </span>
-                <p className="text-xl font-bold leading-snug">
-                  Gajaga Wannama &amp; Sinhala Classics
+                <p className="text-xl font-bold leading-snug line-clamp-2">
+                  {isCelebrationMode
+                    ? activeCelebration.heroFeaturedLabel
+                    : 'Gajaga Wannama & Sinhala Classics'}
                 </p>
                 <span className="inline-flex items-center gap-1.5 text-xs font-semibold mt-2 group-hover:translate-x-1 transition text-[#FEF08A]">
-                  Explore edition &rarr;
+                  Explore {activeCelebration.dateLabel} edition &rarr;
                 </span>
               </div>
             </div>

@@ -3,9 +3,10 @@
 import React, { useRef, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { ChevronLeft, ChevronRight, Clock, Heart, Search } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Clock, Heart, Search, X, Sparkles } from 'lucide-react';
 import { BOOKS } from '../data/books';
 import { useApp } from '../context/AppContext';
+import { Tooltip } from './ui/Tooltip';
 
 const FALLBACK_BOOK_COVER =
   'https://grantha.lk/media/catalog/product/cache/5fa2393eb818a642e720faf99039a3de/m/a/manikkawatha_1.jpg';
@@ -47,7 +48,7 @@ const LOGGED_IN_SHELVES: FeedShelfConfig[] = [
         title: 'Gajaga Wannama: Royal Court Elephant Lore • Silkbound Edition',
         salePrice: 'LKR 950',
         originalPrice: 'LKR 1,350',
-        image: 'https://rasakatha.lk/media/covers/book-1793105930903-342489ab87-opt.webp',
+        image: 'https://grantha.lk/media/catalog/product/cache/5fa2393eb818a642e720faf99039a3de/m/a/manikkawatha_1.jpg',
       },
       {
         id: 'rc-2',
@@ -143,7 +144,7 @@ const LOGGED_IN_SHELVES: FeedShelfConfig[] = [
         title: 'Gajaga Wannama • Royal Kandy Esala Perahera Folio',
         salePrice: 'LKR 950',
         originalPrice: 'LKR 1,350',
-        image: 'https://rasakatha.lk/media/covers/book-1793105930903-342489ab87-opt.webp',
+        image: 'https://grantha.lk/media/catalog/product/cache/5fa2393eb818a642e720faf99039a3de/m/a/manikkawatha_1.jpg',
       },
     ],
   },
@@ -175,7 +176,7 @@ const LOGGED_IN_SHELVES: FeedShelfConfig[] = [
         title: 'Kandyan Court Ceremonial Scrolls & Wannama Anthology',
         salePrice: 'LKR 950',
         originalPrice: 'LKR 1,350',
-        image: 'https://rasakatha.lk/media/covers/book-1793105930903-342489ab87-opt.webp',
+        image: 'https://grantha.lk/media/catalog/product/cache/5fa2393eb818a642e720faf99039a3de/m/a/manikkawatha_1.jpg',
       },
       {
         id: 'ac-4',
@@ -295,7 +296,7 @@ const LOGGED_IN_SHELVES: FeedShelfConfig[] = [
         title: 'Gajaga Wannama • Archival Linen-Bound Library Edition',
         salePrice: 'LKR 950',
         originalPrice: 'LKR 1,350',
-        image: 'https://rasakatha.lk/media/covers/book-1793105930903-342489ab87-opt.webp',
+        image: 'https://grantha.lk/media/catalog/product/cache/5fa2393eb818a642e720faf99039a3de/m/a/manikkawatha_1.jpg',
       },
       {
         id: 'bg-5',
@@ -367,7 +368,7 @@ const LOGGED_IN_SHELVES: FeedShelfConfig[] = [
         title: 'Hasti Palana Shastraya • Royal Elephant Care Treatise',
         salePrice: 'LKR 950',
         originalPrice: 'LKR 1,350',
-        image: 'https://rasakatha.lk/media/covers/book-1793105930903-342489ab87-opt.webp',
+        image: 'https://grantha.lk/media/catalog/product/cache/5fa2393eb818a642e720faf99039a3de/m/a/manikkawatha_1.jpg',
       },
     ],
   },
@@ -391,7 +392,7 @@ const LOGGED_IN_SHELVES: FeedShelfConfig[] = [
         title: 'Archival Copper-Plate Sannasa Grant Facsimile Print',
         salePrice: 'LKR 950',
         originalPrice: 'LKR 1,350',
-        image: 'https://rasakatha.lk/media/covers/book-1793105930903-342489ab87-opt.webp',
+        image: 'https://grantha.lk/media/catalog/product/cache/5fa2393eb818a642e720faf99039a3de/m/a/manikkawatha_1.jpg',
       },
       {
         id: 'af-3',
@@ -434,7 +435,7 @@ const SPECIAL_GIFT_SEARCH_CARDS = [
     id: 'sg-1',
     label: 'Personalized Palm-Leaf Sets',
     query: 'gajaga',
-    image: 'https://rasakatha.lk/media/covers/book-1793105930903-342489ab87-opt.webp',
+    image: 'https://grantha.lk/media/catalog/product/cache/5fa2393eb818a642e720faf99039a3de/m/a/manikkawatha_1.jpg',
   },
   {
     id: 'sg-2',
@@ -613,8 +614,9 @@ export default function LoggedInLandingFeed({
   isSaved,
 }: LoggedInLandingFeedProps) {
   const router = useRouter();
-  const { showToast } = useApp();
+  const { showToast, bag, activeCelebration, isCelebrationMode } = useApp();
   const [dismissedIds, setDismissedIds] = useState<Record<string, boolean>>({});
+  const [isBagCardDismissed, setIsBagCardDismissed] = useState(false);
 
   const dealsRowRef = useRef<HTMLDivElement>(null);
   const specialGiftsRowRef = useRef<HTMLDivElement>(null);
@@ -646,8 +648,132 @@ export default function LoggedInLandingFeed({
     (s) => !dismissedIds[s.id]
   );
 
+  const bagPreviewItems = bag.slice(0, 3);
+  const heroFeaturedBook =
+    BOOKS.find((b) => b.id === activeCelebration.heroFeaturedBookId) || BOOKS[1];
+
   return (
-    <div className="space-y-10 sm:space-y-12">
+    <div className="relative space-y-10 sm:space-y-12">
+      {/* Floating Logged-In Bag Reminder Card (Matching Screenshot 2026-10-30 183306.png) */}
+      {bag.length > 0 && !isBagCardDismissed && (
+        <aside
+          aria-label="Don't miss out on what's in your bag"
+          className="w-full sm:max-w-[355px] lg:w-[345px] lg:absolute lg:right-0 lg:top-0 lg:z-30 rounded-3xl bg-[var(--bg-card)] border border-[var(--border-subtle)] p-5 shadow-2xl animate-fade-in"
+        >
+          {/* Header Row: Sparkle Bag Icon + 3-line Title + Close (X) */}
+          <div className="flex items-start justify-between gap-3 mb-4">
+            <div className="flex items-center gap-3.5">
+              {/* Custom Basket/Bag with Blue 4-point Sparkles */}
+              <div className="relative w-12 h-12 flex items-center justify-center shrink-0">
+                <svg
+                  viewBox="0 0 48 48"
+                  className="w-11 h-11 text-[var(--text-main)]"
+                  fill="none"
+                   aria-hidden="true"
+                >
+                  {/* Sparkle Top Right */}
+                  <path
+                    d="M37 5L38.6 9.4L43 11L38.6 12.6L37 17L35.4 12.6L31 11L35.4 9.4L37 5Z"
+                    fill="#3B82F6"
+                  />
+                  {/* Sparkle Top Left */}
+                  <path
+                    d="M11 10L12 12.8L14.8 13.8L12 14.8L11 17.6L10 14.8L7.2 13.8L10 12.8L11 10Z"
+                    fill="#3B82F6"
+                  />
+                  {/* Bag / Basket Handle & Body */}
+                  <path
+                    d="M18 20L21 11H27L30 20"
+                    stroke="currentColor"
+                    strokeWidth="3.2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                  <path
+                    d="M9 20H39L35.5 38H12.5L9 20Z"
+                    stroke="currentColor"
+                    strokeWidth="3.2"
+                    strokeLinejoin="round"
+                  />
+                  <path
+                    d="M18 20V38M24 20V38M30 20V38M10.8 29H37.2"
+                    stroke="currentColor"
+                    strokeWidth="2.6"
+                    strokeLinecap="round"
+                  />
+                </svg>
+              </div>
+
+              <h2 className="text-base sm:text-[17px] font-extrabold font-heading text-[var(--text-main)] leading-[1.22]">
+                Don&apos;t miss out on
+                <br />
+                what&apos;s in your
+                <br />
+                bag!
+              </h2>
+            </div>
+
+            <Tooltip text="Dismiss reminder" idealDirection="left">
+              <button
+                type="button"
+                onClick={() => setIsBagCardDismissed(true)}
+                aria-label="Close bag reminder"
+                className="w-8 h-8 rounded-full flex items-center justify-center text-[var(--text-main)] hover:bg-[var(--bg-hover)] transition cursor-pointer shrink-0"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </Tooltip>
+          </div>
+
+          {/* Bag Items List (Up to 3 Items) */}
+          <div className="space-y-3.5 mb-5">
+            {bagPreviewItems.map((item, idx) => {
+              const showCouponLine = idx === bagPreviewItems.length - 1;
+              return (
+                <div
+                  key={`${item.book.id}-${idx}`}
+                  onClick={() => router.push(`/books/${item.book.id}`)}
+                  className="flex items-start gap-3.5 group cursor-pointer"
+                >
+                  <div className="w-16 h-16 rounded-xl overflow-hidden bg-[var(--bg-wash)] border border-[var(--border-subtle)] shrink-0">
+                    <img
+                      src={item.book.coverImage}
+                      alt={item.book.title}
+                      referrerPolicy="no-referrer"
+                      onError={handleCoverError}
+                      className="w-full h-full object-cover group-hover:scale-105 transition duration-200"
+                    />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-xs sm:text-[13px] font-medium text-[var(--text-main)] leading-snug line-clamp-2 group-hover:underline">
+                      {item.book.title}
+                    </p>
+                    <p className="text-xs text-[var(--text-muted)] truncate mt-0.5">
+                      {item.book.sellerName || 'Shastraloka Guild Press'}
+                    </p>
+                    {showCouponLine && (
+                      <p className="text-xs font-extrabold text-[var(--color-success)] leading-tight mt-0.5">
+                        45% off with code
+                        <br />
+                        ABCOUPON45
+                      </p>
+                    )}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          {/* Bottom Full-Width Dark Pill Button */}
+          <Link
+            href="/bag"
+            className="w-full py-3 px-5 rounded-full bg-[var(--pill-active-bg)] text-[var(--pill-active-text)] text-xs sm:text-sm font-bold flex items-center justify-center hover:opacity-90 transition shadow-sm"
+          >
+            Continue to bag
+          </Link>
+        </aside>
+      )}
+
       {/* 1 & 2. First Two Personalized Rows ("Royal Court Chronicles" + "Picks inspired by your shopping") */}
       {topTwoShelves.map((shelf) => (
         <PersonalizedShelfSection
@@ -660,28 +786,47 @@ export default function LoggedInLandingFeed({
         />
       ))}
 
-      {/* 3. Split 2-Card Hero Banner (Placed after the first 2 rows, matching Image 4) */}
+      {/* 3. Split 2-Card Hero Banner (Dynamic with Celebration Theme) */}
       <section className="grid grid-cols-1 lg:grid-cols-12 gap-5">
-        {/* Left 2/3 Card: "Wonderfully sacred finds" */}
-        <div className="lg:col-span-8 rounded-2xl overflow-hidden bg-[#dce6f2] dark:bg-[var(--hero-banner-bg)] border border-[var(--hero-banner-border)] grid grid-cols-1 md:grid-cols-12 min-h-[250px] lg:min-h-[300px] shadow-xs">
+        {/* Left 2/3 Card */}
+        <div
+          className="lg:col-span-8 rounded-2xl overflow-hidden bg-[var(--hero-banner-bg)] border border-[var(--hero-banner-border)] grid grid-cols-1 md:grid-cols-12 min-h-[250px] lg:min-h-[300px] shadow-xs"
+          style={{ backgroundImage: 'var(--hero-banner-pattern)' }}
+        >
           <div className="md:col-span-6 p-6 lg:p-10 flex flex-col items-center justify-center text-center">
-            <h1 className="text-2xl sm:text-3xl lg:text-[36px] leading-[1.15] font-heading font-bold text-[#222222] dark:text-[var(--text-main)] mb-5">
-              Wonderfully
-              <br />
-              sacred finds
+            {isCelebrationMode && (
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[var(--color-primary-subtle)] text-[var(--color-primary)] text-[11px] font-bold mb-3">
+                <Sparkles className="w-3.5 h-3.5" />
+                {activeCelebration.dateLabel}
+              </span>
+            )}
+            <h1 className="text-2xl sm:text-3xl lg:text-[36px] leading-[1.15] font-heading font-bold text-[var(--text-main)] mb-5">
+              {isCelebrationMode ? (
+                <>
+                  {activeCelebration.heroHeadlineTop}
+                  <br />
+                  {activeCelebration.heroHeadlineBottom}
+                </>
+              ) : (
+                <>
+                  Wonderfully
+                  <br />
+                  sacred wisdom
+                </>
+              )}
             </h1>
             <Link
-              href="/gifts"
-              className="px-5 py-2.5 rounded-full bg-[#222222] text-white text-xs sm:text-sm font-bold hover:opacity-90 transition shadow-xs"
+              href={isCelebrationMode ? `/offers?celebration=${activeCelebration.id}` : '/gifts'}
+              className="px-5 py-2.5 rounded-full bg-[var(--pill-active-bg)] text-[var(--pill-active-text)] text-xs sm:text-sm font-bold hover:opacity-90 transition shadow-xs"
             >
-              Shop unique gifts
+              {isCelebrationMode ? activeCelebration.heroButtonText : 'Shop unique gifts'}
             </Link>
           </div>
 
           <div className="md:col-span-6 relative min-h-[200px] md:min-h-full overflow-hidden">
             <img
-              src="https://grantha.lk/media/catalog/product/cache/5fa2393eb818a642e720faf99039a3de/m/a/manikkawatha_1.jpg"
-              alt="Wonderfully sacred finds"
+              src={heroFeaturedBook.coverImage}
+              alt={heroFeaturedBook.title}
               referrerPolicy="no-referrer"
               onError={handleCoverError}
               className="w-full h-full object-cover"
@@ -695,7 +840,7 @@ export default function LoggedInLandingFeed({
           className="lg:col-span-4 relative rounded-2xl overflow-hidden min-h-[250px] lg:min-h-[300px] group cursor-pointer shadow-xs"
         >
           <img
-            src="https://rasakatha.lk/media/covers/book-1793105930903-342489ab87-opt.webp"
+            src="https://grantha.lk/media/catalog/product/cache/5fa2393eb818a642e720faf99039a3de/m/a/manikkawatha_1.jpg"
             alt="Make your library unmistakably yours"
             referrerPolicy="no-referrer"
             onError={handleCoverError}

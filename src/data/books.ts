@@ -36,6 +36,8 @@ export interface Book {
   sellerRating?: number;
   sellerReviews?: string;
   isDigital?: boolean;
+  inStock?: boolean;
+  stockNote?: string;
 }
 
 export const CATEGORIES = [
@@ -62,9 +64,9 @@ export const BOOKS: Book[] = [
     rating: 4.98,
     reviewsCount: 840,
     heightRatio: 1.46,
-    coverImage: 'https://rasakatha.lk/media/covers/book-1793105930903-342489ab87-opt.webp',
+    coverImage: 'https://grantha.lk/media/catalog/product/cache/5fa2393eb818a642e720faf99039a3de/m/a/manikkawatha_1.jpg',
     galleryImages: [
-      'https://rasakatha.lk/media/covers/book-1793105930903-342489ab87-opt.webp',
+      'https://grantha.lk/media/catalog/product/cache/5fa2393eb818a642e720faf99039a3de/m/a/manikkawatha_1.jpg',
       'https://grantha.lk/media/catalog/product/cache/5fa2393eb818a642e720faf99039a3de/m/a/manikkawatha_1.jpg',
       'https://grantha.lk/media/catalog/product/cache/5fa2393eb818a642e720faf99039a3de/s/e/senkottan_front_1.jpg'
     ],
@@ -187,6 +189,8 @@ export const BOOKS: Book[] = [
     binding: 'Clothbound Hardcover',
     tags: ['May Mara Prasangaya', 'Gajaga', 'Gaj', 'Chaddanta Jataka', 'Jataka', 'Masimbula'],
     sellerName: 'Santhawa Prakashana',
+    inStock: false,
+    stockNote: 'Out of Stock — Next Archival Print Run Soon',
   },
   {
     id: 'mahawamsa-great-chronicle',
@@ -358,6 +362,8 @@ export const BOOKS: Book[] = [
     binding: 'Clothbound Hardcover',
     tags: ['Glasera', 'Guttila', 'Veena', 'Sinhala Kavya', 'Sarachchandra'],
     sellerName: 'Godage International',
+    inStock: false,
+    stockNote: 'Out of Stock — Collector Edition Sold Out',
   },
   {
     id: 'deshiya-cikitsa-samgrahaya',

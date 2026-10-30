@@ -63,6 +63,9 @@
   --footer-bg: #151519;
   --hero-banner-bg: #1a2433;
   --hero-banner-border: #28364d;
+  --hero-showcase-bg: #2d3b1e;
+  --hero-showcase-border: rgba(255, 255, 255, 0.22);
+  --hero-banner-pattern: radial-gradient(circle at 85% 20%, rgba(241, 100, 30, 0.12) 0%, transparent 50%);
   --banner-guild-bg: #18241d;
   --banner-guild-surface: #121c16;
   --banner-guild-border: #283d31;
@@ -71,6 +74,7 @@
   --banner-guild-accent: #e8b059;
 
   /* Status & Feedback Colors */
+  --color-emerald: #34d399;
   --color-success: #34d399;
   --color-success-bg: rgba(16, 185, 129, 0.14);
   --color-warning: #fbbf24;

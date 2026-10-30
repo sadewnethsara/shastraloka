@@ -582,6 +582,7 @@ function ProductDetailContent() {
     price: matchedBook.price,
     originalPrice: matchedBook.originalPrice,
     coverImage: matchedBook.coverImage,
+    inStock: matchedBook.inStock !== false,
     categoryPath: [
       'Shastraloka Bookstore',
       matchedBook.category,
@@ -607,6 +608,7 @@ function ProductDetailContent() {
       price: matchedBook.price,
       originalPrice: matchedBook.originalPrice,
       coverImage: matchedBook.coverImage,
+      inStock: matchedBook.inStock !== false,
       categoryPath: [
         'Shastraloka Bookstore',
         matchedBook.category,
@@ -805,6 +807,7 @@ function ProductDetailContent() {
       price: pin.price,
       originalPrice: pin.originalPrice || Math.round(pin.price * 1.25),
       coverImage: pin.image,
+      inStock: true,
       categoryPath: [
         'Shastraloka Bookstore',
         pin.categoryTag,
