@@ -14,7 +14,7 @@ export default function AboutPage() {
       {/* Hero Banner */}
       <section className="bg-[var(--hero-banner-bg)] border-b border-[var(--border-subtle)] py-14 sm:py-20">
         <div className="page-container text-center">
-          <span className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-[var(--bg-surface)] border border-[var(--border-subtle)] text-xs font-semibold text-[#F1641E] mb-4">
+          <span className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-[var(--bg-surface)] border border-[var(--border-subtle)] text-xs font-semibold text-[var(--color-primary)] mb-4">
             <Sparkles className="w-3.5 h-3.5" /> Shastraloka • Heritage Inc.
           </span>
           <h1 className="font-heading font-bold text-3xl sm:text-5xl font-normal text-[var(--text-main)] leading-tight max-w-3xl mx-auto">
@@ -52,7 +52,7 @@ export default function AboutPage() {
       {/* Pillars */}
       <section className="page-container py-16 grid grid-cols-1 md:grid-cols-3 gap-6">
         <div className="p-6 rounded-3xl bg-[var(--bg-surface)] border border-[var(--border-subtle)] space-y-3">
-          <BookOpen className="w-7 h-7 text-[#F1641E]" />
+          <BookOpen className="w-7 h-7 text-[var(--color-primary)]" />
           <h2 className="font-heading font-bold text-xl font-normal text-[var(--text-main)]">
             Authentic Critical Editions
           </h2>
@@ -63,7 +63,7 @@ export default function AboutPage() {
         </div>
 
         <div className="p-6 rounded-3xl bg-[var(--bg-surface)] border border-[var(--border-subtle)] space-y-3">
-          <Award className="w-7 h-7 text-[#F1641E]" />
+          <Award className="w-7 h-7 text-[var(--color-primary)]" />
           <h2 className="font-heading font-bold text-xl font-normal text-[var(--text-main)]">
             Supporting Local Artisans &amp; Scholars
           </h2>
@@ -73,13 +73,12 @@ export default function AboutPage() {
         </div>
 
         <div className="p-6 rounded-3xl bg-[var(--bg-surface)] border border-[var(--border-subtle)] space-y-3">
-          <Globe className="w-7 h-7 text-[#F1641E]" />
+          <Globe className="w-7 h-7 text-[var(--color-primary)]" />
           <h2 className="font-heading font-bold text-xl font-normal text-[var(--text-main)]">
-            Dual-Domain Cultural Access
+            Global Cultural Access
           </h2>
           <p className="text-xs sm:text-sm text-[var(--text-muted)] leading-relaxed">
-            Accessible globally via both <strong>shastraloka.lk</strong> and native Sinhala IDN{' '}
-            <strong className="font-sinhala">ශාස්ත්රාලෝක.ලංකා</strong> for seamless discovery.
+            Accessible globally via <strong>shastraloka.lk</strong> and our international scholarly network for seamless research and discovery.
           </p>
         </div>
       </section>

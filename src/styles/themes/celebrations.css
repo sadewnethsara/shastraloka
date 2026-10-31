@@ -415,3 +415,21 @@
   --card-shadow: 0 2px 8px rgba(161, 98, 7, 0.06);
   --card-shadow-hover: 0 8px 20px rgba(161, 98, 7, 0.14);
 }
+
+/* Shared Typography & Shape Tokens across Celebration Themes */
+[data-theme="womens-day"],
+[data-theme="childrens-day"],
+[data-theme="teachers-day"],
+[data-theme="avurudu"],
+[data-theme="vesak"] {
+  --color-accent-badge-hover: var(--color-primary-hover);
+  --theme-font-heading: var(--font-heading, 'Outfit', sans-serif);
+  --theme-font-sans: var(--font-sans, 'Plus Jakarta Sans', sans-serif);
+  --theme-heading-tracking: -0.02em;
+  --radius-card: 16px;
+  --radius-btn: 9999px;
+  --radius-input: 9999px;
+  --radius-modal: 24px;
+  --radius-badge: 9999px;
+}
+

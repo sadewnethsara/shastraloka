@@ -44,9 +44,9 @@ export default function ScholarsGrantsPage() {
       <Header isSticky />
       <main className="flex-1 pb-20">
       <section className="bg-[var(--hero-banner-bg)] border-b border-[var(--border-subtle)] py-12">
-        <div className="max-w-[1080px] mx-auto px-4 sm:px-6">
-          <span className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-[#F1641E]">
-            <Sparkles className="w-3.5 h-3.5" /> ශාස්ත්‍රාලෝක • Cultural Preservation Fund
+        <div className="page-container">
+          <span className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-[var(--color-primary)]">
+            <Sparkles className="w-3.5 h-3.5" /> Shastraloka • Cultural Preservation Fund
           </span>
           <h1 className="font-heading font-bold text-3xl sm:text-4xl font-normal text-[var(--text-main)] mt-1">
             Palm-Leaf Digitization &amp; Scholarly Grants
@@ -58,7 +58,7 @@ export default function ScholarsGrantsPage() {
         </div>
       </section>
 
-      <div className="max-w-[1080px] mx-auto px-4 sm:px-6 pt-10 space-y-10">
+      <div className="page-container pt-10 space-y-10">
         {/* Grant Tiers */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
           {GRANT_TIERS.map((tier) => (
@@ -67,7 +67,7 @@ export default function ScholarsGrantsPage() {
               className="p-6 rounded-3xl bg-[var(--bg-surface)] border border-[var(--border-subtle)] flex flex-col justify-between space-y-4"
             >
               <div className="space-y-2">
-                <Award className="w-6 h-6 text-[#F1641E]" />
+                <Award className="w-6 h-6 text-[var(--color-primary)]" />
                 <span className="inline-block text-xs font-bold px-2.5 py-1 rounded-full bg-[var(--bg-wash)] text-[var(--text-main)]">
                   {tier.amount}
                 </span>
@@ -100,7 +100,7 @@ export default function ScholarsGrantsPage() {
               </p>
               <Link
                 href="/archives"
-                className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#F1641E] underline pt-2"
+                className="inline-flex items-center gap-1.5 text-xs font-semibold text-[var(--color-primary)] underline pt-2"
               >
                 Explore digitized archival editions <ArrowRight className="w-3.5 h-3.5" />
               </Link>
@@ -108,7 +108,7 @@ export default function ScholarsGrantsPage() {
           ) : (
             <form onSubmit={handleApply} className="space-y-4">
               <h3 className="font-heading font-bold text-xl text-[var(--text-main)] flex items-center gap-2">
-                <BookOpen className="w-5 h-5 text-[#F1641E]" /> Apply for the 2026–2027 Grant Cycle
+                <BookOpen className="w-5 h-5 text-[var(--color-primary)]" /> Apply for the 2026–2027 Grant Cycle
               </h3>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>

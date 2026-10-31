@@ -1,4 +1,5 @@
 import { Book, BOOKS, CATEGORIES } from '../data/books';
+import { sanitizeSearchQuery } from './security';
 
 export type MatchTier = 'exact' | 'name_contains' | 'fuzzy_similar' | 'category_match' | 'suggested';
 
@@ -86,7 +87,7 @@ export function scoreBookAgainstQuery(book: Book, rawQuery: string): {
   matchTier: MatchTier;
   matchLabel: string;
 } {
-  const q = rawQuery.trim().toLowerCase();
+  const q = sanitizeSearchQuery(rawQuery).toLowerCase();
   if (!q) {
     return {
       score: book.featured ? 50 : 30,
@@ -193,7 +194,7 @@ export function getAutocompleteSuggestions(
   rawQuery: string,
   books: Book[] = BOOKS
 ): AutocompleteResult {
-  const q = rawQuery.trim();
+  const q = sanitizeSearchQuery(rawQuery);
   if (!q) {
     const featured = books.slice(0, 5).map((book) => ({
       book,

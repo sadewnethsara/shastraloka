@@ -1,15 +1,18 @@
 'use client';
 
 import React from 'react';
+import dynamic from 'next/dynamic';
 import { usePathname } from 'next/navigation';
 import { AppProvider, useApp } from '../context/AppContext';
-import BoardsModal from './BoardsModal';
-import BookModal from './BookModal';
 import Toast from './Toast';
-import MiniBagRail from './MiniBagRail';
-import HurryUrgencyCard from './HurryUrgencyCard';
-import AuthModal from './AuthModal';
-import ConfirmDialog from './ConfirmDialog';
+
+// On-demand lazy-loaded modals & drawers so their JS and assets are NOT downloaded upfront
+const BookModal = dynamic(() => import('./BookModal'), { ssr: false });
+const BoardsModal = dynamic(() => import('./BoardsModal'), { ssr: false });
+const AuthModal = dynamic(() => import('./AuthModal'), { ssr: false });
+const ConfirmDialog = dynamic(() => import('./ConfirmDialog'), { ssr: false });
+const MiniBagRail = dynamic(() => import('./MiniBagRail'), { ssr: false });
+const HurryUrgencyCard = dynamic(() => import('./HurryUrgencyCard'), { ssr: false });
 
 function MiniBagRailWrapper() {
   const { showMiniBagRail } = useApp();
@@ -24,6 +27,14 @@ function MiniBagRailWrapper() {
 }
 
 function ProvidersContent({ children }: { children: React.ReactNode }) {
+  const {
+    selectedBook,
+    isBoardsModalOpen,
+    authModalMode,
+    confirmDialog,
+    bagCount,
+  } = useApp();
+
   return (
     <>
       <div className="min-h-screen flex flex-col lg:flex-row bg-[var(--bg-main)] text-[var(--text-main)] w-full max-w-full overflow-x-clip">
@@ -32,17 +43,17 @@ function ProvidersContent({ children }: { children: React.ReactNode }) {
           {children}
         </div>
 
-        {/* Right Mini Bag Rail - Hidden on landing page */}
-        <React.Suspense fallback={null}>
-          <MiniBagRailWrapper />
-        </React.Suspense>
+        {/* Right Mini Bag Rail - Lazy-loaded only when opened */}
+        <MiniBagRailWrapper />
       </div>
-      <BookModal />
-      <BoardsModal />
-      <AuthModal />
-      <ConfirmDialog />
+
+      {/* Heavy Modals & Overlays mounted and downloaded strictly on demand */}
+      {selectedBook && <BookModal />}
+      {isBoardsModalOpen && <BoardsModal />}
+      {authModalMode && <AuthModal />}
+      {confirmDialog && <ConfirmDialog />}
       <Toast />
-      <HurryUrgencyCard />
+      {bagCount > 0 && <HurryUrgencyCard />}
     </>
   );
 }

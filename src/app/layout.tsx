@@ -3,6 +3,7 @@ import { Plus_Jakarta_Sans, Outfit, Noto_Serif_Sinhala } from "next/font/google"
 import "./globals.css";
 import Providers from "../components/Providers";
 import { SEO_BRAND, SEO_KEYWORDS, buildGlobalSchemaGraph } from "../utils/seoConfig";
+import { serializeSafeJsonLd } from "../utils/security";
 
 export const viewport: Viewport = {
   width: "device-width",
@@ -126,10 +127,13 @@ export default function RootLayout({
       className={`${jakarta.variable} ${outfit.variable} ${notoSerifSinhala.variable} scroll-smooth overflow-x-clip max-w-[100vw] w-full`}
       suppressHydrationWarning
     >
-      <body className="font-sans antialiased bg-[var(--bg-main)] text-[var(--text-main)] transition-colors duration-300 overflow-x-clip max-w-[100vw] w-full relative">
+      <body
+        suppressHydrationWarning
+        className="font-sans antialiased bg-[var(--bg-main)] text-[var(--text-main)] transition-colors duration-300 overflow-x-clip max-w-[100vw] w-full relative"
+      >
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(schemaGraph) }}
+          dangerouslySetInnerHTML={{ __html: serializeSafeJsonLd(schemaGraph) }}
         />
         <Providers>{children}</Providers>
       </body>

@@ -35,15 +35,16 @@
 - Desktop Header contains:
   1. Brand Logo (`Shastraloka` in bold Outfit display typography with leaf/manuscript accent)
   2. Categories dropdown menu
-  3. Pill search field (`SearchField`) with clear button and orange search button (`#F1641E`)
+  3. Pill search field (`SearchField`) with clear button and theme-driven primary search button (`bg-[var(--color-primary)] hover:bg-[var(--color-primary-hover)]`)
   4. Quick links (Gifts, Favorites/Boards count)
-  5. **Highlighted Bag Button**: Pill button with `Handbag` icon, quantity badge, and explicit bold **"Bag"** text.
+  5. **Highlighted Bag Button**: Pill button with `Handbag` icon, quantity badge (`bg-[var(--color-accent-badge)]`), and explicit bold **"Bag"** text.
 - Header icons must be from `lucide-react` (e.g., `Menu`, `Search`, `Heart`, `User`, `Gift`, `Sun`, `Moon`, `Handbag`, `X`).
 
-### Rule 4: Product Detail Page Scrolling
+### Rule 4: Product Detail Page Scrolling, Single-Edition Policy & Mobile Sticky Bar
 - The product detail page ([`src/app/books/[id]/page.tsx`](src/app/books/[id]/page.tsx)) uses **natural single-page grid scrolling** (`items-start`).
-- Both left (cover preview) and right (metadata, pricing, binding formats) columns scroll together.
-- **Do not** introduce fixed height containers (`h-screen overflow-y-auto`) that trap scroll on one side.
+- Both left (cover preview) and right (metadata, pricing, CTA buttons) columns scroll together. **Do not** introduce fixed height containers (`h-screen overflow-y-auto`) that trap scroll on one side.
+- **Single-Edition Only (No Multi-Format Selector):** Do **not** add multiple book format/type options (such as Hardcover, Paperback, eBook, or Audiobook grids/toggles). Shastraloka sells a single physical collector edition per book (`book.binding || 'Archival Collector Edition'`).
+- **Scroll-Aware Mobile Fixed Bottom "Add to Bag" Bar:** On mobile (`lg:hidden`), display a fixed bottom bar (`fixed bottom-0 inset-x-0 z-40`) on initial page load with price, **"Add to Bag"** (`Handbag` icon), and **"Buy Now"**. Track the inline CTA section (`inlineCtaRef`) so that once the user scrolls down to the real inline buttons (`rect.top <= window.innerHeight - 24`), the fixed bottom bar smoothly hides (`translate-y-full opacity-0 pointer-events-none`) and the user scrolls naturally with the inline buttons.
 
 ### Rule 5: UI Components & Gestalt Policy
 - **NO external npm dependency on `gestalt` or `gestalt-design-tokens`.** They are removed from `package.json`.
@@ -62,9 +63,14 @@
 - **New Books & Routes:** Whenever new books or routes are added to `src/data/books.ts`, ensure they include `price` (LKR), `originalPrice` (LKR), `sinhalaTitle`, and `tags` so `sitemap.ts`, `searchEngine.ts`, and `seoConfig.ts` automatically index them with LKR price & offer percentage badges.
 - **External SEO Documentation:** Keep [`guide.md`](guide.md) in the root directory updated when SEO routes or schemas change.
 
-### Rule 7: Strict English UI & Modern Professional Pinterest Typography (No Serif, No Sinhala Script in UI)
-- **Visual Aesthetic:** Strictly follow high-end Pinterest design aesthetics with clean modern typography. Headings, titles, brand logo, and modals use modern geometric display font **Outfit** (`--font-heading`, `font-heading`). UI body, labels, badges, and controls use **Plus Jakarta Sans** (`--font-sans`, `font-sans`). Traditional serif fonts (`Playfair Display`, `Georgia`, `font-serif`) are strictly eliminated in favor of clean, professional, high-end design.
-- **No Sinhala Script in User-Facing UI:** All user-facing UI labels, modal headers, card subtitles, badges, search autocomplete entries, and navigation text must be rendered strictly in English. Never display Sinhala script text in visible UI components (e.g. `VisualSearchModal`, `Header`, `BookCard`, `HeroBanner`, `BookModal`, `Footer`, etc.).
+### Rule 7: Strict English UI, Theme-Driven Typography & Zero "Pin"/"Pinterest" Terminology
+- **Theme-Driven Typography:** Headings, titles, brand logo, and modals use `font-heading` bound to `var(--theme-font-heading)` and letter-spacing `var(--theme-heading-tracking)`. UI body, labels, badges, and controls use `font-sans` bound to `var(--theme-font-sans)`. Traditional serif fonts (`Playfair Display`, `Georgia`, `font-serif`) are strictly eliminated.
+- **No Sinhala Script in User-Facing UI:** All user-facing UI labels, modal headers, card subtitles, badges, search autocomplete entries, and navigation text must be rendered strictly in English. Never display Sinhala script text in visible UI components (e.g. `VisualSearchModal`, `Header`, `BookCard`, `HeroBanner`, `BookModal`, `Footer`, `gift-cards`, etc.).
+- **No "Pin" / "Pins" / "Pinterest" Terminology in User-Facing UI:** Never render `"Pin"`, `"Pins"`, `"Pinned"`, `"Pinboard"`, or `"Pinterest"` in any user-facing buttons, tabs, badges, empty states, or descriptions. Always use authentic Shastraloka bookstore terminology:
+  - Use **"Save"** / **"Saved"** instead of `"Pin"` / `"Pinned"`
+  - Use **"Books"** or **"Editions"** instead of `"Pins"` (e.g., `"14 Editions"`, `"Saved Books"`, `"No Saved Books Yet"`)
+  - Use **"Reading Board"** / **"Reading List"** / **"Collection"** instead of `"Pinboard"` or `"Pinterest Board"`
+  - Use **"Curated Visual Book Discovery"** instead of `"Pinterest-Style Visual Discovery"`
 - *(Note: Dual-domain SEO indexing for `https://ශාස්ත්රාලෝක.ලංකා` and catalog data fields such as `book.sinhalaTitle` remain in metadata, sitemaps, and search engines for domain resolution and SEO, but MUST NOT be rendered directly on user-facing UI elements).*
 
 ### Rule 8: Universal Page Container Standard (`page-container` / `PageContainer`)
@@ -75,21 +81,37 @@
   - Or import and use `<PageContainer>` from [`src/components/ui/PageContainer.tsx`](src/components/ui/PageContainer.tsx) / `@/components/PageContainer`.
   - **Never hardcode arbitrary widths** (e.g. `max-w-[1140px]`, `max-w-[1200px]`, `max-w-[1720px]`, or non-standard `px-3.5`) on top-level page containers that cause horizontal jumping between routes. Any future modification to horizontal padding or maximum width must be made in `src/app/globals.css` (`.page-container`) and [`src/components/ui/PageContainer.tsx`](src/components/ui/PageContainer.tsx) so that all pages update simultaneously.
 
-### Rule 9: Theme Architecture & Zero Hardcoded Colors Policy
-- **All Theme Colors Must Reside in CSS Theme Files:**
-  - Every theme token is defined in [`src/styles/themes/`](src/styles/themes/):
-    - [`src/styles/themes/light.css`](src/styles/themes/light.css) (`:root`, `[data-theme="light"]`, `.light`)
-    - [`src/styles/themes/dark.css`](src/styles/themes/dark.css) (`[data-theme="dark"]`, `.dark`)
-    - [`src/styles/themes/sepia.css`](src/styles/themes/sepia.css) (`[data-theme="sepia"]`, `.theme-sepia`)
-    - [`src/styles/themes/emerald.css`](src/styles/themes/emerald.css) (`[data-theme="emerald"]`, `.theme-emerald`)
-  - Imported and bound to Tailwind v4 in [`src/app/globals.css`](src/app/globals.css) with `@custom-variant dark (&:where(.dark, .dark *, [data-theme="dark"], [data-theme="dark"] *));` so `dark:` classes strictly obey the app's active theme rather than OS media queries.
-- **Zero Hardcoded Page/Section Colors:**
-  - **NEVER** hardcode light-only (`bg-white`, `bg-[#FAF8F5]`, `text-[#222222]`) or dark-only (`bg-[#23382C]`, `bg-[#121215]`, `bg-neutral-900 text-white`) hex colors on pages, banners, headers, footers, modals, or cards.
-  - **ALWAYS** use semantic CSS variables.
+### Rule 9: Theme Architecture, Zero Hardcoded Colors & Theme-Driven Radius/Font Tokens
+- **All Theme Tokens Must Reside in CSS Theme Files (`src/styles/themes/`):**
+  - Every theme token is defined in [`src/styles/themes/`](src/styles/themes/) and imported via [`src/styles/themes/index.css`](src/styles/themes/index.css):
+    - [`src/styles/themes/light.css`](src/styles/themes/light.css) (`:root`, `[data-theme="light"]`, `.light` — Warm Parchment / Clean Ivory)
+    - [`src/styles/themes/sepia.css`](src/styles/themes/sepia.css) (`[data-theme="sepia"]`, `.theme-sepia` — Palm-Leaf Ola Manuscript)
+    - [`src/styles/themes/emerald.css`](src/styles/themes/emerald.css) (`[data-theme="emerald"]`, `.theme-emerald` — Ceylon Sanctuary)
+    - [`src/styles/themes/datacamp.css`](src/styles/themes/datacamp.css) (`[data-theme="datacamp"]`, `.theme-datacamp` — DataCamp Navy `#05192D` & Neon Green `#03EF62`)
+    - [`src/styles/themes/aws-skillbuilder.css`](src/styles/themes/aws-skillbuilder.css) (`[data-theme="aws-skillbuilder"]`, `.theme-aws-skillbuilder` — AWS Squid Ink `#161E2D` & Smile Orange `#FF9900`)
+    - [`src/styles/themes/celebrations.css`](src/styles/themes/celebrations.css) (Sri Lankan Cultural & Poya Celebration Themes)
+  - Imported and bound to Tailwind v4 in [`src/app/globals.css`](src/app/globals.css) with `@custom-variant dark (&:where(.dark, .dark *, [data-theme="dark"], [data-theme="dark"] *, [data-theme="datacamp"], [data-theme="datacamp"] *, [data-theme="aws-skillbuilder"], [data-theme="aws-skillbuilder"] *));` so `dark:` classes strictly obey the app's active theme rather than OS media queries.
+- **Zero Hardcoded Page, Component, or Accent Hex Colors:**
+  - **NEVER** hardcode red (`#e60023`, `#ad081b`, `#CC0C39`, `#ff5c77`), orange (`#F1641E`, `#f1641e`, `#d45314`), brown (`#a66523`), light-only (`bg-white`, `bg-[#FAF8F5]`, `text-[#222222]`), or dark-only (`bg-[#23382C]`, `bg-[#121215]`) hex colors in any `.tsx` file.
+  - **ALWAYS** use semantic CSS variables:
+    - Primary brand & CTAs: `bg-[var(--color-primary)]`, `hover:bg-[var(--color-primary-hover)]`, `text-[var(--color-primary)]`, `border-[var(--color-primary-border)]`, `bg-[var(--color-primary-subtle)]`
+    - Badges, counters & flash tags: `bg-[var(--color-accent-badge)]`, `hover:bg-[var(--color-accent-badge-hover)]`
+    - Danger / destructive / flash countdowns: `text-[var(--color-danger)]`, `bg-[var(--color-danger-subtle)]`
+    - Secondary heritage accents: `text-[var(--brand-brown)]`, `bg-[var(--surface-cream)]`
+    - Active pills & primary dark/light buttons: `bg-[var(--pill-active-bg)] text-[var(--pill-active-text)]`
+    - Surfaces & borders: `bg-[var(--bg-main)]`, `bg-[var(--bg-surface)]`, `bg-[var(--bg-card)]`, `bg-[var(--bg-elevated)]`, `bg-[var(--bg-wash)]`, `bg-[var(--bg-input)]`, `border-[var(--border-subtle)]`, `border-[var(--border-strong)]`
+- **Theme-Driven Border Radius & Typography Variables:**
+  - Every theme controls structural geometry and typography via CSS variables:
+    - `--radius-card`: Card, cover, and banner border radius (e.g., `rounded-[var(--radius-card)]`)
+    - `--radius-btn`: Button and action pill border radius (e.g., `rounded-[var(--radius-btn)]`)
+    - `--radius-input`: Search field and form input border radius (e.g., `rounded-[var(--radius-input)]`)
+    - `--radius-modal`: Dialog and modal container border radius (e.g., `rounded-[var(--radius-modal)]`)
+    - `--radius-badge`: Discount and status badge border radius (e.g., `rounded-[var(--radius-badge)]`)
+    - `--theme-font-heading`, `--theme-font-sans`, `--theme-heading-tracking`: Theme-controlled font stacks and heading letter-spacing.
 
-### Rule 10: Clean Bookstore Catalog Grid vs. Pinterest Search Body
+### Rule 10: Clean Bookstore Catalog Grid vs. Visual Search Body
 - **Curated Collection Pages (`/bestsellers`, `/new-releases`, `/gifts`, `/categories`, `/archives`, `/authors`, `/wishlist`, `/publishers/[id]`) Must Use `CleanBookCard`:**
-  - Do **NOT** use Pinterest-style staggered masonry on collection/catalog pages.
+  - Do **NOT** use staggered masonry on collection/catalog pages.
   - Always use [`src/components/CleanBookCard.tsx`](src/components/CleanBookCard.tsx) inside a uniform grid (`grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5`).
 
 ---
@@ -143,11 +165,14 @@ shastraloka/
 │   │   ├── scholars/submit-manuscript/ # Scholarly manuscript submission portal
 │   │   └── search/page.tsx       # Pinterest + Amazon visual search & filter discovery body
 │   ├── styles/
-│   │   └── themes/               # Centralized CSS Theme Token Files
+│   │   └── themes/               # Centralized CSS Theme Token Files (Colors, Radii, Fonts)
+│   │       ├── index.css         # Theme bundle entry point
 │   │       ├── light.css         # Light theme variables (Warm Parchment / Clean Ivory)
-│   │       ├── dark.css          # Dark theme variables (Obsidian / Midnight Archive)
 │   │       ├── sepia.css         # Sepia theme variables (Palm-Leaf Ola Manuscript)
-│   │       └── emerald.css       # Emerald theme variables (Ceylon Sanctuary)
+│   │       ├── emerald.css       # Emerald theme variables (Ceylon Sanctuary)
+│   │       ├── datacamp.css      # DataCamp theme variables (Deep Navy #05192D & Neon Green #03EF62)
+│   │       ├── aws-skillbuilder.css # AWS Skill Builder theme variables (Squid Ink #161E2D & Smile Orange #FF9900)
+│   │       └── celebrations.css  # Sri Lankan Cultural & Poya Celebration theme variables
 │   ├── components/               # App Domain Components
 │   │   ├── Header.tsx            # Universal top navigation, 2-col Categories Mega-Menu & live autocomplete
 │   │   ├── Footer.tsx            # Universal footer with SEO directory & dual domains
@@ -205,3 +230,8 @@ pnpm build
 | **2026-10-28** | Eliminated `font-serif` & Replaced with Professional `Outfit` | Removed traditional serif (Playfair/Georgia) across all components; introduced modern `Outfit` (`--font-heading`, `font-heading`) paired with `Plus Jakarta Sans`. |
 | **2026-10-29** | Upgraded all empty/stub pages & Header Mega-Menu to match 12 reference bookstore & marketplace UIs | Built 2-col visual Categories Mega-Menu (`Header.tsx`), Amazon Books Storefront (`/books`), Best Gift Guides Hub (`/gifts`), LKR Gift Cards Builder (`/gift-cards`), Special Offers & Vouchers (`/offers`), Archival & Vintage Finds (`/archives`), Guest & Collection Favorites (`/wishlist`), Our House Rules Legal & Help pages (`HouseRulesLayout.tsx`, `/privacy`, `/terms`, `/shipping-returns`, `/help`), and all dynamic/scholar pages (`/contact`, `/about`, `/track-order`, `/checkout/success`, `/categories/[slug]`, `/authors/[id]`, `/profile/settings`, `/scholars/*`). |
 | **2026-10-29** | Built `AuthModal.tsx` (Desktop Dialog + Mobile Bottom Sheet) & unified `<Header isSticky />` across all pages | Implemented Login, Register, and Forgot Password as an overlay dialog with outside top-right circular `(X)` close button and 3 horizontal pill social buttons on desktop, and a slide-up bottom sheet on mobile; replaced the static inline header on `/bag` and added `<Header isSticky />` to all new pages so `<SearchBar />` and the Categories Mega-Menu open everywhere. |
+| **2026-10-31** | Added `datacamp` & `aws-skillbuilder` themes, eliminated all hardcoded hex colors (`#e60023`, `#ad081b`, `#F1641E`, `#a66523`, `#222222`) & `"Pin"`/`"Pinterest"` UI text, and introduced theme-driven radius & typography tokens | Bound all components and pages to `var(--color-primary)`, `var(--color-accent-badge)`, `var(--color-danger)`, `var(--brand-brown)`, `--radius-card`, `--radius-btn`, `--radius-input`, `--radius-modal`, `--radius-badge`, `--theme-font-heading`, and `--theme-font-sans`; replaced all user-facing `"Pin"` / `"Pins"` / `"Pinterest"` strings with `"Save"`, `"Saved"`, `"Books"`, `"Editions"`, and `"Reading Board"`. |
+| **2026-10-31** | Provisioned Cloud SQL (`us-west1`) & Firebase Auth | Provisioned Cloud SQL instance `ai-studio-b3be6d3c` in `us-west1`, configured Google OAuth & Firebase Auth client/admin, set up Drizzle ORM with connection pooling (Object Method), and migrated and verified `users` & `orders` tables via `UpdateSchema` / `ExecuteSql`. |
+| **2026-10-31** | Connected Standalone Backend API, Cloudflare R2 Uploads, Better Auth & Admin Master Prompt | Configured Next.js proxy rewrites (`/api/backend/*`, `/api/auth/*`), Better Auth client with Google & Facebook (no Apple), universal API client (`src/lib/api-client.ts`), direct-to-Cloudflare R2 presigned upload utility (`src/lib/r2-upload.ts`), Bank Transfer with slip dropzone, automated phone-based customer account creation, Sri Lanka mobile validation (`^(?:0|94|\+94)?7\d{8}$`), WhatsApp click-to-chat order dispatch (`wa.me`), Sample PDF R2 preview, and authored `admin.md` master prompt for the admin panel agent (`https://book-store-admin-kohl.vercel.app/`). |
+
+

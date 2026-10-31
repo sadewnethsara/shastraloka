@@ -48,7 +48,7 @@ export function Dropdown({
       <div className="fixed inset-0 z-20" onClick={onClose} />
       <div
         ref={menuRef}
-        className={`absolute ${alignStyles} mt-2 ${width} max-h-96 overflow-y-auto bg-white dark:bg-[#1f1f26] rounded-2xl shadow-2xl border border-neutral-200 dark:border-neutral-800 py-2 z-30 animate-fadeIn ${className}`}
+        className={`absolute ${alignStyles} mt-2 ${width} max-h-96 overflow-y-auto bg-[var(--bg-card)] rounded-[var(--radius-card)] shadow-2xl border border-[var(--border-subtle)] py-2 z-30 animate-fadeIn ${className}`}
       >
         {children}
       </div>

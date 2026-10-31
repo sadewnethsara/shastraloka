@@ -53,7 +53,7 @@ export default function HeroBanner() {
             <div className="flex flex-wrap items-center gap-3 pt-2">
               <button
                 onClick={() => openBookModal(mahawamsa)}
-                className="h-11 px-5 rounded-full bg-[#e60023] hover:bg-[#ad081b] text-white font-semibold text-sm pill-btn shadow-xs cursor-pointer flex items-center gap-2"
+                className="h-11 px-5 rounded-[var(--radius-btn,9999px)] bg-[var(--color-primary)] hover:bg-[var(--color-primary-hover)] text-white font-semibold text-sm pill-btn shadow-xs cursor-pointer flex items-center gap-2"
               >
                 <span>Featured: The Mahavamsa (Great Chronicle)</span>
                 <span>&rarr;</span>
@@ -149,7 +149,7 @@ export default function HeroBanner() {
                   <span className="text-xs font-bold text-[var(--text-main)]">
                     Rs. {mahawamsa.price.toLocaleString()}
                   </span>
-                  <span className="px-2 py-0.5 rounded-full bg-[#e60023] text-white text-[10px] font-bold">
+                  <span className="px-2 py-0.5 rounded-full bg-[var(--color-accent-badge)] text-[var(--color-accent-badge-text)] text-[10px] font-bold">
                     Featured
                   </span>
                 </div>

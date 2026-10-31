@@ -105,10 +105,10 @@ export default function MiniBagRail() {
       </aside>
 
       {/* =====================================================================
-          MOBILE & TABLET MINI BAG BOTTOM SHEET (< lg)
+          MOBILE BOTTOM SHEET (< md) & TABLET CENTERED DIALOG (md to lg)
          ===================================================================== */}
       <div
-        className="fixed inset-0 z-50 lg:hidden flex items-end justify-center sm:px-6 md:px-8 animate-fade-in"
+        className="fixed inset-0 z-50 lg:hidden flex items-end md:items-center justify-center sm:px-6 md:p-6 animate-fade-in"
         role="dialog"
         aria-modal="true"
         aria-label="Shopping Bag Preview"
@@ -119,15 +119,15 @@ export default function MiniBagRail() {
           onClick={() => setShowMiniBagRail(false)}
         />
 
-        {/* Slide-Up Bottom Sheet */}
-        <div className="relative z-10 w-full max-h-[85dvh] bg-[var(--bg-card)] text-[var(--text-main)] rounded-t-[28px] border-t sm:border-x border-[var(--border-subtle)] shadow-[0_-16px_48px_rgba(0,0,0,0.45)] flex flex-col overflow-hidden animate-slide-up">
-          {/* Mobile Drag Handle */}
-          <div className="pt-3 pb-1 flex justify-center bg-[var(--bg-surface)] shrink-0">
+        {/* Slide-Up Bottom Sheet on Mobile (< md) / Centered Modal Dialog on Tablet (md:) */}
+        <div className="relative z-10 w-full md:max-w-[520px] max-h-[85dvh] md:max-h-[82vh] bg-[var(--bg-card)] text-[var(--text-main)] rounded-t-[28px] md:rounded-[28px] border-t sm:border-x md:border border-[var(--border-subtle)] shadow-[0_-16px_48px_rgba(0,0,0,0.45)] md:shadow-[0_24px_64px_rgba(0,0,0,0.35)] flex flex-col overflow-hidden animate-slide-up">
+          {/* Mobile Drag Handle (Hidden on Tablet Dialog) */}
+          <div className="pt-3 pb-1 flex md:hidden justify-center bg-[var(--bg-surface)] shrink-0">
             <div className="w-12 h-1.5 rounded-full bg-[var(--border-strong)] opacity-60" />
           </div>
 
-          {/* Bottom Sheet Header */}
-          <div className="flex items-center justify-between px-5 sm:px-7 py-3 border-b border-[var(--border-subtle)] bg-[var(--bg-surface)] shrink-0">
+          {/* Sheet / Dialog Header */}
+          <div className="flex items-center justify-between px-5 sm:px-7 py-3 md:py-4 border-b border-[var(--border-subtle)] bg-[var(--bg-surface)] shrink-0">
             <div className="flex items-center gap-2.5">
               <div className="w-8 h-8 rounded-full bg-[var(--color-primary-subtle)] flex items-center justify-center text-[var(--color-primary)]">
                 <Handbag className="w-4.5 h-4.5" />

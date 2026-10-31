@@ -35,13 +35,15 @@ import {
   Sparkles,
   AlertCircle,
 } from 'lucide-react';
+import dynamic from 'next/dynamic';
 import { useApp } from '../context/AppContext';
 import { BOOKS } from '../data/books';
 import { getAutocompleteSuggestions } from '../utils/searchEngine';
 import { SearchField } from './ui/SearchField';
 import { Tooltip } from './ui/Tooltip';
-import VisualSearchModal from './VisualSearchModal';
-import CategoriesMegaMenu from './CategoriesMegaMenu';
+
+const VisualSearchModal = dynamic(() => import('./VisualSearchModal'), { ssr: false });
+const CategoriesMegaMenu = dynamic(() => import('./CategoriesMegaMenu'), { ssr: false });
 
 export interface RecentSearchData {
   id: string;
@@ -298,12 +300,12 @@ export default function Header({ isSticky = false }: HeaderProps = {}) {
         <div
           data-testid="search-autocomplete-dropdown"
           onClick={(e) => e.stopPropagation()}
-          className="absolute left-0 right-0 top-full mt-2 bg-[var(--header-dropdown-bg)] text-[var(--header-text)] rounded-2xl shadow-2xl border border-[var(--header-dropdown-border)] overflow-hidden z-50 animate-fade-in max-h-[78vh] overflow-y-auto overscroll-contain"
+          className="absolute left-0 right-0 top-full mt-2 bg-[var(--bg-card)] text-[var(--text-main)] rounded-2xl shadow-2xl border border-[var(--border-subtle)] overflow-hidden z-50 animate-fade-in max-h-[78vh] overflow-y-auto overscroll-contain"
         >
           {/* Recent Searches */}
           <div className="px-3.5 sm:px-6 py-3.5 sm:py-4">
             <div className="flex items-center justify-between mb-3 px-1">
-              <span className="text-xs font-bold uppercase tracking-wider text-[var(--header-text-muted)] flex items-center gap-1.5">
+              <span className="text-xs font-bold uppercase tracking-wider text-[var(--text-muted)] flex items-center gap-1.5">
                 <RotateCcw className="w-3.5 h-3.5 text-[var(--color-primary)]" />
                 <span>Recent Searches</span>
               </span>
@@ -351,7 +353,7 @@ export default function Header({ isSticky = false }: HeaderProps = {}) {
                     setSuggestionsOpen(false);
                   }}
                   aria-label="Close search suggestions"
-                  className="px-2.5 py-1 rounded-full text-xs font-semibold text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--header-hover-bg)] flex items-center gap-1 cursor-pointer transition"
+                  className="px-2.5 py-1 rounded-full text-xs font-semibold text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--bg-hover)] flex items-center gap-1 cursor-pointer transition"
                 >
                   <span>Close</span>
                   <X className="w-3.5 h-3.5" />
@@ -369,7 +371,7 @@ export default function Header({ isSticky = false }: HeaderProps = {}) {
                   <div
                     key={item.id}
                     onClick={() => handleSearchSubmit(item.label)}
-                    className="group flex items-center justify-between p-1.5 pr-2 rounded-xl bg-[var(--bg-wash)] hover:bg-[var(--header-hover-bg)] border border-transparent hover:border-[var(--header-dropdown-border)] transition cursor-pointer"
+                    className="group flex items-center justify-between p-1.5 pr-2 rounded-xl bg-[var(--bg-wash)] hover:bg-[var(--bg-hover)] border border-transparent hover:border-[var(--border-subtle)] transition cursor-pointer"
                   >
                     <div className="flex items-center gap-2.5 min-w-0">
                       <div className="w-9 h-9 rounded-lg overflow-hidden shrink-0 border border-black/5 bg-stone-200 dark:bg-stone-800">
@@ -399,7 +401,7 @@ export default function Header({ isSticky = false }: HeaderProps = {}) {
                       }}
                       title="Remove"
                       aria-label={`Remove ${item.label}`}
-                      className="p-1 rounded-full text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--header-hover-bg)] opacity-70 group-hover:opacity-100 transition cursor-pointer"
+                      className="p-1 rounded-full text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--bg-hover)] opacity-70 group-hover:opacity-100 transition cursor-pointer"
                     >
                       <X className="w-3.5 h-3.5" />
                     </button>
@@ -417,12 +419,12 @@ export default function Header({ isSticky = false }: HeaderProps = {}) {
       <div
         data-testid="search-autocomplete-dropdown"
         onClick={(e) => e.stopPropagation()}
-        className="absolute left-0 right-0 top-full mt-2 bg-[var(--header-dropdown-bg)] text-[var(--header-text)] rounded-2xl shadow-2xl border border-[var(--header-dropdown-border)] overflow-hidden z-50 animate-fade-in max-h-[78vh] overflow-y-auto overscroll-contain"
+        className="absolute left-0 right-0 top-full mt-2 bg-[var(--bg-card)] text-[var(--text-main)] rounded-2xl shadow-2xl border border-[var(--border-subtle)] overflow-hidden z-50 animate-fade-in max-h-[78vh] overflow-y-auto overscroll-contain"
       >
         {/* Keyword Search Suggestions */}
-        <div className="px-3 sm:px-6 py-2.5 border-b border-[var(--header-border)]">
-          <div className="px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-[var(--header-text-muted)] flex items-center justify-between">
-            <span>Search Pinterest Book Feed</span>
+        <div className="px-3 sm:px-6 py-2.5 border-b border-[var(--border-subtle)]">
+          <div className="px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-[var(--text-muted)] flex items-center justify-between">
+            <span>Search Shastraloka Book Catalog</span>
             <button
               type="button"
               onClick={(e) => {
@@ -431,7 +433,7 @@ export default function Header({ isSticky = false }: HeaderProps = {}) {
                 setSuggestionsOpen(false);
               }}
               aria-label="Close search suggestions"
-              className="px-2 py-0.5 rounded-full text-xs font-semibold text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--header-hover-bg)] flex items-center gap-1 cursor-pointer transition"
+              className="px-2 py-0.5 rounded-full text-xs font-semibold text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--bg-hover)] flex items-center gap-1 cursor-pointer transition"
             >
               <span>Close</span>
               <X className="w-3.5 h-3.5" />
@@ -442,13 +444,13 @@ export default function Header({ isSticky = false }: HeaderProps = {}) {
               key={qText}
               type="button"
               onClick={() => handleSearchSubmit(qText)}
-              className="w-full text-left px-3 py-2 rounded-xl text-xs sm:text-sm text-[var(--header-text)] hover:bg-[var(--header-hover-bg)] flex items-center justify-between gap-2 transition cursor-pointer"
+              className="w-full text-left px-3 py-2 rounded-xl text-xs sm:text-sm text-[var(--text-main)] hover:bg-[var(--bg-hover)] flex items-center justify-between gap-2 transition cursor-pointer"
             >
               <div className="flex items-center gap-2.5 min-w-0">
-                <Search className="w-3.5 h-3.5 text-[#F1641E] shrink-0" />
+                <Search className="w-3.5 h-3.5 text-[var(--color-primary)] shrink-0" />
                 <span className="truncate font-medium">{qText}</span>
               </div>
-              <span className="text-[11px] text-[var(--header-text-muted)] shrink-0">
+              <span className="text-[11px] text-[var(--text-muted)] shrink-0">
                 Search all &rarr;
               </span>
             </button>
@@ -457,8 +459,8 @@ export default function Header({ isSticky = false }: HeaderProps = {}) {
 
         {/* Category Matches */}
         {autocompleteData.categoryMatches.length > 0 && (
-          <div className="px-3 sm:px-6 py-2.5 border-b border-[var(--header-border)] bg-[var(--bg-wash)]/40">
-            <div className="px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-[var(--header-text-muted)]">
+          <div className="px-3 sm:px-6 py-2.5 border-b border-[var(--border-subtle)] bg-[var(--bg-wash)]/40">
+            <div className="px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-[var(--text-muted)]">
               Categories
             </div>
             <div className="flex flex-wrap gap-1.5 p-1.5">
@@ -467,7 +469,7 @@ export default function Header({ isSticky = false }: HeaderProps = {}) {
                   key={cat}
                   type="button"
                   onClick={() => handleCategoryClick(cat)}
-                  className="px-2.5 py-1 rounded-full text-xs bg-[var(--bg-card)] border border-[var(--border-subtle)] hover:border-[#F1641E] text-[var(--text-main)] hover:text-[#F1641E] transition cursor-pointer"
+                  className="px-2.5 py-1 rounded-full text-xs bg-[var(--bg-card)] border border-[var(--border-subtle)] hover:border-[var(--color-primary)] text-[var(--text-main)] hover:text-[var(--color-primary)] transition cursor-pointer"
                 >
                   {cat}
                 </button>
@@ -478,13 +480,13 @@ export default function Header({ isSticky = false }: HeaderProps = {}) {
 
         {/* Direct Book Matches */}
         <div className="px-3 sm:px-6 py-2.5">
-          <div className="px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-[var(--header-text-muted)] flex items-center justify-between">
+          <div className="px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-[var(--text-muted)] flex items-center justify-between">
             <span>Books & Manuscripts ({autocompleteData.bookMatches.length})</span>
             {autocompleteData.bookMatches.length > 0 && (
               <button
                 type="button"
                 onClick={() => handleSearchSubmit(localSearch)}
-                className="text-[#F1641E] hover:underline normal-case text-[11px] font-semibold"
+                className="text-[var(--color-primary)] hover:underline normal-case text-[11px] font-semibold"
               >
                 View all results
               </button>
@@ -492,7 +494,7 @@ export default function Header({ isSticky = false }: HeaderProps = {}) {
           </div>
 
           {autocompleteData.bookMatches.length === 0 ? (
-            <div className="p-4 text-center text-xs text-[var(--header-text-muted)]">
+            <div className="p-4 text-center text-xs text-[var(--text-muted)]">
               No direct book matches found for &quot;{localSearch}&quot;. Press Enter to explore broad keyword results.
             </div>
           ) : (
@@ -501,7 +503,7 @@ export default function Header({ isSticky = false }: HeaderProps = {}) {
                 <div
                   key={book.id}
                   onClick={() => handleBookSuggestionClick(book.id, book.title)}
-                  className="group flex items-center justify-between p-2 rounded-xl hover:bg-[var(--header-hover-bg)] transition cursor-pointer"
+                  className="group flex items-center justify-between p-2 rounded-xl hover:bg-[var(--bg-hover)] transition cursor-pointer"
                 >
                   <div className="flex items-center gap-3 min-w-0 pr-2">
                     <img
@@ -510,26 +512,26 @@ export default function Header({ isSticky = false }: HeaderProps = {}) {
                       className="w-9 h-12 object-cover rounded-md shadow-xs shrink-0 group-hover:scale-105 transition-transform"
                     />
                     <div className="min-w-0">
-                      <p className="text-xs sm:text-sm font-bold text-[var(--header-text)] truncate group-hover:text-[#F1641E] transition-colors">
+                      <p className="text-xs sm:text-sm font-bold text-[var(--text-main)] truncate group-hover:text-[var(--color-primary)] transition-colors">
                         {book.title}
                       </p>
-                      <p className="text-[11px] text-[var(--header-text-muted)] truncate">
+                      <p className="text-[11px] text-[var(--text-muted)] truncate">
                         {book.category} • {book.author}
                       </p>
-                      <div className="flex items-center gap-2 mt-0.5 text-[10px] text-[var(--header-text-muted)]">
+                      <div className="flex items-center gap-2 mt-0.5 text-[10px] text-[var(--text-muted)]">
                         <span className="inline-flex items-center text-amber-500 font-semibold">
                           <Star className="w-2.5 h-2.5 fill-current mr-0.5" />
                           {book.rating}
                         </span>
                         <span>•</span>
-                        <span className="font-medium text-[var(--header-text)]">
+                        <span className="font-medium text-[var(--text-main)]">
                           Rs. {book.price.toLocaleString()}
                         </span>
                       </div>
                     </div>
                   </div>
 
-                  <ArrowUpRight className="w-4 h-4 text-[var(--header-text-muted)] group-hover:text-[#F1641E] shrink-0 opacity-0 group-hover:opacity-100 transition-all" />
+                  <ArrowUpRight className="w-4 h-4 text-[var(--text-muted)] group-hover:text-[var(--color-primary)] shrink-0 opacity-0 group-hover:opacity-100 transition-all" />
                 </div>
               ))}
             </div>
@@ -572,14 +574,16 @@ export default function Header({ isSticky = false }: HeaderProps = {}) {
         onClick={(e) => e.stopPropagation()}
         className={
           isMobile
-            ? 'absolute left-0 right-0 top-full mt-2.5 w-full bg-[var(--bg-card)] text-[var(--text-main)] rounded-2xl shadow-[0_14px_44px_rgba(0,0,0,0.22)] border border-[var(--border-subtle)] z-50 animate-fade-in select-none'
+            ? 'absolute left-0 right-0 md:left-auto md:right-0 top-full mt-2.5 md:mt-3 w-full md:w-[368px] bg-[var(--bg-card)] text-[var(--text-main)] rounded-2xl shadow-[0_14px_44px_rgba(0,0,0,0.22)] border border-[var(--border-subtle)] z-50 animate-fade-in select-none'
             : 'absolute right-0 top-full mt-3 w-[368px] bg-[var(--bg-card)] text-[var(--text-main)] rounded-2xl shadow-[0_14px_44px_rgba(0,0,0,0.22)] border border-[var(--border-subtle)] z-50 animate-fade-in select-none'
         }
       >
-        {/* Top Upward Diamond Caret Pointer (Desktop) */}
-        {!isMobile && (
-          <div className="absolute -top-2 right-6 w-4 h-4 rotate-45 bg-[var(--bg-card)] border-l border-t border-[var(--border-subtle)] pointer-events-none" />
-        )}
+        {/* Top Upward Diamond Caret Pointer (Desktop & Tablet) */}
+        <div
+          className={`${
+            isMobile ? 'hidden md:block' : 'block'
+          } absolute -top-2 right-6 w-4 h-4 rotate-45 bg-[var(--bg-card)] border-l border-t border-[var(--border-subtle)] pointer-events-none`}
+        />
 
         {/* Centered "Deals" Title */}
         <div className="py-3.5 px-4 text-center bg-[var(--bg-card)] rounded-t-2xl flex items-center justify-between">
@@ -604,7 +608,7 @@ export default function Header({ isSticky = false }: HeaderProps = {}) {
           <div className="max-h-[360px] sm:max-h-[410px] overflow-y-auto overscroll-contain pt-5 pb-4 px-4 space-y-4">
             {/* Deal 1: 45% off with code ABCOUPON45 (Matches Screenshot 1) */}
             <div className="flex items-start gap-3">
-              <div className="w-7 h-7 rounded-full bg-[#dcfce7] text-[#15803d] flex items-center justify-center shrink-0 mt-0.5">
+              <div className="w-7 h-7 rounded-full bg-[var(--color-success-bg)] text-[var(--color-success)] flex items-center justify-center shrink-0 mt-0.5">
                 <Tag className="w-3.5 h-3.5 fill-current" />
               </div>
 
@@ -675,7 +679,7 @@ export default function Header({ isSticky = false }: HeaderProps = {}) {
                     referrerPolicy="no-referrer"
                     className="w-full h-full object-cover grayscale opacity-75"
                   />
-                  <span className="absolute inset-x-0 bottom-0 bg-[#e60023] text-white text-[9px] font-extrabold text-center py-0.5 uppercase">
+                  <span className="absolute inset-x-0 bottom-0 bg-[var(--color-danger)] text-white text-[9px] font-extrabold text-center py-0.5 uppercase">
                     Out of stock
                   </span>
                 </div>
@@ -738,7 +742,7 @@ export default function Header({ isSticky = false }: HeaderProps = {}) {
 
             {/* Deal 4: 30% off with code SHASTRA30 */}
             <div className="pt-4 border-t border-[var(--border-subtle)] flex items-start gap-3">
-              <div className="w-7 h-7 rounded-full bg-[#dcfce7] text-[#15803d] flex items-center justify-center shrink-0 mt-0.5">
+              <div className="w-7 h-7 rounded-full bg-[var(--color-success-bg)] text-[var(--color-success)] flex items-center justify-center shrink-0 mt-0.5">
                 <Tag className="w-3.5 h-3.5 fill-current" />
               </div>
 
@@ -798,7 +802,7 @@ export default function Header({ isSticky = false }: HeaderProps = {}) {
                     referrerPolicy="no-referrer"
                     className="w-full h-full object-cover grayscale opacity-75"
                   />
-                  <span className="absolute inset-x-0 bottom-0 bg-[#e60023] text-white text-[9px] font-extrabold text-center py-0.5 uppercase">
+                  <span className="absolute inset-x-0 bottom-0 bg-[var(--color-danger)] text-white text-[9px] font-extrabold text-center py-0.5 uppercase">
                     Out of stock
                   </span>
                 </div>
@@ -821,7 +825,7 @@ export default function Header({ isSticky = false }: HeaderProps = {}) {
 
             {/* Deal 6: 25% off with code PALMLEAF500 */}
             <div className="pt-4 border-t border-[var(--border-subtle)] flex items-start gap-3">
-              <div className="w-7 h-7 rounded-full bg-[#dcfce7] text-[#15803d] flex items-center justify-center shrink-0 mt-0.5">
+              <div className="w-7 h-7 rounded-full bg-[var(--color-success-bg)] text-[var(--color-success)] flex items-center justify-center shrink-0 mt-0.5">
                 <Tag className="w-3.5 h-3.5 fill-current" />
               </div>
 
@@ -878,23 +882,25 @@ export default function Header({ isSticky = false }: HeaderProps = {}) {
         onClick={(e) => e.stopPropagation()}
         className={
           isMobile
-            ? 'absolute left-0 right-0 top-full mt-2.5 w-full bg-[var(--bg-card)] text-[var(--text-main)] rounded-2xl shadow-[0_14px_44px_rgba(0,0,0,0.22)] border border-[var(--border-subtle)] z-50 animate-fade-in select-none'
+            ? 'absolute left-0 right-0 md:left-auto md:right-0 top-full mt-2.5 md:mt-3 w-full md:w-[315px] bg-[var(--bg-card)] text-[var(--text-main)] rounded-2xl shadow-[0_14px_44px_rgba(0,0,0,0.22)] border border-[var(--border-subtle)] z-50 animate-fade-in select-none'
             : 'absolute right-0 top-full mt-3 w-[315px] bg-[var(--bg-card)] text-[var(--text-main)] rounded-2xl shadow-[0_14px_44px_rgba(0,0,0,0.22)] border border-[var(--border-subtle)] z-50 animate-fade-in select-none'
         }
       >
-        {/* Top Upward Caret Pointer (Desktop) */}
-        {!isMobile && (
-          <div className="absolute -top-2 right-5 w-4 h-4 rotate-45 bg-[var(--bg-card)] border-l border-t border-[var(--border-subtle)] pointer-events-none" />
-        )}
+        {/* Top Upward Caret Pointer (Desktop & Tablet) */}
+        <div
+          className={`${
+            isMobile ? 'hidden md:block' : 'block'
+          } absolute -top-2 right-5 w-4 h-4 rotate-45 bg-[var(--bg-card)] border-l border-t border-[var(--border-subtle)] pointer-events-none`}
+        />
 
         <div className="pt-2 pb-1.5 overflow-hidden rounded-2xl max-h-[82vh] overflow-y-auto overscroll-contain">
           {/* Profile Header Row with Blue Top/Bottom Accent Border */}
           <Link
             href="/profile"
             onClick={() => setProfileMenuOpen(false)}
-            className="flex items-center gap-3 px-4 py-3 border-y-2 border-[#3b82f6] bg-[var(--bg-card)] hover:bg-[var(--bg-hover)] transition"
+            className="flex items-center gap-3 px-4 py-3 border-y-2 border-[var(--color-primary)] bg-[var(--bg-card)] hover:bg-[var(--bg-hover)] transition"
           >
-            <span className="w-8 h-8 rounded-full bg-[#606c38] text-white text-xs font-bold flex items-center justify-center shrink-0">
+            <span className="w-8 h-8 rounded-full bg-[var(--color-primary)] text-white text-xs font-bold flex items-center justify-center shrink-0">
               {userInitial}
             </span>
             <div className="min-w-0">
@@ -1087,7 +1093,7 @@ export default function Header({ isSticky = false }: HeaderProps = {}) {
               className="group flex flex-col shrink-0 pr-1 select-none"
             >
               <span
-                className="text-[var(--color-primary)] text-[34px] leading-none font-bold tracking-tight transition-transform group-hover:scale-102 font-heading"
+                className="text-[var(--header-logo-color,var(--color-primary))] text-[34px] leading-none font-bold tracking-tight transition-transform group-hover:scale-102 font-heading"
               >
                 Shastraloka
               </span>
@@ -1109,11 +1115,13 @@ export default function Header({ isSticky = false }: HeaderProps = {}) {
                 <span>Categories</span>
               </button>
 
-              {/* Categories 2-Column Visual Mega-Menu (Matching Etsy Reference) */}
-              <CategoriesMegaMenu
-                isOpen={categoriesOpen}
-                onClose={() => setCategoriesOpen(false)}
-              />
+              {/* Categories 2-Column Visual Mega-Menu (Lazy-loaded on demand) */}
+              {categoriesOpen && (
+                <CategoriesMegaMenu
+                  isOpen={categoriesOpen}
+                  onClose={() => setCategoriesOpen(false)}
+                />
+              )}
             </div>
 
             {/* Search Input Bar with Orange Pill Button */}
@@ -1169,7 +1177,7 @@ export default function Header({ isSticky = false }: HeaderProps = {}) {
                       aria-expanded={notificationsOpen}
                       className={`h-10 px-3 rounded-full flex items-center gap-1 transition cursor-pointer ${
                         notificationsOpen
-                          ? 'bg-[var(--color-primary-subtle)] text-[var(--color-primary)] ring-2 ring-[var(--color-primary-border)]'
+                          ? 'bg-[var(--color-primary-subtle)] text-[var(--header-accent,var(--color-primary))] ring-2 ring-[var(--color-primary-border)]'
                           : 'hover:bg-[var(--header-hover-bg)] text-[var(--header-text)]'
                       }`}
                     >
@@ -1206,11 +1214,11 @@ export default function Header({ isSticky = false }: HeaderProps = {}) {
                       aria-expanded={profileMenuOpen}
                       className={`h-10 px-2.5 rounded-full flex items-center gap-1.5 transition cursor-pointer ${
                         profileMenuOpen
-                          ? 'bg-[var(--color-primary-subtle)] text-[var(--color-primary)] ring-2 ring-[var(--color-primary-border)]'
+                          ? 'bg-[var(--color-primary-subtle)] text-[var(--header-accent,var(--color-primary))] ring-2 ring-[var(--color-primary-border)]'
                           : 'hover:bg-[var(--header-hover-bg)] text-[var(--header-text)]'
                       }`}
                     >
-                      <span className="w-7 h-7 rounded-full bg-[#606c38] text-white text-xs font-bold flex items-center justify-center shrink-0">
+                      <span className="w-7 h-7 rounded-full bg-[var(--color-primary)] text-white text-xs font-bold flex items-center justify-center shrink-0">
                         {(user?.name || 'S').charAt(0).toUpperCase()}
                       </span>
                       <ChevronDown className="w-3.5 h-3.5" />
@@ -1228,14 +1236,14 @@ export default function Header({ isSticky = false }: HeaderProps = {}) {
                   className="h-10 px-4 rounded-full flex items-center gap-2 bg-[var(--bag-btn-bg)] hover:bg-[var(--bag-btn-hover-bg)] border-2 border-[var(--bag-btn-border)] hover:border-[var(--bag-btn-hover-border)] transition-all cursor-pointer shadow-xs active:scale-95 group ml-1"
                 >
                   <div className="relative flex items-center justify-center">
-                    <Handbag className="w-4.5 h-4.5 transition-transform group-hover:scale-110 text-[var(--bag-btn-text)] group-hover:text-[var(--color-primary)]" />
+                    <Handbag className="w-4.5 h-4.5 transition-transform group-hover:scale-110 text-[var(--bag-btn-text)] group-hover:text-[var(--bag-btn-hover-text,var(--color-primary))]" />
                     {bagCount > 0 && (
-                      <span className="absolute -top-1.5 -right-2 min-w-4 h-4 px-1 rounded-full bg-[var(--header-badge-bag-bg)] text-[var(--header-badge-text)] text-[10px] font-bold flex items-center justify-center shadow-xs leading-none">
+                      <span className="absolute -top-1.5 -right-2 min-w-4 h-4 px-1 rounded-full bg-[var(--header-badge-bag-bg)] text-[var(--header-badge-bag-text,var(--header-badge-text))] text-[10px] font-bold flex items-center justify-center shadow-xs leading-none">
                         {bagCount}
                       </span>
                     )}
                   </div>
-                  <span className="font-bold text-sm tracking-tight transition-colors text-[var(--bag-btn-text)] group-hover:text-[var(--color-primary)]">
+                  <span className="font-bold text-sm tracking-tight transition-colors text-[var(--bag-btn-text)] group-hover:text-[var(--bag-btn-hover-text,var(--color-primary))]">
                     Bag
                   </span>
                 </Link>
@@ -1254,7 +1262,7 @@ export default function Header({ isSticky = false }: HeaderProps = {}) {
                 className="flex items-center gap-1.5 px-3 py-1 rounded-full hover:bg-[var(--header-hover-bg)] text-[var(--header-text)] transition cursor-pointer whitespace-nowrap shrink-0"
               >
                 {item.hasIcon && (
-                  <Gift className="w-3.5 h-3.5 text-[var(--color-primary)]" />
+                  <Gift className="w-3.5 h-3.5 text-[var(--header-accent,var(--color-primary))]" />
                 )}
                 <span>{item.label}</span>
               </Link>
@@ -1273,7 +1281,7 @@ export default function Header({ isSticky = false }: HeaderProps = {}) {
                   setSearchQuery('');
                   setLocalSearch('');
                 }}
-                className="text-[var(--color-primary)] text-[22px] sm:text-[24px] leading-none font-bold tracking-tight select-none font-heading shrink-0"
+                className="text-[var(--header-logo-color,var(--color-primary))] text-[22px] sm:text-[24px] leading-none font-bold tracking-tight select-none font-heading shrink-0"
               >
                 Shastraloka
               </Link>
@@ -1281,7 +1289,7 @@ export default function Header({ isSticky = false }: HeaderProps = {}) {
               <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
                 {/* Mobile/Tablet Notifications Bell Dropdown (Signed-In Users Only) */}
                 {isLoggedIn && (
-                  <div ref={mobileNotificationsRef}>
+                  <div ref={mobileNotificationsRef} className="md:relative">
                     <button
                       type="button"
                       onClick={() => {
@@ -1293,7 +1301,7 @@ export default function Header({ isSticky = false }: HeaderProps = {}) {
                       aria-expanded={notificationsOpen}
                       className={`h-9 px-2.5 rounded-full flex items-center gap-1 transition cursor-pointer ${
                         notificationsOpen
-                          ? 'bg-[var(--color-primary-subtle)] text-[var(--color-primary)] ring-2 ring-[var(--color-primary-border)]'
+                          ? 'bg-[var(--color-primary-subtle)] text-[var(--header-accent,var(--color-primary))] ring-2 ring-[var(--color-primary-border)]'
                           : 'hover:bg-[var(--header-hover-bg)] text-[var(--header-text)]'
                       }`}
                     >
@@ -1318,8 +1326,8 @@ export default function Header({ isSticky = false }: HeaderProps = {}) {
                     Sign in
                   </button>
                 ) : (
-                  /* If user IS signed in: show Profile Avatar Pill + Centered Full-Width Dropdown Box */
-                  <div ref={mobileProfileRef}>
+                  /* If user IS signed in: show Profile Avatar Pill + Desktop-style Popover on Tablet / Full-Width Dropdown on Mobile */
+                  <div ref={mobileProfileRef} className="md:relative">
                     <button
                       type="button"
                       onClick={() => {
@@ -1331,11 +1339,11 @@ export default function Header({ isSticky = false }: HeaderProps = {}) {
                       aria-expanded={profileMenuOpen}
                       className={`h-9 px-2 rounded-full flex items-center gap-1 transition cursor-pointer ${
                         profileMenuOpen
-                          ? 'bg-[var(--color-primary-subtle)] text-[var(--color-primary)] ring-2 ring-[var(--color-primary-border)]'
+                          ? 'bg-[var(--color-primary-subtle)] text-[var(--header-accent,var(--color-primary))] ring-2 ring-[var(--color-primary-border)]'
                           : 'bg-[var(--bag-btn-bg)] border-2 border-[var(--bag-btn-border)] text-[var(--bag-btn-text)]'
                       }`}
                     >
-                      <span className="w-6 h-6 rounded-full bg-[#606c38] text-white text-[11px] font-bold flex items-center justify-center shrink-0">
+                      <span className="w-6 h-6 rounded-full bg-[var(--color-primary)] text-white text-[11px] font-bold flex items-center justify-center shrink-0">
                         {(user?.name || 'S').charAt(0).toUpperCase()}
                       </span>
                       <ChevronDown className="w-3 h-3" />
@@ -1358,7 +1366,7 @@ export default function Header({ isSticky = false }: HeaderProps = {}) {
                   <div className="relative flex items-center justify-center">
                     <Handbag className="w-4 h-4" />
                     {bagCount > 0 && (
-                      <span className="absolute -top-1.5 -right-2 min-w-3.5 h-3.5 px-0.5 rounded-full bg-[var(--header-badge-bag-bg)] text-[var(--header-badge-text)] text-[9px] font-bold flex items-center justify-center leading-none">
+                      <span className="absolute -top-1.5 -right-2 min-w-3.5 h-3.5 px-0.5 rounded-full bg-[var(--header-badge-bag-bg)] text-[var(--header-badge-bag-text,var(--header-badge-text))] text-[9px] font-bold flex items-center justify-center leading-none">
                         {bagCount}
                       </span>
                     )}
@@ -1386,17 +1394,19 @@ export default function Header({ isSticky = false }: HeaderProps = {}) {
                     className="h-9 px-2.5 sm:px-3 rounded-full flex items-center gap-1.5 bg-[var(--header-hover-bg)] text-[var(--header-text)] border border-[var(--border-subtle)] text-xs font-semibold shrink-0 cursor-pointer transition active:scale-95"
                     title="Browse Categories"
                   >
-                    <Menu className="w-4 h-4 text-[var(--color-primary)]" />
+                    <Menu className="w-4 h-4 text-[var(--header-accent,var(--color-primary))]" />
                     <span className="text-xs font-medium">Categories</span>
                   </button>
 
-                  {/* Tablet Categories 2-Column Visual Mega-Menu (md to lg) */}
-                  <div className="hidden md:block">
-                    <CategoriesMegaMenu
-                      isOpen={categoriesOpen}
-                      onClose={() => setCategoriesOpen(false)}
-                    />
-                  </div>
+                  {/* Tablet Categories 2-Column Visual Mega-Menu (md to lg, lazy-loaded on demand) */}
+                  {categoriesOpen && (
+                    <div className="hidden md:block">
+                      <CategoriesMegaMenu
+                        isOpen={categoriesOpen}
+                        onClose={() => setCategoriesOpen(false)}
+                      />
+                    </div>
+                  )}
                 </div>
 
                 <div className="flex-1 min-w-0">
@@ -1633,7 +1643,12 @@ export default function Header({ isSticky = false }: HeaderProps = {}) {
           </div>
         </div>
       )}
-      <VisualSearchModal isOpen={isVisualSearchOpen} onClose={() => setIsVisualSearchOpen(false)} />
+      {isVisualSearchOpen && (
+        <VisualSearchModal
+          isOpen={isVisualSearchOpen}
+          onClose={() => setIsVisualSearchOpen(false)}
+        />
+      )}
     </>
   );
 }

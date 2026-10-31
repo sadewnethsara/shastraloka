@@ -5,7 +5,7 @@ import Link from 'next/link';
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
 import Toast from '../../components/Toast';
-import CleanBookCard from '../../components/CleanBookCard';
+import ProgressiveBookGrid from '../../components/ProgressiveBookGrid';
 import { BOOKS } from '../../data/books';
 
 type FilterTab = 'all' | 'sinhala' | 'hardcover' | 'chronicles';
@@ -117,13 +117,12 @@ export default function NewReleasesPage() {
           })}
         </div>
 
-        {/* Clean Uniform Bookstore Grid */}
+        {/* Progressive Scroll-Loaded Uniform Bookstore Grid */}
         <section>
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-x-4 sm:gap-x-6 gap-y-7 sm:gap-y-9">
-            {newReleaseBooks.map((book) => (
-              <CleanBookCard key={book.id} book={book} badgeText="New" />
-            ))}
-          </div>
+          <ProgressiveBookGrid
+            books={newReleaseBooks}
+            getBadgeText={() => 'New'}
+          />
         </section>
       </main>
 

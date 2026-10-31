@@ -48,8 +48,8 @@ export default function BookCard({ book }: BookCardProps) {
               }}
               className={`w-8 h-8 rounded-full flex items-center justify-center shadow-md transition-all duration-150 cursor-pointer ${
                 saved
-                  ? 'bg-[#e60023] text-white'
-                  : 'bg-white/95 text-neutral-700 hover:text-[#e60023] hover:bg-white'
+                  ? 'bg-[var(--color-primary)] text-white'
+                  : 'bg-[var(--bg-card)]/95 text-[var(--text-main)] hover:text-[var(--color-primary)] hover:bg-[var(--bg-card)]'
               }`}
               aria-label="Save book"
             >
@@ -60,7 +60,7 @@ export default function BookCard({ book }: BookCardProps) {
 
         {/* Top-Left Out of Stock or Bestseller Tag */}
         {isOutOfStock ? (
-          <div className="absolute top-2.5 left-2.5 z-20 px-2.5 py-0.5 rounded text-[10px] font-extrabold uppercase tracking-wide bg-[#e60023] text-white shadow-xs">
+          <div className="absolute top-2.5 left-2.5 z-20 px-2.5 py-0.5 rounded text-[10px] font-extrabold uppercase tracking-wide bg-[var(--color-danger)] text-white shadow-xs">
             Out of Stock
           </div>
         ) : book.featured ? (
@@ -73,102 +73,100 @@ export default function BookCard({ book }: BookCardProps) {
         <div className="absolute bottom-2 left-2 z-20 inline-flex items-center gap-1 px-2 py-0.5 rounded-lg bg-black/80 backdrop-blur-xs text-white border border-white/15 shadow-xs pointer-events-none">
           <span className="text-[11px] font-bold">LKR {book.price.toLocaleString()}</span>
           {discountPercent > 0 && (
-            <span className="px-1 py-0.2 rounded bg-[#e60023] text-white text-[9px] font-extrabold">
+            <span className="px-1 py-0.2 rounded bg-[var(--color-accent-badge)] text-[var(--color-accent-badge-text)] text-[9px] font-extrabold">
               -{discountPercent}%
             </span>
           )}
         </div>
 
-        {/* Hover Action Overlay */}
-        <div
-          className={`absolute inset-0 bg-black/35 backdrop-blur-[1px] rounded-lg p-3 flex flex-col justify-between transition-opacity duration-200 pointer-events-none ${
-            isHovered ? 'opacity-100 pointer-events-auto' : 'opacity-0'
-          }`}
-        >
-          {/* Top Bar: Board Picker & Save CTA Pill */}
-          <div className="flex items-center justify-between gap-2 z-20 pr-10">
-            <div className="relative">
+        {/* Hover Action Overlay — lazily mounted on hover to reduce DOM overhead on low-end devices */}
+        {(isHovered || isBoardDropdownOpen) && (
+          <div className="absolute inset-0 bg-black/35 backdrop-blur-[1px] rounded-lg p-3 flex flex-col justify-between transition-opacity duration-200 opacity-100 pointer-events-auto">
+            {/* Top Bar: Board Picker & Save CTA Pill */}
+            <div className="flex items-center justify-between gap-2 z-20 pr-10">
+              <div className="relative">
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setIsBoardDropdownOpen(!isBoardDropdownOpen);
+                  }}
+                  className="h-7 px-2.5 rounded-full bg-black/70 hover:bg-black/90 text-white text-[11px] font-medium flex items-center gap-1 backdrop-blur-md cursor-pointer border border-white/20"
+                >
+                  <span className="truncate max-w-[85px]">{boards[0].name}</span>
+                  <IconChevronDown size={12} />
+                </button>
+
+                {isBoardDropdownOpen && (
+                  <div
+                    onClick={(e) => e.stopPropagation()}
+                    className="absolute top-9 left-0 bg-[var(--bg-surface)] text-[var(--text-main)] rounded-xl p-1.5 shadow-2xl border border-[var(--border-subtle)] min-w-[170px] z-30 animate-slide-up"
+                  >
+                    <p className="text-[10px] font-bold uppercase tracking-wider text-[var(--text-muted)] px-2 py-1">
+                      Save to Board:
+                    </p>
+                    {boards.map((board) => (
+                      <button
+                        key={board.id}
+                        onClick={() => {
+                          saveToBoard(book.id, board.id);
+                          setIsBoardDropdownOpen(false);
+                        }}
+                        className="w-full text-left px-2.5 py-1.5 rounded-lg text-xs font-medium hover:bg-[var(--bg-hover)] transition-colors flex items-center justify-between cursor-pointer"
+                      >
+                        <span className="truncate">{board.name}</span>
+                        {board.bookIds.includes(book.id) && (
+                          <span className="text-[var(--color-primary)]">
+                            <IconCheck size={13} />
+                          </span>
+                        )}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+
               <button
                 type="button"
                 onClick={(e) => {
                   e.stopPropagation();
-                  setIsBoardDropdownOpen(!isBoardDropdownOpen);
+                  saveToBoard(book.id);
                 }}
-                className="h-7 px-2.5 rounded-full bg-black/70 hover:bg-black/90 text-white text-[11px] font-medium flex items-center gap-1 backdrop-blur-md cursor-pointer border border-white/20"
+                className={`h-7 px-3 rounded-[var(--radius-btn,9999px)] text-xs font-bold flex items-center gap-1 cursor-pointer transition-transform ${
+                  saved
+                    ? 'bg-[var(--pill-active-bg)] text-[var(--pill-active-text)]'
+                    : 'bg-[var(--color-primary)] hover:bg-[var(--color-primary-hover)] text-white shadow-md'
+                }`}
               >
-                <span className="truncate max-w-[85px]">{boards[0].name}</span>
-                <IconChevronDown size={12} />
+                {saved ? (
+                  <>
+                    <IconCheck size={12} />
+                    <span>Saved</span>
+                  </>
+                ) : (
+                  <span>Save</span>
+                )}
               </button>
-
-              {isBoardDropdownOpen && (
-                <div
-                  onClick={(e) => e.stopPropagation()}
-                  className="absolute top-9 left-0 bg-[var(--bg-surface)] text-[var(--text-main)] rounded-xl p-1.5 shadow-2xl border border-[var(--border-subtle)] min-w-[170px] z-30 animate-slide-up"
-                >
-                  <p className="text-[10px] font-bold uppercase tracking-wider text-[var(--text-muted)] px-2 py-1">
-                    Save to Board:
-                  </p>
-                  {boards.map((board) => (
-                    <button
-                      key={board.id}
-                      onClick={() => {
-                        saveToBoard(book.id, board.id);
-                        setIsBoardDropdownOpen(false);
-                      }}
-                      className="w-full text-left px-2.5 py-1.5 rounded-lg text-xs font-medium hover:bg-[var(--bg-hover)] transition-colors flex items-center justify-between cursor-pointer"
-                    >
-                      <span className="truncate">{board.name}</span>
-                      {board.bookIds.includes(book.id) && (
-                        <span className="text-[#e60023]">
-                          <IconCheck size={13} />
-                        </span>
-                      )}
-                    </button>
-                  ))}
-                </div>
-              )}
             </div>
 
-            <button
-              type="button"
-              onClick={(e) => {
-                e.stopPropagation();
-                saveToBoard(book.id);
-              }}
-              className={`h-7 px-3 rounded-full text-xs font-bold flex items-center gap-1 cursor-pointer transition-transform ${
-                saved
-                  ? 'bg-neutral-900 text-white'
-                  : 'bg-[#e60023] hover:bg-[#ad081b] text-white shadow-md'
-              }`}
-            >
-              {saved ? (
-                <>
-                  <IconCheck size={12} />
-                  <span>Saved</span>
-                </>
-              ) : (
-                <span>Save</span>
-              )}
-            </button>
+            {/* Bottom Bar: Quick Inspect Button */}
+            <div className="flex items-center justify-end z-20">
+              <Tooltip text="Quick inspect manuscript" idealDirection="up">
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    openBookModal(book);
+                  }}
+                  className="h-8 px-3 rounded-[var(--radius-btn,9999px)] bg-[var(--bg-card)]/95 hover:bg-[var(--bg-card)] text-[var(--text-main)] text-xs font-semibold flex items-center gap-1.5 shadow-lg cursor-pointer"
+                >
+                  <IconZoomIn size={14} />
+                  <span>Inspect</span>
+                </button>
+              </Tooltip>
+            </div>
           </div>
-
-          {/* Bottom Bar: Quick Inspect Button */}
-          <div className="flex items-center justify-end z-20">
-            <Tooltip text="Quick inspect manuscript" idealDirection="up">
-              <button
-                type="button"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  openBookModal(book);
-                }}
-                className="h-8 px-3 rounded-full bg-white/95 hover:bg-white text-neutral-900 text-xs font-semibold flex items-center gap-1.5 shadow-lg cursor-pointer"
-              >
-                <IconZoomIn size={14} />
-                <span>Inspect</span>
-              </button>
-            </Tooltip>
-          </div>
-        </div>
+        )}
       </div>
 
       {/* Book Metadata Underneath */}
@@ -179,7 +177,7 @@ export default function BookCard({ book }: BookCardProps) {
 
         <h4
           onClick={() => openBookModal(book)}
-          className="font-heading font-bold text-sm sm:text-base text-[var(--text-main)] hover:text-[#e60023] transition-colors line-clamp-1 cursor-pointer leading-snug"
+          className="font-heading font-bold text-sm sm:text-base text-[var(--text-main)] hover:text-[var(--color-primary)] transition-colors line-clamp-1 cursor-pointer leading-snug"
         >
           {book.title}
         </h4>
@@ -197,7 +195,7 @@ export default function BookCard({ book }: BookCardProps) {
               {book.originalPrice.toLocaleString()}
             </span>
             {discountPercent > 0 && (
-              <span className="text-[10px] font-bold text-[#e60023] dark:text-rose-400">
+              <span className="text-[10px] font-bold text-[var(--color-primary)]">
                 ({discountPercent}% off)
               </span>
             )}

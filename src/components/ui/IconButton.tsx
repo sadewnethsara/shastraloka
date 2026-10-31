@@ -30,12 +30,12 @@ const variantStyles: Record<IconButtonVariant, string> = {
   default:
     'bg-transparent hover:bg-[var(--bg-hover)] text-[var(--text-main)]',
   primary: 'bg-[var(--pill-active-bg)] hover:opacity-90 text-[var(--pill-active-text)] shadow-xs',
-  red: 'bg-[#e60023] hover:bg-[#ad081b] text-white shadow-xs',
+  red: 'bg-[var(--color-primary)] hover:bg-[var(--color-primary-hover)] text-white shadow-xs',
   orange: 'bg-[var(--color-primary)] hover:bg-[var(--color-primary-hover)] text-white shadow-xs',
   white:
-    'bg-white/90 hover:bg-white text-neutral-800 shadow-md backdrop-blur-xs',
+    'bg-[var(--bg-card)]/90 hover:bg-[var(--bg-card)] text-[var(--text-main)] shadow-md backdrop-blur-xs',
   semiTransparent:
-    'bg-black/5 hover:bg-black/10 dark:bg-white/10 dark:hover:bg-white/20 text-[var(--text-main)]',
+    'bg-black/5 hover:bg-black/10 text-[var(--text-main)]',
   ghost:
     'bg-transparent hover:bg-[var(--bg-hover)] text-[var(--text-muted)]',
 };
@@ -77,7 +77,7 @@ export const IconButton = forwardRef<HTMLButtonElement, IconButtonProps>(
         className={`relative inline-flex items-center justify-center rounded-full transition-all duration-150 select-none cursor-pointer focus:outline-hidden focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[var(--color-primary)] active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed ${
           config.container
         } ${variantStyles[variant]} ${
-          selected ? 'ring-2 ring-[#e60023] ring-offset-1' : ''
+          selected ? 'ring-2 ring-[var(--color-primary)] ring-offset-1' : ''
         } ${className}`}
         {...props}
       >

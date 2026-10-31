@@ -68,9 +68,9 @@ export const SearchField = forwardRef<HTMLInputElement, SearchFieldProps>(
 
     const submitColorClasses = {
       orange:
-        'bg-[#F1641E] group-hover/search:bg-[#f38b53] hover:!bg-[#e05612] text-white',
+        'bg-[var(--header-search-btn-bg,var(--color-primary))] group-hover/search:bg-[var(--header-search-btn-hover,var(--color-primary-hover))] hover:!bg-[var(--header-search-btn-hover,var(--color-primary-hover))] text-[var(--header-search-btn-text,#ffffff)]',
       dark: 'bg-[var(--text-main)] hover:opacity-90 text-[var(--bg-main)]',
-      red: 'bg-[var(--color-accent-badge)] hover:opacity-90 text-white',
+      red: 'bg-[var(--color-accent-badge)] hover:opacity-90 text-[var(--color-accent-badge-text,#ffffff)]',
     }[submitButtonColor];
 
     const sizeClasses = {
@@ -119,8 +119,8 @@ export const SearchField = forwardRef<HTMLInputElement, SearchFieldProps>(
           aria-label={accessibilityLabel}
           autoFocus={autoFocus}
           className={`w-full h-full bg-[var(--bg-input)] text-[var(--text-main)] placeholder:text-[var(--text-dim)] border-2 rounded-full transition-all duration-200 outline-hidden ${isFocused
-              ? 'border-[var(--border-focus)] shadow-sm'
-              : 'border-[var(--border-strong)] group-hover/search:border-[var(--border-focus)] hover:border-[var(--border-focus)]'
+              ? 'border-[var(--header-search-border,var(--border-focus))] shadow-sm'
+              : 'border-[var(--border-strong)] group-hover/search:border-[var(--header-search-border,var(--border-focus))] hover:border-[var(--header-search-border,var(--border-focus))]'
             } ${sizeClasses.input}`}
         />
 
@@ -133,7 +133,7 @@ export const SearchField = forwardRef<HTMLInputElement, SearchFieldProps>(
               handleClear();
             }}
             aria-label="Clear search input"
-            className={`absolute flex items-center justify-center p-1 rounded-full text-[var(--text-dim)] hover:text-[var(--text-main)] hover:bg-[var(--header-hover-bg)] transition ${onImageSearchClick
+            className={`absolute flex items-center justify-center p-1 rounded-full text-[var(--text-dim)] hover:text-[var(--text-main)] hover:bg-[var(--bg-hover)] transition ${onImageSearchClick
                 ? (showSubmitButton ? 'right-19 sm:right-21' : 'right-10')
                 : (showSubmitButton ? 'right-12 sm:right-14' : 'right-3')
               }`}
@@ -151,7 +151,7 @@ export const SearchField = forwardRef<HTMLInputElement, SearchFieldProps>(
               onImageSearchClick();
             }}
             aria-label="Search sacred manuscripts by image"
-            className={`absolute flex items-center justify-center p-1.5 rounded-full text-[var(--text-dim)] hover:text-[var(--color-primary)] hover:bg-[var(--header-hover-bg)] transition-colors cursor-pointer group ${showSubmitButton ? 'right-12 sm:right-13.5' : 'right-2 sm:right-2.5'
+            className={`absolute flex items-center justify-center p-1.5 rounded-full text-[var(--text-dim)] hover:text-[var(--color-primary)] hover:bg-[var(--bg-hover)] transition-colors cursor-pointer group ${showSubmitButton ? 'right-12 sm:right-13.5' : 'right-2 sm:right-2.5'
               }`}
           >
             <Camera className="w-4 h-4 stroke-[2.2] group-hover:scale-110 transition-transform" />

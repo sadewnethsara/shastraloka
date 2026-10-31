@@ -55,18 +55,18 @@ export function Modal({
       <div
         role="dialog"
         aria-modal="true"
-        className={`relative w-full ${sizeClasses} bg-white dark:bg-[#1a1a20] rounded-2xl shadow-2xl overflow-hidden border border-neutral-200 dark:border-neutral-800 z-10 flex flex-col max-h-[90vh] animate-scaleUp`}
+        className={`relative w-full ${sizeClasses} bg-[var(--bg-card)] rounded-[var(--radius-modal)] shadow-2xl overflow-hidden border border-[var(--border-subtle)] z-10 flex flex-col max-h-[90vh] animate-scaleUp`}
       >
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-neutral-200 dark:border-neutral-800 shrink-0">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-[var(--border-subtle)] shrink-0">
           <div>
             {heading && (
-              <h2 className="text-lg font-bold text-neutral-900 dark:text-neutral-100">
+              <h2 className="text-lg font-bold text-[var(--text-main)]">
                 {heading}
               </h2>
             )}
             {subHeading && (
-              <p className="text-xs text-neutral-500 dark:text-neutral-400 mt-0.5">
+              <p className="text-xs text-[var(--text-muted)] mt-0.5">
                 {subHeading}
               </p>
             )}
@@ -75,7 +75,7 @@ export function Modal({
             type="button"
             onClick={onClose}
             aria-label="Close dialog"
-            className="p-2 rounded-full hover:bg-neutral-100 dark:hover:bg-neutral-800 text-neutral-500 hover:text-neutral-900 dark:hover:text-neutral-100 transition"
+            className="p-2 rounded-full hover:bg-[var(--bg-hover)] text-[var(--text-muted)] hover:text-[var(--text-main)] transition"
           >
             <svg
               className="w-5 h-5"
@@ -97,7 +97,7 @@ export function Modal({
 
         {/* Footer */}
         {footer && (
-          <div className="px-6 py-4 bg-neutral-50 dark:bg-neutral-900/60 border-t border-neutral-200 dark:border-neutral-800 shrink-0 flex items-center justify-end gap-3">
+          <div className="px-6 py-4 bg-[var(--bg-surface)] border-t border-[var(--border-subtle)] shrink-0 flex items-center justify-end gap-3">
             {footer}
           </div>
         )}

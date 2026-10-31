@@ -3,7 +3,7 @@
 import React, { use } from 'react';
 import Link from 'next/link';
 import { BOOKS_DATA, CATEGORIES } from '../../../data/books';
-import CleanBookCard from '../../../components/CleanBookCard';
+import ProgressiveBookGrid from '../../../components/ProgressiveBookGrid';
 import Header from '../../../components/Header';
 import Footer from '../../../components/Footer';
 import { ArrowLeft, BookOpen } from 'lucide-react';
@@ -39,7 +39,7 @@ export default function CategorySlugPage({ params }: { params: Promise<{ slug: s
           </Link>
           <div className="flex flex-wrap items-end justify-between gap-4">
             <div>
-              <span className="text-xs font-bold uppercase tracking-widest text-[#F1641E] block">
+              <span className="text-xs font-bold uppercase tracking-widest text-[var(--color-primary)] block">
                 Shastraloka Curated Subject
               </span>
               <h1 className="font-heading font-bold text-3xl sm:text-4xl font-normal text-[var(--text-main)] capitalize mt-1">
@@ -47,18 +47,14 @@ export default function CategorySlugPage({ params }: { params: Promise<{ slug: s
               </h1>
             </div>
             <span className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-[var(--bg-surface)] border border-[var(--border-subtle)] text-xs font-semibold text-[var(--text-main)]">
-              <BookOpen className="w-3.5 h-3.5 text-[#F1641E]" /> {displayBooks.length} Editions Available
+              <BookOpen className="w-3.5 h-3.5 text-[var(--color-primary)]" /> {displayBooks.length} Editions Available
             </span>
           </div>
         </div>
       </section>
 
       <section className="page-container pt-10">
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-x-5 gap-y-9">
-          {displayBooks.map((book) => (
-            <CleanBookCard key={book.id} book={book} />
-          ))}
-        </div>
+        <ProgressiveBookGrid books={displayBooks} />
       </section>
       </main>
       <Footer />

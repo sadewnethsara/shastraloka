@@ -74,14 +74,14 @@ export default function ConfirmDialog() {
           <button
             type="button"
             onClick={closeConfirmation}
-            className="px-4 py-2.5 rounded-full text-xs sm:text-sm font-bold text-[var(--text-main)] bg-[var(--bg-surface)] hover:bg-[var(--bg-hover)] border border-[var(--border-subtle)] transition cursor-pointer"
+            className="px-4 py-2.5 rounded-[var(--radius-btn,9999px)] text-xs sm:text-sm font-bold text-[var(--text-main)] bg-[var(--bg-surface)] hover:bg-[var(--bg-hover)] border border-[var(--border-subtle)] transition cursor-pointer"
           >
             {confirmDialog.cancelLabel || 'Cancel'}
           </button>
           <button
             type="button"
             onClick={handleConfirm}
-            className="px-5 py-2.5 rounded-full text-xs sm:text-sm font-bold text-white bg-[#e60023] hover:bg-[#ad081b] shadow-sm transition cursor-pointer"
+            className="px-5 py-2.5 rounded-[var(--radius-btn,9999px)] text-xs sm:text-sm font-bold text-white bg-[var(--color-danger)] hover:opacity-90 shadow-sm transition cursor-pointer"
           >
             {confirmDialog.confirmLabel || 'Yes, delete'}
           </button>

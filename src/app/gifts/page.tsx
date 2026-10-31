@@ -6,7 +6,9 @@ import { SlidersHorizontal, ArrowRight } from 'lucide-react';
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
 import Toast from '../../components/Toast';
-import CleanBookCard from '../../components/CleanBookCard';
+import ProgressiveBookGrid from '../../components/ProgressiveBookGrid';
+import OptimizedImage from '../../components/ui/OptimizedImage';
+import ViewportSection from '../../components/ui/ViewportSection';
 import { BOOKS } from '../../data/books';
 
 interface GiftBubble {
@@ -111,8 +113,6 @@ const GIFT_GUIDE_BUBBLES: GiftBubble[] = [
 
 export default function GiftsPage() {
   const [selectedFilter, setSelectedFilter] = useState<string>('all');
-  const [showAllPersonalize, setShowAllPersonalize] = useState(false);
-  const [showAllBestsellers, setShowAllBestsellers] = useState(false);
 
   const filteredBooks = useMemo(() => {
     if (selectedFilter === 'silkbound') {
@@ -136,13 +136,10 @@ export default function GiftsPage() {
     return BOOKS;
   }, [selectedFilter]);
 
-  const personalizeBooks = showAllPersonalize
-    ? filteredBooks
-    : filteredBooks.slice(0, 8);
-
-  const bestsellingGiftBooks = showAllBestsellers
-    ? [...BOOKS].sort((a, b) => b.reviewsCount - a.reviewsCount)
-    : [...BOOKS].sort((a, b) => b.reviewsCount - a.reviewsCount).slice(0, 8);
+  const bestsellingGiftBooks = useMemo(
+    () => [...BOOKS].sort((a, b) => b.reviewsCount - a.reviewsCount),
+    []
+  );
 
   return (
     <div className="min-h-screen bg-[var(--bg-main)] text-[var(--text-main)] flex flex-col">
@@ -163,7 +160,7 @@ export default function GiftsPage() {
 
           {/* Row 1 & 2: 6 cols on desktop, Row 3: 3 centered bubbles */}
           <div className="mt-8 grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-y-6 gap-x-4 justify-items-center">
-            {GIFT_GUIDE_BUBBLES.slice(0, 12).map((bubble) => {
+            {GIFT_GUIDE_BUBBLES.slice(0, 12).map((bubble, idx) => {
               const active = selectedFilter === bubble.filterKey;
               return (
                 <button
@@ -173,16 +170,17 @@ export default function GiftsPage() {
                   className="group flex flex-col items-center text-center cursor-pointer max-w-[140px]"
                 >
                   <div
-                    className={`w-20 h-20 sm:w-28 sm:h-28 rounded-full overflow-hidden bg-[var(--bg-wash)] border-2 transition-transform duration-300 group-hover:scale-105 shadow-xs mb-2.5 ${
+                    className={`relative w-20 h-20 sm:w-28 sm:h-28 rounded-full overflow-hidden bg-[var(--bg-wash)] border-2 transition-transform duration-300 group-hover:scale-105 shadow-xs mb-2.5 ${
                       active
                         ? 'border-[var(--color-primary)] ring-2 ring-[var(--color-primary)]/30'
                         : 'border-[var(--border-subtle)]'
                     }`}
                   >
-                    <img
+                    <OptimizedImage
                       src={bubble.image}
                       alt={bubble.label}
-                      referrerPolicy="no-referrer"
+                      priority={idx < 6}
+                      targetWidth={220}
                       className="w-full h-full object-cover"
                     />
                   </div>
@@ -203,11 +201,11 @@ export default function GiftsPage() {
                 onClick={() => setSelectedFilter(bubble.filterKey)}
                 className="group flex flex-col items-center text-center cursor-pointer max-w-[140px]"
               >
-                <div className="w-20 h-20 sm:w-28 sm:h-28 rounded-full overflow-hidden bg-[var(--bg-wash)] border-2 border-[var(--border-subtle)] transition-transform duration-300 group-hover:scale-105 shadow-xs mb-2.5">
-                  <img
+                <div className="relative w-20 h-20 sm:w-28 sm:h-28 rounded-full overflow-hidden bg-[var(--bg-wash)] border-2 border-[var(--border-subtle)] transition-transform duration-300 group-hover:scale-105 shadow-xs mb-2.5">
+                  <OptimizedImage
                     src={bubble.image}
                     alt={bubble.label}
-                    referrerPolicy="no-referrer"
+                    targetWidth={220}
                     className="w-full h-full object-cover"
                   />
                 </div>
@@ -259,106 +257,77 @@ export default function GiftsPage() {
             </div>
           </div>
 
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-x-5 gap-y-8">
-            {personalizeBooks.map((book) => (
-              <CleanBookCard
-                key={book.id}
-                book={book}
-                badgeText="Shastraloka's Pick"
-              />
-            ))}
-          </div>
-
-          {!showAllPersonalize && filteredBooks.length > 8 && (
-            <div className="flex justify-center pt-2">
-              <button
-                type="button"
-                onClick={() => setShowAllPersonalize(true)}
-                className="px-6 py-2.5 rounded-full text-xs font-bold bg-[var(--bg-surface)] text-[var(--text-main)] border border-[var(--border-subtle)] hover:bg-[var(--bg-hover)] transition cursor-pointer"
-              >
-                Show more
-              </button>
-            </div>
-          )}
+          <ProgressiveBookGrid
+            books={filteredBooks}
+            gridClassName="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-x-5 gap-y-8"
+            getBadgeText={() => "Shastraloka's Pick"}
+          />
         </section>
 
         {/* SECTION 2: BEST-SELLING GIFTS THEY'LL LOVE */}
-        <section className="space-y-6">
-          <h2
-            className="text-2xl sm:text-3xl text-center text-[var(--text-main)]"
-            style={{ fontFamily: 'Georgia, Cambria, "Times New Roman", Times, serif' }}
-          >
-            Best-selling gifts they&apos;ll love
-          </h2>
+        <ViewportSection minHeight={360} skeletonTitle="Best-selling gifts they'll love">
+          <section className="space-y-6">
+            <h2
+              className="text-2xl sm:text-3xl text-center text-[var(--text-main)] font-heading font-bold"
+            >
+              Best-selling gifts they&apos;ll love
+            </h2>
 
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-x-5 gap-y-8">
-            {bestsellingGiftBooks.map((book) => (
-              <CleanBookCard
-                key={`bs-${book.id}`}
-                book={book}
-                badgeText="Shastraloka's Pick"
-              />
-            ))}
-          </div>
-
-          {!showAllBestsellers && (
-            <div className="flex justify-center pt-2">
-              <button
-                type="button"
-                onClick={() => setShowAllBestsellers(true)}
-                className="px-6 py-2.5 rounded-full text-xs font-bold bg-[var(--bg-surface)] text-[var(--text-main)] border border-[var(--border-subtle)] hover:bg-[var(--bg-hover)] transition cursor-pointer"
-              >
-                Show more
-              </button>
-            </div>
-          )}
-        </section>
+            <ProgressiveBookGrid
+              books={bestsellingGiftBooks}
+              gridClassName="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-x-5 gap-y-8"
+              getBadgeText={() => "Shastraloka's Pick"}
+            />
+          </section>
+        </ViewportSection>
 
         {/* SECTION 3: 4 EDITORIAL GIFT GUIDE CARDS */}
-        <section className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
-          {[
-            {
-              title: 'Personalized Calligraphic Dedications',
-              image: BOOKS[0]?.coverImage,
-              href: '/bestsellers',
-            },
-            {
-              title: 'The Royal Silk & Brass Wrap Guide',
-              image: BOOKS[2]?.coverImage,
-              href: '/archives',
-            },
-            {
-              title: 'Gifts for Her',
-              image: BOOKS[3]?.coverImage,
-              href: '/new-releases',
-            },
-            {
-              title: 'Gifts for Him',
-              image: BOOKS[1]?.coverImage,
-              href: '/books',
-            },
-          ].map((card) => (
-            <Link
-              key={card.title}
-              href={card.href}
-              className="group rounded-2xl overflow-hidden border border-[var(--border-subtle)] bg-[var(--bg-card)] shadow-xs hover:shadow-md transition flex flex-col"
-            >
-              <div className="aspect-[4/3] w-full overflow-hidden bg-[var(--bg-wash)]">
-                <img
-                  src={card.image}
-                  alt={card.title}
-                  referrerPolicy="no-referrer"
-                  className="w-full h-full object-cover group-hover:scale-105 transition duration-300"
-                />
-              </div>
-              <div className="p-4">
-                <h3 className="text-sm font-bold text-[var(--text-main)] group-hover:text-[var(--color-primary)]">
-                  {card.title}
-                </h3>
-              </div>
-            </Link>
-          ))}
-        </section>
+        <ViewportSection minHeight={260} skeletonTitle="Editorial Gift Guides">
+          <section className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
+            {[
+              {
+                title: 'Personalized Calligraphic Dedications',
+                image: BOOKS[0]?.coverImage,
+                href: '/bestsellers',
+              },
+              {
+                title: 'The Royal Silk & Brass Wrap Guide',
+                image: BOOKS[2]?.coverImage,
+                href: '/archives',
+              },
+              {
+                title: 'Gifts for Her',
+                image: BOOKS[3]?.coverImage,
+                href: '/new-releases',
+              },
+              {
+                title: 'Gifts for Him',
+                image: BOOKS[1]?.coverImage,
+                href: '/books',
+              },
+            ].map((card) => (
+              <Link
+                key={card.title}
+                href={card.href}
+                className="group rounded-2xl overflow-hidden border border-[var(--border-subtle)] bg-[var(--bg-card)] shadow-xs hover:shadow-md transition flex flex-col"
+              >
+                <div className="relative aspect-[4/3] w-full overflow-hidden bg-[var(--bg-wash)]">
+                  <OptimizedImage
+                    src={card.image}
+                    alt={card.title}
+                    targetWidth={360}
+                    className="w-full h-full object-cover group-hover:scale-105 transition duration-300"
+                  />
+                </div>
+                <div className="p-4">
+                  <h3 className="text-sm font-bold text-[var(--text-main)] group-hover:text-[var(--color-primary)]">
+                    {card.title}
+                  </h3>
+                </div>
+              </Link>
+            ))}
+          </section>
+        </ViewportSection>
 
         {/* SECTION 4: SHOP SHSTRALOKA GIFT CARDS BANNER (Links to /gift-cards) */}
         <section className="rounded-2xl overflow-hidden border border-[var(--border-subtle)] bg-[var(--bg-surface)] grid grid-cols-1 md:grid-cols-12 items-center">
@@ -380,20 +349,20 @@ export default function GiftsPage() {
             </div>
           </div>
 
-          <div className="md:col-span-6 h-48 sm:h-56 bg-gradient-to-r from-[#4F46E5] via-[#7C3AED] to-[#F1641E] p-6 flex items-center justify-center gap-4 overflow-hidden">
+          <div className="md:col-span-6 h-48 sm:h-56 bg-[var(--hero-showcase-bg)] p-6 flex items-center justify-center gap-4 overflow-hidden">
             <Link
               href="/gift-cards"
-              className="w-48 h-32 rounded-2xl bg-[#F1641E] text-white shadow-xl -rotate-6 flex flex-col items-center justify-center border border-white/25 hover:scale-105 transition"
+              className="w-48 h-32 rounded-[var(--radius-card)] bg-[var(--color-primary)] text-white shadow-xl -rotate-6 flex flex-col items-center justify-center border border-white/25 hover:scale-105 transition"
             >
-              <span className="font-heading font-bold text-2xl font-bold">Shastraloka</span>
-              <span className="font-sinhala text-[11px] opacity-90">ශාස්ත්‍රලෝක • LKR</span>
+              <span className="font-heading font-bold text-2xl">Shastraloka</span>
+              <span className="text-[11px] opacity-90">Literary Voucher • LKR</span>
             </Link>
             <Link
               href="/gift-cards"
-              className="w-48 h-32 rounded-2xl bg-[#1E3A8A] text-white shadow-xl rotate-6 flex flex-col items-center justify-center border border-white/25 hover:scale-105 transition"
+              className="w-48 h-32 rounded-[var(--radius-card)] bg-[var(--bg-elevated)] text-[var(--text-main)] shadow-xl rotate-6 flex flex-col items-center justify-center border border-[var(--border-strong)] hover:scale-105 transition"
             >
-              <span className="font-heading font-bold text-2xl font-bold">Shastraloka</span>
-              <span className="font-sinhala text-[11px] opacity-90">ත්‍යාග පත්‍රිකාව</span>
+              <span className="font-heading font-bold text-2xl">Shastraloka</span>
+              <span className="text-[11px] text-[var(--text-muted)]">Collector Gift Card</span>
             </Link>
           </div>
         </section>

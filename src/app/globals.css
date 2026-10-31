@@ -48,9 +48,9 @@
   --color-bag-btn-border: var(--bag-btn-border);
   --color-bag-btn-text: var(--bag-btn-text);
 
-  --font-sans: var(--font-sans), system-ui, -apple-system, sans-serif;
-  --font-heading: var(--font-heading), var(--font-sans), system-ui, -apple-system, sans-serif;
-  --font-serif: var(--font-heading), var(--font-sans), system-ui, -apple-system, sans-serif;
+  --font-sans: var(--theme-font-sans, var(--font-sans), system-ui, -apple-system, sans-serif);
+  --font-heading: var(--theme-font-heading, var(--font-heading), var(--font-sans), system-ui, -apple-system, sans-serif);
+  --font-serif: var(--theme-font-heading, var(--font-heading), var(--font-sans), system-ui, -apple-system, sans-serif);
   --font-sinhala: var(--font-sinhala), "Noto Serif Sinhala", "Iskoola Pota", serif;
 }
 
@@ -69,7 +69,7 @@ html {
 }
 
 body {
-  font-family: var(--font-sans);
+  font-family: var(--theme-font-sans, var(--font-sans));
   background-color: var(--bg-main);
   color: var(--text-main);
   overflow-x: clip;
@@ -105,7 +105,8 @@ nav {
 }
 
 .font-heading {
-  font-family: var(--font-heading);
+  font-family: var(--theme-font-heading, var(--font-heading));
+  letter-spacing: var(--theme-heading-tracking, -0.02em);
 }
 
 .font-sinhala {
@@ -212,7 +213,7 @@ nav {
 
 /* Pill bounce & micro-interactions */
 .pill-btn {
-  border-radius: 9999px;
+  border-radius: var(--radius-btn, 9999px);
   transition: transform 0.15s cubic-bezier(0.2, 0, 0, 1), background-color 0.15s ease;
 }
 
@@ -221,25 +222,25 @@ nav {
 }
 
 .save-pill-btn {
-  background-color: #e60023;
+  background-color: var(--color-primary);
   color: #ffffff;
-  border-radius: 9999px;
+  border-radius: var(--radius-btn, 9999px);
   font-weight: 700;
   transition: all 0.2s cubic-bezier(0.3, 0, 0, 1);
 }
 
 .save-pill-btn:hover {
-  background-color: #ad081b;
+  background-color: var(--color-primary-hover);
   transform: scale(1.04);
 }
 
 .save-pill-btn:active {
-  background-color: #800014;
+  background-color: var(--color-primary-hover);
   transform: scale(0.96);
 }
 
 .book-card-container {
-  border-radius: 20px;
+  border-radius: var(--radius-card, 20px);
   background-color: var(--bg-card);
   transition: transform 0.25s cubic-bezier(0.3, 0, 0, 1), box-shadow 0.25s cubic-bezier(0.3, 0, 0, 1);
 }
@@ -300,8 +301,8 @@ nav {
 .scanner-grid-pattern {
   background-size: 24px 24px;
   background-image: 
-    linear-gradient(to right, rgba(241, 100, 30, 0.08) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(241, 100, 30, 0.08) 1px, transparent 1px);
+    linear-gradient(to right, var(--color-primary-subtle) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--color-primary-subtle) 1px, transparent 1px);
 }
 
 /* =========================================================================
@@ -392,4 +393,57 @@ nav {
 .no-scrollbar {
   -ms-overflow-style: none;
   scrollbar-width: none;
+}
+
+/* =========================================================================
+   PERFORMANCE, SHIMMER SKELETONS & LOW-END DEVICE OPTIMIZATION
+   ========================================================================= */
+
+.image-skeleton-shimmer {
+  background-color: var(--bg-wash);
+  background-image: linear-gradient(
+    90deg,
+    var(--bg-wash) 0%,
+    var(--bg-surface) 50%,
+    var(--bg-wash) 100%
+  );
+  background-size: 200% 100%;
+  animation: skeletonPulse 1.6s ease-in-out infinite;
+}
+
+@keyframes skeletonPulse {
+  0% {
+    background-position: 100% 0;
+  }
+  100% {
+    background-position: -100% 0;
+  }
+}
+
+/* Keep card/section layout unblocked so native browser image preloading starts well ahead of scroll */
+.cv-auto,
+.cv-card {
+  content-visibility: visible;
+}
+
+/* Low-end device & reduced-motion optimizations: avoid costly blurs & infinite repaints */
+@media (prefers-reduced-motion: reduce) {
+  .image-skeleton-shimmer,
+  .gold-shimmer,
+  .animate-laser-scan {
+    animation: none !important;
+  }
+}
+
+html[data-low-end="true"] .image-skeleton-shimmer,
+html[data-low-end="true"] .gold-shimmer {
+  animation: none !important;
+  background-image: none !important;
+}
+
+html[data-low-end="true"] .backdrop-blur-md,
+html[data-low-end="true"] .backdrop-blur-xs,
+html[data-low-end="true"] .backdrop-blur-sm {
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
 }

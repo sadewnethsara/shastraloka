@@ -1,0 +1,112 @@
+/* =========================================================================
+   THEME: AWS Skill Builder (Cloudscape Design System — Squid Ink #232F3E, AWS Orange #FF9900 & Cloudscape Blue #0972D3)
+   Selector: [data-theme="aws-skillbuilder"], .theme-aws-skillbuilder
+   ========================================================================= */
+
+[data-theme="aws-skillbuilder"],
+.theme-aws-skillbuilder {
+  /* Brand Identity & Accents */
+  --color-primary: #ec7211;
+  --color-primary-hover: #d45b07;
+  --color-primary-subtle: rgba(255, 153, 0, 0.14);
+  --color-primary-border: rgba(236, 114, 17, 0.45);
+  --color-accent-badge: #0972d3;
+  --color-accent-badge-hover: #0558a5;
+  --color-accent-badge-text: #ffffff;
+
+  /* Theme Typography & Shape Tokens (AWS Cloudscape System) */
+  --theme-font-heading: var(--font-heading), system-ui, -apple-system, sans-serif;
+  --theme-font-sans: var(--font-sans), system-ui, -apple-system, sans-serif;
+  --theme-heading-tracking: -0.02em;
+  --radius-card: 0.625rem;
+  --radius-btn: 0.5rem;
+  --radius-input: 0.5rem;
+  --radius-modal: 0.875rem;
+  --radius-badge: 0.375rem;
+
+  /* Header Design Tokens (AWS Skill Builder Squid Ink Top Bar) */
+  --header-bg: #232f3e;
+  --header-bg-glass: rgba(35, 47, 62, 0.96);
+  --header-border: #384657;
+  --header-text: #ffffff;
+  --header-text-muted: #d1d5db;
+  --header-hover-bg: #314154;
+  --header-logo-color: #ff9900;
+  --header-accent: #ff9900;
+  --header-dropdown-bg: #ffffff;
+  --header-dropdown-border: #d5dbdb;
+  --header-mobile-drawer-bg: #f8f9fa;
+  --header-search-bg: #ffffff;
+  --header-search-border: #ff9900;
+  --header-search-btn-bg: #ff9900;
+  --header-search-btn-hover: #ec7211;
+  --header-search-btn-text: #161e2d;
+
+  /* Header Badges & Shopping Bag Pill */
+  --header-badge-fav-bg: #0972d3;
+  --header-badge-bag-bg: #161e2d;
+  --header-badge-bag-text: #ff9900;
+  --header-badge-text: #ffffff;
+  --bag-btn-bg: #ff9900;
+  --bag-btn-border: #ff9900;
+  --bag-btn-hover-bg: #ec7211;
+  --bag-btn-hover-border: #ec7211;
+  --bag-btn-text: #161e2d;
+  --bag-btn-hover-text: #161e2d;
+
+  /* Global Surface & Background Colors (AWS Cloudscape Light Canvas) */
+  --bg-main: #f8f9fa;
+  --bg-surface: #f2f3f3;
+  --bg-wash: #eaeded;
+  --bg-card: #ffffff;
+  --bg-hover: #fff5e6;
+  --bg-input: #ffffff;
+  --bg-badge: #232f3e;
+
+  /* Global Text Colors (AWS Squid Ink & Cloudscape Slate) */
+  --text-main: #161e2d;
+  --text-body: #232f3e;
+  --text-muted: #545b64;
+  --text-dim: #7d8998;
+
+  /* Global Borders */
+  --border-subtle: #d5dbdb;
+  --border-strong: #aab7b8;
+  --border-focus: #0972d3;
+
+  /* Heritage / Classical Surfaces & Banners */
+  --surface-cream: #fff8eb;
+  --surface-cream-strong: #ffefc7;
+  --brand-brown: #0972d3;
+  --footer-bg: #eaeded;
+  --hero-banner-bg: #f0f7ff;
+  --hero-banner-border: #b8d9f8;
+  --hero-showcase-bg: #232f3e;
+  --hero-showcase-border: rgba(255, 153, 0, 0.40);
+  --hero-banner-pattern: radial-gradient(circle at 85% 20%, rgba(255, 153, 0, 0.14) 0%, rgba(9, 114, 211, 0.08) 45%, transparent 70%);
+  --banner-guild-bg: #f0f7ff;
+  --banner-guild-surface: #e0effe;
+  --banner-guild-border: #b8d9f8;
+  --banner-guild-text: #161e2d;
+  --banner-guild-muted: #232f3e;
+  --banner-guild-accent: #0972d3;
+
+  /* Status & Feedback Colors */
+  --color-emerald: #037f0c;
+  --color-success: #037f0c;
+  --color-success-bg: #f2f8f0;
+  --color-warning: #ec7211;
+  --color-warning-bg: #fff8eb;
+  --color-danger: #d91515;
+  --color-danger-bg: #fdf3f1;
+
+  /* Pills & Controls */
+  --pill-bg: #eaeded;
+  --pill-hover: #fff5e6;
+  --pill-active-bg: #232f3e;
+  --pill-active-text: #ff9900;
+
+  /* Shadows */
+  --card-shadow: 0 1px 4px rgba(22, 30, 45, 0.07);
+  --card-shadow-hover: 0 8px 20px rgba(22, 30, 45, 0.13);
+}

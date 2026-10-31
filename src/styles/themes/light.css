@@ -10,8 +10,19 @@
   --color-primary-hover: #d85516;
   --color-primary-subtle: rgba(241, 100, 30, 0.10);
   --color-primary-border: rgba(241, 100, 30, 0.40);
-  --color-accent-badge: #e60023;
+  --color-accent-badge: #c83e1d;
+  --color-accent-badge-hover: #a83215;
   --color-accent-badge-text: #ffffff;
+
+  /* Theme Typography & Shape Tokens */
+  --theme-font-heading: var(--font-heading), system-ui, -apple-system, sans-serif;
+  --theme-font-sans: var(--font-sans), system-ui, -apple-system, sans-serif;
+  --theme-heading-tracking: -0.02em;
+  --radius-card: 1rem;
+  --radius-btn: 9999px;
+  --radius-input: 0.75rem;
+  --radius-modal: 1.5rem;
+  --radius-badge: 9999px;
 
   /* Header Design Tokens */
   --header-bg: #ffffff;
@@ -28,7 +39,7 @@
 
   /* Header Badges & Shopping Bag Pill */
   --header-badge-fav-bg: #F1641E;
-  --header-badge-bag-bg: #e60023;
+  --header-badge-bag-bg: #c83e1d;
   --header-badge-text: #ffffff;
   --bag-btn-bg: #f3f4f6;
   --bag-btn-border: rgba(241, 100, 30, 0.40);
@@ -43,7 +54,7 @@
   --bg-card: #ffffff;
   --bg-hover: #f0f0f0;
   --bg-input: #ffffff;
-  --bg-badge: #222222;
+  --bg-badge: #1f2937;
 
   /* Global Text Colors */
   --text-main: #1f2937;
@@ -85,7 +96,7 @@
   /* Pills & Controls */
   --pill-bg: #f3f3f3;
   --pill-hover: #e6e6e6;
-  --pill-active-bg: #222222;
+  --pill-active-bg: #1f2937;
   --pill-active-text: #ffffff;
 
   /* Shadows */

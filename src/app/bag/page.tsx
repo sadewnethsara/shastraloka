@@ -8,7 +8,6 @@ import Header from '../../components/Header';
 import {
     Search,
     Heart,
-    Handbag as ShoppingBag,
     Handbag,
     Menu,
     Star,
@@ -1218,14 +1217,14 @@ export default function Bag() {
         triggerToast(`Added "${book.title.slice(0, 32)}..." to your bag!`);
     };
 
-    // Toggle Pinterest Pin on any book card
+    // Toggle Save on any book card
     const togglePinBook = (id: string, title: string) => {
         if (pinnedBookIds.includes(id)) {
             setPinnedBookIds((prev) => prev.filter((item) => item !== id));
-            triggerToast(`Removed from your Pinterest Reading Board`);
+            triggerToast(`Removed from your Reading Board`);
         } else {
             setPinnedBookIds((prev) => [...prev, id]);
-            triggerToast(`Pinned "${title.slice(0, 26)}..." to Cozy Reading Board 📌`);
+            triggerToast(`Saved "${title.slice(0, 26)}..." to Cozy Reading Board`);
         }
     };
 
@@ -1293,7 +1292,7 @@ export default function Bag() {
     const urgencyHighlight = bagItems[0] || INITIAL_BAG_SCREENSHOT_1[0];
 
     return (
-        <div className="min-h-screen bg-[var(--bg-main)] text-[var(--text-main)] font-sans antialiased selection:bg-[#f1641e]/15 selection:text-[#f1641e] transition-colors duration-200">
+        <div className="min-h-screen bg-[var(--bg-main)] text-[var(--text-main)] font-sans antialiased selection:bg-[var(--color-primary-subtle)] transition-colors duration-200">
             {/* ------------------------------------------------------------------- */}
             {/* UNIVERSAL HEADER WITH LIVE SEARCHBAR & 2-COLUMN CATEGORIES MENU     */}
             {/* ------------------------------------------------------------------- */}
@@ -1319,7 +1318,7 @@ export default function Bag() {
                                     }
                                 />
                             )}
-                            <div className="absolute -bottom-0.5 -left-0.5 w-6 h-6 rounded-tr-xl bg-[#1e3a8a] text-white flex items-center justify-center shadow-xs">
+                            <div className="absolute -bottom-0.5 -left-0.5 w-6 h-6 rounded-tr-xl bg-[var(--color-primary)] text-white flex items-center justify-center shadow-xs">
                                 <Handbag className="w-3 h-3" />
                             </div>
                         </div>
@@ -1328,7 +1327,7 @@ export default function Bag() {
                             <p className="text-[12.5px] font-bold text-[var(--text-main)] leading-snug">
                                 Hurry! Shop this one while it lasts!
                             </p>
-                            <p className="text-[11.5px] font-bold text-[#a61a2e] dark:text-[#ff6b6b] mt-0.5 truncate">
+                            <p className="text-[11.5px] font-bold text-[var(--color-danger)] mt-0.5 truncate">
                                 {activePreset === 'screenshot-1'
                                     ? '23 sold in the past 24 hours'
                                     : '4 sold in the past 24 hours'}
@@ -1384,10 +1383,10 @@ export default function Bag() {
                 {/* ----------------------------------------------------------------- */}
                 {bagItems.length === 0 ? (
                     <div className="bg-[var(--bg-wash)] border border-[var(--border-subtle)] rounded-2xl p-10 text-center my-4">
-                        <ShoppingBag className="w-10 h-10 mx-auto text-[var(--text-dim)] mb-3" />
+                        <Handbag className="w-10 h-10 mx-auto text-[var(--text-dim)] mb-3" />
                         <h2 className="text-lg font-semibold text-[var(--text-main)]">Your book bag is currently empty</h2>
                         <p className="text-xs text-[var(--text-muted)] max-w-md mx-auto mt-1">
-                            Explore our Pinterest-curated indie books, botanical collector hardcovers, and cozy printable coloring editions below.
+                            Explore our curated archival editions, botanical collector hardcovers, and cozy printable coloring editions below.
                         </p>
                         <div className="mt-4 flex justify-center gap-3">
                             <Link
@@ -1411,7 +1410,7 @@ export default function Bag() {
                             {bagItems.map((item) => (
                                 <div
                                     key={item.id}
-                                    className="bg-[var(--bg-card)] rounded-xl border border-[var(--border-subtle)] shadow-[0_1px_4px_rgba(0,0,0,0.04)] overflow-hidden transition-shadow hover:shadow-md"
+                                    className="bg-[var(--bg-card)] rounded-[var(--radius-card)] border border-[var(--border-subtle)] shadow-[0_1px_4px_rgba(0,0,0,0.04)] overflow-hidden transition-shadow hover:shadow-md"
                                 >
                                     {/* Card Inner Padding */}
                                     <div className="p-4 sm:p-5">
@@ -1425,13 +1424,13 @@ export default function Bag() {
                                                 >
                                                     {item.shopAvatarIcon === 'cute-ghost' ? '👻' : '📖'}
                                                 </div>
-                                                <span className="text-[13.5px] font-semibold text-[#222222] hover:underline cursor-pointer">
+                                                <span className="text-[13.5px] font-semibold text-[var(--text-main)] hover:underline cursor-pointer">
                                                     {item.shopName}
                                                 </span>
-                                                <div className="flex items-center gap-1 text-[12.5px] text-stone-600 ml-0.5">
-                                                    <Star className="w-3.5 h-3.5 fill-[#f59e0b] text-[#f59e0b]" />
-                                                    <span className="font-semibold text-[#222222]">{item.shopRating}</span>
-                                                    <span className="text-stone-500">({item.shopReviews})</span>
+                                                <div className="flex items-center gap-1 text-[12.5px] text-[var(--text-muted)] ml-0.5">
+                                                    <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
+                                                    <span className="font-semibold text-[var(--text-main)]">{item.shopRating}</span>
+                                                    <span className="text-[var(--text-muted)]">({item.shopReviews})</span>
                                                 </div>
                                             </div>
 
@@ -1439,7 +1438,7 @@ export default function Bag() {
                                                 onClick={() =>
                                                     triggerToast(`Bookshop options for ${item.shopName} • Verified Indie Publisher`)
                                                 }
-                                                className="p-1.5 rounded-full text-stone-500 hover:bg-stone-100 hover:text-stone-800"
+                                                className="p-1.5 rounded-full text-[var(--text-muted)] hover:bg-[var(--bg-hover)] hover:text-[var(--text-main)]"
                                                 aria-label="More options"
                                             >
                                                 <MoreHorizontal className="w-4 h-4" />
@@ -1448,7 +1447,7 @@ export default function Bag() {
 
                                         {/* Main Item Content Row */}
                                         <div className="flex flex-col sm:flex-row gap-4">
-                                            {/* Left: Book Cover Thumbnail (with Pinterest Save & Amazon Look Inside) */}
+                                            {/* Left: Book Cover Thumbnail (with Save & Look Inside) */}
                                             <div className="relative w-full sm:w-[144px] h-[164px] rounded-xl overflow-hidden border border-[var(--border-subtle)] bg-[var(--bg-wash)] shrink-0 group">
                                                 {item.coverImage ? (
                                                     <img
@@ -1460,15 +1459,15 @@ export default function Bag() {
                                                     <BookCoverArtwork variant={item.coverType} />
                                                 )}
 
-                                                {/* Pinterest-style top-right Pin button on hover */}
+                                                {/* Top-right Save button on hover */}
                                                 <button
                                                     onClick={() => togglePinBook(item.id, item.title)}
-                                                    className="opacity-0 group-hover:opacity-100 transition-opacity absolute top-2 right-2 px-2 py-1 rounded-full bg-[#e60023] text-white text-[10px] font-bold shadow flex items-center gap-1 cursor-pointer"
+                                                    className="opacity-0 group-hover:opacity-100 transition-opacity absolute top-2 right-2 px-2 py-1 rounded-[var(--radius-btn)] bg-[var(--color-primary)] text-white text-[10px] font-bold shadow flex items-center gap-1 cursor-pointer"
                                                 >
-                                                    <Bookmark className="w-2.5 h-2.5 fill-current" /> Pin
+                                                    <Bookmark className="w-2.5 h-2.5 fill-current" /> Save
                                                 </button>
 
-                                                {/* Amazon-style "Look Inside" bottom overlay button */}
+                                                {/* "Look Inside" bottom overlay button */}
                                                 <button
                                                     onClick={() =>
                                                         setPreviewBook({
@@ -1491,15 +1490,15 @@ export default function Bag() {
                                                     <div className="flex-1 min-w-0">
                                                         <Link
                                                             href={`/books/${item.id}`}
-                                                            className="text-[14px] font-semibold text-[var(--text-main)] hover:text-[#F1641E] hover:underline cursor-pointer line-clamp-2 leading-snug block"
+                                                            className="text-[14px] font-semibold text-[var(--text-main)] hover:text-[var(--color-primary)] hover:underline cursor-pointer line-clamp-2 leading-snug block"
                                                         >
                                                             {item.title}
                                                         </Link>
 
-                                                        {/* Amazon-style subtle book author & format line */}
+                                                        {/* Subtle book author & format line */}
                                                         <p className="text-[12px] text-[var(--text-muted)] mt-0.5">
                                                             by <span className="text-[var(--text-main)] font-medium">{item.author}</span> •{' '}
-                                                            <span className="text-[#007185] dark:text-emerald-400 font-semibold">{item.bookFormat}</span>
+                                                            <span className="text-[var(--color-primary)] font-semibold">{item.bookFormat}</span>
                                                         </p>
 
                                                         {item.note && (
@@ -1542,12 +1541,12 @@ export default function Bag() {
                                                     {/* Right: Price Column */}
                                                     <div className="sm:text-right shrink-0 flex sm:flex-col items-baseline sm:items-end gap-2 sm:gap-0.5 mt-1 sm:mt-0">
                                                         {item.discountPercent && (
-                                                            <span className="inline-block px-2 py-0.5 rounded-full bg-[#a2e8b9] text-[#114624] text-[11px] font-bold">
+                                                            <span className="inline-block px-2 py-0.5 rounded-full bg-[var(--color-success-bg)] text-[var(--color-success)] text-[11px] font-bold">
                                                                 {item.discountPercent}% off
                                                             </span>
                                                         )}
                                                         <span
-                                                            className={`text-[16px] font-bold leading-tight ${item.discountPercent ? 'text-[#0f743b] dark:text-emerald-400' : 'text-[var(--text-main)]'
+                                                            className={`text-[16px] font-bold leading-tight ${item.discountPercent ? 'text-[var(--color-success)]' : 'text-[var(--text-main)]'
                                                                 }`}
                                                         >
                                                             USD {(item.price * item.quantity).toFixed(2)}
@@ -1572,12 +1571,12 @@ export default function Bag() {
 
                                                 {/* Urgency Text */}
                                                 {item.saleEndsText && (
-                                                    <p className="text-[12px] font-medium text-[#0f743b] dark:text-emerald-400 mt-2.5">
+                                                    <p className="text-[12px] font-medium text-[var(--color-success)] mt-2.5">
                                                         {item.saleEndsText}
                                                     </p>
                                                 )}
                                                 {item.urgencyRedText && (
-                                                    <p className="text-[12px] font-medium text-[#a61a2e] dark:text-rose-400 mt-1">
+                                                    <p className="text-[12px] font-medium text-[var(--color-danger)] mt-1">
                                                         {item.urgencyRedText}
                                                     </p>
                                                 )}
@@ -1752,15 +1751,15 @@ export default function Bag() {
                                     )}
 
                                     {appliedCoupon && (
-                                        <div className="flex items-center justify-between text-[#0f743b] font-medium">
+                                        <div className="flex items-center justify-between text-[var(--color-success)] font-medium">
                                             <span>Coupon ({appliedCoupon.code})</span>
                                             <span>-USD {appliedCoupon.discount.toFixed(2)}</span>
                                         </div>
                                     )}
 
-                                    <hr className="border-stone-200 my-2.5" />
+                                    <hr className="border-[var(--border-subtle)] my-2.5" />
 
-                                    <div className="flex items-center justify-between text-[15px] font-bold text-[#222222] pt-0.5">
+                                    <div className="flex items-center justify-between text-[15px] font-bold text-[var(--text-main)] pt-0.5">
                                         <span>
                                             Total ({financials.totalCount}{' '}
                                             {financials.totalCount === 1 ? 'item' : 'items'})
@@ -1771,12 +1770,12 @@ export default function Bag() {
 
                                 {/* Mark order as a gift checkbox */}
                                 <div className="mt-4">
-                                    <label className="flex items-center gap-2.5 text-[13px] text-[#222222] cursor-pointer select-none">
+                                    <label className="flex items-center gap-2.5 text-[13px] text-[var(--text-main)] cursor-pointer select-none">
                                         <input
                                             type="checkbox"
                                             checked={isGiftOrder}
                                             onChange={(e) => setIsGiftOrder(e.target.checked)}
-                                            className="w-4 h-4 rounded border-stone-400 text-[#222222] focus:ring-0 cursor-pointer"
+                                            className="w-4 h-4 rounded border-[var(--border-strong)] text-[var(--color-primary)] focus:ring-0 cursor-pointer"
                                         />
                                         <span>
                                             Mark order as a gift{' '}
@@ -1787,7 +1786,7 @@ export default function Bag() {
                                                         'Gift orders hide prices on the book packing slip and include a custom bookplate note!'
                                                     )
                                                 }
-                                                className="underline font-medium hover:text-stone-600"
+                                                className="underline font-medium hover:text-[var(--text-muted)]"
                                             >
                                                 Learn more
                                             </button>
@@ -1800,7 +1799,7 @@ export default function Bag() {
                                             onChange={(e) => setGiftMessage(e.target.value)}
                                             placeholder="Add a literary dedication or ex-libris gift note..."
                                             rows={2}
-                                            className="mt-2 w-full rounded-lg border border-stone-300 p-2 text-xs focus:outline-none focus:border-stone-600"
+                                            className="mt-2 w-full rounded-lg border border-[var(--border-subtle)] bg-[var(--bg-input)] p-2 text-xs focus:outline-none focus:border-[var(--border-focus)]"
                                         />
                                     )}
                                 </div>
@@ -1808,7 +1807,7 @@ export default function Bag() {
                                 {/* Primary Checkout Button */}
                                 <button
                                     onClick={() => router.push('/checkout')}
-                                    className="mt-4 w-full h-[46px] rounded-full bg-[#222222] hover:bg-stone-800 text-white text-[14.5px] font-semibold transition-all shadow-xs cursor-pointer flex items-center justify-center gap-2"
+                                    className="mt-4 w-full h-[46px] rounded-[var(--radius-btn)] bg-[var(--pill-active-bg)] hover:opacity-90 text-[var(--pill-active-text)] text-[14.5px] font-semibold transition-all shadow-xs cursor-pointer flex items-center justify-center gap-2"
                                 >
                                     <span>Proceed to checkout</span>
                                     <ArrowRight className="w-4 h-4" />
@@ -1818,7 +1817,7 @@ export default function Bag() {
                                 <div className="grid grid-cols-2 gap-2.5 mt-2.5">
                                     <button
                                         onClick={() => router.push('/checkout')}
-                                        className="h-[42px] rounded-full border border-stone-400 hover:border-stone-800 bg-white flex items-center justify-center gap-1 text-[#222222] font-semibold text-[15px] transition-colors cursor-pointer"
+                                        className="h-[42px] rounded-[var(--radius-btn)] border border-[var(--border-strong)] hover:border-[var(--border-focus)] bg-white flex items-center justify-center gap-1 text-neutral-900 font-semibold text-[15px] transition-colors cursor-pointer"
                                     >
                                         <span className="text-[17px] leading-none"></span>
                                         <span>Pay</span>
@@ -1826,7 +1825,7 @@ export default function Bag() {
 
                                     <button
                                         onClick={() => router.push('/checkout')}
-                                        className="h-[42px] rounded-full border border-stone-400 hover:border-stone-800 bg-white flex items-center justify-center transition-colors cursor-pointer"
+                                        className="h-[42px] rounded-[var(--radius-btn)] border border-[var(--border-strong)] hover:border-[var(--border-focus)] bg-white flex items-center justify-center transition-colors cursor-pointer"
                                     >
                                         <span className="font-sans font-extrabold italic text-[15px] tracking-tight">
                                             <span className="text-[#003087]">Pay</span>
@@ -1836,17 +1835,17 @@ export default function Bag() {
                                 </div>
 
                                 {/* Fine print disclosures */}
-                                <p className="mt-3.5 text-[11px] text-stone-500 leading-relaxed">
+                                <p className="mt-3.5 text-[11px] text-[var(--text-muted)] leading-relaxed">
                                     By checking out, you agree to our{' '}
-                                    <a href="#terms" onClick={(e) => e.preventDefault()} className="text-[#2563eb] underline">
+                                    <a href="#terms" onClick={(e) => e.preventDefault()} className="text-[var(--color-primary)] underline">
                                         Terms
                                     </a>{' '}
                                     and{' '}
-                                    <a href="#privacy" onClick={(e) => e.preventDefault()} className="text-[#2563eb] underline">
+                                    <a href="#privacy" onClick={(e) => e.preventDefault()} className="text-[var(--color-primary)] underline">
                                         Privacy Policy
                                     </a>
-                                    . Booksy may send you curated reading communications; you may unsubscribe at any time. Additional duties and fees{' '}
-                                    <a href="#duties" onClick={(e) => e.preventDefault()} className="text-[#2563eb] underline">
+                                    . Shastraloka may send you curated reading communications; you may unsubscribe at any time. Additional duties and fees{' '}
+                                    <a href="#duties" onClick={(e) => e.preventDefault()} className="text-[var(--color-primary)] underline">
                                         may apply
                                     </a>
                                     .
@@ -1854,8 +1853,8 @@ export default function Bag() {
 
                                 {/* Secure options in checkout + Payment Badges */}
                                 <div className="mt-4">
-                                    <div className="flex items-center gap-1.5 text-[12px] font-semibold text-[#222222]">
-                                        <Lock className="w-3.5 h-3.5 text-[#222222]" />
+                                    <div className="flex items-center gap-1.5 text-[12px] font-semibold text-[var(--text-main)]">
+                                        <Lock className="w-3.5 h-3.5 text-[var(--text-main)]" />
                                         <span>Secure options in checkout</span>
                                     </div>
 
@@ -1891,9 +1890,9 @@ export default function Bag() {
                                     {!showCouponInput ? (
                                         <button
                                             onClick={() => setShowCouponInput(true)}
-                                            className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full hover:bg-stone-100 text-[12.5px] font-semibold text-[#222222] transition-colors cursor-pointer"
+                                            className="inline-flex items-center gap-2 px-3 py-1.5 rounded-[var(--radius-btn)] hover:bg-[var(--bg-hover)] text-[12.5px] font-semibold text-[var(--text-main)] transition-colors cursor-pointer"
                                         >
-                                            <Tag className="w-4 h-4 fill-[#0f743b] text-[#0f743b]" />
+                                            <Tag className="w-4 h-4 fill-[var(--color-success)] text-[var(--color-success)]" />
                                             <span>Apply coupon code</span>
                                         </button>
                                     ) : (
@@ -1903,18 +1902,18 @@ export default function Bag() {
                                                 value={couponCode}
                                                 onChange={(e) => setCouponCode(e.target.value)}
                                                 placeholder="Try BOOKBAG15"
-                                                className="flex-1 h-9 px-3 rounded-full border border-stone-300 text-xs focus:outline-none focus:border-stone-800"
+                                                className="flex-1 h-9 px-3 rounded-[var(--radius-input)] border border-[var(--border-subtle)] bg-[var(--bg-input)] text-xs focus:outline-none focus:border-[var(--border-focus)]"
                                             />
                                             <button
                                                 type="submit"
-                                                className="h-9 px-4 rounded-full bg-[#222222] text-white text-xs font-semibold hover:bg-stone-800"
+                                                className="h-9 px-4 rounded-[var(--radius-btn)] bg-[var(--pill-active-bg)] text-[var(--pill-active-text)] text-xs font-semibold hover:opacity-90"
                                             >
                                                 Apply
                                             </button>
                                             <button
                                                 type="button"
                                                 onClick={() => setShowCouponInput(false)}
-                                                className="p-1.5 text-stone-400 hover:text-stone-700"
+                                                className="p-1.5 text-[var(--text-muted)] hover:text-[var(--text-main)]"
                                             >
                                                 <X className="w-4 h-4" />
                                             </button>
@@ -1929,17 +1928,17 @@ export default function Bag() {
                 {/* ----------------------------------------------------------------- */}
                 {/* CLIMATE SOLUTIONS BANNER (Matches Leaf Icon Line in Screenshots)   */}
                 {/* ----------------------------------------------------------------- */}
-                <div className="mt-8 mb-9 flex items-center gap-2.5 text-[12.5px] text-[#222222]">
-                    <Leaf className="w-4 h-4 fill-[#222222] text-[#222222] shrink-0" />
+                <div className="mt-8 mb-9 flex items-center gap-2.5 text-[12.5px] text-[var(--text-main)]">
+                    <Leaf className="w-4 h-4 fill-[var(--color-emerald)] text-[var(--color-emerald)] shrink-0" />
                     <p>
-                        Booksy invests in climate solutions like electric book-delivery trucks and FSC-certified recycled paper carbon offsets for every delivery.{' '}
+                        Shastraloka invests in climate solutions like electric book-delivery vehicles and FSC-certified recycled paper carbon offsets for every delivery.{' '}
                         <a
                             href="#climate"
                             onClick={(e) => {
                                 e.preventDefault();
                                 triggerToast('100% carbon-neutral book shipping & tree-planting program verified.');
                             }}
-                            className="underline font-medium hover:text-stone-600"
+                            className="underline font-medium hover:text-[var(--text-muted)]"
                         >
                             See how
                         </a>
@@ -1954,11 +1953,11 @@ export default function Bag() {
                         <div className="flex items-baseline gap-2">
                             <h2
                                 id="related-heading"
-                                className="text-[16.5px] font-semibold text-[#222222]"
+                                className="text-[16.5px] font-semibold text-[var(--text-main)]"
                             >
                                 Related items you may like
                             </h2>
-                            <span className="inline-flex items-center gap-1 text-[11.5px] text-stone-500">
+                            <span className="inline-flex items-center gap-1 text-[11.5px] text-[var(--text-muted)]">
                                 Including ads <Info className="w-3 h-3 inline" />
                             </span>
                         </div>
@@ -1968,7 +1967,7 @@ export default function Bag() {
                             <SlidersHorizontal className="w-3.5 h-3.5 text-[var(--text-dim)] mr-1 shrink-0" />
                             <button
                                 onClick={() => setRelatedTab('screenshot-1')}
-                                className={`px-3 py-1 rounded-full text-[11.5px] font-semibold transition-colors cursor-pointer whitespace-nowrap shrink-0 ${relatedTab === 'screenshot-1'
+                                className={`px-3 py-1 rounded-[var(--radius-btn)] text-[11.5px] font-semibold transition-colors cursor-pointer whitespace-nowrap shrink-0 ${relatedTab === 'screenshot-1'
                                     ? 'bg-[var(--pill-active-bg)] text-[var(--pill-active-text)]'
                                     : 'bg-[var(--bg-input)] text-[var(--text-muted)] hover:bg-[var(--bg-hover)]'
                                     }`}
@@ -1977,7 +1976,7 @@ export default function Bag() {
                             </button>
                             <button
                                 onClick={() => setRelatedTab('screenshot-2')}
-                                className={`px-3 py-1 rounded-full text-[11.5px] font-semibold transition-colors cursor-pointer whitespace-nowrap shrink-0 ${relatedTab === 'screenshot-2'
+                                className={`px-3 py-1 rounded-[var(--radius-btn)] text-[11.5px] font-semibold transition-colors cursor-pointer whitespace-nowrap shrink-0 ${relatedTab === 'screenshot-2'
                                     ? 'bg-[var(--pill-active-bg)] text-[var(--pill-active-text)]'
                                     : 'bg-[var(--bg-input)] text-[var(--text-muted)] hover:bg-[var(--bg-hover)]'
                                     }`}
@@ -1986,7 +1985,7 @@ export default function Bag() {
                             </button>
                             <button
                                 onClick={() => setRelatedTab('all')}
-                                className={`px-3 py-1 rounded-full text-[11.5px] font-semibold transition-colors cursor-pointer whitespace-nowrap shrink-0 ${relatedTab === 'all'
+                                className={`px-3 py-1 rounded-[var(--radius-btn)] text-[11.5px] font-semibold transition-colors cursor-pointer whitespace-nowrap shrink-0 ${relatedTab === 'all'
                                     ? 'bg-[var(--pill-active-bg)] text-[var(--pill-active-text)]'
                                     : 'bg-[var(--bg-input)] text-[var(--text-muted)] hover:bg-[var(--bg-hover)]'
                                     }`}
@@ -2006,24 +2005,24 @@ export default function Bag() {
                                     className="group flex flex-col justify-between"
                                 >
                                     <div>
-                                        {/* Square Rounded Cover Image with Pinterest Pin & Amazon Format Pill */}
-                                        <div className="relative aspect-square w-full rounded-xl overflow-hidden border border-stone-200/80 bg-stone-100 mb-2 shadow-2xs group-hover:shadow-md transition-all">
+                                        {/* Square Rounded Cover Image with Save & Format Pill */}
+                                        <div className="relative aspect-square w-full rounded-[var(--radius-card)] overflow-hidden border border-[var(--border-subtle)] bg-[var(--bg-wash)] mb-2 shadow-2xs group-hover:shadow-md transition-all">
                                             <BookCoverArtwork variant={book.coverVariant} />
 
-                                            {/* Top-Left Pinterest Board Tag on Hover */}
+                                            {/* Top-Left Board Tag on Hover */}
                                             <span className="opacity-0 group-hover:opacity-100 transition-opacity absolute top-2 left-2 px-2 py-0.5 rounded-full bg-black/70 text-white text-[9.5px] font-medium backdrop-blur-xs">
-                                                📌 {book.pinterestBoard}
+                                                {book.pinterestBoard}
                                             </span>
 
-                                            {/* Top-Right Save/Pin Button */}
+                                            {/* Top-Right Save Button */}
                                             <button
                                                 onClick={() => togglePinBook(book.id, book.title)}
-                                                aria-label="Pin to reading board"
+                                                aria-label="Save to reading board"
                                                 className={`
                           w-7 h-7 rounded-full flex items-center justify-center transition-all shadow-xs cursor-pointer
                           absolute top-2 right-2
                           ${isPinned
-                                                        ? 'bg-[#e60023] text-white opacity-100'
+                                                        ? 'bg-[var(--color-primary)] text-white opacity-100'
                                                         : 'bg-white/90 text-stone-800 opacity-0 group-hover:opacity-100 hover:bg-white'
                                                     }
                         `}
@@ -2031,7 +2030,7 @@ export default function Bag() {
                                                 <Heart className={`w-3.5 h-3.5 ${isPinned ? 'fill-current' : ''}`} />
                                             </button>
 
-                                            {/* Bottom-Right Amazon Book Format Pill */}
+                                            {/* Bottom-Right Book Format Pill */}
                                             <button
                                                 onClick={() =>
                                                     setPreviewBook({
@@ -2059,17 +2058,17 @@ export default function Bag() {
                                                     coverVariant: book.coverVariant
                                                 })
                                             }
-                                            className="text-[12.5px] font-normal text-[#222222] truncate hover:underline cursor-pointer"
+                                            className="text-[12.5px] font-normal text-[var(--text-main)] truncate hover:underline cursor-pointer"
                                             title={book.title}
                                         >
                                             {book.title}
                                         </h3>
 
                                         {/* Seller / Star Seller Subline */}
-                                        <div className="flex items-center gap-1 text-[11.5px] text-stone-500 mt-0.5 truncate">
+                                        <div className="flex items-center gap-1 text-[11.5px] text-[var(--text-muted)] mt-0.5 truncate">
                                             {book.isStarSeller && (
                                                 <span
-                                                    className="inline-flex items-center justify-center w-3.5 h-3.5 rounded-full bg-[#6529b2] text-white text-[8px] shrink-0"
+                                                    className="inline-flex items-center justify-center w-3.5 h-3.5 rounded-full bg-[var(--color-accent-badge)] text-white text-[8px] shrink-0"
                                                     title="Star Bookshop Seller"
                                                 >
                                                     ★
@@ -2081,14 +2080,14 @@ export default function Bag() {
                                         {/* Price & Discount Block */}
                                         <div className="mt-1">
                                             <div
-                                                className={`text-[13.5px] font-bold leading-tight ${book.discountPercent ? 'text-[#0f743b]' : 'text-[#222222]'
+                                                className={`text-[13.5px] font-bold leading-tight ${book.discountPercent ? 'text-[var(--color-success)]' : 'text-[var(--text-main)]'
                                                     }`}
                                             >
                                                 USD {book.price.toFixed(2)}
                                             </div>
 
                                             {book.originalPrice && book.discountPercent && (
-                                                <div className="text-[11px] text-stone-500 mt-0.5">
+                                                <div className="text-[11px] text-[var(--text-muted)] mt-0.5">
                                                     <span className="line-through">
                                                         USD {book.originalPrice.toFixed(2)}
                                                     </span>{' '}
@@ -2100,15 +2099,15 @@ export default function Bag() {
                                         {/* Free shipping green pill OR Digital Download line */}
                                         {book.freeShipping && (
                                             <div className="mt-1">
-                                                <span className="inline-block px-1.5 py-0.5 rounded bg-[#a2e8b9] text-[#114624] text-[10px] font-bold">
+                                                <span className="inline-block px-1.5 py-0.5 rounded bg-[var(--color-success-bg)] text-[var(--color-success)] text-[10px] font-bold">
                                                     FREE shipping
                                                 </span>
                                             </div>
                                         )}
 
                                         {book.isDigitalDownload && (
-                                            <div className="flex items-center gap-1 text-[11px] text-stone-600 mt-1">
-                                                <CloudDownload className="w-3 h-3 text-[#2563eb]" />
+                                            <div className="flex items-center gap-1 text-[11px] text-[var(--text-muted)] mt-1">
+                                                <CloudDownload className="w-3 h-3 text-[var(--color-primary)]" />
                                                 <span>Digital Download</span>
                                             </div>
                                         )}
@@ -2118,7 +2117,7 @@ export default function Bag() {
                                     <div className="mt-2.5">
                                         <button
                                             onClick={() => handleAddRelatedToBag(book)}
-                                            className="inline-flex items-center justify-center gap-1 px-3.5 py-1.5 rounded-full border border-stone-400 hover:border-stone-900 hover:bg-stone-50 text-[12px] font-semibold text-[#222222] transition-all cursor-pointer"
+                                            className="inline-flex items-center justify-center gap-1 px-3.5 py-1.5 rounded-[var(--radius-btn)] border border-[var(--border-strong)] hover:border-[var(--border-focus)] hover:bg-[var(--bg-hover)] text-[12px] font-semibold text-[var(--text-main)] transition-all cursor-pointer"
                                         >
                                             <span>+ Add to bag</span>
                                         </button>
@@ -2148,7 +2147,7 @@ export default function Bag() {
 
                     {/* Right: Copyright & Policy Links */}
                     <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-1.5 text-[var(--text-muted)]">
-                        <span>© 2026 Shastraloka (ශාස්ත්රාලෝක), Inc.</span>
+                        <span>© 2026 Shastraloka Heritage Inc.</span>
                         <a href="#terms" onClick={(e) => e.preventDefault()} className="hover:underline">
                             Terms of Use
                         </a>
@@ -2173,7 +2172,7 @@ export default function Bag() {
                 {/* Bottom Merchant Legal Disclosure Block */}
                 <div className="border-t border-[var(--border-subtle)] bg-[var(--bg-wash)] py-6 px-4 text-center text-[11px] text-[var(--text-muted)] space-y-2">
                     <p className="max-w-[960px] mx-auto">
-                        Shastraloka (ශාස්ත්රාලෝක) — Sri Lanka&apos;s Premier Online Bookstore • shastraloka.lk | ශාස්ත්රාලෝක.ලංකා
+                        Shastraloka — Sri Lanka&apos;s Premier Online Bookstore • shastraloka.lk
                     </p>
                 </div>
             </footer>
@@ -2183,14 +2182,14 @@ export default function Bag() {
             {/* ------------------------------------------------------------------- */}
             {editingItem && (
                 <div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4">
-                    <div className="bg-[var(--bg-card)] text-[var(--text-main)] rounded-2xl max-w-md w-full p-6 shadow-2xl border border-[var(--border-subtle)]">
-                        <div className="flex items-center justify-between pb-3 border-b border-stone-200">
-                            <h3 className="text-base font-bold text-[#222222]">
+                    <div className="bg-[var(--bg-card)] text-[var(--text-main)] rounded-[var(--radius-modal)] max-w-md w-full p-6 shadow-2xl border border-[var(--border-subtle)]">
+                        <div className="flex items-center justify-between pb-3 border-b border-[var(--border-subtle)]">
+                            <h3 className="text-base font-bold text-[var(--text-main)]">
                                 Edit Book Edition & Personalization
                             </h3>
                             <button
                                 onClick={() => setEditingItem(null)}
-                                className="p-1 rounded-full hover:bg-stone-100"
+                                className="p-1 rounded-full hover:bg-[var(--bg-hover)]"
                             >
                                 <X className="w-4 h-4" />
                             </button>
@@ -2198,7 +2197,7 @@ export default function Bag() {
 
                         <div className="py-4 space-y-4 text-xs">
                             <div>
-                                <label className="block font-semibold text-stone-700 mb-1.5">
+                                <label className="block font-semibold text-[var(--text-muted)] mb-1.5">
                                     Select Cloth Hardcover Color:
                                 </label>
                                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
@@ -2211,8 +2210,8 @@ export default function Bag() {
                                                     setEditingItem({ ...editingItem, selectedEdition: col })
                                                 }
                                                 className={`px-2 py-1.5 rounded-lg border text-[11px] font-medium ${editingItem.selectedEdition === col
-                                                    ? 'border-[#222222] bg-[#222222] text-white'
-                                                    : 'border-stone-300 hover:border-stone-500'
+                                                    ? 'border-[var(--pill-active-bg)] bg-[var(--pill-active-bg)] text-[var(--pill-active-text)]'
+                                                    : 'border-[var(--border-subtle)] hover:border-[var(--border-focus)]'
                                                     }`}
                                             >
                                                 {col}
@@ -2223,15 +2222,15 @@ export default function Bag() {
                             </div>
 
                             <div>
-                                <label className="block font-semibold text-stone-700 mb-1">
-                                    Amazon Book Format & Packaging:
+                                <label className="block font-semibold text-[var(--text-muted)] mb-1">
+                                    Book Format & Packaging:
                                 </label>
                                 <select
                                     value={editingItem.customOption}
                                     onChange={(e) =>
                                         setEditingItem({ ...editingItem, customOption: e.target.value })
                                     }
-                                    className="w-full h-9 px-3 rounded-lg border border-stone-300 text-xs"
+                                    className="w-full h-9 px-3 rounded-lg border border-[var(--border-subtle)] bg-[var(--bg-input)] text-xs"
                                 >
                                     <option value="Yes + Gift book bag">
                                         Yes + Velvet Book Bag & Botanical Bookmark
@@ -2246,10 +2245,10 @@ export default function Bag() {
                             </div>
                         </div>
 
-                        <div className="flex justify-end gap-2 pt-3 border-t border-stone-200">
+                        <div className="flex justify-end gap-2 pt-3 border-t border-[var(--border-subtle)]">
                             <button
                                 onClick={() => setEditingItem(null)}
-                                className="px-4 py-2 rounded-full text-xs font-semibold text-stone-600 hover:bg-stone-100"
+                                className="px-4 py-2 rounded-[var(--radius-btn)] text-xs font-semibold text-[var(--text-muted)] hover:bg-[var(--bg-hover)]"
                             >
                                 Cancel
                             </button>
@@ -2277,7 +2276,7 @@ export default function Bag() {
                                     setEditingItem(null);
                                     triggerToast('Updated book edition preferences in your bag');
                                 }}
-                                className="px-5 py-2 rounded-full bg-[#222222] text-white text-xs font-semibold hover:bg-stone-800"
+                                className="px-5 py-2 rounded-[var(--radius-btn)] bg-[var(--pill-active-bg)] text-[var(--pill-active-text)] text-xs font-semibold hover:opacity-90"
                             >
                                 Save changes
                             </button>
@@ -2287,51 +2286,51 @@ export default function Bag() {
             )}
 
             {/* ------------------------------------------------------------------- */}
-            {/* MODAL 2: AMAZON "LOOK INSIDE" & PINTEREST PIN PREVIEW               */}
+            {/* MODAL 2: "LOOK INSIDE" & EDITION PREVIEW                            */}
             {/* ------------------------------------------------------------------- */}
             {previewBook && (
                 <div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4">
-                    <div className="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl border border-stone-200">
-                        <div className="flex items-center justify-between pb-3 border-b border-stone-200">
+                    <div className="bg-[var(--bg-card)] text-[var(--text-main)] rounded-[var(--radius-modal)] max-w-lg w-full p-6 shadow-2xl border border-[var(--border-subtle)]">
+                        <div className="flex items-center justify-between pb-3 border-b border-[var(--border-subtle)]">
                             <div className="flex items-center gap-2">
-                                <BookOpen className="w-4 h-4 text-[#f1641e]" />
-                                <span className="text-xs font-bold uppercase tracking-wider text-stone-500">
-                                    Amazon Look Inside • Book Preview
+                                <BookOpen className="w-4 h-4 text-[var(--color-primary)]" />
+                                <span className="text-xs font-bold uppercase tracking-wider text-[var(--text-muted)]">
+                                    Look Inside • Book Preview
                                 </span>
                             </div>
                             <button
                                 onClick={() => setPreviewBook(null)}
-                                className="p-1 rounded-full hover:bg-stone-100"
+                                className="p-1 rounded-full hover:bg-[var(--bg-hover)]"
                             >
                                 <X className="w-4 h-4" />
                             </button>
                         </div>
 
                         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 py-4">
-                            <div className="aspect-square rounded-xl overflow-hidden border border-stone-200">
+                            <div className="aspect-square rounded-xl overflow-hidden border border-[var(--border-subtle)]">
                                 <BookCoverArtwork variant={previewBook.coverVariant} />
                             </div>
                             <div className="sm:col-span-2 flex flex-col justify-between">
                                 <div>
-                                    <span className="inline-block px-2 py-0.5 rounded bg-amber-100 text-amber-900 text-[10px] font-bold mb-1">
+                                    <span className="inline-block px-2 py-0.5 rounded bg-[var(--surface-cream)] text-[var(--brand-brown)] text-[10px] font-bold mb-1">
                                         {previewBook.format}
                                     </span>
-                                    <h4 className="text-sm font-bold text-[#222222] leading-snug">
+                                    <h4 className="text-sm font-bold text-[var(--text-main)] leading-snug">
                                         {previewBook.title}
                                     </h4>
-                                    <p className="text-xs text-stone-500 mt-0.5">by {previewBook.author}</p>
-                                    <p className="text-xs text-stone-600 mt-2.5 leading-relaxed">
-                                        Includes high-resolution printable book plates, collector binding specs, and instant Kindle / tablet compatibility. Curated from our top-pinned cozy reading boards.
+                                    <p className="text-xs text-[var(--text-muted)] mt-0.5">by {previewBook.author}</p>
+                                    <p className="text-xs text-[var(--text-body)] mt-2.5 leading-relaxed">
+                                        Includes high-resolution printable book plates, collector binding specs, and instant Kindle / tablet compatibility. Curated from our top cozy reading collections.
                                     </p>
                                 </div>
 
-                                <div className="mt-4 pt-3 border-t border-stone-100 flex items-center justify-between">
-                                    <span className="text-base font-bold text-[#0f743b]">
+                                <div className="mt-4 pt-3 border-t border-[var(--border-subtle)] flex items-center justify-between">
+                                    <span className="text-base font-bold text-[var(--color-success)]">
                                         USD {previewBook.price.toFixed(2)}
                                     </span>
                                     <button
                                         onClick={() => setPreviewBook(null)}
-                                        className="px-4 py-1.5 rounded-full bg-[#222222] text-white text-xs font-semibold"
+                                        className="px-4 py-1.5 rounded-[var(--radius-btn)] bg-[var(--pill-active-bg)] text-[var(--pill-active-text)] text-xs font-semibold"
                                     >
                                         Close Preview
                                     </button>
@@ -2347,16 +2346,16 @@ export default function Bag() {
             {/* ------------------------------------------------------------------- */}
             {checkoutSuccessModal && (
                 <div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4">
-                    <div className="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl border border-stone-200 text-center">
-                        <div className="w-12 h-12 rounded-full bg-[#a2e8b9] text-[#114624] flex items-center justify-center mx-auto mb-3">
+                    <div className="bg-[var(--bg-card)] text-[var(--text-main)] rounded-[var(--radius-modal)] max-w-md w-full p-6 shadow-2xl border border-[var(--border-subtle)] text-center">
+                        <div className="w-12 h-12 rounded-full bg-[var(--color-success-bg)] text-[var(--color-success)] flex items-center justify-center mx-auto mb-3">
                             <Check className="w-6 h-6 stroke-[2.5]" />
                         </div>
-                        <h3 className="text-lg font-bold text-[#222222]">
+                        <h3 className="text-lg font-bold text-[var(--text-main)]">
                             Ready to Complete Your Book Bag Order
                         </h3>
-                        <p className="text-xs text-stone-600 mt-1">
+                        <p className="text-xs text-[var(--text-muted)] mt-1">
                             You have <span className="font-semibold">{financials.totalCount} item(s)</span> totaling{' '}
-                            <span className="font-bold text-[#222222]">
+                            <span className="font-bold text-[var(--text-main)]">
                                 USD {financials.grandTotal.toFixed(2)}
                             </span>{' '}
                             (shipping to Sri Lanka + instant digital downloads).
@@ -2364,7 +2363,7 @@ export default function Bag() {
                         <div className="mt-5 flex justify-center gap-2.5">
                             <button
                                 onClick={() => setCheckoutSuccessModal(false)}
-                                className="px-5 py-2 rounded-full bg-[#222222] text-white text-xs font-semibold hover:bg-stone-800 cursor-pointer"
+                                className="px-5 py-2 rounded-[var(--radius-btn)] bg-[var(--pill-active-bg)] text-[var(--pill-active-text)] text-xs font-semibold hover:opacity-90 cursor-pointer"
                             >
                                 Continue Browsing Bag
                             </button>
@@ -2377,8 +2376,8 @@ export default function Bag() {
             {/* FLOATING TOAST FEEDBACK                                             */}
             {/* ------------------------------------------------------------------- */}
             {toastMessage && (
-                <div className="fixed bottom-5 right-5 z-50 bg-[#222222] text-white px-4 py-2.5 rounded-full shadow-lg text-xs font-medium flex items-center gap-2 animate-in fade-in slide-in-from-bottom-2">
-                    <ShoppingBag className="w-3.5 h-3.5 text-[#f1641e]" />
+                <div className="fixed bottom-5 right-5 z-50 bg-[var(--pill-active-bg)] text-[var(--pill-active-text)] px-4 py-2.5 rounded-[var(--radius-btn)] shadow-lg text-xs font-medium flex items-center gap-2 animate-in fade-in slide-in-from-bottom-2">
+                    <Handbag className="w-3.5 h-3.5 text-[var(--color-primary)]" />
                     <span>{toastMessage}</span>
                 </div>
             )}

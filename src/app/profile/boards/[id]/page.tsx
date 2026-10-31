@@ -82,7 +82,7 @@ function BoardDetailContent() {
             {boardBooks.length > 0 && (
               <button
                 onClick={handleAddAllToBag}
-                className="px-5 py-2 rounded-full bg-[#F1641E] hover:bg-[#d45314] text-white font-semibold text-xs cursor-pointer shadow-xs transition-colors flex items-center gap-1.5"
+                className="px-5 py-2 rounded-[var(--radius-btn)] bg-[var(--color-primary)] hover:bg-[var(--color-primary-hover)] text-white font-semibold text-xs cursor-pointer shadow-xs transition-colors flex items-center gap-1.5"
               >
                 <Handbag size={14} />
                 <span>Add All to Bag ({boardBooks.length})</span>
@@ -96,7 +96,7 @@ function BoardDetailContent() {
         <section className="pt-6">
           {boardBooks.length === 0 ? (
             <div className="py-20 text-center space-y-3">
-              <div className="w-16 h-16 rounded-full bg-[var(--bg-input)] text-[#a66523] flex items-center justify-center mx-auto">
+              <div className="w-16 h-16 rounded-full bg-[var(--bg-input)] text-[var(--brand-brown)] flex items-center justify-center mx-auto">
                 <IconBook size={28} />
               </div>
               <h3 className="font-heading font-bold text-xl text-[var(--text-main)]">
@@ -107,7 +107,7 @@ function BoardDetailContent() {
               </p>
               <Link
                 href="/"
-                className="inline-block px-5 py-2 rounded-full bg-[#e60023] hover:bg-[#ad081b] text-white font-semibold text-xs shadow-xs transition-colors"
+                className="inline-block px-5 py-2 rounded-[var(--radius-btn)] bg-[var(--color-primary)] hover:bg-[var(--color-primary-hover)] text-white font-semibold text-xs shadow-xs transition-colors"
               >
                 Explore Treatises
               </Link>

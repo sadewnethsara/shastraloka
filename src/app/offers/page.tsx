@@ -18,6 +18,8 @@ import Header from '../../components/Header';
 import Footer from '../../components/Footer';
 import Toast from '../../components/Toast';
 import CleanBookCard from '../../components/CleanBookCard';
+import OptimizedImage from '../../components/ui/OptimizedImage';
+import ViewportSection from '../../components/ui/ViewportSection';
 import { BOOKS } from '../../data/books';
 import {
   CELEBRATION_EVENTS,
@@ -323,6 +325,7 @@ function SpecialOffersContent() {
         </section>
 
         {/* 3. UPCOMING OFFERS FOR FUTURE CELEBRATION DATES */}
+        <ViewportSection minHeight={420} skeletonTitle="Upcoming Offers for Future Celebration Dates">
         <section id="upcoming-calendar-offers" className="space-y-6 pt-4 border-t border-[var(--border-subtle)]">
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
             <div>
@@ -419,13 +422,17 @@ function SpecialOffersContent() {
                     <div className="flex items-center justify-between gap-3 pt-1">
                       <div className="flex items-center -space-x-2">
                         {previewBooks.map((b) => (
-                          <img
+                          <div
                             key={b.id}
-                            src={b.coverImage}
-                            alt={b.title}
-                            referrerPolicy="no-referrer"
-                            className="w-9 h-12 rounded-md object-cover border-2 border-[var(--bg-card)] shadow-2xs"
-                          />
+                            className="relative w-9 h-12 rounded-md overflow-hidden border-2 border-[var(--bg-card)] shadow-2xs bg-[var(--bg-wash)]"
+                          >
+                            <OptimizedImage
+                              src={b.coverImage}
+                              alt={b.title}
+                              targetWidth={120}
+                              className="w-full h-full object-cover"
+                            />
+                          </div>
                         ))}
                       </div>
 
@@ -479,6 +486,7 @@ function SpecialOffersContent() {
             })}
           </div>
         </section>
+        </ViewportSection>
       </main>
 
       <Toast />

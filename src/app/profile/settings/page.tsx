@@ -6,7 +6,7 @@ import { useApp, ThemeMode } from '../../../context/AppContext';
 import { CELEBRATION_EVENTS } from '../../../data/celebrations';
 import Header from '../../../components/Header';
 import Footer from '../../../components/Footer';
-import { Shield, Palette, MapPin, Check, ArrowLeft, CalendarHeart, Sparkles } from 'lucide-react';
+import { Shield, Palette, MapPin, Check, ArrowLeft, CalendarHeart, Sparkles, Wifi, Cpu } from 'lucide-react';
 
 export default function ProfileSettingsPage() {
   const {
@@ -16,6 +16,11 @@ export default function ProfileSettingsPage() {
     isCelebrationMode,
     setActiveCelebrationById,
     showToast,
+    dataSaverMode,
+    setDataSaverMode,
+    isLowDataActive,
+    isLowEndDevice,
+    networkProfile,
   } = useApp();
   const [fullName, setFullName] = useState('Sadew Wijesinghe');
   const [district, setDistrict] = useState('Colombo');
@@ -29,10 +34,33 @@ export default function ProfileSettingsPage() {
     showToast('Reader profile & privacy settings saved');
   };
 
-  const standardThemes: { id: ThemeMode; label: string; desc: string; swatch: string }[] = [
-    { id: 'light', label: 'Warm Parchment (Light)', desc: 'Clean ivory & classic ink', swatch: '#FAF8F5' },
-    { id: 'sepia', label: 'Palm-Leaf Ola (Sepia)', desc: 'Traditional warm manuscript tone', swatch: '#F4ECD8' },
-    { id: 'emerald', label: 'Ceylon Sanctuary (Emerald)', desc: 'Deep monastic forest palette', swatch: '#0D2118' },
+  const standardThemes: {
+    id: ThemeMode;
+    label: string;
+    desc: string;
+    swatch: string;
+    accentSwatch?: string;
+    badge?: string;
+  }[] = [
+    { id: 'light', label: 'Warm Parchment (Light)', desc: 'Clean ivory & classic ink', swatch: '#FAF8F5', accentSwatch: '#C84B31' },
+    { id: 'sepia', label: 'Palm-Leaf Ola (Sepia)', desc: 'Traditional warm manuscript tone', swatch: '#F4ECD8', accentSwatch: '#9A461D' },
+    { id: 'emerald', label: 'Ceylon Sanctuary (Emerald)', desc: 'Deep monastic forest palette', swatch: '#0D2118', accentSwatch: '#0F766E' },
+    {
+      id: 'datacamp',
+      label: 'DataCamp Studio',
+      desc: 'Waffles Navy (#05192D), Neon Green (#03EF62) & Warm Editorial Cream',
+      swatch: '#05192D',
+      accentSwatch: '#03EF62',
+      badge: 'Upgraded',
+    },
+    {
+      id: 'aws-skillbuilder',
+      label: 'AWS Skill Builder',
+      desc: 'Squid Ink (#232F3E), AWS Orange (#FF9900) & Cloudscape Blue (#0972D3)',
+      swatch: '#232F3E',
+      accentSwatch: '#FF9900',
+      badge: 'New',
+    },
   ];
 
   const celebrationThemes: {
@@ -137,13 +165,23 @@ export default function ProfileSettingsPage() {
                       : 'border-[var(--border-subtle)] bg-[var(--bg-main)] hover:border-[var(--border-strong)]'
                   }`}
                 >
-                  <div className="flex items-center gap-3">
-                    <span
-                      className="w-6 h-6 rounded-full border border-black/15 shrink-0 shadow-2xs"
-                      style={{ backgroundColor: t.swatch }}
-                    />
-                    <div>
-                      <p className="text-sm font-bold text-[var(--text-main)]">{t.label}</p>
+                  <div className="flex items-center gap-3 min-w-0 pr-2">
+                    <span className="relative w-7 h-7 rounded-full border border-black/15 shrink-0 shadow-2xs overflow-hidden flex">
+                      <span className="w-1/2 h-full" style={{ backgroundColor: t.swatch }} />
+                      <span
+                        className="w-1/2 h-full"
+                        style={{ backgroundColor: t.accentSwatch || t.swatch }}
+                      />
+                    </span>
+                    <div className="min-w-0">
+                      <div className="flex items-center gap-1.5 flex-wrap">
+                        <p className="text-sm font-bold text-[var(--text-main)]">{t.label}</p>
+                        {t.badge && (
+                          <span className="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-[var(--bg-surface)] text-[var(--color-primary)] border border-[var(--border-subtle)]">
+                            {t.badge}
+                          </span>
+                        )}
+                      </div>
                       <p className="text-xs text-[var(--text-muted)] mt-0.5">{t.desc}</p>
                     </div>
                   </div>
@@ -248,11 +286,94 @@ export default function ProfileSettingsPage() {
           </div>
         </section>
 
+        {/* Data Saver, Scroll Loading & Low-End Device Optimization */}
+        <section className="p-6 rounded-3xl bg-[var(--bg-surface)] border border-[var(--border-subtle)] space-y-5">
+          <div className="flex items-center justify-between gap-2 flex-wrap">
+            <div className="flex items-center gap-2">
+              <Wifi className="w-5 h-5 text-[var(--color-primary)]" />
+              <div>
+                <h2 className="font-heading font-bold text-xl font-normal text-[var(--text-main)]">
+                  Data Saver &amp; Scroll Loading Optimization
+                </h2>
+                <p className="text-xs text-[var(--text-muted)]">
+                  Control how book covers, catalog batches, and below-the-fold sections stream as you scroll.
+                </p>
+              </div>
+            </div>
+            <span className="text-xs font-semibold text-[var(--text-muted)]">
+              Status: <strong className="text-[var(--color-primary)]">{isLowDataActive ? 'Data Saver Active' : 'Standard Progressive'}</strong>
+            </span>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            {[
+              {
+                id: 'auto' as const,
+                label: 'Auto-Detect Network',
+                desc: 'Automatically switches to low-data batching on 2G/3G or Save-Data links',
+              },
+              {
+                id: 'on' as const,
+                label: 'Data Saver Always On',
+                desc: 'Loads smaller 6-book batches with manual Load More to save mobile data',
+              },
+              {
+                id: 'off' as const,
+                label: 'Standard High-Speed',
+                desc: 'Automatic infinite scroll with progressive viewport image preloading',
+              },
+            ].map((option) => {
+              const active = dataSaverMode === option.id;
+              return (
+                <button
+                  key={option.id}
+                  type="button"
+                  onClick={() => {
+                    setDataSaverMode(option.id);
+                    showToast(`Network optimization set to ${option.label}`);
+                  }}
+                  className={`p-4 rounded-2xl border text-left transition-all flex flex-col justify-between gap-2 cursor-pointer ${
+                    active
+                      ? 'border-[var(--color-primary)] bg-[var(--bg-wash)] ring-1 ring-[var(--color-primary)]'
+                      : 'border-[var(--border-subtle)] bg-[var(--bg-main)] hover:border-[var(--border-strong)]'
+                  }`}
+                >
+                  <div className="flex items-center justify-between gap-2 w-full">
+                    <span className="text-sm font-bold text-[var(--text-main)]">{option.label}</span>
+                    {active && <Check className="w-4 h-4 text-[var(--color-primary)] shrink-0" />}
+                  </div>
+                  <p className="text-xs text-[var(--text-muted)] leading-relaxed">{option.desc}</p>
+                </button>
+              );
+            })}
+          </div>
+
+          <div className="pt-3 border-t border-[var(--border-subtle)] flex flex-wrap items-center justify-between gap-3 text-xs text-[var(--text-muted)]">
+            <div className="flex items-center gap-2">
+              <Cpu className="w-4 h-4 text-[var(--color-primary)] shrink-0" />
+              <span>
+                Device Profile:{' '}
+                <strong className="text-[var(--text-main)]">
+                  {isLowEndDevice ? 'Lite DOM & Reduced Blur Mode' : 'Full Hardware Acceleration'}
+                </strong>
+                {networkProfile.cpuCores ? ` · ${networkProfile.cpuCores} CPU threads` : ''}
+              </span>
+            </div>
+            <span>
+              Detected Link:{' '}
+              <strong className="text-[var(--text-main)] uppercase">
+                {networkProfile.effectiveType || 'Standard'}
+              </strong>
+              {networkProfile.saveDataEnabled ? ' · Browser Save-Data On' : ''}
+            </span>
+          </div>
+        </section>
+
         {/* Courier & Privacy Form */}
         <form onSubmit={handleSave} className="space-y-6">
           <section className="p-6 rounded-3xl bg-[var(--bg-surface)] border border-[var(--border-subtle)] space-y-4">
             <div className="flex items-center gap-2">
-              <MapPin className="w-5 h-5 text-[#F1641E]" />
+              <MapPin className="w-5 h-5 text-[var(--color-primary)]" />
               <h2 className="font-heading font-bold text-xl font-normal text-[var(--text-main)]">
                 Default Islandwide Courier Address
               </h2>
@@ -292,7 +413,7 @@ export default function ProfileSettingsPage() {
 
           <section className="p-6 rounded-3xl bg-[var(--bg-surface)] border border-[var(--border-subtle)] space-y-4">
             <div className="flex items-center gap-2">
-              <Shield className="w-5 h-5 text-[#F1641E]" />
+              <Shield className="w-5 h-5 text-[var(--color-primary)]" />
               <h2 className="font-heading font-bold text-xl font-normal text-[var(--text-main)]">
                 Privacy &amp; Notification Controls
               </h2>
@@ -307,7 +428,7 @@ export default function ProfileSettingsPage() {
                 type="checkbox"
                 checked={emailAlerts}
                 onChange={(e) => setEmailAlerts(e.target.checked)}
-                className="w-4 h-4 accent-[#F1641E]"
+                className="w-4 h-4 accent-[var(--color-primary)]"
               />
             </label>
 
@@ -320,7 +441,7 @@ export default function ProfileSettingsPage() {
                 type="checkbox"
                 checked={smsCourier}
                 onChange={(e) => setSmsCourier(e.target.checked)}
-                className="w-4 h-4 accent-[#F1641E]"
+                className="w-4 h-4 accent-[var(--color-primary)]"
               />
             </label>
 
@@ -333,7 +454,7 @@ export default function ProfileSettingsPage() {
                 type="checkbox"
                 checked={PersonalizedOffers}
                 onChange={(e) => setPersonalizedOffers(e.target.checked)}
-                className="w-4 h-4 accent-[#F1641E]"
+                className="w-4 h-4 accent-[var(--color-primary)]"
               />
             </label>
           </section>

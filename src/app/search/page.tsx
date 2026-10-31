@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useMemo, Suspense } from 'react';
+import React, { useState, useMemo, useEffect, useRef, Suspense } from 'react';
 import Link from 'next/link';
 import { useSearchParams, useRouter } from 'next/navigation';
 import {
@@ -18,12 +18,13 @@ import {
   BookOpen,
   CheckCircle2,
   Eye,
+  ChevronDown,
+  Wifi,
 } from 'lucide-react';
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
-import BookModal from '../../components/BookModal';
-import BoardsModal from '../../components/BoardsModal';
 import Toast from '../../components/Toast';
+import OptimizedImage from '../../components/ui/OptimizedImage';
 import { BOOKS, CATEGORIES } from '../../data/books';
 import { useApp } from '../../context/AppContext';
 import {
@@ -31,6 +32,10 @@ import {
   RankedBook,
   SearchFilterOptions,
 } from '../../utils/searchEngine';
+import {
+  getScrollLoadingConfig,
+  prefetchImageUrlsIdle,
+} from '../../utils/networkOptimization';
 
 const FALLBACK_BOOK_COVER =
   'https://grantha.lk/media/catalog/product/cache/5fa2393eb818a642e720faf99039a3de/m/a/manikkawatha_1.jpg';
@@ -188,9 +193,9 @@ function PinterestBookPin({ item, index, activeQuery }: PinterestBookPinProps) {
   return (
     <div
       data-testid={`pinterest-book-card-${book.id}`}
-      className={`masonry-item break-inside-avoid mb-4 sm:mb-5 group relative select-none ${
+      className={`cv-card masonry-item break-inside-avoid mb-4 sm:mb-5 group relative select-none ${
         isFirstTopMatch
-          ? 'ring-2 ring-[#F1641E] rounded-2xl p-1.5 bg-gradient-to-b from-[#F1641E]/8 to-transparent'
+          ? 'ring-2 ring-[var(--color-primary)] rounded-[var(--radius-card)] p-1.5 bg-[var(--color-primary-subtle)]'
           : ''
       }`}
       onMouseLeave={() => {
@@ -200,7 +205,7 @@ function PinterestBookPin({ item, index, activeQuery }: PinterestBookPinProps) {
     >
       {/* Top Match Callout Banner for Card #1 when user searches a specific or partial name */}
       {isFirstTopMatch && (
-        <div className="flex items-center justify-between gap-1.5 px-2.5 py-1 mb-1.5 rounded-xl bg-[#F1641E] text-white text-[10px] sm:text-[11px] font-bold tracking-wide shadow-xs">
+        <div className="flex items-center justify-between gap-1.5 px-2.5 py-1 mb-1.5 rounded-xl bg-[var(--color-primary)] text-white text-[10px] sm:text-[11px] font-bold tracking-wide shadow-xs">
           <span className="flex items-center gap-1 truncate">
             <Sparkles className="w-3 h-3 shrink-0" />
             <span>
@@ -213,18 +218,17 @@ function PinterestBookPin({ item, index, activeQuery }: PinterestBookPinProps) {
         </div>
       )}
 
-      {/* PINTEREST IMAGE CONTAINER */}
+      {/* BOOK COVER IMAGE CONTAINER */}
       <div
         onClick={() => router.push(`/books/${book.id}`)}
         style={{ paddingBottom: `${aspectPercent}%` }}
-        className="relative w-full rounded-2xl overflow-hidden bg-neutral-200 dark:bg-neutral-800 cursor-pointer shadow-xs group-hover:shadow-md transition-all duration-200"
+        className="relative w-full rounded-[var(--radius-card)] overflow-hidden bg-[var(--bg-wash)] cursor-pointer shadow-xs group-hover:shadow-md transition-all duration-200"
       >
-        <img
+        <OptimizedImage
           src={book.coverImage}
+          fallbackSrc={FALLBACK_BOOK_COVER}
           alt={book.title}
-          referrerPolicy="no-referrer"
-          onError={handleCoverError}
-          loading={index < 6 ? 'eager' : 'lazy'}
+          priority={index < 4}
           className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
         />
 
@@ -237,7 +241,7 @@ function PinterestBookPin({ item, index, activeQuery }: PinterestBookPinProps) {
             <span
               className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold tracking-tight shadow-sm backdrop-blur-md ${
                 matchTier === 'exact'
-                  ? 'bg-[#F1641E] text-white'
+                  ? 'bg-[var(--color-primary)] text-white'
                   : isPrimaryMatch
                   ? 'bg-amber-500 text-neutral-950'
                   : 'bg-black/65 text-white border border-white/15'
@@ -246,7 +250,7 @@ function PinterestBookPin({ item, index, activeQuery }: PinterestBookPinProps) {
               {matchLabel}
             </span>
           ) : book.featured ? (
-            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#fdf6e8] text-[#a66523] border border-[#f5e8c8] shadow-sm">
+            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-[var(--surface-cream)] text-[var(--brand-brown)] border border-[var(--border-subtle)] shadow-sm">
               Bestseller
             </span>
           ) : null}
@@ -260,13 +264,13 @@ function PinterestBookPin({ item, index, activeQuery }: PinterestBookPinProps) {
             saveToBoard(book.id);
           }}
           aria-label={saved ? 'Saved to board' : 'Save to board'}
-          className={`absolute top-2.5 right-2.5 z-20 h-8 px-2.5 rounded-full text-xs font-bold flex items-center gap-1 shadow-md transition-all cursor-pointer ${
+          className={`absolute top-2.5 right-2.5 z-20 h-8 px-2.5 rounded-[var(--radius-btn)] text-xs font-bold flex items-center gap-1 shadow-md transition-all cursor-pointer ${
             saved
-              ? 'bg-neutral-900 text-white'
-              : 'bg-[#e60023] hover:bg-[#ad081b] text-white sm:opacity-0 sm:group-hover:opacity-100'
+              ? 'bg-[var(--pill-active-bg)] text-[var(--pill-active-text)]'
+              : 'bg-[var(--color-primary)] hover:bg-[var(--color-primary-hover)] text-white sm:opacity-0 sm:group-hover:opacity-100'
           }`}
         >
-          <Heart className={`w-3.5 h-3.5 ${saved ? 'fill-white' : ''}`} />
+          <Heart className={`w-3.5 h-3.5 ${saved ? 'fill-current' : ''}`} />
           <span className="hidden sm:inline">{saved ? 'Saved' : 'Save'}</span>
         </button>
 
@@ -314,7 +318,7 @@ function PinterestBookPin({ item, index, activeQuery }: PinterestBookPinProps) {
               LKR {book.price.toLocaleString()}
             </span>
             {discountPercent > 0 && (
-              <span className="px-1.5 py-0.2 rounded-md bg-[#e60023] text-white text-[9px] sm:text-[10px] font-extrabold uppercase tracking-wider">
+              <span className="px-1.5 py-0.2 rounded-md bg-[var(--color-accent-badge)] text-[var(--color-accent-badge-text)] text-[9px] sm:text-[10px] font-extrabold uppercase tracking-wider">
                 -{discountPercent}% OFF
               </span>
             )}
@@ -329,7 +333,7 @@ function PinterestBookPin({ item, index, activeQuery }: PinterestBookPinProps) {
             }}
             title="Add to Shopping Bag"
             aria-label={`Add ${book.title} to Bag`}
-            className="pointer-events-auto w-8 h-8 rounded-full bg-white/95 hover:bg-[#F1641E] text-neutral-900 hover:text-white flex items-center justify-center shadow-md transition-colors cursor-pointer shrink-0"
+            className="pointer-events-auto w-8 h-8 rounded-full bg-white/95 hover:bg-[var(--color-primary)] text-neutral-900 hover:text-white flex items-center justify-center shadow-md transition-colors cursor-pointer shrink-0"
           >
             <Handbag className="w-4 h-4" />
           </button>
@@ -337,14 +341,14 @@ function PinterestBookPin({ item, index, activeQuery }: PinterestBookPinProps) {
       </div>
 
       {/* ===================================================================
-           PINTEREST + AMAZON BOOKSTORE METADATA UNDERNEATH
+           BOOKSTORE METADATA UNDERNEATH
          =================================================================== */}
       <div className="pt-2 px-1">
-        {/* Title Row + Pinterest "..." Menu Button */}
+        {/* Title Row + "..." Menu Button */}
         <div className="flex items-start justify-between gap-1.5">
           <Link
             href={`/books/${book.id}`}
-            className="font-heading font-bold text-xs sm:text-[13px] text-[var(--text-main)] hover:text-[#F1641E] transition-colors line-clamp-2 leading-snug"
+            className="font-heading font-bold text-xs sm:text-[13px] text-[var(--text-main)] hover:text-[var(--color-primary)] transition-colors line-clamp-2 leading-snug"
           >
             {book.title}
           </Link>
@@ -413,15 +417,15 @@ function PinterestBookPin({ item, index, activeQuery }: PinterestBookPinProps) {
           </div>
         </div>
 
-        {/* Sinhala Title & Author */}
+        {/* Category & Author */}
         <p className="text-[11px] text-[var(--text-muted)] truncate mt-0.5">
-          <span className="text-[#a66523] dark:text-amber-400 font-medium">
+          <span className="text-[var(--brand-brown)] font-medium">
             {book.category}
           </span>{' '}
           • {book.author}
         </p>
 
-        {/* Amazon-Inspired Rating + Binding Format + Small LKR Price & Offer Row */}
+        {/* Rating + Binding Format + Small LKR Price & Offer Row */}
         <div className="flex flex-wrap items-center justify-between gap-1 mt-1.5">
           <div className="flex items-center gap-1 text-[11px]">
             <Star className="w-3 h-3 fill-amber-400 text-amber-400 shrink-0" />
@@ -431,13 +435,13 @@ function PinterestBookPin({ item, index, activeQuery }: PinterestBookPinProps) {
             </span>
           </div>
 
-          <span className="text-[10px] font-medium px-1.5 py-0.5 rounded bg-neutral-100 dark:bg-neutral-800 text-[var(--text-muted)] truncate max-w-[125px]">
+          <span className="text-[10px] font-medium px-1.5 py-0.5 rounded bg-[var(--pill-bg)] text-[var(--text-muted)] truncate max-w-[125px]">
             {book.sellerName || book.binding.replace(' Edition', '')}
           </span>
         </div>
 
-        {/* Compact Amazon Bookstore Price & Offer Tag Row */}
-        <div className="flex items-center justify-between gap-1.5 mt-1.5 pt-1.5 border-t border-neutral-200/60 dark:border-neutral-800/80">
+        {/* Compact Bookstore Price & Offer Tag Row */}
+        <div className="flex items-center justify-between gap-1.5 mt-1.5 pt-1.5 border-t border-[var(--border-subtle)]">
           <div className="flex items-baseline gap-1 flex-wrap">
             <span className="text-xs font-extrabold text-[var(--text-main)]">
               LKR {book.price.toLocaleString()}
@@ -446,7 +450,7 @@ function PinterestBookPin({ item, index, activeQuery }: PinterestBookPinProps) {
               LKR {book.originalPrice.toLocaleString()}
             </span>
             {discountPercent > 0 && (
-              <span className="text-[10px] font-bold text-[#e60023] dark:text-rose-400">
+              <span className="text-[10px] font-bold text-[var(--color-accent-badge)]">
                 ({discountPercent}% off)
               </span>
             )}
@@ -455,7 +459,7 @@ function PinterestBookPin({ item, index, activeQuery }: PinterestBookPinProps) {
           <button
             type="button"
             onClick={() => addToBag(book)}
-            className="h-6 px-2.5 rounded-full text-[10px] font-bold bg-[var(--bg-input)] hover:bg-[#F1641E] hover:text-white text-[var(--text-main)] transition-colors flex items-center gap-1 cursor-pointer shrink-0"
+            className="h-6 px-2.5 rounded-[var(--radius-btn)] text-[10px] font-bold bg-[var(--bg-input)] hover:bg-[var(--color-primary)] hover:text-white text-[var(--text-main)] transition-colors flex items-center gap-1 cursor-pointer shrink-0"
           >
             <Handbag className="w-3 h-3" />
             <span>+ Bag</span>
@@ -480,7 +484,12 @@ function SearchContent() {
     setSearchQuery,
     selectedCategory,
     setSelectedCategory,
+    isLowDataActive,
+    isLowEndDevice,
   } = useApp();
+
+  const scrollConfig = getScrollLoadingConfig(isLowDataActive, isLowEndDevice);
+  const sentinelRef = useRef<HTMLDivElement | null>(null);
 
   // Filter States (Amazon Bookstore + Pinterest Filters)
   const [filtersOpen, setFiltersOpen] = useState(false);
@@ -490,6 +499,7 @@ function SearchContent() {
   const [minRating, setMinRating] = useState<number>(0);
   const [sortBy, setSortBy] = useState<SearchFilterOptions['sortBy']>('relevance');
   const [shopStripIndex, setShopStripIndex] = useState(0);
+  const [visiblePinCount, setVisiblePinCount] = useState<number>(scrollConfig.initialBatchSize);
 
   // Determine effective query & category from URL params or global context
   const matchedCatFromUrl = CATEGORIES.find(
@@ -608,6 +618,72 @@ function SearchContent() {
 
   const shopCarouselBooks = searchResult.allItems.slice(shopStripIndex, shopStripIndex + 3);
 
+  // Reset visible batch size when search/filter criteria change
+  const filterSignature = `${activeQuery}|${effectiveCategory}|${bindingFormat}|${priceBracket}|${minDiscount}|${minRating}|${sortBy}|${scrollConfig.initialBatchSize}`;
+  const [prevFilterSig, setPrevFilterSig] = useState<string>(filterSignature);
+  if (filterSignature !== prevFilterSig) {
+    setPrevFilterSig(filterSignature);
+    setVisiblePinCount(scrollConfig.initialBatchSize);
+  }
+
+  const totalPinItems = searchResult.allItems.length;
+  const visiblePinItems = searchResult.allItems.slice(0, visiblePinCount);
+  const hasMorePins = visiblePinCount < totalPinItems;
+  const remainingPins = Math.max(0, totalPinItems - visiblePinCount);
+
+  // Ahead-of-viewport idle prefetching for the next batch of search pin covers
+  useEffect(() => {
+    if (!hasMorePins) return;
+    const nextBatch = searchResult.allItems.slice(
+      visiblePinCount,
+      visiblePinCount + scrollConfig.batchIncrement
+    );
+    const nextUrls = nextBatch.map((item) => item.book.coverImage).filter(Boolean);
+    return prefetchImageUrlsIdle(nextUrls, isLowDataActive, isLowEndDevice);
+  }, [
+    hasMorePins,
+    visiblePinCount,
+    scrollConfig.batchIncrement,
+    searchResult.allItems,
+    isLowDataActive,
+    isLowEndDevice,
+  ]);
+
+  // Seamless Automatic Infinite Scroll Observer (active on both standard and low-data connections)
+  useEffect(() => {
+    if (!hasMorePins || !scrollConfig.autoInfiniteScroll) return;
+    if (typeof window === 'undefined' || !('IntersectionObserver' in window)) return;
+
+    const sentinel = sentinelRef.current;
+    if (!sentinel) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) {
+            setVisiblePinCount((prev) =>
+              Math.min(totalPinItems, prev + scrollConfig.batchIncrement)
+            );
+            break;
+          }
+        }
+      },
+      {
+        rootMargin: scrollConfig.sectionRootMargin,
+        threshold: 0.01,
+      }
+    );
+
+    observer.observe(sentinel);
+    return () => observer.disconnect();
+  }, [
+    hasMorePins,
+    scrollConfig.autoInfiniteScroll,
+    scrollConfig.batchIncrement,
+    scrollConfig.sectionRootMargin,
+    totalPinItems,
+  ]);
+
   return (
     <div className="min-h-screen bg-[var(--bg-main)] text-[var(--text-main)] flex flex-col">
       {/* Global Header (Unchanged Design, with Autocomplete Dropdown) */}
@@ -657,14 +733,14 @@ function SearchContent() {
             aria-label="Toggle bookstore filters"
             className={`h-11 px-3.5 rounded-2xl flex items-center gap-2 font-bold text-xs shrink-0 border transition cursor-pointer ${
               filtersOpen || activeFilterCount > 0
-                ? 'bg-neutral-900 text-white dark:bg-white dark:text-neutral-900 border-transparent shadow-sm'
-                : 'bg-neutral-100 dark:bg-neutral-800/90 text-[var(--text-main)] border-neutral-200 dark:border-neutral-700 hover:bg-neutral-200 dark:hover:bg-neutral-700'
+                ? 'bg-[var(--pill-active-bg)] text-[var(--pill-active-text)] border-transparent shadow-sm'
+                : 'bg-[var(--pill-bg)] text-[var(--text-main)] border-[var(--border-subtle)] hover:bg-[var(--pill-hover)]'
             }`}
           >
             <SlidersHorizontal className="w-4 h-4" />
             <span className="hidden sm:inline">Filters</span>
             {activeFilterCount > 0 && (
-              <span className="w-5 h-5 rounded-full bg-[#F1641E] text-white text-[10px] font-extrabold flex items-center justify-center">
+              <span className="w-5 h-5 rounded-full bg-[var(--color-primary)] text-white text-[10px] font-extrabold flex items-center justify-center">
                 {activeFilterCount}
               </span>
             )}
@@ -687,7 +763,7 @@ function SearchContent() {
                 }
                 style={{ backgroundColor: guide.bg }}
                 className={`h-11 pl-1.5 pr-4 rounded-2xl flex items-center gap-2.5 text-white font-bold text-xs whitespace-nowrap shrink-0 transition-transform active:scale-95 cursor-pointer shadow-xs hover:brightness-110 ${
-                  isSelected ? 'ring-2 ring-offset-2 ring-[#F1641E]' : ''
+                  isSelected ? 'ring-2 ring-offset-2 ring-[var(--color-primary)]' : ''
                 }`}
               >
                 <img
@@ -704,16 +780,16 @@ function SearchContent() {
         </div>
 
         {/* -------------------------------------------------------------------
-            EXPANDABLE AMAZON-INSPIRED BOOKSTORE FILTER DRAWER / PANEL
+            EXPANDABLE BOOKSTORE FILTER DRAWER / PANEL
            ------------------------------------------------------------------- */}
         {filtersOpen && (
           <div
             data-testid="search-filter-panel"
-            className="bg-[var(--bg-card)] rounded-2xl p-4 sm:p-5 border border-[var(--border-subtle)] shadow-lg space-y-4 animate-fade-in"
+            className="bg-[var(--bg-card)] rounded-[var(--radius-card)] p-4 sm:p-5 border border-[var(--border-subtle)] shadow-lg space-y-4 animate-fade-in"
           >
             <div className="flex flex-wrap items-center justify-between gap-2 pb-3 border-b border-[var(--border-subtle)]">
               <div className="flex items-center gap-2">
-                <SlidersHorizontal className="w-4 h-4 text-[#F1641E]" />
+                <SlidersHorizontal className="w-4 h-4 text-[var(--color-primary)]" />
                 <h2 className="text-sm font-bold">
                   Refine Sacred Treatises &amp; Bookstore Editions
                 </h2>
@@ -722,14 +798,14 @@ function SearchContent() {
                 <button
                   type="button"
                   onClick={handleResetAllFilters}
-                  className="text-xs font-semibold text-[#e60023] hover:underline cursor-pointer"
+                  className="text-xs font-semibold text-[var(--color-danger)] hover:underline cursor-pointer"
                 >
                   Reset All Filters
                 </button>
                 <button
                   type="button"
                   onClick={() => setFiltersOpen(false)}
-                  className="p-1 rounded-full hover:bg-neutral-100 dark:hover:bg-neutral-800 cursor-pointer"
+                  className="p-1 rounded-full hover:bg-[var(--bg-hover)] cursor-pointer"
                 >
                   <X className="w-4 h-4" />
                 </button>
@@ -749,10 +825,10 @@ function SearchContent() {
                       key={cat}
                       type="button"
                       onClick={() => handleApplyQueryOrCategory(activeQuery, cat)}
-                      className={`px-3 py-1.5 rounded-full text-xs font-semibold transition cursor-pointer ${
+                      className={`px-3 py-1.5 rounded-[var(--radius-btn)] text-xs font-semibold transition cursor-pointer ${
                         active
-                          ? 'bg-[#F1641E] text-white shadow-xs'
-                          : 'bg-neutral-100 dark:bg-neutral-800 text-[var(--text-main)] hover:bg-neutral-200 dark:hover:bg-neutral-700'
+                          ? 'bg-[var(--color-primary)] text-white shadow-xs'
+                          : 'bg-[var(--pill-bg)] text-[var(--text-main)] hover:bg-[var(--pill-hover)]'
                       }`}
                     >
                       {cat}
@@ -818,8 +894,8 @@ function SearchContent() {
                       onClick={() => setMinDiscount(opt.val)}
                       className={`flex-1 h-9 rounded-xl text-xs font-bold border transition cursor-pointer ${
                         minDiscount === opt.val
-                          ? 'bg-[#e60023] text-white border-transparent'
-                          : 'bg-neutral-100 dark:bg-neutral-800 border-neutral-200 dark:border-neutral-700'
+                          ? 'bg-[var(--color-accent-badge)] text-[var(--color-accent-badge-text)] border-transparent'
+                          : 'bg-[var(--bg-input)] border-[var(--border-subtle)]'
                       }`}
                     >
                       {opt.label}
@@ -836,7 +912,7 @@ function SearchContent() {
                 <select
                   value={sortBy}
                   onChange={(e) => setSortBy(e.target.value as SearchFilterOptions['sortBy'])}
-                  className="w-full h-9 px-3 rounded-xl bg-neutral-100 dark:bg-neutral-800 text-xs font-semibold border border-neutral-200 dark:border-neutral-700 outline-hidden"
+                  className="w-full h-9 px-3 rounded-xl bg-[var(--bg-input)] text-xs font-semibold border border-[var(--border-subtle)] outline-hidden"
                 >
                   <option value="relevance">Best Match &amp; Similar First</option>
                   <option value="discount-desc">Biggest Offer % First</option>
@@ -853,18 +929,18 @@ function SearchContent() {
             SMART SEARCH / CATEGORY CONTEXT BAR
            ------------------------------------------------------------------- */}
         {(activeQuery.trim() || effectiveCategory !== 'All Treatises' || activeFilterCount > 0) && (
-          <div className="flex flex-wrap items-center justify-between gap-2 px-3.5 py-2.5 rounded-2xl bg-neutral-100/90 dark:bg-neutral-900/80 border border-neutral-200/80 dark:border-neutral-800 text-xs">
+          <div className="flex flex-wrap items-center justify-between gap-2 px-3.5 py-2.5 rounded-2xl bg-[var(--bg-wash)] border border-[var(--border-subtle)] text-xs">
             <div className="flex flex-wrap items-center gap-2">
               {activeQuery.trim() ? (
                 <>
                   <span className="font-semibold text-[var(--text-main)]">
                     Showing top similar matches for{' '}
-                    <span className="font-bold text-[#F1641E]">&ldquo;{activeQuery}&rdquo;</span>
+                    <span className="font-bold text-[var(--color-primary)]">&ldquo;{activeQuery}&rdquo;</span>
                   </span>
                   {searchResult.topMatchedBook && (
                     <Link
                       href={`/books/${searchResult.topMatchedBook.book.id}`}
-                      className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-[#F1641E]/15 text-[#F1641E] font-bold hover:underline"
+                      className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-[var(--color-primary-subtle)] text-[var(--color-primary)] font-bold hover:underline"
                     >
                       <span>Top Match: {searchResult.topMatchedBook.book.title.split(':')[0]}</span>
                       <ArrowUpRight className="w-3 h-3" />
@@ -878,7 +954,7 @@ function SearchContent() {
               ) : (
                 <span className="font-semibold text-[var(--text-main)]">
                   Category:{' '}
-                  <span className="font-bold text-[#F1641E]">{effectiveCategory}</span> (
+                  <span className="font-bold text-[var(--color-primary)]">{effectiveCategory}</span> (
                   {searchResult.primaryMatches.length} treatises in category +{' '}
                   {searchResult.suggestedBooks.length} suggested)
                 </span>
@@ -888,7 +964,7 @@ function SearchContent() {
             <button
               type="button"
               onClick={handleResetAllFilters}
-              className="text-[11px] font-bold text-neutral-600 dark:text-neutral-300 hover:text-[#e60023] flex items-center gap-1 cursor-pointer"
+              className="text-[11px] font-bold text-[var(--text-muted)] hover:text-[var(--color-danger)] flex items-center gap-1 cursor-pointer"
             >
               <X className="w-3.5 h-3.5" />
               <span>Clear</span>
@@ -903,7 +979,7 @@ function SearchContent() {
           data-testid="pinterest-search-masonry"
           className="columns-2 sm:columns-3 lg:columns-4 xl:columns-5 2xl:columns-6 gap-3.5 sm:gap-4"
         >
-          {searchResult.allItems.map((rankedItem, idx) => (
+          {visiblePinItems.map((rankedItem, idx) => (
             <React.Fragment key={rankedItem.book.id}>
               {/* Render the Book Pin Card */}
               <PinterestBookPin
@@ -958,7 +1034,7 @@ function SearchContent() {
                           <CheckCircle2 className="w-2.5 h-2.5 text-[var(--color-accent-badge)] shrink-0" />
                         </p>
                         <p className="text-[9px] text-[var(--text-dim)] mt-0.5">
-                          {b.pinsCount} Pins • {b.age}
+                          {b.pinsCount} Editions • {b.age}
                         </p>
                       </div>
                     ))}
@@ -1066,10 +1142,40 @@ function SearchContent() {
             </React.Fragment>
           ))}
         </div>
+
+        {/* Scroll-Based Progressive Loading Sentinel & Instant Jump Button */}
+        {hasMorePins && (
+          <div
+            ref={sentinelRef}
+            className="pt-4 pb-6 flex flex-col items-center justify-center gap-2.5 text-center"
+          >
+            {isLowDataActive && (
+              <p className="inline-flex items-center gap-1.5 text-xs text-[var(--text-muted)]">
+                <Wifi className="w-3.5 h-3.5 text-[var(--color-primary)]" />
+                <span>Data Saver active • Streaming lightweight micro-batches</span>
+              </p>
+            )}
+
+            <button
+              type="button"
+              onClick={() =>
+                setVisiblePinCount((prev) =>
+                  Math.min(totalPinItems, prev + scrollConfig.batchIncrement)
+                )
+              }
+              className="px-6 py-2.5 rounded-[var(--radius-btn)] border border-[var(--border-strong)] bg-[var(--bg-card)] hover:bg-[var(--bg-hover)] text-xs sm:text-sm font-semibold text-[var(--text-main)] inline-flex items-center gap-2 transition cursor-pointer shadow-2xs"
+            >
+              <span>Show More Editions ({remainingPins} remaining)</span>
+              <ChevronDown className="w-4 h-4 text-[var(--color-primary)]" />
+            </button>
+
+            <p className="text-[11px] text-[var(--text-muted)] tabular-nums">
+              Showing {visiblePinItems.length} of {totalPinItems} matching &amp; suggested editions
+            </p>
+          </div>
+        )}
       </main>
 
-      <BookModal />
-      <BoardsModal />
       <Toast />
       <Footer />
     </div>
@@ -1081,7 +1187,7 @@ export default function SearchPage() {
     <Suspense
       fallback={
         <div className="min-h-screen flex items-center justify-center bg-[var(--bg-main)]">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#F1641E]" />
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[var(--color-primary)]" />
         </div>
       }
     >

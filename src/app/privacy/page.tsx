@@ -10,15 +10,14 @@ export default function PrivacyPage() {
   return (
     <HouseRulesLayout activeSlug="privacy" title="Privacy Policy" lastUpdated="29 Oct, 2026">
       <p>
-        As Sri Lanka&apos;s premier classical bookstore and archival manuscript sanctuary (operating across{' '}
-        <span className="font-semibold text-[var(--text-main)]">shastraloka.lk</span> and{' '}
-        <span className="font-semibold font-sinhala text-[var(--text-main)]">ශාස්ත්රාලෝක.ලංකා</span>), we take our national and
+        As Sri Lanka&apos;s premier classical bookstore and archival manuscript sanctuary (operating on{' '}
+        <span className="font-semibold text-[var(--text-main)]">shastraloka.lk</span>), we take our national and
         international data protection obligations seriously. Our privacy policy includes this Global Privacy Policy, our{' '}
-        <Link href="/terms" className="underline text-[var(--text-main)] hover:text-[#F1641E]">
+        <Link href="/terms" className="underline text-[var(--text-main)] hover:text-[var(--color-primary)]">
           Cookie &amp; Local Storage Technologies Policy
         </Link>
         , and our{' '}
-        <Link href="/shipping-returns" className="underline text-[var(--text-main)] hover:text-[#F1641E]">
+        <Link href="/shipping-returns" className="underline text-[var(--text-main)] hover:text-[var(--color-primary)]">
           Islandwide Courier Dispatch Disclosures
         </Link>
         . Please select your preferred language (and, where applicable, regional variation) from the list below to view our
@@ -34,7 +33,7 @@ export default function PrivacyPage() {
               type="button"
               onClick={() => setSelectedLang(item.lang)}
               className={`underline text-left transition-colors ${
-                selectedLang === item.lang ? 'text-[#F1641E] font-semibold' : 'hover:text-[#F1641E]'
+                selectedLang === item.lang ? 'text-[var(--color-primary)] font-semibold' : 'hover:text-[var(--color-primary)]'
               }`}
             >
               {item.label}
@@ -78,7 +77,7 @@ export default function PrivacyPage() {
           </h2>
           <p className="text-sm text-[var(--text-muted)] leading-relaxed">
             You may inspect, export, or clear your saved reading lists, Bag history, and marketing preferences at any time via{' '}
-            <Link href="/profile/settings" className="underline text-[var(--text-main)] hover:text-[#F1641E]">
+            <Link href="/profile/settings" className="underline text-[var(--text-main)] hover:text-[var(--color-primary)]">
               Privacy Settings
             </Link>{' '}
             or by contacting our Data Protection Archivist at{' '}

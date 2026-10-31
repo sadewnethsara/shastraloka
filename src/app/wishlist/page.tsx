@@ -5,6 +5,9 @@ import Link from 'next/link';
 import { useApp } from '../../context/AppContext';
 import { BOOKS } from '../../data/books';
 import CleanBookCard from '../../components/CleanBookCard';
+import ProgressiveBookGrid from '../../components/ProgressiveBookGrid';
+import OptimizedImage from '../../components/ui/OptimizedImage';
+import ViewportSection from '../../components/ui/ViewportSection';
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
 import {
@@ -139,7 +142,7 @@ export default function WishlistPage() {
                     <button
                       type="button"
                       onClick={() => openAuthModal('login')}
-                      className="underline font-medium text-[var(--text-main)] hover:text-[#F1641E] cursor-pointer"
+                      className="underline font-medium text-[var(--text-main)] hover:text-[var(--color-primary)] cursor-pointer"
                     >
                       Sign in
                     </button>{' '}
@@ -147,7 +150,7 @@ export default function WishlistPage() {
                     <button
                       type="button"
                       onClick={() => openAuthModal('register')}
-                      className="underline font-medium text-[var(--text-main)] hover:text-[#F1641E] cursor-pointer"
+                      className="underline font-medium text-[var(--text-main)] hover:text-[var(--color-primary)] cursor-pointer"
                     >
                       create an account
                     </button>{' '}
@@ -199,7 +202,7 @@ export default function WishlistPage() {
                   }`}
                 >
                   <span className="flex items-center gap-2.5">
-                    <Heart className="w-4 h-4 text-[#F1641E] fill-[#F1641E]" />
+                    <Heart className="w-4 h-4 text-[var(--color-primary)] fill-[var(--color-primary)]" />
                     All Favorite Books
                   </span>
                   <span className="text-xs px-2 py-0.5 rounded-full bg-[var(--bg-main)] border border-[var(--border-subtle)]">
@@ -214,7 +217,7 @@ export default function WishlistPage() {
                     </span>
                     <button
                       onClick={() => setIsCreatingCollection(!isCreatingCollection)}
-                      className="inline-flex items-center gap-1 text-xs font-semibold text-[#F1641E] hover:underline"
+                      className="inline-flex items-center gap-1 text-xs font-semibold text-[var(--color-primary)] hover:underline"
                     >
                       <Plus className="w-3.5 h-3.5" /> Create
                     </button>
@@ -308,61 +311,69 @@ export default function WishlistPage() {
               </div>
 
               {/* Saved Books Grid */}
-              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-5">
-                {(savedBooks.length > 0 ? savedBooks : BOOKS.slice(0, 4)).map((book) => (
-                  <CleanBookCard key={book.id} book={book} />
-                ))}
-              </div>
+              <ProgressiveBookGrid
+                books={savedBooks.length > 0 ? savedBooks : BOOKS.slice(0, 4)}
+                gridClassName="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-5"
+              />
 
               {/* Discover similar items section (Matches Image 5) */}
-              <div className="pt-8 border-t border-[var(--border-subtle)]">
-                <div className="flex items-center justify-between mb-5">
-                  <div>
-                    <h2 className="font-heading font-bold text-xl sm:text-2xl font-normal text-[var(--text-main)] flex items-center gap-2">
-                      <Sparkles className="w-5 h-5 text-[#F1641E]" />
-                      Discover similar editions
-                    </h2>
-                    <p className="text-xs text-[var(--text-muted)]">
-                      Based on the chronicles and palm-leaf manuscripts in your collection
-                    </p>
+              <ViewportSection minHeight={280} skeletonTitle="Discover similar editions">
+                <div className="pt-8 border-t border-[var(--border-subtle)]">
+                  <div className="flex items-center justify-between mb-5">
+                    <div>
+                      <h2 className="font-heading font-bold text-xl sm:text-2xl font-normal text-[var(--text-main)] flex items-center gap-2">
+                        <Sparkles className="w-5 h-5 text-[var(--color-primary)]" />
+                        Discover similar editions
+                      </h2>
+                      <p className="text-xs text-[var(--text-muted)]">
+                        Based on the chronicles and palm-leaf manuscripts in your collection
+                      </p>
+                    </div>
+                    <Link
+                      href="/books"
+                      className="text-xs sm:text-sm font-semibold text-[var(--text-main)] hover:text-[var(--color-primary)] underline underline-offset-4"
+                    >
+                      See more
+                    </Link>
                   </div>
-                  <Link
-                    href="/books"
-                    className="text-xs sm:text-sm font-semibold text-[var(--text-main)] hover:text-[#F1641E] underline underline-offset-4"
-                  >
-                    See more
-                  </Link>
-                </div>
 
-                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-5">
-                  {BOOKS.slice(2, 6).map((book, idx) => (
-                    <CleanBookCard key={`sim-${book.id}-${idx}`} book={book} />
-                  ))}
+                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-5">
+                    {BOOKS.slice(2, 6).map((book, idx) => (
+                      <CleanBookCard key={`sim-${book.id}-${idx}`} book={book} />
+                    ))}
+                  </div>
                 </div>
-              </div>
+              </ViewportSection>
 
               {/* Suggested searches circular pills (Matches bottom of Image 5) */}
-              <div className="pt-8 border-t border-[var(--border-subtle)]">
-                <h3 className="font-heading font-bold text-lg sm:text-xl font-normal text-[var(--text-main)] mb-5">
-                  Suggested searches
-                </h3>
-                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-4">
-                  {SUGGESTED_SEARCHES.map((item) => (
-                    <Link
-                      key={item.label}
-                      href={`/search?q=${encodeURIComponent(item.query)}`}
-                      className="group flex flex-col items-center text-center"
-                    >
-                      <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-full overflow-hidden border border-[var(--border-subtle)] bg-[var(--bg-wash)] mb-2.5 group-hover:scale-105 group-hover:border-[#F1641E] transition-all">
-                        <img src={item.image} alt={item.label} className="w-full h-full object-cover" />
-                      </div>
-                      <span className="text-xs font-semibold text-[var(--text-main)] group-hover:text-[#F1641E] transition-colors">
-                        {item.label}
-                      </span>
-                    </Link>
-                  ))}
+              <ViewportSection minHeight={200} skeletonTitle="Suggested searches">
+                <div className="pt-8 border-t border-[var(--border-subtle)]">
+                  <h3 className="font-heading font-bold text-lg sm:text-xl font-normal text-[var(--text-main)] mb-5">
+                    Suggested searches
+                  </h3>
+                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-4">
+                    {SUGGESTED_SEARCHES.map((item) => (
+                      <Link
+                        key={item.label}
+                        href={`/search?q=${encodeURIComponent(item.query)}`}
+                        className="group flex flex-col items-center text-center"
+                      >
+                        <div className="relative w-24 h-24 sm:w-28 sm:h-28 rounded-full overflow-hidden border border-[var(--border-subtle)] bg-[var(--bg-wash)] mb-2.5 group-hover:scale-105 group-hover:border-[var(--color-primary)] transition-all">
+                          <OptimizedImage
+                            src={item.image}
+                            alt={item.label}
+                            targetWidth={200}
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+                        <span className="text-xs font-semibold text-[var(--text-main)] group-hover:text-[var(--color-primary)] transition-colors">
+                          {item.label}
+                        </span>
+                      </Link>
+                    ))}
+                  </div>
                 </div>
-              </div>
+              </ViewportSection>
             </div>
           </div>
         )}

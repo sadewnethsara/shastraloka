@@ -18,16 +18,16 @@ export function Accordion({
   className = '',
 }: AccordionProps) {
   return (
-    <div className={`border-b border-neutral-300/70 dark:border-neutral-800 ${className}`}>
+    <div className={`border-b border-[var(--border-subtle)] ${className}`}>
       <button
         type="button"
         onClick={onToggle}
         aria-expanded={isOpen}
-        className="w-full py-3.5 flex items-center justify-between text-xs sm:text-sm font-bold text-[#222222] dark:text-neutral-100 cursor-pointer"
+        className="w-full py-3.5 flex items-center justify-between text-xs sm:text-sm font-bold text-[var(--text-main)] cursor-pointer"
       >
         <span>{title}</span>
         <svg
-          className={`w-4 h-4 text-neutral-600 dark:text-neutral-400 transition-transform duration-200 ${
+          className={`w-4 h-4 text-[var(--text-muted)] transition-transform duration-200 ${
             isOpen ? 'rotate-180' : ''
           }`}
           viewBox="0 0 24 24"

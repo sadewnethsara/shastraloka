@@ -1,0 +1,117 @@
+/* =========================================================================
+   THEME: DataCamp (Waffles Design System — Deep Navy #05192D, Neon Green #03EF62,
+          Accessible Action Green #008736 & Warm Editorial Cream #F7F3EB)
+   Selector: [data-theme="datacamp"], .theme-datacamp
+   ========================================================================= */
+
+[data-theme="datacamp"],
+.theme-datacamp {
+  /* Brand Identity & Accents */
+  --color-primary: #008736;
+  --color-primary-hover: #006e2c;
+  --color-primary-subtle: rgba(3, 239, 98, 0.16);
+  --color-primary-border: #00a843;
+  --color-accent-badge: #05192d;
+  --color-accent-badge-hover: #0f2942;
+  --color-accent-badge-text: #03ef62;
+  --text-on-accent: #ffffff;
+
+  /* Theme Typography & Shape Tokens (DataCamp Waffles Harmonized for Bookstore) */
+  --theme-font-heading: var(--font-heading), system-ui, -apple-system, sans-serif;
+  --theme-font-sans: var(--font-sans), system-ui, -apple-system, sans-serif;
+  --theme-heading-tracking: -0.025em;
+  --radius-card: 0.875rem;
+  --radius-btn: 0.625rem;
+  --radius-input: 0.75rem;
+  --radius-modal: 1.25rem;
+  --radius-badge: 0.375rem;
+
+  /* Header Design Tokens (DataCamp Deep Navy #05192D + Neon Green #03EF62 Accents) */
+  --header-bg: #05192d;
+  --header-bg-glass: rgba(5, 25, 45, 0.96);
+  --header-border: #1e3148;
+  --header-text: #ffffff;
+  --header-text-muted: #a3b1c2;
+  --header-hover-bg: #13283f;
+  --header-logo-color: #03ef62;
+  --header-accent: #03ef62;
+  --header-dropdown-bg: #ffffff;
+  --header-dropdown-border: #d9dbe6;
+  --header-mobile-drawer-bg: #f7f7fc;
+  --header-search-bg: #ffffff;
+  --header-search-border: #03ef62;
+  --header-search-btn-bg: #03ef62;
+  --header-search-btn-hover: #26f277;
+  --header-search-btn-text: #05192d;
+
+  /* Header Badges & Shopping Bag Pill (Neon Green CTA with Deep Navy Counter Badge) */
+  --header-badge-fav-bg: #03ef62;
+  --header-badge-bag-bg: #05192d;
+  --header-badge-bag-text: #03ef62;
+  --header-badge-text: #05192d;
+  --bag-btn-bg: #03ef62;
+  --bag-btn-border: #03ef62;
+  --bag-btn-hover-bg: #26f277;
+  --bag-btn-hover-border: #26f277;
+  --bag-btn-text: #05192d;
+  --bag-btn-hover-text: #05192d;
+
+  /* Global Surface & Background Colors (DataCamp Waffles Pearl & Slate Canvas) */
+  --bg-main: #f7f7fc;
+  --bg-surface: #ffffff;
+  --bg-elevated: #ffffff;
+  --bg-wash: #efeff5;
+  --bg-card: #ffffff;
+  --bg-hover: #e8fbf0;
+  --bg-input: #ffffff;
+  --bg-badge: #05192d;
+
+  /* Global Text Colors (DataCamp Deep Navy Ink) */
+  --text-main: #05192d;
+  --text-body: #213147;
+  --text-muted: #546478;
+  --text-dim: #738296;
+
+  /* Global Borders */
+  --border-subtle: #dfe3eb;
+  --border-strong: #c2c8d6;
+  --border-focus: #008736;
+
+  /* Heritage / Classical Surfaces, Hero Showcase & DataCamp Navy Guild Banners */
+  --surface-cream: #f7f3eb;
+  --surface-cream-strong: #ebe3d2;
+  --brand-brown: #008736;
+  --footer-bg: #f0f2f8;
+  --hero-banner-bg: #eefbf3;
+  --hero-banner-border: #7cefa8;
+  --hero-showcase-bg: linear-gradient(135deg, #05192d 0%, #0a2540 58%, #063d32 100%);
+  --hero-showcase-border: rgba(3, 239, 98, 0.45);
+  --hero-banner-pattern: radial-gradient(circle at 85% 20%, rgba(3, 239, 98, 0.22) 0%, rgba(5, 25, 45, 0.05) 45%, transparent 70%);
+  --banner-guild-bg: #05192d;
+  --banner-guild-surface: #0f2942;
+  --banner-guild-border: #1e3a5f;
+  --banner-guild-text: #ffffff;
+  --banner-guild-muted: #cbd5e1;
+  --banner-guild-accent: #03ef62;
+
+  /* Status & Feedback Colors */
+  --color-emerald: #008736;
+  --color-success: #008736;
+  --color-success-bg: #e6faee;
+  --color-warning: #d97706;
+  --color-warning-bg: #fffbeb;
+  --color-danger: #dd3400;
+  --color-danger-bg: #fff1f2;
+  --color-danger-subtle: rgba(221, 52, 0, 0.12);
+
+  /* Pills & Primary Controls (Deep Navy Button + Neon Green Label) */
+  --pill-bg: #efeff5;
+  --pill-hover: #e2f9eb;
+  --pill-active-bg: #05192d;
+  --pill-active-text: #03ef62;
+
+  /* Shadows */
+  --card-shadow: 0 2px 6px rgba(5, 25, 45, 0.06), 0 1px 2px rgba(5, 25, 45, 0.04);
+  --card-shadow-hover: 0 12px 28px rgba(5, 25, 45, 0.14), 0 4px 10px rgba(3, 239, 98, 0.10);
+}
+

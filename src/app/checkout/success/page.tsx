@@ -21,7 +21,7 @@ export default function CheckoutSuccessPage() {
         </div>
 
         <div className="space-y-2">
-          <span className="text-xs font-bold uppercase tracking-widest text-[#F1641E]">
+          <span className="text-xs font-bold uppercase tracking-widest text-[var(--color-primary)]">
             Shastraloka • Archival Dispatch Confirmed
           </span>
           <h1 className="font-heading font-bold text-3xl sm:text-4xl font-normal text-[var(--text-main)]">

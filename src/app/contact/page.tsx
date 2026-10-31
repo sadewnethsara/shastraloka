@@ -5,6 +5,14 @@ import { useApp } from '../../context/AppContext';
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
 import { MapPin, Phone, Mail, Clock, Send, BookOpen, CheckCircle2 } from 'lucide-react';
+import {
+  isValidEmail,
+  sanitizeEmail,
+  sanitizeSingleLine,
+  sanitizeText,
+  secureApiPost,
+  SECURITY_LIMITS,
+} from '../../utils/security';
 
 export default function ContactPage() {
   const { showToast } = useApp();
@@ -14,9 +22,41 @@ export default function ContactPage() {
   const [message, setMessage] = useState('');
   const [sent, setSent] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!name.trim() || !email.trim() || !message.trim()) return;
+    const cleanName = sanitizeSingleLine(name, SECURITY_LIMITS.MAX_NAME_LENGTH);
+    const cleanEmail = sanitizeEmail(email);
+    const cleanTopic = sanitizeSingleLine(topic, 120);
+    const cleanMessage = sanitizeText(message, SECURITY_LIMITS.MAX_INQUIRY_MESSAGE_LENGTH);
+
+    if (!cleanName || cleanName.length < 2) {
+      showToast('Please enter your name (at least 2 characters).');
+      return;
+    }
+    if (!isValidEmail(cleanEmail)) {
+      showToast('Please enter a valid email address.');
+      return;
+    }
+    if (!cleanMessage || cleanMessage.length < 5) {
+      showToast('Please enter a detailed inquiry message.');
+      return;
+    }
+
+    const res = await secureApiPost('/api/inquiries', {
+      type: 'contact',
+      name: cleanName,
+      email: cleanEmail,
+      topic: cleanTopic,
+      message: cleanMessage,
+    });
+    if (!res.ok && res.error) {
+      showToast(res.error);
+      return;
+    }
+
+    setName(cleanName);
+    setEmail(cleanEmail);
+    setMessage(cleanMessage);
     setSent(true);
     showToast('Your message has been dispatched to the Shastraloka Chief Archivist.');
   };
@@ -27,7 +67,7 @@ export default function ContactPage() {
       <main className="flex-1 pb-20">
       <section className="bg-[var(--hero-banner-bg)] border-b border-[var(--border-subtle)] py-12">
         <div className="page-container">
-          <span className="text-xs font-bold uppercase tracking-widest text-[#F1641E]">
+          <span className="text-xs font-bold uppercase tracking-widest text-[var(--color-primary)]">
             Shastraloka • Reader &amp; Scholar Desk
           </span>
           <h1 className="font-heading font-bold text-3xl sm:text-4xl md:text-5xl font-normal text-[var(--text-main)] mt-1">
@@ -49,7 +89,7 @@ export default function ContactPage() {
             </h2>
 
             <div className="flex items-start gap-3.5">
-              <div className="w-10 h-10 rounded-xl bg-[var(--bg-wash)] flex items-center justify-center shrink-0 text-[#F1641E]">
+              <div className="w-10 h-10 rounded-xl bg-[var(--bg-wash)] flex items-center justify-center shrink-0 text-[var(--color-primary)]">
                 <MapPin className="w-5 h-5" />
               </div>
               <div>
@@ -61,7 +101,7 @@ export default function ContactPage() {
             </div>
 
             <div className="flex items-start gap-3.5">
-              <div className="w-10 h-10 rounded-xl bg-[var(--bg-wash)] flex items-center justify-center shrink-0 text-[#F1641E]">
+              <div className="w-10 h-10 rounded-xl bg-[var(--bg-wash)] flex items-center justify-center shrink-0 text-[var(--color-primary)]">
                 <BookOpen className="w-5 h-5" />
               </div>
               <div>
@@ -73,7 +113,7 @@ export default function ContactPage() {
             </div>
 
             <div className="flex items-start gap-3.5">
-              <div className="w-10 h-10 rounded-xl bg-[var(--bg-wash)] flex items-center justify-center shrink-0 text-[#F1641E]">
+              <div className="w-10 h-10 rounded-xl bg-[var(--bg-wash)] flex items-center justify-center shrink-0 text-[var(--color-primary)]">
                 <Phone className="w-5 h-5" />
               </div>
               <div>
@@ -83,7 +123,7 @@ export default function ContactPage() {
             </div>
 
             <div className="flex items-start gap-3.5">
-              <div className="w-10 h-10 rounded-xl bg-[var(--bg-wash)] flex items-center justify-center shrink-0 text-[#F1641E]">
+              <div className="w-10 h-10 rounded-xl bg-[var(--bg-wash)] flex items-center justify-center shrink-0 text-[var(--color-primary)]">
                 <Mail className="w-5 h-5" />
               </div>
               <div>
@@ -93,7 +133,7 @@ export default function ContactPage() {
             </div>
 
             <div className="flex items-start gap-3.5">
-              <div className="w-10 h-10 rounded-xl bg-[var(--bg-wash)] flex items-center justify-center shrink-0 text-[#F1641E]">
+              <div className="w-10 h-10 rounded-xl bg-[var(--bg-wash)] flex items-center justify-center shrink-0 text-[var(--color-primary)]">
                 <Clock className="w-5 h-5" />
               </div>
               <div>

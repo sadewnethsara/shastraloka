@@ -15,7 +15,9 @@ import {
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
 import Toast from '../../components/Toast';
-import { BOOKS, Book, CATEGORIES } from '../../data/books';
+import OptimizedImage from '../../components/ui/OptimizedImage';
+import ViewportSection from '../../components/ui/ViewportSection';
+import { BOOKS, Book } from '../../data/books';
 import { useApp } from '../../context/AppContext';
 
 const FALLBACK_BOOK_COVER =
@@ -27,10 +29,12 @@ function StorefrontShelfCard({
   book,
   showDealTimer,
   showFirstReads,
+  priority = false,
 }: {
   book: Book;
   showDealTimer?: boolean;
   showFirstReads?: boolean;
+  priority?: boolean;
 }) {
   const router = useRouter();
   const { addToBag } = useApp();
@@ -46,20 +50,15 @@ function StorefrontShelfCard({
   return (
     <article
       onClick={() => router.push(`/books/${book.id}`)}
-      className="group cursor-pointer flex flex-col w-[148px] sm:w-[168px] lg:w-auto shrink-0"
+      className="cv-card group cursor-pointer flex flex-col w-[148px] sm:w-[168px] lg:w-auto shrink-0"
     >
       <div className="relative aspect-[2/3] w-full rounded-lg overflow-hidden bg-[var(--bg-wash)] border border-[var(--border-subtle)] mb-2">
-        <img
+        <OptimizedImage
           src={book.coverImage || FALLBACK_BOOK_COVER}
+          fallbackSrc={FALLBACK_BOOK_COVER}
           alt={book.title}
-          referrerPolicy="no-referrer"
-          loading="lazy"
-          onError={(e) => {
-            const target = e.currentTarget;
-            if (target.src !== FALLBACK_BOOK_COVER) {
-              target.src = FALLBACK_BOOK_COVER;
-            }
-          }}
+          priority={priority}
+          targetWidth={320}
           className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-[1.03]"
         />
 
@@ -92,7 +91,7 @@ function StorefrontShelfCard({
       {/* Rating Row */}
       <div className="flex items-center gap-1 text-[11px] text-[var(--text-muted)]">
         <span className="font-semibold text-[var(--text-main)]">{book.rating.toFixed(1)}</span>
-        <div className="flex items-center text-[#F1641E]">
+        <div className="flex items-center text-[var(--color-primary)]">
           {[...Array(5)].map((_, idx) => (
             <Star key={idx} className="w-2.5 h-2.5 fill-current" />
           ))}
@@ -104,15 +103,15 @@ function StorefrontShelfCard({
 
       {/* Special Tag (Scriptorium+ / First Reads / Deal Timer) */}
       {showDealTimer ? (
-        <span className="mt-1 inline-block w-fit px-1.5 py-0.5 rounded-xs bg-[#CC0C39] text-white text-[10px] font-bold">
+        <span className="mt-1 inline-block w-fit px-1.5 py-0.5 rounded-[var(--radius-badge)] bg-[var(--color-accent-badge)] text-white text-[10px] font-bold">
           Ends in 04:21:44
         </span>
       ) : showFirstReads ? (
         <span className="mt-0.5 text-[11px] font-bold text-[var(--text-main)]">
-          first <span className="text-[#F1641E]">reads</span>
+          first <span className="text-[var(--color-primary)]">reads</span>
         </span>
       ) : (
-        <span className="mt-0.5 text-[11px] font-semibold text-[#F1641E] flex items-center gap-1">
+        <span className="mt-0.5 text-[11px] font-semibold text-[var(--color-primary)] flex items-center gap-1">
           <span>scriptorium+</span>
           <Headphones className="w-3 h-3 text-[var(--text-muted)]" />
         </span>
@@ -283,11 +282,11 @@ export default function BooksStorefrontPage() {
                 key={pill.id}
                 type="button"
                 onClick={() => setFormatFilter(pill.id as FormatFilter)}
-                className={`px-3.5 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap border transition cursor-pointer ${
+                className={`px-3.5 py-1.5 rounded-[var(--radius-btn)] text-xs font-semibold whitespace-nowrap border transition cursor-pointer ${
                   active
-                    ? 'bg-[#FFF3EC] text-[#F1641E] border-[#F1641E]'
+                    ? 'bg-[var(--color-primary-subtle)] text-[var(--color-primary)] border-[var(--color-primary)]'
                     : pill.highlight
-                      ? 'bg-[var(--bg-card)] text-[#F1641E] border-[#F1641E]/50 hover:border-[#F1641E]'
+                      ? 'bg-[var(--bg-card)] text-[var(--color-primary)] border-[var(--color-primary-border)] hover:border-[var(--color-primary)]'
                       : 'bg-[var(--bg-card)] text-[var(--text-main)] border-[var(--border-subtle)] hover:bg-[var(--bg-hover)]'
                 }`}
               >
@@ -320,16 +319,20 @@ export default function BooksStorefrontPage() {
           </div>
 
           <div className="flex lg:grid lg:grid-cols-7 gap-4 overflow-x-auto lg:overflow-visible pb-2 no-scrollbar">
-            {shelfBooks(0).map((book) => (
-              <StorefrontShelfCard key={`keep-${book.id}`} book={book} />
+            {shelfBooks(0).map((book, idx) => (
+              <StorefrontShelfCard
+                key={`keep-${book.id}`}
+                book={book}
+                priority={idx < 4}
+              />
             ))}
           </div>
         </section>
 
         {/* 2. SCRIPTORIUM+ SUBSCRIPTION BANNER (Matching Kindle+ Banner) */}
-        <section className="rounded-2xl overflow-hidden bg-[var(--hero-banner-bg)] border border-[var(--hero-banner-border)] px-6 sm:px-10 py-6 sm:py-8 flex flex-col md:flex-row items-center justify-between gap-6">
+        <section className="rounded-[var(--radius-card)] overflow-hidden bg-[var(--hero-banner-bg)] border border-[var(--hero-banner-border)] px-6 sm:px-10 py-6 sm:py-8 flex flex-col md:flex-row items-center justify-between gap-6">
           <div className="space-y-2.5 max-w-xl text-center md:text-left">
-            <div className="inline-flex items-center gap-1 text-lg font-extrabold text-[#F1641E]">
+            <div className="inline-flex items-center gap-1 text-lg font-extrabold text-[var(--color-primary)]">
               <Sparkles className="w-4 h-4" />
               <span>scriptorium+</span>
             </div>
@@ -358,16 +361,16 @@ export default function BooksStorefrontPage() {
               <div
                 key={b.id}
                 onClick={() => router.push(`/books/${b.id}`)}
-                className={`rounded-lg overflow-hidden shadow-lg border border-white/30 cursor-pointer transition-transform hover:-translate-y-1 ${
+                className={`relative rounded-lg overflow-hidden shadow-lg border border-white/30 cursor-pointer transition-transform hover:-translate-y-1 ${
                   i === 1
                     ? 'w-28 sm:w-32 aspect-[2/3] z-10 -mx-2 scale-105'
                     : 'w-24 sm:w-28 aspect-[2/3] opacity-95'
                 }`}
               >
-                <img
+                <OptimizedImage
                   src={b.coverImage}
                   alt={b.title}
-                  referrerPolicy="no-referrer"
+                  targetWidth={240}
                   className="w-full h-full object-cover"
                 />
               </div>
@@ -376,112 +379,65 @@ export default function BooksStorefrontPage() {
         </section>
 
         {/* 3. WHAT EVERYONE'S READING */}
-        <section className="space-y-3 pt-2 border-t border-[var(--border-subtle)]">
-          <div>
-            <h2 className="text-xl sm:text-2xl font-bold text-[var(--text-main)]">
-              What everyone&apos;s reading
-            </h2>
-            <div className="flex items-center justify-between mt-1">
-              <h3 className="text-sm sm:text-base font-bold text-[var(--text-main)]">
-                Buy 2 books, get 10% off
-              </h3>
+        <ViewportSection minHeight={310} skeletonTitle="What everyone's reading">
+          <section className="space-y-3 pt-2 border-t border-[var(--border-subtle)]">
+            <div>
+              <h2 className="text-xl sm:text-2xl font-bold text-[var(--text-main)]">
+                What everyone&apos;s reading
+              </h2>
+              <div className="flex items-center justify-between mt-1">
+                <h3 className="text-sm sm:text-base font-bold text-[var(--text-main)]">
+                  Buy 2 books, get 10% off
+                </h3>
+                <Link
+                  href="/offers"
+                  className="text-xs font-semibold text-[var(--color-primary)] hover:underline flex items-center gap-0.5"
+                >
+                  <span>See more</span>
+                  <ChevronRight className="w-3.5 h-3.5" />
+                </Link>
+              </div>
+            </div>
+
+            <div className="flex lg:grid lg:grid-cols-7 gap-4 overflow-x-auto overflow-y-hidden lg:overflow-visible pb-2 no-scrollbar">
+              {shelfBooks(2).map((book) => (
+                <StorefrontShelfCard key={`reading-${book.id}`} book={book} />
+              ))}
+            </div>
+          </section>
+        </ViewportSection>
+
+        {/* 4. BEST SELLERS ON SHSTRALOKA */}
+        <ViewportSection minHeight={290} skeletonTitle="Best sellers on Shastraloka">
+          <section className="space-y-3 pt-2 border-t border-[var(--border-subtle)]">
+            <div className="flex items-center justify-between">
+              <h2 className="text-sm sm:text-base font-bold text-[var(--text-main)]">
+                Best sellers on Shastraloka
+              </h2>
               <Link
-                href="/offers"
+                href="/bestsellers"
                 className="text-xs font-semibold text-[var(--color-primary)] hover:underline flex items-center gap-0.5"
               >
                 <span>See more</span>
                 <ChevronRight className="w-3.5 h-3.5" />
               </Link>
             </div>
-          </div>
 
-          <div className="flex lg:grid lg:grid-cols-7 gap-4 overflow-x-auto overflow-y-hidden lg:overflow-visible pb-2 no-scrollbar">
-            {shelfBooks(2).map((book) => (
-              <StorefrontShelfCard key={`reading-${book.id}`} book={book} />
-            ))}
-          </div>
-        </section>
-
-        {/* 4. BEST SELLERS ON SHSTRALOKA */}
-        <section className="space-y-3 pt-2 border-t border-[var(--border-subtle)]">
-          <div className="flex items-center justify-between">
-            <h2 className="text-sm sm:text-base font-bold text-[var(--text-main)]">
-              Best sellers on Shastraloka
-            </h2>
-            <Link
-              href="/bestsellers"
-              className="text-xs font-semibold text-[var(--color-primary)] hover:underline flex items-center gap-0.5"
-            >
-              <span>See more</span>
-              <ChevronRight className="w-3.5 h-3.5" />
-            </Link>
-          </div>
-
-          <div className="flex lg:grid lg:grid-cols-7 gap-4 overflow-x-auto overflow-y-hidden lg:overflow-visible pb-2 no-scrollbar">
-            {shelfBooks(4).map((book) => (
-              <StorefrontShelfCard key={`bestseller-${book.id}`} book={book} />
-            ))}
-          </div>
-        </section>
+            <div className="flex lg:grid lg:grid-cols-7 gap-4 overflow-x-auto overflow-y-hidden lg:overflow-visible pb-2 no-scrollbar">
+              {shelfBooks(4).map((book) => (
+                <StorefrontShelfCard key={`bestseller-${book.id}`} book={book} />
+              ))}
+            </div>
+          </section>
+        </ViewportSection>
 
         {/* 5. NEW RELEASES IN PRINT */}
-        <section className="space-y-3 pt-2 border-t border-[var(--border-subtle)]">
-          <div className="flex items-center justify-between">
-            <h2 className="text-sm sm:text-base font-bold text-[var(--text-main)]">
-              New releases in print
-            </h2>
-            <Link
-              href="/new-releases"
-              className="text-xs font-semibold text-[var(--color-primary)] hover:underline flex items-center gap-0.5"
-            >
-              <span>See more</span>
-              <ChevronRight className="w-3.5 h-3.5" />
-            </Link>
-          </div>
-
-          <div className="flex lg:grid lg:grid-cols-7 gap-4 overflow-x-auto overflow-y-hidden lg:overflow-visible pb-2 no-scrollbar">
-            {shelfBooks(6).map((book) => (
-              <StorefrontShelfCard key={`print-${book.id}`} book={book} />
-            ))}
-          </div>
-        </section>
-
-        {/* 6. DAILY DEALS - TODAY ONLY */}
-        <section className="space-y-3 pt-2 border-t border-[var(--border-subtle)]">
-          <div className="flex items-center justify-between">
-            <h2 className="text-sm sm:text-base font-bold text-[var(--text-main)]">
-              Shastraloka Daily Deals - today only
-            </h2>
-            <Link
-              href="/offers"
-              className="text-xs font-semibold text-[var(--color-primary)] hover:underline flex items-center gap-0.5"
-            >
-              <span>See all deals</span>
-              <ChevronRight className="w-3.5 h-3.5" />
-            </Link>
-          </div>
-
-          <div className="flex lg:grid lg:grid-cols-7 gap-4 overflow-x-auto overflow-y-hidden lg:overflow-visible pb-2 no-scrollbar">
-            {shelfBooks(1).map((book) => (
-              <StorefrontShelfCard
-                key={`deal-${book.id}`}
-                book={book}
-                showDealTimer
-              />
-            ))}
-          </div>
-        </section>
-
-        {/* 7. DISCOVER SOMETHING NEW — FIRST READS */}
-        <section className="space-y-3 pt-2 border-t border-[var(--border-subtle)]">
-          <div>
-            <h2 className="text-xl sm:text-2xl font-bold text-[var(--text-main)]">
-              Discover something new
-            </h2>
-            <div className="flex items-center justify-between mt-1">
-              <h3 className="text-sm sm:text-base font-bold text-[var(--text-main)]">
-                First Reads: Get early access to editors&apos; picks
-              </h3>
+        <ViewportSection minHeight={290} skeletonTitle="New releases in print">
+          <section className="space-y-3 pt-2 border-t border-[var(--border-subtle)]">
+            <div className="flex items-center justify-between">
+              <h2 className="text-sm sm:text-base font-bold text-[var(--text-main)]">
+                New releases in print
+              </h2>
               <Link
                 href="/new-releases"
                 className="text-xs font-semibold text-[var(--color-primary)] hover:underline flex items-center gap-0.5"
@@ -490,18 +446,75 @@ export default function BooksStorefrontPage() {
                 <ChevronRight className="w-3.5 h-3.5" />
               </Link>
             </div>
-          </div>
 
-          <div className="flex lg:grid lg:grid-cols-7 gap-4 overflow-x-auto overflow-y-hidden lg:overflow-visible pb-2 no-scrollbar">
-            {shelfBooks(3).map((book) => (
-              <StorefrontShelfCard
-                key={`first-${book.id}`}
-                book={book}
-                showFirstReads
-              />
-            ))}
-          </div>
-        </section>
+            <div className="flex lg:grid lg:grid-cols-7 gap-4 overflow-x-auto overflow-y-hidden lg:overflow-visible pb-2 no-scrollbar">
+              {shelfBooks(6).map((book) => (
+                <StorefrontShelfCard key={`print-${book.id}`} book={book} />
+              ))}
+            </div>
+          </section>
+        </ViewportSection>
+
+        {/* 6. DAILY DEALS - TODAY ONLY */}
+        <ViewportSection minHeight={290} skeletonTitle="Shastraloka Daily Deals - today only">
+          <section className="space-y-3 pt-2 border-t border-[var(--border-subtle)]">
+            <div className="flex items-center justify-between">
+              <h2 className="text-sm sm:text-base font-bold text-[var(--text-main)]">
+                Shastraloka Daily Deals - today only
+              </h2>
+              <Link
+                href="/offers"
+                className="text-xs font-semibold text-[var(--color-primary)] hover:underline flex items-center gap-0.5"
+              >
+                <span>See all deals</span>
+                <ChevronRight className="w-3.5 h-3.5" />
+              </Link>
+            </div>
+
+            <div className="flex lg:grid lg:grid-cols-7 gap-4 overflow-x-auto overflow-y-hidden lg:overflow-visible pb-2 no-scrollbar">
+              {shelfBooks(1).map((book) => (
+                <StorefrontShelfCard
+                  key={`deal-${book.id}`}
+                  book={book}
+                  showDealTimer
+                />
+              ))}
+            </div>
+          </section>
+        </ViewportSection>
+
+        {/* 7. DISCOVER SOMETHING NEW — FIRST READS */}
+        <ViewportSection minHeight={310} skeletonTitle="Discover something new">
+          <section className="space-y-3 pt-2 border-t border-[var(--border-subtle)]">
+            <div>
+              <h2 className="text-xl sm:text-2xl font-bold text-[var(--text-main)]">
+                Discover something new
+              </h2>
+              <div className="flex items-center justify-between mt-1">
+                <h3 className="text-sm sm:text-base font-bold text-[var(--text-main)]">
+                  First Reads: Get early access to editors&apos; picks
+                </h3>
+                <Link
+                  href="/new-releases"
+                  className="text-xs font-semibold text-[var(--color-primary)] hover:underline flex items-center gap-0.5"
+                >
+                  <span>See more</span>
+                  <ChevronRight className="w-3.5 h-3.5" />
+                </Link>
+              </div>
+            </div>
+
+            <div className="flex lg:grid lg:grid-cols-7 gap-4 overflow-x-auto overflow-y-hidden lg:overflow-visible pb-2 no-scrollbar">
+              {shelfBooks(3).map((book) => (
+                <StorefrontShelfCard
+                  key={`first-${book.id}`}
+                  book={book}
+                  showFirstReads
+                />
+              ))}
+            </div>
+          </section>
+        </ViewportSection>
 
         {/* 8. POPULAR AUTHORS & SERIES */}
         <section className="space-y-5 pt-4 border-t border-[var(--border-subtle)]">

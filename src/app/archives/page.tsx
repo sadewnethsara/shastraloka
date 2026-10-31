@@ -3,7 +3,8 @@
 import React, { useState, useMemo } from 'react';
 import Link from 'next/link';
 import { BOOKS } from '../../data/books';
-import CleanBookCard from '../../components/CleanBookCard';
+import ProgressiveBookGrid from '../../components/ProgressiveBookGrid';
+import OptimizedImage from '../../components/ui/OptimizedImage';
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
 import { SlidersHorizontal, ArrowUpDown, Sparkles, Check, ChevronDown } from 'lucide-react';
@@ -63,7 +64,6 @@ export default function ArchivesPage() {
   const [picksOnly, setPicksOnly] = useState(false);
   const [under2500, setUnder2500] = useState(false);
   const [sortBy, setSortBy] = useState<'relevancy' | 'price-asc' | 'price-desc' | 'rating'>('relevancy');
-  const [visibleCount, setVisibleCount] = useState(12);
 
   // Repeat/combine BOOKS so the archival catalog looks rich like the reference screenshot
   const archivalCatalog = useMemo(() => {
@@ -114,26 +114,26 @@ export default function ArchivesPage() {
                   className="group flex flex-col items-center text-center focus:outline-none"
                 >
                   <div
-                    className={`w-full aspect-square rounded-2xl overflow-hidden mb-2.5 border-2 transition-all bg-[var(--bg-wash)] ${
+                    className={`relative w-full aspect-square rounded-2xl overflow-hidden mb-2.5 border-2 transition-all bg-[var(--bg-wash)] ${
                       active
                         ? 'border-[var(--text-main)] shadow-md scale-[1.02]'
                         : 'border-transparent group-hover:border-[var(--border-strong)]'
                     }`}
                   >
-                    <img
+                    <OptimizedImage
                       src={sub.image}
                       alt={sub.label}
+                      priority
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                     />
                   </div>
                   <span
                     className={`text-xs sm:text-sm font-semibold leading-snug transition-colors ${
-                      active ? 'text-[#F1641E] underline underline-offset-4' : 'text-[var(--text-main)] group-hover:text-[#F1641E]'
+                      active ? 'text-[var(--color-primary)] underline underline-offset-4' : 'text-[var(--text-main)] group-hover:text-[var(--color-primary)]'
                     }`}
                   >
                     {sub.label}
                   </span>
-                  <span className="text-[11px] text-[var(--text-muted)] font-sinhala mt-0.5">{sub.sinhala}</span>
                 </button>
               );
             })}
@@ -189,7 +189,7 @@ export default function ArchivesPage() {
                     : 'border-[var(--border-strong)] bg-[var(--bg-surface)] text-[var(--text-main)] hover:bg-[var(--bg-hover)]'
                 }`}
               >
-                <Sparkles className="w-3.5 h-3.5 text-[#F1641E]" />
+                <Sparkles className="w-3.5 h-3.5 text-[var(--color-primary)]" />
                 Shastraloka&apos;s Picks
               </button>
 
@@ -241,33 +241,18 @@ export default function ArchivesPage() {
               </button>
             </div>
           ) : (
-            <>
-              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-x-5 gap-y-9">
-                {archivalCatalog.slice(0, visibleCount).map((book, idx) => (
-                  <CleanBookCard
-                    key={`${book.id}-${idx}`}
-                    book={book}
-                    badgeText={idx % 3 === 0 ? "Shastraloka's Pick" : idx % 4 === 0 ? 'Rare Facsimile' : undefined}
-                  />
-                ))}
-              </div>
-
-              {visibleCount < archivalCatalog.length && (
-                <div className="mt-10 text-center">
-                  <button
-                    onClick={() => setVisibleCount((prev) => prev + 8)}
-                    className="px-7 py-3 rounded-full border border-[var(--border-strong)] bg-[var(--bg-surface)] hover:bg-[var(--bg-hover)] text-sm font-semibold text-[var(--text-main)] transition-colors"
-                  >
-                    Show more archival editions
-                  </button>
-                </div>
-              )}
-            </>
+            <ProgressiveBookGrid
+              books={archivalCatalog}
+              gridClassName="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-x-5 gap-y-9"
+              getBadgeText={(_, idx) =>
+                idx % 3 === 0 ? "Shastraloka's Pick" : idx % 4 === 0 ? 'Rare Facsimile' : undefined
+              }
+            />
           )}
         </section>
 
         {/* Explore related searches (2x4 visual pill cards matching Etsy Vintage screenshot) */}
-        <section className="page-container pt-8 border-t border-[var(--border-subtle)]">
+        <section className="page-container pt-8 border-t border-[var(--border-subtle)] cv-auto">
           <h2 className="font-heading font-bold text-xl sm:text-2xl font-normal text-[var(--text-main)] mb-5">
             Explore related searches
           </h2>
@@ -278,14 +263,14 @@ export default function ArchivesPage() {
                 href={`/search?q=${encodeURIComponent(item.label)}`}
                 className="flex items-center gap-3.5 p-2.5 rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-surface)] hover:border-[var(--border-strong)] hover:shadow-sm transition-all group"
               >
-                <div className="w-14 h-14 rounded-xl overflow-hidden shrink-0 bg-[var(--bg-wash)]">
-                  <img
+                <div className="relative w-14 h-14 rounded-xl overflow-hidden shrink-0 bg-[var(--bg-wash)]">
+                  <OptimizedImage
                     src={item.image}
                     alt={item.label}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform"
                   />
                 </div>
-                <span className="text-sm font-semibold text-[var(--text-main)] group-hover:text-[#F1641E] transition-colors">
+                <span className="text-sm font-semibold text-[var(--text-main)] group-hover:text-[var(--color-primary)] transition-colors">
                   {item.label}
                 </span>
               </Link>

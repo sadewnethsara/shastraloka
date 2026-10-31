@@ -361,26 +361,26 @@ export default function VisualSearchModal({ isOpen, onClose }: VisualSearchModal
                   />
 
                   {/* High-Tech Reticle Corners */}
-                  <div className="absolute top-2 left-2 w-6 h-6 border-t-2 border-l-2 border-[#F1641E]" />
-                  <div className="absolute top-2 right-2 w-6 h-6 border-t-2 border-r-2 border-[#F1641E]" />
-                  <div className="absolute bottom-2 left-2 w-6 h-6 border-b-2 border-l-2 border-[#F1641E]" />
-                  <div className="absolute bottom-2 right-2 w-6 h-6 border-b-2 border-r-2 border-[#F1641E]" />
+                  <div className="absolute top-2 left-2 w-6 h-6 border-t-2 border-l-2 border-[var(--color-primary)]" />
+                  <div className="absolute top-2 right-2 w-6 h-6 border-t-2 border-r-2 border-[var(--color-primary)]" />
+                  <div className="absolute bottom-2 left-2 w-6 h-6 border-b-2 border-l-2 border-[var(--color-primary)]" />
+                  <div className="absolute bottom-2 right-2 w-6 h-6 border-b-2 border-r-2 border-[var(--color-primary)]" />
 
                   {/* Scanner Grid Overlay */}
                   <div className="absolute inset-0 scanner-grid-pattern pointer-events-none opacity-60" />
 
                   {/* Glowing Laser Scan Line */}
-                  <div className="absolute left-0 right-0 h-1 bg-gradient-to-r from-transparent via-[#F1641E] to-transparent shadow-[0_0_12px_#F1641E,0_0_24px_#F1641E] animate-laser-scan pointer-events-none" />
+                  <div className="absolute left-0 right-0 h-1 bg-gradient-to-r from-transparent via-[var(--color-primary)] to-transparent animate-laser-scan pointer-events-none" />
 
                   {/* Scanning Central Reticle */}
                   <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                    <div className="w-16 h-16 rounded-full border border-dashed border-[#F1641E]/40 animate-spin" />
+                    <div className="w-16 h-16 rounded-full border border-dashed border-[var(--color-primary)]/40 animate-spin" />
                   </div>
                 </div>
 
                 {/* Live Badge */}
-                <div className="absolute top-3 left-3 px-2 py-0.5 rounded-full bg-black/80 border border-[#F1641E]/60 text-[#F1641E] text-[10px] font-bold flex items-center gap-1.5 shadow">
-                  <span className="w-2 h-2 rounded-full bg-[#F1641E] animate-ping" />
+                <div className="absolute top-3 left-3 px-2 py-0.5 rounded-full bg-black/80 border border-[var(--color-primary)]/60 text-[var(--color-primary)] text-[10px] font-bold flex items-center gap-1.5 shadow">
+                  <span className="w-2 h-2 rounded-full bg-[var(--color-primary)] animate-ping" />
                   <span>ANALYZING FOLIO</span>
                 </div>
               </div>

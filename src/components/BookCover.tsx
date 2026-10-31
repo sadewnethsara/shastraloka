@@ -2,15 +2,14 @@
 
 import React, { useState } from 'react';
 import { Book } from '../data/books';
-
-const FALLBACK_BOOK_COVER =
-  'https://grantha.lk/media/catalog/product/cache/5fa2393eb818a642e720faf99039a3de/m/a/manikkawatha_1.jpg';
+import OptimizedImage, { DEFAULT_FALLBACK_BOOK_COVER } from './ui/OptimizedImage';
 
 interface BookCoverProps {
   book: Book;
   size?: 'sm' | 'md' | 'lg';
   className?: string;
   showOverlayTitle?: boolean;
+  priority?: boolean;
 }
 
 export default function BookCover({
@@ -18,14 +17,15 @@ export default function BookCover({
   size = 'md',
   className = '',
   showOverlayTitle = false,
+  priority = false,
 }: BookCoverProps) {
-  const [imgSrc, setImgSrc] = useState<string>(book.coverImage || FALLBACK_BOOK_COVER);
+  const [imgSrc, setImgSrc] = useState<string>(book.coverImage || DEFAULT_FALLBACK_BOOK_COVER);
   const [imgError, setImgError] = useState(false);
   const [prevCover, setPrevCover] = useState(book.coverImage);
 
   if (book.coverImage !== prevCover) {
     setPrevCover(book.coverImage);
-    setImgSrc(book.coverImage || FALLBACK_BOOK_COVER);
+    setImgSrc(book.coverImage || DEFAULT_FALLBACK_BOOK_COVER);
     setImgError(false);
   }
 
@@ -41,24 +41,24 @@ export default function BookCover({
 
   return (
     <div
-      className={`relative w-full rounded-lg overflow-hidden select-none bg-neutral-900 shadow-sm group-hover:shadow-md transition-shadow duration-300 ${className}`}
+      className={`relative w-full rounded-lg overflow-hidden select-none bg-[var(--bg-wash)] shadow-sm group-hover:shadow-md transition-shadow duration-300 ${className}`}
       style={aspectRatioStyle}
     >
       {/* 1. Real Photographic Sri Lankan Book Cover Image */}
       {!imgError && imgSrc ? (
-        <img
+        <OptimizedImage
           src={imgSrc}
+          fallbackSrc={DEFAULT_FALLBACK_BOOK_COVER}
           alt={book.title}
-          referrerPolicy="no-referrer"
+          priority={priority}
           onError={() => {
-            if (imgSrc !== FALLBACK_BOOK_COVER) {
-              setImgSrc(FALLBACK_BOOK_COVER);
+            if (imgSrc !== DEFAULT_FALLBACK_BOOK_COVER) {
+              setImgSrc(DEFAULT_FALLBACK_BOOK_COVER);
             } else {
               setImgError(true);
             }
           }}
           className="w-full h-full object-cover object-center transition-transform duration-500 ease-out group-hover:scale-105"
-          loading="lazy"
         />
       ) : (
         /* Fallback: Museum Clothbound Texture with Sinhala Calligraphy */

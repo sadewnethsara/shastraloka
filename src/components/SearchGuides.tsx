@@ -77,7 +77,7 @@ export default function SearchGuides({ onSelectGuide, className = '' }: SearchGu
     <div className={`w-full bg-[var(--bg-surface)] border-b border-[var(--border-subtle)] py-2.5 px-4 sm:px-6 overflow-hidden ${className}`}>
       <div className="page-container flex items-center gap-2 overflow-x-auto no-scrollbar scroll-smooth">
         <span className="text-xs font-bold text-[var(--text-muted)] shrink-0 mr-1 flex items-center gap-1.5">
-          <Sparkles className="w-3.5 h-3.5 text-[#F1641E]" />
+          <Sparkles className="w-3.5 h-3.5 text-[var(--color-primary)]" />
           <span>Explore:</span>
         </span>
 
@@ -97,7 +97,7 @@ export default function SearchGuides({ onSelectGuide, className = '' }: SearchGu
                   onSelectGuide(nextQuery);
                 }
               }}
-              className={`shrink-0 h-9 px-3.5 rounded-full text-xs font-semibold border transition-all duration-150 cursor-pointer flex items-center gap-1.5 ${
+              className={`shrink-0 h-9 px-3.5 rounded-[var(--radius-btn,9999px)] text-xs font-semibold border transition-all duration-150 cursor-pointer flex items-center gap-1.5 ${
                 isActive
                   ? 'bg-[var(--pill-active-bg)] text-[var(--pill-active-text)] border-[var(--pill-active-bg)] shadow-xs'
                   : 'bg-[var(--bg-input)] hover:bg-[var(--bg-hover)] text-[var(--text-main)] border-transparent'

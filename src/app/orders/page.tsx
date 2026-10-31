@@ -42,7 +42,7 @@ export default function OrdersPage() {
         {/* Orders List */}
         {orders.length === 0 ? (
           <div className="py-20 text-center space-y-4">
-            <div className="w-16 h-16 rounded-full bg-[var(--bg-input)] text-[#a66523] flex items-center justify-center mx-auto">
+            <div className="w-16 h-16 rounded-full bg-[var(--bg-input)] text-[var(--brand-brown)] flex items-center justify-center mx-auto">
               <IconTruck size={28} />
             </div>
             <h3 className="font-heading font-bold text-xl text-[var(--text-main)]">
@@ -53,7 +53,7 @@ export default function OrdersPage() {
             </p>
             <Link
               href="/"
-              className="inline-block px-5 py-2.5 rounded-full bg-[#e60023] hover:bg-[#ad081b] text-white font-semibold text-xs shadow-xs transition-colors"
+              className="inline-block px-5 py-2.5 rounded-[var(--radius-btn)] bg-[var(--color-primary)] hover:bg-[var(--color-primary-hover)] text-white font-semibold text-xs shadow-xs transition-colors"
             >
               Explore Treatises
             </Link>
@@ -101,7 +101,7 @@ export default function OrdersPage() {
                     <div className="flex items-center gap-2">
                       <Link
                         href={`/orders/${order.id}`}
-                        className="px-4 py-2 rounded-full bg-[#e60023] hover:bg-[#ad081b] text-white font-semibold text-xs shadow-xs transition-colors"
+                        className="px-4 py-2 rounded-[var(--radius-btn)] bg-[var(--color-primary)] hover:bg-[var(--color-primary-hover)] text-white font-semibold text-xs shadow-xs transition-colors"
                       >
                         Live Tracking & Invoice &rarr;
                       </Link>

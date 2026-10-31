@@ -48,10 +48,10 @@ export default function Loading() {
             <div className="w-9 h-9 rounded-full bg-[var(--bg-wash)] border border-[var(--border-subtle)] animate-pulse hidden sm:block" />
             <div className="w-9 h-9 rounded-full bg-[var(--bg-wash)] border border-[var(--border-subtle)] animate-pulse hidden sm:block" />
             {/* Bag Pill Skeleton */}
-            <div className="h-10 px-4 rounded-full bg-[var(--bag-btn-bg,#f3f4f6)] border border-[var(--bag-btn-border,rgba(241,100,30,0.4))] flex items-center gap-2 animate-pulse">
+            <div className="h-10 px-4 rounded-full bg-[var(--bag-btn-bg)] border border-[var(--bag-btn-border)] flex items-center gap-2 animate-pulse">
               <div className="w-4 h-4 rounded bg-[var(--color-primary)]/40" />
               <div className="h-3.5 w-10 rounded bg-[var(--border-subtle)]" />
-              <div className="w-5 h-5 rounded-full bg-[var(--color-accent-badge,#e60023)]/50" />
+              <div className="w-5 h-5 rounded-full bg-[var(--color-accent-badge)]/50" />
             </div>
           </div>
         </div>

@@ -21,6 +21,7 @@ import Header from '../../components/Header';
 import SearchGuides from '../../components/SearchGuides';
 import Footer from '../../components/Footer';
 import BookCard from '../../components/BookCard';
+import ViewportSection from '../../components/ui/ViewportSection';
 import { useApp } from '../../context/AppContext';
 import { BOOKS, Book } from '../../data/books';
 import { PUBLISHERS, PublisherProfile } from '../../data/publishers';
@@ -166,13 +167,18 @@ export default function PublishersPage() {
 
         {/* Publishers Directory Cards */}
         <section className="space-y-8">
-          {filteredPublishers.map((pub) => {
+          {filteredPublishers.map((pub, pubIdx) => {
             const pubBooks = BOOKS.filter((b) => pub.bookIds.includes(b.id));
             const isFollowed = !!followedIds[pub.id];
 
             return (
-              <div
+              <ViewportSection
                 key={pub.id}
+                eager={pubIdx === 0}
+                minHeight={380}
+                skeletonTitle={pub.name}
+              >
+              <div
                 className="rounded-3xl bg-[var(--bg-card)] border border-[var(--border-subtle)] shadow-xs overflow-hidden transition-shadow hover:shadow-md"
               >
                 {/* Top Banner Strip */}
@@ -296,7 +302,7 @@ export default function PublishersPage() {
                       </h3>
                       <Link
                         href={`/publishers/${pub.id}`}
-                        className="text-xs font-bold text-[#F1641E] hover:underline flex items-center gap-1"
+                        className="text-xs font-bold text-[var(--color-primary)] hover:underline flex items-center gap-1"
                       >
                         <span>View full catalog &amp; colophon</span>
                         <ChevronRight className="w-3.5 h-3.5" />
@@ -311,6 +317,7 @@ export default function PublishersPage() {
                   </div>
                 </div>
               </div>
+              </ViewportSection>
             );
           })}
         </section>

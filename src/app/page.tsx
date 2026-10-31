@@ -4,12 +4,12 @@ import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import Header from '../components/Header';
-import BookModal from '../components/BookModal';
-import BoardsModal from '../components/BoardsModal';
 import Footer from '../components/Footer';
 import Toast from '../components/Toast';
 import CleanBookCard from '../components/CleanBookCard';
 import LoggedInLandingFeed from '../components/LoggedInLandingFeed';
+import OptimizedImage from '../components/ui/OptimizedImage';
+import ViewportSection from '../components/ui/ViewportSection';
 import { BOOKS } from '../data/books';
 import { useApp } from '../context/AppContext';
 import { Button } from '../components/ui/Button';
@@ -664,7 +664,7 @@ export default function LandingPage() {
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
             {/* Left / Main Banner Card ("Wonderfully Sacred Wisdom" / Celebration Matched) */}
             <div
-              className="lg:col-span-8 bg-[var(--hero-banner-bg)] border border-[var(--hero-banner-border)] rounded-2xl overflow-hidden shadow-xs hover:shadow-md transition"
+              className="lg:col-span-8 bg-[var(--hero-banner-bg)] border border-[var(--hero-banner-border)] rounded-[var(--radius-card)] overflow-hidden shadow-xs hover:shadow-md transition"
               style={{ backgroundImage: 'var(--hero-banner-pattern)' }}
             >
               {/* Desktop & Tablet Horizontal Split */}
@@ -814,7 +814,7 @@ export default function LandingPage() {
             {/* Right Card: Desktop Only (Dynamic Featured Celebration Book) */}
             <div
               onClick={() => router.push(`/books/${heroFeaturedBook.id}`)}
-              className="hidden lg:block lg:col-span-4 relative rounded-2xl overflow-hidden group cursor-pointer shadow-xs hover:shadow-md transition h-[360px] max-h-[360px]"
+              className="hidden lg:block lg:col-span-4 relative rounded-[var(--radius-card)] overflow-hidden group cursor-pointer shadow-xs hover:shadow-md transition h-[360px] max-h-[360px]"
             >
               <img
                 src={heroFeaturedBook.coverImage}
@@ -880,7 +880,7 @@ export default function LandingPage() {
             >
               {BOOKS.slice(0, 5).map((book, idx) => (
                 <div key={book.id} className="w-[165px] sm:w-[195px] md:w-[215px] lg:w-auto shrink-0 lg:shrink">
-                  <CleanBookCard book={book} rank={idx + 1} />
+                  <CleanBookCard book={book} rank={idx + 1} priority={idx < 3} />
                 </div>
               ))}
             </div>
@@ -953,6 +953,7 @@ export default function LandingPage() {
         {/* ===================================================================
             2. JUMP INTO FEATURED INTERESTS (4 cols desktop/tablet, 2x2 mobile)
            =================================================================== */}
+        <ViewportSection minHeight={340} skeletonTitle="Jump into featured interests">
         <section>
           <h2 className="text-lg sm:text-xl font-bold text-[var(--text-main)] mb-4">
             Jump into featured interests
@@ -964,16 +965,15 @@ export default function LandingPage() {
                 onClick={() => item.query && navigateToSearch(item.query)}
                 className="group cursor-pointer"
               >
-                <div className="relative aspect-[3/4] w-full rounded-2xl overflow-hidden bg-[var(--bg-wash)] mb-2.5">
-                  <img
+                <div className="relative aspect-[3/4] w-full rounded-[var(--radius-card)] overflow-hidden bg-[var(--bg-wash)] mb-2.5">
+                  <OptimizedImage
                     src={item.image}
+                    fallbackSrc={FALLBACK_BOOK_COVER}
                     alt={item.title}
-                    referrerPolicy="no-referrer"
-                    onError={handleCoverError}
                     className="w-full h-full object-cover group-hover:scale-105 transition duration-300"
                   />
                   {item.discount && (
-                    <span className="absolute top-2.5 left-2.5 px-2 py-0.5 rounded-full bg-[#e60023] text-white text-[10px] font-extrabold shadow-xs">
+                    <span className="absolute top-2.5 left-2.5 px-2 py-0.5 rounded-[var(--radius-badge)] bg-[var(--color-accent-badge)] text-white text-[10px] font-extrabold shadow-xs">
                       {item.discount}
                     </span>
                   )}
@@ -1000,10 +1000,12 @@ export default function LandingPage() {
             ))}
           </div>
         </section>
+        </ViewportSection>
 
         {/* ===================================================================
             3. DISCOVER OUR BEST COLLECTIONS (6 cols desktop, 3 tablet, 2 mobile)
            =================================================================== */}
+        <ViewportSection minHeight={280} skeletonTitle="Discover our best classical collections">
         <section>
           <h2 className="text-lg sm:text-xl font-bold text-[var(--text-main)] mb-4">
             Discover our best classical collections
@@ -1015,16 +1017,15 @@ export default function LandingPage() {
                 onClick={() => item.query && navigateToSearch(item.query)}
                 className="group cursor-pointer"
               >
-                <div className="relative aspect-square w-full rounded-2xl overflow-hidden bg-[var(--bg-wash)] mb-2">
-                  <img
+                <div className="relative aspect-square w-full rounded-[var(--radius-card)] overflow-hidden bg-[var(--bg-wash)] mb-2">
+                  <OptimizedImage
                     src={item.image}
+                    fallbackSrc={FALLBACK_BOOK_COVER}
                     alt={item.title}
-                    referrerPolicy="no-referrer"
-                    onError={handleCoverError}
                     className="w-full h-full object-cover group-hover:scale-105 transition duration-300"
                   />
                   {item.discount && (
-                    <span className="absolute top-2 left-2 px-2 py-0.5 rounded-full bg-[#e60023] text-white text-[10px] font-extrabold shadow-xs">
+                    <span className="absolute top-2 left-2 px-2 py-0.5 rounded-[var(--radius-badge)] bg-[var(--color-accent-badge)] text-white text-[10px] font-extrabold shadow-xs">
                       {item.discount}
                     </span>
                   )}
@@ -1051,10 +1052,12 @@ export default function LandingPage() {
             ))}
           </div>
         </section>
+        </ViewportSection>
 
         {/* ===================================================================
             4. SHSTRALOKA-SPECIAL TREATISES
            =================================================================== */}
+        <ViewportSection minHeight={400} skeletonTitle="Shastraloka-special treatises">
         <section className="space-y-4 sm:space-y-5">
           {/* Top Sub-Section: Desktop 4-col with title in Col 1 */}
           <div className="hidden lg:grid lg:grid-cols-4 gap-4 items-center">
@@ -1073,7 +1076,7 @@ export default function LandingPage() {
               <div
                 key={card.id}
                 onClick={() => card.query && navigateToSearch(card.query)}
-                className="relative aspect-[4/3] rounded-2xl overflow-hidden group cursor-pointer"
+                className="relative aspect-[4/3] rounded-[var(--radius-card)] overflow-hidden group cursor-pointer"
               >
                 <img
                   src={card.image}
@@ -1084,7 +1087,7 @@ export default function LandingPage() {
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-transparent" />
                 {card.discount && (
-                  <span className="absolute top-3 left-3 px-2 py-0.5 rounded-full bg-[#e60023] text-white text-[10px] font-extrabold shadow-xs">
+                  <span className="absolute top-3 left-3 px-2 py-0.5 rounded-[var(--radius-badge)] bg-[var(--color-accent-badge)] text-white text-[10px] font-extrabold shadow-xs">
                     {card.discount}
                   </span>
                 )}
@@ -1125,7 +1128,7 @@ export default function LandingPage() {
                 <div
                   key={card.id}
                   onClick={() => card.query && navigateToSearch(card.query)}
-                  className="relative aspect-[16/9] sm:aspect-[4/3] rounded-xl sm:rounded-2xl overflow-hidden group cursor-pointer"
+                  className="relative aspect-[16/9] sm:aspect-[4/3] rounded-[var(--radius-card)] overflow-hidden group cursor-pointer"
                 >
                   <img
                     src={card.image}
@@ -1136,7 +1139,7 @@ export default function LandingPage() {
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-transparent" />
                   {card.discount && (
-                    <span className="absolute top-2.5 left-2.5 px-2 py-0.5 rounded-full bg-[#e60023] text-white text-[10px] font-extrabold shadow-xs">
+                    <span className="absolute top-2.5 left-2.5 px-2 py-0.5 rounded-[var(--radius-badge)] bg-[var(--color-accent-badge)] text-white text-[10px] font-extrabold shadow-xs">
                       {card.discount}
                     </span>
                   )}
@@ -1171,7 +1174,7 @@ export default function LandingPage() {
                   else navigateToSearch(prod.title);
                 }}
                 className={`${prod.desktopOnly ? 'hidden lg:block' : 'block'
-                  } relative aspect-square rounded-2xl overflow-hidden bg-[var(--bg-wash)] group cursor-pointer`}
+                  } relative aspect-square rounded-[var(--radius-card)] overflow-hidden bg-[var(--bg-wash)] group cursor-pointer`}
               >
                 <img
                   src={prod.image}
@@ -1182,7 +1185,7 @@ export default function LandingPage() {
                 />
 
                 {prod.discount && (
-                  <span className="absolute top-2.5 left-2.5 px-2 py-0.5 rounded-full bg-[#e60023] text-white text-[10px] font-extrabold shadow-xs z-10">
+                  <span className="absolute top-2.5 left-2.5 px-2 py-0.5 rounded-[var(--radius-badge)] bg-[var(--color-accent-badge)] text-white text-[10px] font-extrabold shadow-xs z-10">
                     {prod.discount}
                   </span>
                 )}
@@ -1196,7 +1199,7 @@ export default function LandingPage() {
                 >
                   <svg
                     className={`w-4 h-4 ${favorites[prod.bookId] || isBookSaved(prod.bookId)
-                        ? 'fill-[#F1641E] text-[#F1641E]'
+                        ? 'fill-[var(--color-primary)] text-[var(--color-primary)]'
                         : 'text-[var(--text-main)]'
                       }`}
                     viewBox="0 0 24 24"
@@ -1272,10 +1275,12 @@ export default function LandingPage() {
             </div>
           </div>
         </section>
+        </ViewportSection>
 
         {/* ===================================================================
             5. SHOP OUR MOST-LOVED CATEGORIES (Responsive Carousel)
            =================================================================== */}
+        <ViewportSection minHeight={300} skeletonTitle="Shop our most-loved categories">
         <section className="w-full max-w-full">
           <h2 className="text-lg sm:text-xl font-bold text-[var(--text-main)] mb-4">
             Shop our most-loved categories
@@ -1301,16 +1306,15 @@ export default function LandingPage() {
                   onClick={() => cat.query && navigateToSearch(cat.query)}
                   className="w-[140px] sm:w-[170px] md:w-auto shrink-0 group cursor-pointer"
                 >
-                  <div className="relative aspect-[4/5] w-full rounded-2xl overflow-hidden bg-[var(--bg-wash)] mb-2">
-                    <img
+                  <div className="relative aspect-[4/5] w-full rounded-[var(--radius-card)] overflow-hidden bg-[var(--bg-wash)] mb-2">
+                    <OptimizedImage
                       src={cat.image}
+                      fallbackSrc={FALLBACK_BOOK_COVER}
                       alt={cat.title}
-                      referrerPolicy="no-referrer"
-                      onError={handleCoverError}
                       className="w-full h-full object-cover group-hover:scale-105 transition duration-300"
                     />
                     {cat.discount && (
-                      <span className="absolute top-2 left-2 px-2 py-0.5 rounded-full bg-[#e60023] text-white text-[10px] font-extrabold shadow-xs">
+                      <span className="absolute top-2 left-2 px-2 py-0.5 rounded-[var(--radius-badge)] bg-[var(--color-accent-badge)] text-white text-[10px] font-extrabold shadow-xs">
                         {cat.discount}
                       </span>
                     )}
@@ -1345,16 +1349,18 @@ export default function LandingPage() {
             </button>
           </div>
         </section>
+        </ViewportSection>
 
         {/* ===================================================================
             6. TODAY'S BIG DEALS (Flash Deal Section with Live Countdown & Add to Bag)
            =================================================================== */}
+        <ViewportSection minHeight={380} skeletonTitle="Today's big deals">
         <section className="relative w-full max-w-full rounded-3xl border border-[var(--border-subtle)] bg-[var(--bg-surface)] p-4 sm:p-6">
           {/* Deal Header Bar */}
           <div className="flex flex-wrap items-center justify-between gap-3 mb-5 pb-3.5 border-b border-[var(--border-subtle)]">
             <div className="flex flex-wrap items-center gap-2.5 sm:gap-3.5">
               <div className="flex items-center gap-2">
-                <span className="w-8 h-8 rounded-xl bg-[#e60023] text-white flex items-center justify-center shadow-xs shrink-0">
+                <span className="w-8 h-8 rounded-[var(--radius-btn)] bg-[var(--color-accent-badge)] text-white flex items-center justify-center shadow-xs shrink-0">
                   <Flame className="w-4.5 h-4.5 fill-current" />
                 </span>
                 <div>
@@ -1368,7 +1374,7 @@ export default function LandingPage() {
               </div>
 
               {/* High-Contrast Live Countdown Pill */}
-              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#e60023]/10 dark:bg-[#e60023]/20 border border-[#e60023]/25 text-[#e60023] dark:text-[#ff5c77] text-xs font-extrabold tabular-nums">
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-[var(--radius-badge)] bg-[var(--color-danger-subtle)] border border-[var(--color-danger)]/25 text-[var(--color-danger)] text-xs font-extrabold tabular-nums">
                 <Clock className="w-3.5 h-3.5 shrink-0" />
                 <span>Ends in {formatCountdown(timeLeft)}</span>
               </div>
@@ -1403,11 +1409,11 @@ export default function LandingPage() {
                   <article
                     key={deal.id}
                     onClick={() => handleOpenBookById(deal.bookId, deal.title)}
-                    className="w-[210px] sm:w-[235px] lg:w-auto shrink-0 rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-card)] p-2.5 sm:p-3 shadow-xs hover:shadow-md hover:border-[#e60023]/40 transition-all duration-200 flex flex-col justify-between group cursor-pointer"
+                    className="w-[210px] sm:w-[235px] lg:w-auto shrink-0 rounded-[var(--radius-card)] border border-[var(--border-subtle)] bg-[var(--bg-card)] p-2.5 sm:p-3 shadow-xs hover:shadow-md hover:border-[var(--color-primary-border)] transition-all duration-200 flex flex-col justify-between group cursor-pointer"
                   >
                     <div>
                       {/* Book Cover Frame with Discount Ribbon & Flash Tag */}
-                      <div className="relative aspect-[3/4] w-full rounded-xl overflow-hidden bg-[var(--bg-wash)] border border-[var(--border-subtle)] mb-2.5">
+                      <div className="relative aspect-[3/4] w-full rounded-[var(--radius-card)] overflow-hidden bg-[var(--bg-wash)] border border-[var(--border-subtle)] mb-2.5">
                         <img
                           src={deal.image}
                           alt={deal.title}
@@ -1416,8 +1422,8 @@ export default function LandingPage() {
                           className="w-full h-full object-cover group-hover:scale-105 transition duration-300"
                         />
 
-                        {/* Top-Left Bold Red Discount Badge */}
-                        <span className="absolute top-2.5 left-2.5 px-2.5 py-1 rounded-lg bg-[#e60023] text-white text-[11px] font-extrabold tracking-tight shadow-sm">
+                        {/* Top-Left Bold Discount Badge */}
+                        <span className="absolute top-2.5 left-2.5 px-2.5 py-1 rounded-[var(--radius-badge)] bg-[var(--color-accent-badge)] text-white text-[11px] font-extrabold tracking-tight shadow-sm">
                           {deal.discount}
                         </span>
 
@@ -1431,7 +1437,7 @@ export default function LandingPage() {
                           <svg
                             className={`w-4 h-4 ${
                               favorites[deal.bookId] || isBookSaved(deal.bookId)
-                                ? 'fill-[#F1641E] text-[#F1641E]'
+                                ? 'fill-[var(--color-primary)] text-[var(--color-primary)]'
                                 : 'text-[var(--text-main)]'
                             }`}
                             viewBox="0 0 24 24"
@@ -1453,7 +1459,7 @@ export default function LandingPage() {
                       <div className="flex items-center justify-between gap-1 text-[11px] text-[var(--text-muted)] mb-1">
                         <span className="truncate">{deal.author}</span>
                         <span className="inline-flex items-center gap-0.5 font-bold text-[var(--text-main)] shrink-0">
-                          <Star className="w-3 h-3 fill-[#F1641E] text-[#F1641E]" />
+                          <Star className="w-3 h-3 fill-[var(--color-primary)] text-[var(--color-primary)]" />
                           {deal.rating.toFixed(1)}
                         </span>
                       </div>
@@ -1465,7 +1471,7 @@ export default function LandingPage() {
 
                       {/* Deal Price Block */}
                       <div className="mt-2 flex items-baseline flex-wrap gap-1.5 tabular-nums">
-                        <span className="text-sm sm:text-base font-extrabold text-[#e60023] dark:text-[#ff5c77]">
+                        <span className="text-sm sm:text-base font-extrabold text-[var(--color-danger)]">
                           {deal.salePrice}
                         </span>
                         <span className="text-xs text-[var(--text-muted)] line-through">
@@ -1486,12 +1492,12 @@ export default function LandingPage() {
                       <div>
                         <div className="h-1.5 w-full rounded-full bg-[var(--bg-wash)] overflow-hidden">
                           <div
-                            className="h-full rounded-full bg-gradient-to-r from-[#F1641E] to-[#e60023]"
+                            className="h-full rounded-full bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-accent-badge)]"
                             style={{ width: `${deal.claimedPercent}%` }}
                           />
                         </div>
                         <div className="flex items-center justify-between text-[10px] font-semibold text-[var(--text-muted)] mt-1">
-                          <span className="text-[#e60023] dark:text-[#ff5c77] font-bold">
+                          <span className="text-[var(--color-danger)] font-bold">
                             {deal.claimedPercent}% claimed
                           </span>
                           <span>Selling fast</span>
@@ -1501,7 +1507,7 @@ export default function LandingPage() {
                       <button
                         type="button"
                         onClick={(e) => handleAddDealToBag(deal, e)}
-                        className={`w-full h-8.5 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition cursor-pointer active:scale-[0.98] ${
+                        className={`w-full h-8.5 rounded-[var(--radius-btn)] text-xs font-bold flex items-center justify-center gap-1.5 transition cursor-pointer active:scale-[0.98] ${
                           isAdded
                             ? 'bg-[var(--color-emerald)] text-white'
                             : 'bg-[var(--pill-active-bg)] text-[var(--pill-active-text)] hover:opacity-95'
@@ -1536,10 +1542,12 @@ export default function LandingPage() {
             </button>
           </div>
         </section>
+        </ViewportSection>
 
         {/* ===================================================================
             7. EDITORS' PICKS: SHSTRALOKA'S GUIDE TO CLASSICAL LITERATURE
            =================================================================== */}
+        <ViewportSection minHeight={320} skeletonTitle="Shastraloka's Guide to Heritage">
         <section>
           {/* DESKTOP LAYOUT (lg and up) */}
           <div className="hidden lg:grid lg:grid-cols-4 gap-4">
@@ -1567,7 +1575,7 @@ export default function LandingPage() {
               <div
                 key={item.id}
                 onClick={() => handleOpenBookById(item.bookId, item.title)}
-                className="relative aspect-square rounded-2xl overflow-hidden bg-[var(--bg-wash)] group cursor-pointer"
+                className="relative aspect-square rounded-[var(--radius-card)] overflow-hidden bg-[var(--bg-wash)] group cursor-pointer"
               >
                 <img
                   src={item.image}
@@ -1577,7 +1585,7 @@ export default function LandingPage() {
                   className="w-full h-full object-cover group-hover:scale-105 transition duration-300"
                 />
                 {item.discount && (
-                  <span className="absolute top-2.5 left-2.5 px-2 py-0.5 rounded-full bg-[#e60023] text-white text-[10px] font-extrabold shadow-xs z-10">
+                  <span className="absolute top-2.5 left-2.5 px-2 py-0.5 rounded-[var(--radius-badge)] bg-[var(--color-accent-badge)] text-white text-[10px] font-extrabold shadow-xs z-10">
                     {item.discount}
                   </span>
                 )}
@@ -1601,7 +1609,7 @@ export default function LandingPage() {
                 >
                   <svg
                     className={`w-4 h-4 ${favorites[item.bookId] || isBookSaved(item.bookId)
-                        ? 'fill-[#F1641E] text-[#F1641E]'
+                        ? 'fill-[var(--color-primary)] text-[var(--color-primary)]'
                         : 'text-[var(--text-main)]'
                       }`}
                     viewBox="0 0 24 24"
@@ -1639,7 +1647,7 @@ export default function LandingPage() {
               <div
                 key={item.id}
                 onClick={() => handleOpenBookById(item.bookId, item.title)}
-                className="relative aspect-square rounded-2xl overflow-hidden bg-[var(--bg-wash)] group cursor-pointer"
+                className="relative aspect-square rounded-[var(--radius-card)] overflow-hidden bg-[var(--bg-wash)] group cursor-pointer"
               >
                 <img
                   src={item.image}
@@ -1649,7 +1657,7 @@ export default function LandingPage() {
                   className="w-full h-full object-cover group-hover:scale-105 transition duration-300"
                 />
                 {item.discount && (
-                  <span className="absolute top-3 left-3 px-2 py-0.5 rounded-full bg-[#e60023] text-white text-[10px] font-extrabold shadow-xs z-10">
+                  <span className="absolute top-3 left-3 px-2 py-0.5 rounded-[var(--radius-badge)] bg-[var(--color-accent-badge)] text-white text-[10px] font-extrabold shadow-xs z-10">
                     {item.discount}
                   </span>
                 )}
@@ -1684,7 +1692,7 @@ export default function LandingPage() {
                 <div
                   key={item.id}
                   onClick={() => handleOpenBookById(item.bookId, item.title)}
-                  className="relative aspect-square rounded-2xl overflow-hidden bg-[var(--bg-wash)] cursor-pointer"
+                  className="relative aspect-square rounded-[var(--radius-card)] overflow-hidden bg-[var(--bg-wash)] cursor-pointer"
                 >
                   <img
                     src={item.image}
@@ -1694,7 +1702,7 @@ export default function LandingPage() {
                     className="w-full h-full object-cover"
                   />
                   {item.discount && (
-                    <span className="absolute top-2 left-2 px-1.5 py-0.5 rounded-full bg-[#e60023] text-white text-[9px] font-extrabold shadow-xs z-10">
+                    <span className="absolute top-2 left-2 px-1.5 py-0.5 rounded-[var(--radius-badge)] bg-[var(--color-accent-badge)] text-white text-[9px] font-extrabold shadow-xs z-10">
                       {item.discount}
                     </span>
                   )}
@@ -1723,10 +1731,12 @@ export default function LandingPage() {
             </div>
           </div>
         </section>
+        </ViewportSection>
 
         {/* ===================================================================
             8. SAVE NOW ON STANDOUT STYLES (6 cols desktop, 3 tablet, 2 mobile)
            =================================================================== */}
+        <ViewportSection minHeight={280} skeletonTitle="Save now on standout treatises">
         <section>
           <h2 className="text-lg sm:text-xl font-bold text-[var(--text-main)] mb-4">
             Save now on standout treatises
@@ -1738,16 +1748,15 @@ export default function LandingPage() {
                 onClick={() => style.query && navigateToSearch(style.query)}
                 className="group cursor-pointer"
               >
-                <div className="relative aspect-square w-full rounded-2xl overflow-hidden bg-[var(--bg-wash)] mb-2">
-                  <img
+                <div className="relative aspect-square w-full rounded-[var(--radius-card)] overflow-hidden bg-[var(--bg-wash)] mb-2">
+                  <OptimizedImage
                     src={style.image}
+                    fallbackSrc={FALLBACK_BOOK_COVER}
                     alt={style.title}
-                    referrerPolicy="no-referrer"
-                    onError={handleCoverError}
                     className="w-full h-full object-cover group-hover:scale-105 transition duration-300"
                   />
                   {style.discount && (
-                    <span className="absolute top-2 left-2 px-2 py-0.5 rounded-full bg-[#e60023] text-white text-[10px] font-extrabold shadow-xs">
+                    <span className="absolute top-2 left-2 px-2 py-0.5 rounded-[var(--radius-badge)] bg-[var(--color-accent-badge)] text-white text-[10px] font-extrabold shadow-xs">
                       {style.discount}
                     </span>
                   )}
@@ -1772,6 +1781,7 @@ export default function LandingPage() {
             ))}
           </div>
         </section>
+        </ViewportSection>
           </>
         )}
       </main>
@@ -1837,8 +1847,6 @@ className="text-2xl sm:text-3xl lg:text-[36px] font-heading font-bold text-[var(
         </div>
       </section>
 
-      <BookModal />
-      <BoardsModal />
       <Toast />
 
       {/* =====================================================================

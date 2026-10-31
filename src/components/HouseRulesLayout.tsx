@@ -22,16 +22,14 @@ const HOUSE_RULE_PAGES = [
 ];
 
 export const REGIONAL_POLICY_VARIATIONS = [
-  { lang: 'සිංහල', label: 'ශාස්ත්‍රලෝක පෞද්ගලිකත්ව සහ පුස්තකාල ප්‍රතිපත්තිය (Sri Lanka)' },
   { lang: 'English - Sri Lanka', label: 'Shastraloka Global & Islandwide Policy (LKR)' },
+  { lang: 'National Archive (SL)', label: 'Shastraloka National Privacy & Archival Library Policy (Sri Lanka)' },
   { lang: 'English - India', label: 'Shastraloka South Asian Indology Policy' },
   { lang: 'English - UK', label: 'Shastraloka Commonwealth & British Library Dispatch Policy' },
   { lang: 'English - US', label: 'Shastraloka North American Scholarly Policy' },
-  { lang: 'தமிழ் - இலங்கை', label: 'சாஸ்திரலோக தனியுரிமைக் கொள்கை (Sri Lanka Tamil)' },
   { lang: 'Pali / Monastic', label: 'Mahavihara & Pirivena Archival Access Charter' },
-  { lang: 'Deutsch', label: 'Shastraloka: Datenschutzrichtlinie für Indologie' },
-  { lang: 'Français', label: 'Shastraloka: Règlement concernant la confidentialité' },
-  { lang: '日本語', label: 'シャストラローカ：仏教学・プライバシーポリシー' },
+  { lang: 'European Union', label: 'Shastraloka GDPR & Indology Data Protection Charter' },
+  { lang: 'Asia-Pacific', label: 'Shastraloka Buddhist Studies & Library Privacy Charter' },
 ];
 
 export default function HouseRulesLayout({
@@ -124,7 +122,7 @@ export default function HouseRulesLayout({
                     onClick={() => setDropdownOpen(false)}
                     className={`block px-4 py-2 text-xs sm:text-sm transition-colors ${
                       p.slug === activeSlug
-                        ? 'bg-[var(--bg-wash)] font-semibold text-[#F1641E]'
+                        ? 'bg-[var(--bg-wash)] font-semibold text-[var(--color-primary)]'
                         : 'text-[var(--text-main)] hover:bg-[var(--bg-hover)]'
                     }`}
                   >
@@ -155,7 +153,7 @@ export default function HouseRulesLayout({
         <div className="mt-10 pt-6 border-t border-[var(--border-subtle)] flex flex-wrap items-center justify-between gap-4 text-xs text-[var(--text-muted)]">
           <span>Last updated on {lastUpdated}</span>
           <span className="inline-flex items-center gap-1.5">
-            <ShieldCheck className="w-4 h-4 text-[#F1641E]" />
+            <ShieldCheck className="w-4 h-4 text-[var(--color-primary)]" />
             Verified under Sri Lanka Personal Data Protection Act &amp; Literary Heritage Charter
           </span>
         </div>

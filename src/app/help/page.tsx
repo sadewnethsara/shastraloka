@@ -47,8 +47,8 @@ export default function HelpPage() {
           href="/track-order"
           className="p-4 rounded-2xl bg-[var(--bg-surface)] border border-[var(--border-subtle)] hover:border-[var(--border-strong)] transition-all group"
         >
-          <Truck className="w-5 h-5 text-[#F1641E] mb-2" />
-          <h3 className="text-sm font-bold text-[var(--text-main)] group-hover:text-[#F1641E]">Track a Dispatch</h3>
+          <Truck className="w-5 h-5 text-[var(--color-primary)] mb-2" />
+          <h3 className="text-sm font-bold text-[var(--text-main)] group-hover:text-[var(--color-primary)]">Track a Dispatch</h3>
           <p className="text-xs text-[var(--text-muted)] mt-1">Live Sri Lanka courier status &amp; delivery ETA</p>
         </Link>
 
@@ -56,8 +56,8 @@ export default function HelpPage() {
           href="/bag"
           className="p-4 rounded-2xl bg-[var(--bg-surface)] border border-[var(--border-subtle)] hover:border-[var(--border-strong)] transition-all group"
         >
-          <Handbag className="w-5 h-5 text-[#F1641E] mb-2" />
-          <h3 className="text-sm font-bold text-[var(--text-main)] group-hover:text-[#F1641E]">Shopping Bag &amp; Payment</h3>
+          <Handbag className="w-5 h-5 text-[var(--color-primary)] mb-2" />
+          <h3 className="text-sm font-bold text-[var(--text-main)] group-hover:text-[var(--color-primary)]">Shopping Bag &amp; Payment</h3>
           <p className="text-xs text-[var(--text-muted)] mt-1">LKR cards, LankaQR, Bank Transfer &amp; COD</p>
         </Link>
 
@@ -65,8 +65,8 @@ export default function HelpPage() {
           href="/gift-cards"
           className="p-4 rounded-2xl bg-[var(--bg-surface)] border border-[var(--border-subtle)] hover:border-[var(--border-strong)] transition-all group"
         >
-          <Gift className="w-5 h-5 text-[#F1641E] mb-2" />
-          <h3 className="text-sm font-bold text-[var(--text-main)] group-hover:text-[#F1641E]">Gift Cards &amp; Vouchers</h3>
+          <Gift className="w-5 h-5 text-[var(--color-primary)] mb-2" />
+          <h3 className="text-sm font-bold text-[var(--text-main)] group-hover:text-[var(--color-primary)]">Gift Cards &amp; Vouchers</h3>
           <p className="text-xs text-[var(--text-muted)] mt-1">Send or redeem a Shastraloka literary gift card</p>
         </Link>
       </div>
@@ -90,7 +90,7 @@ export default function HelpPage() {
             className="p-4 rounded-2xl bg-[var(--bg-surface)] border border-[var(--border-subtle)] space-y-1.5"
           >
             <h3 className="text-sm font-bold text-[var(--text-main)] flex items-center gap-2">
-              <BookOpen className="w-4 h-4 text-[#F1641E] shrink-0" />
+              <BookOpen className="w-4 h-4 text-[var(--color-primary)] shrink-0" />
               {faq.q}
             </h3>
             <p className="text-xs sm:text-sm text-[var(--text-muted)] leading-relaxed pl-6">{faq.a}</p>
@@ -102,7 +102,7 @@ export default function HelpPage() {
       <div className="mt-8 p-5 rounded-2xl bg-[var(--bg-wash)] border border-[var(--border-subtle)] flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div className="space-y-1">
           <div className="flex items-center gap-2 text-sm font-bold text-[var(--text-main)]">
-            <ShieldCheck className="w-4 h-4 text-[#F1641E]" />
+            <ShieldCheck className="w-4 h-4 text-[var(--color-primary)]" />
             Still need a human archivist?
           </div>
           <p className="text-xs text-[var(--text-muted)]">

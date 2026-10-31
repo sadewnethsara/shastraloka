@@ -10,7 +10,18 @@
   --color-primary-subtle: rgba(155, 75, 26, 0.12);
   --color-primary-border: rgba(155, 75, 26, 0.40);
   --color-accent-badge: #8c1d18;
+  --color-accent-badge-hover: #6e1511;
   --color-accent-badge-text: #fffdf7;
+
+  /* Theme Typography & Shape Tokens */
+  --theme-font-heading: var(--font-heading), system-ui, -apple-system, sans-serif;
+  --theme-font-sans: var(--font-sans), system-ui, -apple-system, sans-serif;
+  --theme-heading-tracking: -0.015em;
+  --radius-card: 1rem;
+  --radius-btn: 9999px;
+  --radius-input: 0.75rem;
+  --radius-modal: 1.5rem;
+  --radius-badge: 9999px;
 
   /* Header Design Tokens */
   --header-bg: #f6efe1;

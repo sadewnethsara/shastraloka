@@ -6,17 +6,16 @@ import { Handbag, Check, Bell } from 'lucide-react';
 import { Book } from '../data/books';
 import { useApp } from '../context/AppContext';
 import { getOfferPercentage } from '../utils/searchEngine';
-
-const FALLBACK_BOOK_COVER =
-  'https://grantha.lk/media/catalog/product/cache/5fa2393eb818a642e720faf99039a3de/m/a/manikkawatha_1.jpg';
+import OptimizedImage, { DEFAULT_FALLBACK_BOOK_COVER } from './ui/OptimizedImage';
 
 export interface CleanBookCardProps {
   book: Book;
   rank?: number;
   badgeText?: string;
+  priority?: boolean;
 }
 
-export default function CleanBookCard({ book, rank, badgeText }: CleanBookCardProps) {
+export default function CleanBookCard({ book, rank, badgeText, priority = false }: CleanBookCardProps) {
   const router = useRouter();
   const { addToBag, showToast } = useApp();
   const [justAdded, setJustAdded] = useState(false);
@@ -42,21 +41,15 @@ export default function CleanBookCard({ book, rank, badgeText }: CleanBookCardPr
   return (
     <article
       onClick={handleCardClick}
-      className="group cursor-pointer flex flex-col"
+      className="cv-card group cursor-pointer flex flex-col"
     >
       {/* Uniform 3:4 Book Cover Frame */}
-      <div className="relative aspect-[3/4] w-full rounded-xl overflow-hidden bg-[var(--bg-wash)] border border-[var(--border-subtle)] mb-2.5">
-        <img
-          src={book.coverImage || FALLBACK_BOOK_COVER}
+      <div className="relative aspect-[3/4] w-full rounded-[var(--radius-card,0.75rem)] overflow-hidden bg-[var(--bg-wash)] border border-[var(--border-subtle)] mb-2.5">
+        <OptimizedImage
+          src={book.coverImage || DEFAULT_FALLBACK_BOOK_COVER}
+          fallbackSrc={DEFAULT_FALLBACK_BOOK_COVER}
           alt={book.title}
-          referrerPolicy="no-referrer"
-          loading="lazy"
-          onError={(e) => {
-            const target = e.currentTarget;
-            if (target.src !== FALLBACK_BOOK_COVER) {
-              target.src = FALLBACK_BOOK_COVER;
-            }
-          }}
+          priority={priority}
           className={`w-full h-full object-cover transition-transform duration-300 group-hover:scale-[1.03] ${
             isOutOfStock ? 'grayscale-[45%] opacity-85' : ''
           }`}
@@ -64,7 +57,7 @@ export default function CleanBookCard({ book, rank, badgeText }: CleanBookCardPr
 
         {/* Subtle Rank, Out of Stock, or Single Badge (Top Left) */}
         {isOutOfStock ? (
-          <span className="absolute top-2.5 left-2.5 px-2.5 py-0.5 rounded-md bg-[#e60023] text-white text-[10px] font-extrabold uppercase tracking-wide shadow-xs">
+          <span className="absolute top-2.5 left-2.5 px-2.5 py-0.5 rounded-md bg-[var(--color-danger)] text-white text-[10px] font-extrabold uppercase tracking-wide shadow-xs">
             Out of Stock
           </span>
         ) : rank !== undefined ? (

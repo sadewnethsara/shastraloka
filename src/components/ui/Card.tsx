@@ -15,8 +15,8 @@ const roundedStyles = {
   sm: 'rounded-sm',
   md: 'rounded-md',
   lg: 'rounded-lg',
-  xl: 'rounded-xl',
-  '2xl': 'rounded-2xl',
+  xl: 'rounded-[var(--radius-card)]',
+  '2xl': 'rounded-[var(--radius-card)]',
 };
 
 const elevationStyles = {

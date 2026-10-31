@@ -36,6 +36,7 @@ export interface Book {
   sellerRating?: number;
   sellerReviews?: string;
   isDigital?: boolean;
+  samplePdfUrl?: string;
   inStock?: boolean;
   stockNote?: string;
 }

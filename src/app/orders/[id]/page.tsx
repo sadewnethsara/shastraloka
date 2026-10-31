@@ -40,7 +40,7 @@ function OrderDetailContent() {
           </p>
           <Link
             href="/orders"
-            className="inline-block mt-4 px-5 py-2 rounded-full bg-[#e60023] text-white font-semibold text-xs"
+            className="inline-block mt-4 px-5 py-2 rounded-[var(--radius-btn)] bg-[var(--color-primary)] text-white font-semibold text-xs"
           >
             View All Dispatches
           </Link>
@@ -108,7 +108,7 @@ function OrderDetailContent() {
                 <span>All Orders</span>
               </Link>
               <span className="text-xs text-[var(--text-muted)]">/</span>
-              <span className="text-xs font-semibold text-[#e60023]">Tracking #{order.id}</span>
+              <span className="text-xs font-semibold text-[var(--color-primary)]">Tracking #{order.id}</span>
             </div>
             <h1 className="font-heading font-bold text-2xl sm:text-3xl text-[var(--text-main)] mt-1 flex items-center gap-2.5">
               <span>Order Delivery Timeline</span>
@@ -121,7 +121,7 @@ function OrderDetailContent() {
           <div className="flex items-center gap-2">
             <button
               onClick={() => window.print()}
-              className="px-4 py-2 rounded-full bg-[var(--bg-input)] hover:bg-[var(--bg-hover)] text-[var(--text-main)] font-semibold text-xs cursor-pointer flex items-center gap-1.5 transition-colors"
+              className="px-4 py-2 rounded-[var(--radius-btn)] bg-[var(--bg-input)] hover:bg-[var(--bg-hover)] text-[var(--text-main)] font-semibold text-xs cursor-pointer flex items-center gap-1.5 transition-colors"
             >
               <IconPrinter size={15} />
               <span>Print Invoice</span>
@@ -132,7 +132,7 @@ function OrderDetailContent() {
                 navigator.clipboard?.writeText(window.location.href);
                 showToast('Tracking link copied to clipboard!');
               }}
-              className="px-4 py-2 rounded-full bg-[#e60023] hover:bg-[#ad081b] text-white font-semibold text-xs cursor-pointer shadow-xs flex items-center gap-1.5 transition-colors"
+              className="px-4 py-2 rounded-[var(--radius-btn)] bg-[var(--color-primary)] hover:bg-[var(--color-primary-hover)] text-white font-semibold text-xs cursor-pointer shadow-xs flex items-center gap-1.5 transition-colors"
             >
               <IconShare size={15} />
               <span>Share Tracking</span>
@@ -159,7 +159,7 @@ function OrderDetailContent() {
 
             <div className="text-right">
               <span className="text-xs font-semibold text-[var(--text-muted)]">Estimated Arrival:</span>
-              <p className="font-bold text-sm text-[#e60023]">{order.estimatedDelivery}</p>
+              <p className="font-bold text-sm text-[var(--color-primary)]">{order.estimatedDelivery}</p>
             </div>
           </div>
 
@@ -258,7 +258,7 @@ function OrderDetailContent() {
                 </div>
                 <div className="flex justify-between">
                   <span className="text-[var(--text-muted)]">Archival Verification Seal:</span>
-                  <span className="text-[#a66523] dark:text-amber-400 font-semibold flex items-center gap-1">
+                  <span className="text-[var(--brand-brown)] font-semibold flex items-center gap-1">
                     <IconShieldCheck size={13} />
                     <span>Passed Inspection #LK-ARC</span>
                   </span>
@@ -310,7 +310,7 @@ function OrderDetailContent() {
                 </div>
                 <div className="flex justify-between text-base font-bold text-[var(--text-main)] pt-2 border-t border-[var(--border-subtle)]">
                   <span>Grand Total (LKR):</span>
-                  <span className="text-[#e60023]">Rs. {order.total.toLocaleString()}</span>
+                  <span className="text-[var(--color-primary)]">Rs. {order.total.toLocaleString()}</span>
                 </div>
               </div>
 

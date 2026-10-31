@@ -22,7 +22,7 @@ export default function Error({
         {/* Literary Illustration Emblem */}
         <div className="mx-auto w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-[var(--color-primary-subtle)] border border-[var(--color-primary-border)] flex items-center justify-center text-[var(--color-primary)] relative shadow-inner">
           <BookOpen className="w-8 h-8 sm:w-10 sm:h-10" />
-          <span className="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-[var(--color-accent-badge,#e60023)] text-white flex items-center justify-center shadow-xs">
+          <span className="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-[var(--color-accent-badge)] text-white flex items-center justify-center shadow-xs">
             <AlertCircle className="w-3.5 h-3.5" />
           </span>
         </div>

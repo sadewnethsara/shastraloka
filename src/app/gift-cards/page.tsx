@@ -8,6 +8,14 @@ import Footer from '../../components/Footer';
 import Toast from '../../components/Toast';
 import { useApp } from '../../context/AppContext';
 import { BOOKS } from '../../data/books';
+import {
+  isValidEmail,
+  sanitizeCouponCode,
+  sanitizeEmail,
+  sanitizeSingleLine,
+  sanitizeText,
+  SECURITY_LIMITS,
+} from '../../utils/security';
 
 interface GiftCardDesign {
   id: string;
@@ -22,15 +30,15 @@ const GIFT_CARD_DESIGNS: GiftCardDesign[] = [
   {
     id: 'classic-saffron',
     name: 'Classic Saffron',
-    subtitle: 'ශාස්ත්‍රලෝක සම්භාව්‍ය',
-    bgClass: 'bg-[#F1641E]',
+    subtitle: 'Shastraloka Classical Edition',
+    bgClass: 'bg-[var(--color-primary)]',
     textClass: 'text-white',
     accentText: 'text-white/85',
   },
   {
     id: 'royal-indigo',
     name: 'Royal Kandyan Indigo',
-    subtitle: 'මහනුවර රාජකීය',
+    subtitle: 'Royal Kandy Heritage',
     bgClass: 'bg-[#1D3587]',
     textClass: 'text-white',
     accentText: 'text-amber-200',
@@ -38,7 +46,7 @@ const GIFT_CARD_DESIGNS: GiftCardDesign[] = [
   {
     id: 'lotus-lavender',
     name: 'Celestial Lotus',
-    subtitle: 'නෙළුම් පෙති',
+    subtitle: 'Sacred Lotus Motif',
     bgClass: 'bg-[#7A78F0]',
     textClass: 'text-white',
     accentText: 'text-white/90',
@@ -46,15 +54,15 @@ const GIFT_CARD_DESIGNS: GiftCardDesign[] = [
   {
     id: 'warm-parchment',
     name: 'Ola Leaf Parchment',
-    subtitle: 'පුස්කොළ පත්‍රිකාව',
-    bgClass: 'bg-[#FFF5D6]',
-    textClass: 'text-[#F1641E]',
-    accentText: 'text-[#7A5828]',
+    subtitle: 'Palm-Leaf Manuscript',
+    bgClass: 'bg-[var(--surface-cream)]',
+    textClass: 'text-[var(--color-primary)]',
+    accentText: 'text-[var(--brand-brown)]',
   },
   {
     id: 'sky-celebration',
     name: 'Vesak Lantern Sky',
-    subtitle: 'වෙසක් ආලෝකය',
+    subtitle: 'Festival of Light',
     bgClass: 'bg-gradient-to-br from-[#BAE6FD] to-[#7DD3FC]',
     textClass: 'text-[#1E293B]',
     accentText: 'text-[#0369A1]',
@@ -62,7 +70,7 @@ const GIFT_CARD_DESIGNS: GiftCardDesign[] = [
   {
     id: 'crimson-seal',
     name: 'Royal Lacquer Seal',
-    subtitle: 'රාජකීය මුද්‍රාව',
+    subtitle: 'Royal Archival Seal',
     bgClass: 'bg-gradient-to-br from-[#7F1D1D] to-[#450A0A]',
     textClass: 'text-[#FDE68A]',
     accentText: 'text-amber-200/80',
@@ -70,7 +78,7 @@ const GIFT_CARD_DESIGNS: GiftCardDesign[] = [
   {
     id: 'midnight-stars',
     name: 'Nakshatra Astronomy',
-    subtitle: 'නක්ෂත්‍ර තාරකා',
+    subtitle: 'Celestial Star Chart',
     bgClass: 'bg-gradient-to-br from-[#311042] via-[#1E1B4B] to-[#3B0764]',
     textClass: 'text-amber-300',
     accentText: 'text-purple-200',
@@ -78,7 +86,7 @@ const GIFT_CARD_DESIGNS: GiftCardDesign[] = [
   {
     id: 'emerald-sanctuary',
     name: 'Ceylon Tea & Sanctuary',
-    subtitle: 'හරිත අභයභූමිය',
+    subtitle: 'Emerald Sanctuary',
     bgClass: 'bg-gradient-to-br from-[#064E3B] to-[#047857]',
     textClass: 'text-white',
     accentText: 'text-emerald-200',
@@ -86,7 +94,7 @@ const GIFT_CARD_DESIGNS: GiftCardDesign[] = [
   {
     id: 'sigiriya-ochre',
     name: 'Sigiriya Fresco Gold',
-    subtitle: 'සීගිරි සිතුවම්',
+    subtitle: 'Ancient Sigiriya Art',
     bgClass: 'bg-gradient-to-br from-[#D97706] to-[#92400E]',
     textClass: 'text-white',
     accentText: 'text-amber-100',
@@ -94,7 +102,7 @@ const GIFT_CARD_DESIGNS: GiftCardDesign[] = [
   {
     id: 'scriptorium-teal',
     name: 'Monastic Library',
-    subtitle: 'පිරිවෙන් පුස්තකාලය',
+    subtitle: 'Pirivena Library Archive',
     bgClass: 'bg-gradient-to-br from-[#0F766E] to-[#115E59]',
     textClass: 'text-white',
     accentText: 'text-teal-100',
@@ -102,7 +110,7 @@ const GIFT_CARD_DESIGNS: GiftCardDesign[] = [
   {
     id: 'anuradhapura-stone',
     name: 'Sandakada Pahana',
-    subtitle: 'සඳකඩ පහණ',
+    subtitle: 'Moonstone Carving',
     bgClass: 'bg-gradient-to-br from-[#374151] to-[#111827]',
     textClass: 'text-amber-200',
     accentText: 'text-gray-300',
@@ -110,7 +118,7 @@ const GIFT_CARD_DESIGNS: GiftCardDesign[] = [
   {
     id: 'gajaga-tusker',
     name: 'Gajaga Royal Court',
-    subtitle: 'ගජගා වන්නම',
+    subtitle: 'Gajaga Wannama Edition',
     bgClass: 'bg-gradient-to-br from-[#431407] via-[#7C2D12] to-[#9A3412]',
     textClass: 'text-[#FEF08A]',
     accentText: 'text-orange-200',
@@ -134,17 +142,37 @@ export default function GiftCardsPage() {
   const [redeemCode, setRedeemCode] = useState('');
   const [justAdded, setJustAdded] = useState(false);
 
-  const finalAmount = customAmount ? Math.max(500, Number(customAmount) || 2500) : amount;
+  const finalAmount = customAmount
+    ? Math.min(
+        SECURITY_LIMITS.MAX_GIFT_CARD_LKR,
+        Math.max(SECURITY_LIMITS.MIN_GIFT_CARD_LKR, Math.round(Number(customAmount) || 2500))
+      )
+    : amount;
 
   const handleAddGiftCardToBag = (e: React.FormEvent) => {
     e.preventDefault();
+    const cleanRecipient = sanitizeSingleLine(recipientName, SECURITY_LIMITS.MAX_NAME_LENGTH);
+    const cleanSender = sanitizeSingleLine(senderName, SECURITY_LIMITS.MAX_NAME_LENGTH);
+    const cleanEmail = sanitizeEmail(recipientEmail);
+    const cleanMsg = sanitizeText(message, 500);
+
+    if (deliveryMethod === 'email' && cleanEmail && !isValidEmail(cleanEmail)) {
+      showToast('Please enter a valid recipient email address.');
+      return;
+    }
+
+    setRecipientName(cleanRecipient);
+    setSenderName(cleanSender);
+    setRecipientEmail(cleanEmail);
+    setMessage(cleanMsg);
+
     const baseBook = BOOKS[0];
     const giftCardBook = {
       ...baseBook,
       id: `gift-card-${selectedDesign.id}-${finalAmount}`,
       title: `Shastraloka Gift Card — ${selectedDesign.name} (LKR ${finalAmount.toLocaleString()})`,
       sinhalaTitle: `ශාස්ත්‍රලෝක ත්‍යාග පත්‍රිකාව (${selectedDesign.subtitle})`,
-      author: recipientName ? `For ${recipientName}` : 'Shastraloka Literary Gift Voucher',
+      author: cleanRecipient ? `For ${cleanRecipient}` : 'Shastraloka Literary Gift Voucher',
       price: finalAmount,
       originalPrice: finalAmount,
     };
@@ -158,13 +186,10 @@ export default function GiftCardsPage() {
     <div className="min-h-screen bg-[var(--bg-main)] text-[var(--text-main)] flex flex-col">
       <Header isSticky />
 
-      {/* Top Banner (Matching Image 4) */}
-      <section className="bg-gradient-to-r from-[#BAE6FD]/60 via-[#E0F2FE] to-[#BAE6FD]/60 dark:from-[#0F172A] dark:via-[#1E293B] dark:to-[#0F172A] border-b border-[var(--border-subtle)] py-8 sm:py-10 px-4 text-center">
+      {/* Top Banner */}
+      <section className="bg-[var(--hero-banner-bg)] border-b border-[var(--border-subtle)] py-8 sm:py-10 px-4 text-center">
         <div className="max-w-2xl mx-auto space-y-2">
-          <h1
-            className="text-3xl sm:text-4xl font-normal text-[var(--text-main)]"
-            style={{ fontFamily: 'Georgia, Cambria, "Times New Roman", Times, serif' }}
-          >
+          <h1 className="text-3xl sm:text-4xl font-heading font-bold text-[var(--text-main)]">
             Give the gift of Shastraloka
           </h1>
           <p className="text-xs sm:text-sm text-[var(--text-body)]">
@@ -191,8 +216,9 @@ export default function GiftCardsPage() {
               <button
                 type="button"
                 onClick={() => {
-                  if (redeemCode.trim()) {
-                    showToast(`Gift card ${redeemCode.toUpperCase()} verified! Credit applied to your account.`);
+                  const cleanCode = sanitizeCouponCode(redeemCode);
+                  if (cleanCode) {
+                    showToast(`Gift card ${cleanCode} verified! Credit applied to your account.`);
                     setRedeemCode('');
                     setRedeemOpen(false);
                   }
@@ -206,31 +232,28 @@ export default function GiftCardsPage() {
         </div>
       </section>
 
-      {/* Main 2-Column Gift Card Builder (Matching Image 4) */}
-      <main className="flex-1 max-w-[1140px] w-full mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-12">
+      {/* Main 2-Column Gift Card Builder */}
+      <main className="flex-1 page-container py-10 sm:py-12">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-start">
           {/* LEFT COLUMN: Large Live Gift Card Preview + 4x3 Design Picker */}
           <div className="lg:col-span-6 space-y-6">
             {/* Large Gift Card Preview */}
             <div
-              className={`aspect-[16/10] w-full rounded-3xl ${selectedDesign.bgClass} ${selectedDesign.textClass} shadow-xl p-8 flex flex-col justify-between relative overflow-hidden transition-all duration-300 border border-white/15`}
+              className={`aspect-[16/10] w-full rounded-[var(--radius-card)] ${selectedDesign.bgClass} ${selectedDesign.textClass} shadow-xl p-8 flex flex-col justify-between relative overflow-hidden transition-all duration-300 border border-white/15`}
             >
               <div className="flex items-center justify-between text-xs font-semibold opacity-90">
-                <span className="font-sinhala">{selectedDesign.subtitle}</span>
+                <span>{selectedDesign.subtitle}</span>
                 <span className="tabular-nums font-bold px-3 py-1 rounded-full bg-black/20 text-white">
                   LKR {finalAmount.toLocaleString()}
                 </span>
               </div>
 
               <div className="text-center my-auto py-4">
-                <div
-                  className="text-4xl sm:text-5xl md:text-6xl font-bold tracking-tight select-none"
-                  style={{ fontFamily: 'Georgia, Cambria, "Times New Roman", Times, serif' }}
-                >
+                <div className="text-4xl sm:text-5xl md:text-6xl font-heading font-bold tracking-tight select-none">
                   Shastraloka
                 </div>
-                <div className={`text-xs sm:text-sm font-sinhala mt-1.5 ${selectedDesign.accentText}`}>
-                  ශාස්ත්‍රලෝක • Classical Sri Lankan Bookstore
+                <div className={`text-xs sm:text-sm mt-1.5 ${selectedDesign.accentText}`}>
+                  Classical Sri Lankan Bookstore &amp; Literary Archive
                 </div>
               </div>
 
@@ -271,10 +294,7 @@ export default function GiftCardsPage() {
                       <div
                         className={`aspect-[16/10] w-full rounded-lg ${design.bgClass} ${design.textClass} flex flex-col items-center justify-center p-1.5 text-center`}
                       >
-                        <span
-                          className="text-xs sm:text-sm font-bold leading-none"
-                          style={{ fontFamily: 'Georgia, Cambria, "Times New Roman", Times, serif' }}
-                        >
+                        <span className="text-xs sm:text-sm font-heading font-bold leading-none">
                           Shastraloka
                         </span>
                         <span className="text-[8px] opacity-85 mt-0.5 truncate max-w-full">
@@ -304,8 +324,8 @@ export default function GiftCardsPage() {
                 </span>
               </div>
 
-              <div className="p-3.5 rounded-xl bg-[var(--bg-surface)] border border-[var(--border-subtle)] text-xs text-[var(--text-body)] flex items-start gap-2.5">
-                <Sparkles className="w-4 h-4 text-[#F1641E] shrink-0 mt-0.5" />
+              <div className="p-3.5 rounded-[var(--radius-card)] bg-[var(--bg-surface)] border border-[var(--border-subtle)] text-xs text-[var(--text-body)] flex items-start gap-2.5">
+                <Sparkles className="w-4 h-4 text-[var(--color-primary)] shrink-0 mt-0.5" />
                 <span>
                   Shastraloka Gift Cards never expire and can be redeemed across all print chronicles, collector silkbounds, and palm-leaf editions on{' '}
                   <strong className="text-[var(--text-main)]">shastraloka.lk</strong>.

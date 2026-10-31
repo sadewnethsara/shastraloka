@@ -7,6 +7,8 @@ import { ChevronLeft, ChevronRight, Clock, Heart, Search, X, Sparkles } from 'lu
 import { BOOKS } from '../data/books';
 import { useApp } from '../context/AppContext';
 import { Tooltip } from './ui/Tooltip';
+import OptimizedImage from './ui/OptimizedImage';
+import ViewportSection from './ui/ViewportSection';
 
 const FALLBACK_BOOK_COVER =
   'https://grantha.lk/media/catalog/product/cache/5fa2393eb818a642e720faf99039a3de/m/a/manikkawatha_1.jpg';
@@ -526,7 +528,7 @@ function PersonalizedShelfSection({
           type="button"
           onClick={() => scrollShelf('left')}
           aria-label={`Scroll ${shelf.title} left`}
-          className="absolute left-2 top-[40%] -translate-y-1/2 w-9 h-9 rounded-full bg-[#222222]/80 hover:bg-[#222222] text-white shadow-lg flex items-center justify-center transition active:scale-95 z-20 cursor-pointer opacity-80 hover:opacity-100"
+          className="absolute left-2 top-[40%] -translate-y-1/2 w-9 h-9 rounded-full bg-[var(--pill-active-bg)]/85 hover:bg-[var(--pill-active-bg)] text-[var(--pill-active-text)] shadow-lg flex items-center justify-center transition active:scale-95 z-20 cursor-pointer opacity-80 hover:opacity-100"
         >
           <ChevronLeft className="w-5 h-5" />
         </button>
@@ -543,12 +545,11 @@ function PersonalizedShelfSection({
                 onClick={() => onOpenBook(item.bookId, item.title)}
                 className="w-[175px] sm:w-[215px] md:w-[235px] lg:w-[248px] shrink-0 group cursor-pointer"
               >
-                <div className="relative aspect-square w-full rounded-2xl overflow-hidden bg-[var(--bg-wash)] border border-[var(--border-subtle)] mb-1.5">
-                  <img
+                <div className="relative aspect-square w-full rounded-[var(--radius-card,1rem)] overflow-hidden bg-[var(--bg-wash)] border border-[var(--border-subtle)] mb-1.5">
+                  <OptimizedImage
                     src={item.image}
+                    fallbackSrc={FALLBACK_BOOK_COVER}
                     alt={item.title}
-                    referrerPolicy="no-referrer"
-                    onError={handleCoverError}
                     className="w-full h-full object-cover group-hover:scale-105 transition duration-300"
                   />
 
@@ -556,11 +557,11 @@ function PersonalizedShelfSection({
                     type="button"
                     onClick={(e) => onToggleFavorite(item.bookId, e)}
                     aria-label="Save to favorites"
-                    className="absolute top-2.5 right-2.5 w-8 h-8 rounded-full bg-white/95 text-[#222222] shadow-sm flex items-center justify-center opacity-0 group-hover:opacity-100 transition z-10 cursor-pointer"
+                    className="absolute top-2.5 right-2.5 w-8 h-8 rounded-full bg-[var(--bg-card)]/95 text-[var(--text-main)] shadow-sm flex items-center justify-center opacity-0 group-hover:opacity-100 transition z-10 cursor-pointer"
                   >
                     <Heart
                       className={`w-4 h-4 ${
-                        saved ? 'fill-[#F1641E] text-[#F1641E]' : 'text-[#222222]'
+                        saved ? 'fill-[var(--color-primary)] text-[var(--color-primary)]' : 'text-[var(--text-main)]'
                       }`}
                     />
                   </button>
@@ -571,7 +572,7 @@ function PersonalizedShelfSection({
                 </p>
 
                 <div className="flex items-baseline gap-1.5 mt-0.5 tabular-nums">
-                  <span className="text-xs sm:text-[13px] font-extrabold text-[#15803d] dark:text-emerald-400">
+                  <span className="text-xs sm:text-[13px] font-extrabold text-[var(--color-success)]">
                     {item.salePrice}
                   </span>
                   {item.originalPrice && (
@@ -589,7 +590,7 @@ function PersonalizedShelfSection({
           type="button"
           onClick={() => scrollShelf('right')}
           aria-label={`Scroll ${shelf.title} right`}
-          className="absolute right-2 top-[40%] -translate-y-1/2 w-10 h-10 rounded-full bg-[#222222]/85 hover:bg-[#222222] text-white shadow-lg flex items-center justify-center transition active:scale-95 z-20 cursor-pointer"
+          className="absolute right-2 top-[40%] -translate-y-1/2 w-10 h-10 rounded-full bg-[var(--pill-active-bg)]/85 hover:bg-[var(--pill-active-bg)] text-[var(--pill-active-text)] shadow-lg flex items-center justify-center transition active:scale-95 z-20 cursor-pointer"
         >
           <ChevronRight className="w-5 h-5" />
         </button>
@@ -860,16 +861,17 @@ export default function LoggedInLandingFeed({
         </div>
       </section>
 
-      {/* 4, 5, 6, 7. Middle Four Personalized Category Rows */}
+      {/* 4, 5, 6, 7. Middle Four Personalized Category Rows (Viewport-Gated on Scroll) */}
       {middleFourShelves.map((shelf) => (
-        <PersonalizedShelfSection
-          key={shelf.id}
-          shelf={shelf}
-          onNotInterested={handleNotInterested}
-          onOpenBook={onOpenBook}
-          onToggleFavorite={onToggleFavorite}
-          isSaved={isSaved}
-        />
+        <ViewportSection key={shelf.id} minHeight={310} skeletonTitle={shelf.title}>
+          <PersonalizedShelfSection
+            shelf={shelf}
+            onNotInterested={handleNotInterested}
+            onOpenBook={onOpenBook}
+            onToggleFavorite={onToggleFavorite}
+            isSaved={isSaved}
+          />
+        </ViewportSection>
       ))}
 
       {/* 8. Today's big deals (Matching Image 4's row with live clock & dark arrow) */}
@@ -889,7 +891,7 @@ export default function LoggedInLandingFeed({
             type="button"
             onClick={() => scrollHorizontal(dealsRowRef, 'left')}
             aria-label="Scroll deals left"
-            className="absolute left-2 top-[40%] -translate-y-1/2 w-9 h-9 rounded-full bg-[#222222]/80 hover:bg-[#222222] text-white shadow-lg flex items-center justify-center transition active:scale-95 z-20 cursor-pointer"
+            className="absolute left-2 top-[40%] -translate-y-1/2 w-9 h-9 rounded-full bg-[var(--pill-active-bg)]/85 hover:bg-[var(--pill-active-bg)] text-[var(--pill-active-text)] shadow-lg flex items-center justify-center transition active:scale-95 z-20 cursor-pointer"
           >
             <ChevronLeft className="w-5 h-5" />
           </button>
@@ -904,7 +906,7 @@ export default function LoggedInLandingFeed({
                 onClick={() => onOpenBook(book.id, book.title)}
                 className="w-[175px] sm:w-[215px] md:w-[235px] lg:w-[248px] shrink-0 group cursor-pointer"
               >
-                <div className="relative aspect-square w-full rounded-2xl overflow-hidden bg-[var(--bg-wash)] border border-[var(--border-subtle)] mb-1.5">
+                <div className="relative aspect-square w-full rounded-[var(--radius-card,1rem)] overflow-hidden bg-[var(--bg-wash)] border border-[var(--border-subtle)] mb-1.5">
                   <img
                     src={book.coverImage}
                     alt={book.title}
@@ -916,13 +918,13 @@ export default function LoggedInLandingFeed({
                     type="button"
                     onClick={(e) => onToggleFavorite(book.id, e)}
                     aria-label="Save deal"
-                    className="absolute top-2.5 right-2.5 w-8 h-8 rounded-full bg-white/95 text-[#222222] shadow-sm flex items-center justify-center opacity-0 group-hover:opacity-100 transition z-10 cursor-pointer"
+                    className="absolute top-2.5 right-2.5 w-8 h-8 rounded-full bg-[var(--bg-card)]/95 text-[var(--text-main)] shadow-sm flex items-center justify-center opacity-0 group-hover:opacity-100 transition z-10 cursor-pointer"
                   >
                     <Heart
                       className={`w-4 h-4 ${
                         isSaved(book.id)
-                          ? 'fill-[#F1641E] text-[#F1641E]'
-                          : 'text-[#222222]'
+                          ? 'fill-[var(--color-primary)] text-[var(--color-primary)]'
+                          : 'text-[var(--text-main)]'
                       }`}
                     />
                   </button>
@@ -933,7 +935,7 @@ export default function LoggedInLandingFeed({
                 </p>
 
                 <div className="flex items-baseline gap-1.5 mt-0.5 tabular-nums">
-                  <span className="text-xs sm:text-[13px] font-extrabold text-[#15803d] dark:text-emerald-400">
+                  <span className="text-xs sm:text-[13px] font-extrabold text-[var(--color-success)]">
                     LKR {book.price.toLocaleString()}
                   </span>
                   {book.originalPrice > book.price && (
@@ -950,7 +952,7 @@ export default function LoggedInLandingFeed({
             type="button"
             onClick={() => scrollHorizontal(dealsRowRef, 'right')}
             aria-label="Scroll deals right"
-            className="absolute right-2 top-[40%] -translate-y-1/2 w-10 h-10 rounded-full bg-[#222222]/85 hover:bg-[#222222] text-white shadow-lg flex items-center justify-center transition active:scale-95 z-20 cursor-pointer"
+            className="absolute right-2 top-[40%] -translate-y-1/2 w-10 h-10 rounded-full bg-[var(--pill-active-bg)]/85 hover:bg-[var(--pill-active-bg)] text-[var(--pill-active-text)] shadow-lg flex items-center justify-center transition active:scale-95 z-20 cursor-pointer"
           >
             <ChevronRight className="w-5 h-5" />
           </button>
@@ -976,7 +978,7 @@ export default function LoggedInLandingFeed({
                 }
                 className="w-[175px] sm:w-[215px] md:w-[235px] lg:w-[248px] shrink-0 group cursor-pointer"
               >
-                <div className="relative aspect-square w-full rounded-2xl overflow-hidden bg-[var(--bg-wash)] border border-[var(--border-subtle)]">
+                <div className="relative aspect-square w-full rounded-[var(--radius-card,1rem)] overflow-hidden bg-[var(--bg-wash)] border border-[var(--border-subtle)]">
                   <img
                     src={card.image}
                     alt={card.label}
@@ -985,9 +987,9 @@ export default function LoggedInLandingFeed({
                     className="w-full h-full object-cover group-hover:scale-105 transition duration-300"
                   />
 
-                  {/* Bottom-Left Floating White Search Pill (Matching Image 4) */}
+                  {/* Bottom-Left Floating Search Pill */}
                   <div className="absolute bottom-3 left-3 right-3 flex items-center">
-                    <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white text-[#222222] text-xs font-bold shadow-md max-w-full">
+                    <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-[var(--radius-btn,9999px)] bg-[var(--bg-card)] text-[var(--text-main)] text-xs font-bold shadow-md max-w-full">
                       <Search className="w-3.5 h-3.5 shrink-0 stroke-[2.5]" />
                       <span className="truncate">{card.label}</span>
                     </span>
@@ -1001,7 +1003,7 @@ export default function LoggedInLandingFeed({
             type="button"
             onClick={() => scrollHorizontal(specialGiftsRowRef, 'right')}
             aria-label="Scroll special gifts right"
-            className="absolute right-2 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-[#222222]/85 hover:bg-[#222222] text-white shadow-lg flex items-center justify-center transition active:scale-95 z-20 cursor-pointer"
+            className="absolute right-2 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-[var(--pill-active-bg)]/85 hover:bg-[var(--pill-active-bg)] text-[var(--pill-active-text)] shadow-lg flex items-center justify-center transition active:scale-95 z-20 cursor-pointer"
           >
             <ChevronRight className="w-5 h-5" />
           </button>
@@ -1010,14 +1012,15 @@ export default function LoggedInLandingFeed({
 
       {/* 10. Bottom Personalized Row ("Rare Archival & Framed Folios") */}
       {bottomShelf.map((shelf) => (
-        <PersonalizedShelfSection
-          key={shelf.id}
-          shelf={shelf}
-          onNotInterested={handleNotInterested}
-          onOpenBook={onOpenBook}
-          onToggleFavorite={onToggleFavorite}
-          isSaved={isSaved}
-        />
+        <ViewportSection key={shelf.id} minHeight={310} skeletonTitle={shelf.title}>
+          <PersonalizedShelfSection
+            shelf={shelf}
+            onNotInterested={handleNotInterested}
+            onOpenBook={onOpenBook}
+            onToggleFavorite={onToggleFavorite}
+            isSaved={isSaved}
+          />
+        </ViewportSection>
       ))}
     </div>
   );

@@ -1,20 +1,17 @@
 'use client';
 
-import React, { useState, useEffect, useMemo, Suspense } from 'react';
+import React, { useState, useEffect, useMemo, useRef, Suspense } from 'react';
 import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
 import {
-  Search,
   Heart,
   Handbag,
   BookOpen,
-  Headphones,
   Share2,
   MoreHorizontal,
   ChevronLeft,
   ChevronRight,
   ChevronDown,
-  ChevronUp,
   Star,
   Check,
   Sparkles,
@@ -33,15 +30,11 @@ import {
   Maximize2,
   Compass,
   Play,
-  Pause,
-  Volume2,
   X,
   Plus,
   Minus,
   Filter,
-  Camera,
   CheckCircle2,
-  MapPin,
   Layers,
   Eye,
   ArrowUpRight,
@@ -49,32 +42,16 @@ import {
 
 import Header from '../../../components/Header';
 import Footer from '../../../components/Footer';
-import BoardsModal from '../../../components/BoardsModal';
-import { BOOKS, Book } from '../../../data/books';
+import { BOOKS } from '../../../data/books';
 import { useApp } from '../../../context/AppContext';
 import { Button } from '../../../components/ui/Button';
 import { Badge } from '../../../components/ui/Badge';
-import { Card } from '../../../components/ui/Card';
 import { Accordion } from '../../../components/ui/Accordion';
-import { Modal } from '../../../components/ui/Modal';
 import { Toast } from '../../../components/ui/Toast';
 
 // ============================================================================
 // TYPES & INTERFACES
 // ============================================================================
-
-type FormatKey = 'hardcover' | 'paperback' | 'ebook' | 'audiobook';
-
-interface BookFormatOption {
-  key: FormatKey;
-  label: string;
-  sublabel: string;
-  price: number;
-  originalPrice: number;
-  stockText: string;
-  deliveryText: string;
-  badge?: string;
-}
 
 interface GalleryMedia {
   id: string;
@@ -126,7 +103,6 @@ interface MasonryBookPin {
   rating: number;
   format: string;
   aspectClass: string;
-  bgAccent: string;
   image: string;
   categoryTag: string;
   pinSaves: number;
@@ -136,55 +112,14 @@ interface MasonryBookPin {
 }
 
 // ============================================================================
-// MOCK DATA (Fusing Pinterest, Amazon & Etsy Book References)
+// CATALOG SHOWCASE DATA
 // ============================================================================
-
-const DEFAULT_BOOK_FORMATS: BookFormatOption[] = [
-  {
-    key: 'hardcover',
-    label: 'Hardcover',
-    sublabel: 'Linen Collector Edition',
-    price: 3850,
-    originalPrice: 4950,
-    stockText: 'Only 7 Linen Collector copies left — in 24+ bags',
-    deliveryText: 'FREE delivery Friday, Oct 30 on orders over LKR 3,500',
-    badge: 'Most Popular',
-  },
-  {
-    key: 'paperback',
-    label: 'Paperback',
-    sublabel: 'Deckle Edge Trade',
-    price: 2500,
-    originalPrice: 3200,
-    stockText: 'In Stock — Ships from Shastraloka Colombo & Global Hub',
-    deliveryText: 'FREE delivery Saturday, Oct 31',
-  },
-  {
-    key: 'ebook',
-    label: 'Shastraloka eBook',
-    sublabel: 'Instant EPUB & PDF',
-    price: 1500,
-    originalPrice: 2200,
-    stockText: 'Instant digital download via email & Shastraloka Reader',
-    deliveryText: 'Available immediately after checkout',
-    badge: 'Instant Read',
-  },
-  {
-    key: 'audiobook',
-    label: 'Audiobook',
-    sublabel: 'Unabridged • 8h 42m',
-    price: 2200,
-    originalPrice: 3400,
-    stockText: 'Narrated by Scholar Venerable K. + Bonus Commentary',
-    deliveryText: 'Stream instantly in Shastraloka Audio App',
-  },
-];
 
 const GALLERY_MEDIA: GalleryMedia[] = [
   {
     id: 'gm-1',
     type: 'image',
-    label: 'Front Cover Pin',
+    label: 'Front Cover Folio',
     url: 'https://images.unsplash.com/photo-1544947950-fa07a98d237f?auto=format&fit=crop&w=1000&q=85',
     caption:
       'Embossed olive-sage linen cover with warm cream archival dust jacket & classical typography.',
@@ -312,11 +247,11 @@ const REVIEWS_DATA: ReviewItem[] = [
       'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80',
     date: 'Oct 21, 2026',
     rating: 5,
-    formatPurchased: 'Hardcover • Linen Collector Edition',
+    formatPurchased: 'Archival Collector Edition',
     verified: true,
     tags: ['Cover art', 'Paper quality', 'Gift edition'],
     comment:
-      'I discovered this edition through Shastraloka’s visual board and ordered the Linen Hardcover immediately. The olive-green cloth texture and gold foil typography look like an art object in my study, and the translations are impeccably annotated.',
+      'I discovered this edition through Shastraloka’s visual board and ordered it immediately. The cloth texture and gold foil typography look like an art object in my study, and the translations are impeccably annotated.',
     reviewImage:
       'https://images.unsplash.com/photo-1495446815901-a7297e633e8d?auto=format&fit=crop&w=400&q=80',
     sellerReply: {
@@ -333,11 +268,11 @@ const REVIEWS_DATA: ReviewItem[] = [
       'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=200&q=80',
     date: 'Oct 15, 2026',
     rating: 5,
-    formatPurchased: 'Hardcover + Audiobook Bundle',
+    formatPurchased: 'Archival Collector Edition',
     verified: true,
     tags: ['Fast delivery', 'Philosophy', 'Paper quality'],
     comment:
-      'What a brilliant hybrid experience! I used the "Look Inside" sample here first, fell in love with Chapter 1, and bought both the hardcover and the audio edition. Arrived wrapped in kraft paper with twine and a brass bookmark.',
+      'What a brilliant reading experience! I used the "Look Inside" sample here first, fell in love with Chapter 1, and ordered the physical edition right away. Arrived wrapped in kraft paper with twine and a brass bookmark.',
     reviewImage:
       'https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&w=400&q=80',
     sellerReply: {
@@ -354,11 +289,11 @@ const REVIEWS_DATA: ReviewItem[] = [
       'https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=200&q=80',
     date: 'Oct 08, 2026',
     rating: 5,
-    formatPurchased: 'Shastraloka eBook (EPUB)',
+    formatPurchased: 'Archival Collector Edition',
     verified: true,
-    tags: ['Cover art', 'Instant download'],
+    tags: ['Cover art', 'Gift edition'],
     comment:
-      'Downloaded the EPUB instantly and saved the cover to my "Classical Literature" board. Even the digital edition preserves the custom serif drop-caps and historical plates.',
+      'Saved this edition to my "Classical Literature" board and ordered a copy for my home library. The custom drop-caps, sewn binding, and historical plates are extraordinary.',
     helpfulCount: 19,
   },
 ];
@@ -417,9 +352,8 @@ const MASONRY_PINS: MasonryBookPin[] = [
     price: 3850,
     originalPrice: 4950,
     rating: 4.98,
-    format: 'Clothbound Hardcover',
+    format: 'Collector Edition',
     aspectClass: 'aspect-[3/4]',
-    bgAccent: '#E7E2D8',
     image:
       'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?auto=format&fit=crop&w=600&q=80',
     categoryTag: 'Chronicles',
@@ -438,9 +372,8 @@ const MASONRY_PINS: MasonryBookPin[] = [
     price: 4500,
     originalPrice: 5800,
     rating: 4.96,
-    format: 'Deluxe Hardcover',
+    format: 'Collector Edition',
     aspectClass: 'aspect-[4/5]',
-    bgAccent: '#D8D4CC',
     image:
       'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=600&q=80',
     categoryTag: 'Philosophy',
@@ -459,9 +392,8 @@ const MASONRY_PINS: MasonryBookPin[] = [
     price: 1850,
     originalPrice: 2400,
     rating: 4.95,
-    format: 'Pocket Clothbound',
+    format: 'Collector Edition',
     aspectClass: 'aspect-square',
-    bgAccent: '#2B3A4A',
     image:
       'https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&w=600&q=80',
     categoryTag: 'Philosophy',
@@ -480,9 +412,8 @@ const MASONRY_PINS: MasonryBookPin[] = [
     price: 3400,
     originalPrice: 4200,
     rating: 4.89,
-    format: 'Illustrated Hardbound',
+    format: 'Collector Edition',
     aspectClass: 'aspect-[3/4]',
-    bgAccent: '#1D4D6B',
     image:
       'https://images.unsplash.com/photo-1559181567-c3190ca9959b?auto=format&fit=crop&w=600&q=80',
     categoryTag: 'Ayurveda',
@@ -500,9 +431,8 @@ const MASONRY_PINS: MasonryBookPin[] = [
       'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=120&q=80',
     price: 1850,
     rating: 4.92,
-    format: 'Silkbound Gold Folio',
+    format: 'Collector Edition',
     aspectClass: 'aspect-[2/3]',
-    bgAccent: '#1E555C',
     image:
       'https://images.unsplash.com/photo-1532012197267-da84d127e765?auto=format&fit=crop&w=600&q=80',
     categoryTag: 'Poetry',
@@ -520,9 +450,8 @@ const MASONRY_PINS: MasonryBookPin[] = [
     price: 3600,
     originalPrice: 4600,
     rating: 4.88,
-    format: 'Clothbound Hardcover',
+    format: 'Collector Edition',
     aspectClass: 'aspect-[4/5]',
-    bgAccent: '#F3A833',
     image:
       'https://images.unsplash.com/photo-1461360370896-922624d12aa1?auto=format&fit=crop&w=600&q=80',
     categoryTag: 'Chronicles',
@@ -589,6 +518,7 @@ function ProductDetailContent() {
       matchedBook.binding || 'Collector Hardcover',
       matchedBook.title,
     ],
+    samplePdfUrl: matchedBook.samplePdfUrl || 'https://assets.shastraloka.lk/samples/sample-folio.pdf',
   });
 
   const [prevMatchedBookId, setPrevMatchedBookId] = useState(matchedBook.id);
@@ -615,15 +545,15 @@ function ProductDetailContent() {
         matchedBook.binding || 'Collector Hardcover',
         matchedBook.title,
       ],
+      samplePdfUrl: matchedBook.samplePdfUrl || 'https://assets.shastraloka.lk/samples/sample-folio.pdf',
     });
   }
 
-  // Format & Gallery States
-  const [selectedFormat, setSelectedFormat] = useState<FormatKey>('hardcover');
+  // Gallery & Quantity States
   const [activeMediaIndex, setActiveMediaIndex] = useState<number>(0);
   const [quantity, setQuantity] = useState<number>(1);
 
-  // Pinterest Pin States
+  // Reading Board Save States
   const [selectedBoard, setSelectedBoard] = useState<string>(BOARDS_LIST[0]);
   const [boardDropdownOpen, setBoardDropdownOpen] = useState<boolean>(false);
   const [isMainLiked, setIsMainLiked] = useState<boolean>(false);
@@ -636,20 +566,18 @@ function ProductDetailContent() {
     },
   ]);
 
-  // Saved pins & Bag notification toast
+  // Saved books & Bag notification toast
   const [savedPinIds, setSavedPinIds] = useState<Record<string, boolean>>({
     'mahawamsa-great-chronicle': true,
     'visuddhimagga-path-purification': true,
   });
   const [toastMessage, setToastMessage] = useState<string | null>(null);
 
-  // Look Inside modal & Audio player
+  // Look Inside modal
   const [isLookInsideOpen, setIsLookInsideOpen] = useState<boolean>(false);
   const [samplePageIndex, setSamplePageIndex] = useState<number>(0);
   const [readerTheme, setReaderTheme] = useState<'cream' | 'white' | 'night'>('cream');
   const [readerFontSize, setReaderFontSize] = useState<'sm' | 'md' | 'lg'>('md');
-  const [isPlayingAudio, setIsPlayingAudio] = useState<boolean>(false);
-  const [audioProgress, setAudioProgress] = useState<number>(28);
 
   // Frequently Bought Together Bundle Checkboxes
   const [selectedBundleIds, setSelectedBundleIds] = useState<Record<string, boolean>>({
@@ -665,24 +593,38 @@ function ProductDetailContent() {
     bookstore: false,
   });
 
-  // Top Announcement Bar state: hides on scroll down or when dismissed
+  // Top Announcement Bar & Mobile Fixed Bottom CTA Bar state
   const [isAnnouncementDismissed, setIsAnnouncementDismissed] = useState<boolean>(false);
   const [isScrolled, setIsScrolled] = useState<boolean>(false);
+  const inlineCtaRef = useRef<HTMLDivElement | null>(null);
+  const [showMobileFixedBar, setShowMobileFixedBar] = useState<boolean>(true);
 
   useEffect(() => {
     let ticking = false;
-    const handleScroll = () => {
+    const updateScrollAndBar = () => {
+      setIsScrolled(window.scrollY > 20);
+      if (inlineCtaRef.current) {
+        const rect = inlineCtaRef.current.getBoundingClientRect();
+        // Keep the fixed bottom bar visible on mobile until the real inline CTA buttons enter the viewport
+        setShowMobileFixedBar(rect.top > window.innerHeight - 24);
+      }
+      ticking = false;
+    };
+
+    const handleScrollOrResize = () => {
       if (!ticking) {
-        window.requestAnimationFrame(() => {
-          setIsScrolled(window.scrollY > 20);
-          ticking = false;
-        });
+        window.requestAnimationFrame(updateScrollAndBar);
         ticking = true;
       }
     };
 
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
+    updateScrollAndBar();
+    window.addEventListener('scroll', handleScrollOrResize, { passive: true });
+    window.addEventListener('resize', handleScrollOrResize, { passive: true });
+    return () => {
+      window.removeEventListener('scroll', handleScrollOrResize);
+      window.removeEventListener('resize', handleScrollOrResize);
+    };
   }, []);
 
   // Filter States
@@ -700,70 +642,17 @@ function ProductDetailContent() {
     }
   }
 
-  // Audio timer
-  useEffect(() => {
-    if (!isPlayingAudio) return;
-    const interval = setInterval(() => {
-      setAudioProgress((prev) => (prev >= 100 ? 0 : prev + 1));
-    }, 400);
-    return () => clearInterval(interval);
-  }, [isPlayingAudio]);
-
   const triggerToast = (msg: string) => {
     setToastMessage(msg);
   };
 
-  // Formats customized with the active book's prices
-  const bookFormats = useMemo(() => {
-    return [
-      {
-        key: 'hardcover' as FormatKey,
-        label: 'Hardcover',
-        sublabel: 'Linen Collector Edition',
-        price: activeBook.price,
-        originalPrice: activeBook.originalPrice,
-        stockText: 'Only 7 Linen Collector copies left — in 24+ bags',
-        deliveryText: 'FREE delivery Friday on orders over LKR 3,500',
-        badge: 'Most Popular',
-      },
-      {
-        key: 'paperback' as FormatKey,
-        label: 'Paperback',
-        sublabel: 'Deckle Edge Trade',
-        price: Math.round(activeBook.price * 0.65),
-        originalPrice: Math.round(activeBook.originalPrice * 0.7),
-        stockText: 'In Stock — Ships from Shastraloka Colombo Hub',
-        deliveryText: 'FREE delivery Saturday',
-      },
-      {
-        key: 'ebook' as FormatKey,
-        label: 'Shastraloka eBook',
-        sublabel: 'Instant EPUB & PDF',
-        price: Math.round(activeBook.price * 0.4),
-        originalPrice: Math.round(activeBook.originalPrice * 0.5),
-        stockText: 'Instant digital download via email & Shastraloka Reader',
-        deliveryText: 'Available immediately after checkout',
-        badge: 'Instant Read',
-      },
-      {
-        key: 'audiobook' as FormatKey,
-        label: 'Audiobook',
-        sublabel: 'Unabridged • 8h 42m',
-        price: Math.round(activeBook.price * 0.55),
-        originalPrice: Math.round(activeBook.originalPrice * 0.65),
-        stockText: 'Narrated by Venerable Scholar + Audio Chant Notes',
-        deliveryText: 'Stream instantly in Shastraloka Audio App',
-      },
-    ];
-  }, [activeBook]);
+  const editionLabel = matchedBook.binding || 'Archival Collector Edition';
 
-  const currentFormatObj =
-    bookFormats.find((f) => f.key === selectedFormat) || bookFormats[0];
-
-  const savingsPercent = Math.round(
-    ((currentFormatObj.originalPrice - currentFormatObj.price) /
-      currentFormatObj.originalPrice) *
-      100
+  const savingsPercent = Math.max(
+    0,
+    Math.round(
+      ((activeBook.originalPrice - activeBook.price) / activeBook.originalPrice) * 100
+    )
   );
 
   // Bundle Total calculation
@@ -774,11 +663,10 @@ function ProductDetailContent() {
 
   // Handlers
   const handleAddToBag = (customTitle?: string, countToAdd = 1) => {
-    // Find matching book in BOOKS or use matchedBook
     const target = BOOKS.find((b) => b.id === activeBook.id) || matchedBook;
-    addToBag(target, currentFormatObj.label, countToAdd);
+    addToBag(target, editionLabel, countToAdd);
     triggerToast(
-      `Added "${customTitle || activeBook.title}" (${currentFormatObj.label}) to your Bag`
+      `Added "${customTitle || activeBook.title}" to your Bag`
     );
   };
 
@@ -789,7 +677,7 @@ function ProductDetailContent() {
     setSavedPinIds((prev) => ({ ...prev, [pinId]: nextState }));
     triggerToast(
       nextState
-        ? `Saved "${title}" to "${selectedBoard}" Pinboard`
+        ? `Saved "${title}" to "${selectedBoard}" Reading Board`
         : `Removed "${title}" from "${selectedBoard}"`
     );
   };
@@ -814,6 +702,7 @@ function ProductDetailContent() {
         pin.format,
         pin.title,
       ],
+      samplePdfUrl: 'https://assets.shastraloka.lk/samples/sample-folio.pdf',
     });
     setMainPinLikes(pin.pinSaves);
     setActiveMediaIndex(0);
@@ -826,7 +715,7 @@ function ProductDetailContent() {
     if (!pinNoteText.trim()) return;
     setPinNotes((prev) => [...prev, { user: 'You (Reader)', note: pinNoteText.trim() }]);
     setPinNoteText('');
-    triggerToast('Added your reader note to this Book Pin');
+    triggerToast('Added your reader note to this Book Edition');
   };
 
   const isMainPinSaved = isBookSaved(activeBook.id) || !!savedPinIds[activeBook.id];
@@ -894,18 +783,18 @@ function ProductDetailContent() {
               href="/"
               title="Home Bookstore"
               aria-label="Home Bookstore"
-              className="inline-flex items-center justify-center p-1.5 rounded-full text-neutral-700 dark:text-neutral-300 hover:text-[#F1641E] hover:bg-neutral-200/60 dark:hover:bg-neutral-800 transition"
+              className="inline-flex items-center justify-center p-1.5 rounded-full text-[var(--text-muted)] hover:text-[var(--color-primary)] hover:bg-[var(--bg-hover)] transition"
             >
               <Home className="w-4 h-4" />
             </Link>
-            <span className="text-neutral-300 dark:text-neutral-700">/</span>
+            <span className="text-[var(--text-dim)]">/</span>
             {activeBook.categoryPath.map((crumb, idx) => (
               <React.Fragment key={crumb}>
-                {idx > 0 && <span className="text-neutral-300 dark:text-neutral-700">/</span>}
+                {idx > 0 && <span className="text-[var(--text-dim)]">/</span>}
                 <span
                   className={
                     idx === activeBook.categoryPath.length - 1
-                      ? 'text-neutral-800 dark:text-neutral-200 font-medium truncate max-w-[260px]'
+                      ? 'text-[var(--text-main)] font-medium truncate max-w-[260px]'
                       : 'hover:underline cursor-pointer'
                   }
                 >
@@ -918,7 +807,7 @@ function ProductDetailContent() {
       </div>
 
       {/* =====================================================================
-          MAIN PRODUCT DETAIL SECTION (3-Way Fusion: Pinterest + Etsy + Amazon)
+          MAIN PRODUCT DETAIL SECTION
          ===================================================================== */}
       <main className="page-container py-4 space-y-14">
         <section className="grid grid-cols-1 lg:grid-cols-12 gap-8 xl:gap-10 items-start">
@@ -926,9 +815,9 @@ function ProductDetailContent() {
               LEFT COLUMN TOP (lg:col-span-7): Gallery Card (1st on Mobile)
              ----------------------------------------------------------------- */}
           <div className="lg:col-span-7 lg:col-start-1">
-            {/* PINTEREST + ETSY GALLERY CARD */}
-            <div className="bg-[var(--bg-card)] rounded-3xl border border-[var(--border-subtle)] shadow-xs p-3 sm:p-5">
-              {/* Top Pinterest Action Bar */}
+            {/* GALLERY CARD */}
+            <div className="bg-[var(--bg-card)] rounded-[var(--radius-card)] border border-[var(--border-subtle)] shadow-xs p-3 sm:p-5">
+              {/* Top Action Bar */}
               <div className="flex flex-wrap items-center justify-between gap-2 pb-3.5 mb-3.5 border-b border-[var(--border-subtle)]">
                 <div className="flex items-center gap-1 sm:gap-2">
                   <button
@@ -937,13 +826,13 @@ function ProductDetailContent() {
                       setIsMainLiked(!isMainLiked);
                       setMainPinLikes((prev) => (isMainLiked ? prev - 1 : prev + 1));
                     }}
-                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full hover:bg-neutral-100 dark:hover:bg-neutral-800 text-xs sm:text-sm font-bold text-neutral-800 dark:text-neutral-200 transition cursor-pointer"
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full hover:bg-[var(--bg-hover)] text-xs sm:text-sm font-bold text-[var(--text-main)] transition cursor-pointer"
                   >
                     <Heart
                       className={`w-4 h-4 ${
                         isMainLiked
-                          ? 'fill-[#e60023] text-[#e60023]'
-                          : 'text-neutral-800 dark:text-neutral-200'
+                          ? 'fill-[var(--color-danger)] text-[var(--color-danger)]'
+                          : 'text-[var(--text-main)]'
                       }`}
                     />
                     <span>{mainPinLikes}</span>
@@ -955,16 +844,16 @@ function ProductDetailContent() {
                       const el = document.getElementById('pin-comment-input');
                       el?.focus();
                     }}
-                    className="p-2 rounded-full hover:bg-neutral-100 dark:hover:bg-neutral-800 text-neutral-700 dark:text-neutral-300 transition cursor-pointer"
-                    title="Comment on Book Pin"
+                    className="p-2 rounded-full hover:bg-[var(--bg-hover)] text-[var(--text-muted)] transition cursor-pointer"
+                    title="Comment on Book Edition"
                   >
                     <MessageCircle className="w-4 h-4" />
                   </button>
 
                   <button
                     type="button"
-                    onClick={() => triggerToast('Book Pin link copied to clipboard!')}
-                    className="p-2 rounded-full hover:bg-neutral-100 dark:hover:bg-neutral-800 text-neutral-700 dark:text-neutral-300 transition cursor-pointer"
+                    onClick={() => triggerToast('Book edition link copied to clipboard!')}
+                    className="p-2 rounded-full hover:bg-[var(--bg-hover)] text-[var(--text-muted)] transition cursor-pointer"
                     title="Share Book"
                   >
                     <Share2 className="w-4 h-4" />
@@ -972,20 +861,20 @@ function ProductDetailContent() {
 
                   <button
                     type="button"
-                    className="p-2 rounded-full hover:bg-neutral-100 dark:hover:bg-neutral-800 text-neutral-700 dark:text-neutral-300 transition cursor-pointer"
+                    className="p-2 rounded-full hover:bg-[var(--bg-hover)] text-[var(--text-muted)] transition cursor-pointer"
                     title="More options"
                   >
                     <MoreHorizontal className="w-4 h-4" />
                   </button>
                 </div>
 
-                {/* Right: Board Selector Dropdown + Pinterest Red "Save" Pill */}
+                {/* Right: Board Selector Dropdown + "Save to Board" Pill */}
                 <div className="flex items-center gap-2 relative">
                   <div className="relative">
                     <button
                       type="button"
                       onClick={() => setBoardDropdownOpen(!boardDropdownOpen)}
-                      className="flex items-center gap-1.5 px-3 py-2 rounded-full bg-neutral-100 dark:bg-neutral-800 hover:bg-neutral-200 dark:hover:bg-neutral-700 text-xs font-semibold text-neutral-800 dark:text-neutral-200 transition cursor-pointer"
+                      className="flex items-center gap-1.5 px-3 py-2 rounded-[var(--radius-btn)] bg-[var(--pill-bg)] hover:bg-[var(--pill-hover)] text-xs font-semibold text-[var(--text-main)] transition cursor-pointer"
                     >
                       <span className="max-w-[130px] sm:max-w-[160px] truncate">
                         {selectedBoard}
@@ -994,8 +883,8 @@ function ProductDetailContent() {
                     </button>
 
                     {boardDropdownOpen && (
-                      <div className="absolute right-0 mt-2 w-56 bg-white dark:bg-[#1f1f26] rounded-2xl shadow-xl border border-neutral-200 dark:border-neutral-800 py-2 z-30">
-                        <div className="px-3.5 py-1.5 text-[10px] font-bold uppercase tracking-wider text-neutral-400">
+                      <div className="absolute right-0 mt-2 w-56 bg-[var(--bg-card)] rounded-2xl shadow-xl border border-[var(--border-subtle)] py-2 z-30">
+                        <div className="px-3.5 py-1.5 text-[10px] font-bold uppercase tracking-wider text-[var(--text-dim)]">
                           Save to Shastraloka Board
                         </div>
                         {BOARDS_LIST.map((b) => (
@@ -1007,11 +896,11 @@ function ProductDetailContent() {
                               setBoardDropdownOpen(false);
                               triggerToast(`Selected board: "${b}"`);
                             }}
-                            className="w-full text-left px-3.5 py-2 text-xs font-medium text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800 flex items-center justify-between"
+                            className="w-full text-left px-3.5 py-2 text-xs font-medium text-[var(--text-body)] hover:bg-[var(--bg-hover)] flex items-center justify-between"
                           >
                             <span>{b}</span>
                             {selectedBoard === b && (
-                              <Check className="w-3.5 h-3.5 text-[#e60023]" />
+                              <Check className="w-3.5 h-3.5 text-[var(--color-primary)]" />
                             )}
                           </button>
                         ))}
@@ -1022,7 +911,7 @@ function ProductDetailContent() {
                   <Button
                     variant={isMainPinSaved ? 'dark' : 'red'}
                     size="sm"
-                    text={isMainPinSaved ? 'Saved ✓' : 'Save Pin'}
+                    text={isMainPinSaved ? 'Saved ✓' : 'Save to Board'}
                     onClick={() => {
                       saveToBoard(activeBook.id);
                       triggerToast(
@@ -1035,7 +924,7 @@ function ProductDetailContent() {
                 </div>
               </div>
 
-              {/* ETSY VERTICAL THUMBNAIL STRIP + MAIN PINTEREST BOOK FRAME */}
+              {/* VERTICAL THUMBNAIL STRIP + MAIN BOOK FRAME */}
               <div className="flex flex-col-reverse sm:flex-row gap-3.5">
                 {/* Left Vertical Thumbnails */}
                 <div className="flex sm:flex-col gap-2.5 overflow-x-auto sm:overflow-visible sm:w-20 shrink-0">
@@ -1046,7 +935,7 @@ function ProductDetailContent() {
                       onClick={() => setActiveMediaIndex(index)}
                       className={`relative w-16 h-16 sm:w-18 sm:h-18 rounded-xl overflow-hidden border-2 transition shrink-0 cursor-pointer ${
                         activeMediaIndex === index
-                          ? 'border-[#222222] dark:border-white ring-2 ring-[#222222]/20'
+                          ? 'border-[var(--pill-active-bg)] ring-2 ring-[var(--color-primary-subtle)]'
                           : 'border-transparent opacity-70 hover:opacity-100'
                       }`}
                     >
@@ -1143,9 +1032,9 @@ function ProductDetailContent() {
                 </div>
               </div>
 
-              {/* Caption + Amazon Look Inside & Audio Excerpt Buttons */}
-              <div className="mt-4 pt-3 border-t border-neutral-100 dark:border-neutral-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                <p className="text-xs text-neutral-600 dark:text-neutral-400 italic">
+              {/* Caption + Look Inside Sample Button */}
+              <div className="mt-4 pt-3 border-t border-[var(--border-subtle)] flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <p className="text-xs text-[var(--text-muted)] italic">
                   {GALLERY_MEDIA[activeMediaIndex].caption}
                 </p>
 
@@ -1157,29 +1046,21 @@ function ProductDetailContent() {
                     text="Read Sample (Look Inside)"
                     onClick={() => setIsLookInsideOpen(true)}
                   />
-
-                  <Button
-                    variant={isPlayingAudio ? 'orange' : 'secondary'}
-                    size="sm"
-                    iconStart={isPlayingAudio ? <Pause className="w-3.5 h-3.5" /> : <Headphones className="w-3.5 h-3.5" />}
-                    text={isPlayingAudio ? `Playing (${audioProgress}%)` : 'Audio Sample (01:45)'}
-                    onClick={() => setIsPlayingAudio(!isPlayingAudio)}
-                  />
                 </div>
               </div>
 
-              {/* Pinterest Curator Comments */}
-              <div className="mt-4 pt-3 border-t border-neutral-100 dark:border-neutral-800 space-y-2.5">
+              {/* Curator Comments */}
+              <div className="mt-4 pt-3 border-t border-[var(--border-subtle)] space-y-2.5">
                 {pinNotes.map((item, idx) => (
                   <div key={idx} className="flex items-center gap-2.5 text-xs">
-                    <div className="w-6 h-6 rounded-full bg-[#23382C] text-white font-bold flex items-center justify-center text-[10px] shrink-0">
+                    <div className="w-6 h-6 rounded-full bg-[var(--pill-active-bg)] text-[var(--pill-active-text)] font-bold flex items-center justify-center text-[10px] shrink-0">
                       {item.user[0]}
                     </div>
                     <div>
-                      <span className="font-bold text-neutral-800 dark:text-neutral-200 mr-1.5">
+                      <span className="font-bold text-[var(--text-main)] mr-1.5">
                         {item.user}
                       </span>
-                      <span className="text-neutral-600 dark:text-neutral-400">{item.note}</span>
+                      <span className="text-[var(--text-muted)]">{item.note}</span>
                     </div>
                   </div>
                 ))}
@@ -1191,7 +1072,7 @@ function ProductDetailContent() {
                     value={pinNoteText}
                     onChange={(e) => setPinNoteText(e.target.value)}
                     placeholder="Add a reader note or share why you love this cover..."
-                    className="flex-1 bg-neutral-100 dark:bg-neutral-800 hover:bg-neutral-200/70 focus:bg-white dark:focus:bg-[#121215] px-4 py-2 rounded-full text-xs border border-neutral-200 dark:border-neutral-700 focus:outline-hidden transition text-neutral-800 dark:text-neutral-100"
+                    className="flex-1 bg-[var(--bg-input)] hover:bg-[var(--bg-hover)] focus:bg-[var(--bg-card)] px-4 py-2 rounded-[var(--radius-input)] text-xs border border-[var(--border-subtle)] focus:outline-hidden transition text-[var(--text-main)]"
                   />
                   {pinNoteText.trim() && (
                     <Button variant="orange" size="sm" text="Post" type="submit" />
@@ -1207,9 +1088,9 @@ function ProductDetailContent() {
              ----------------------------------------------------------------- */}
           <div className="order-3 lg:order-none lg:col-span-7 lg:col-start-1 space-y-8">
             {/* ---------------------------------------------------------------
-                AMAZON-STYLE BOOK METADATA SPECIFICATIONS
+                BOOK METADATA SPECIFICATIONS
                --------------------------------------------------------------- */}
-            <div className="bg-[var(--bg-card)] rounded-2xl border border-[var(--border-subtle)] p-4 shadow-2xs">
+            <div className="bg-[var(--bg-card)] rounded-[var(--radius-card)] border border-[var(--border-subtle)] p-4 shadow-2xs">
               <div className="flex items-center justify-between mb-3">
                 <h3 className="text-xs font-bold uppercase tracking-wider text-[var(--text-muted)]">
                   Bibliographic Specifications & Edition Details
@@ -1240,19 +1121,19 @@ function ProductDetailContent() {
             </div>
 
             {/* ---------------------------------------------------------------
-                AMAZON-STYLE "FREQUENTLY BOUGHT TOGETHER" BUNDLE
+                "FREQUENTLY BOUGHT TOGETHER" BUNDLE
                --------------------------------------------------------------- */}
-            <div className="bg-[var(--bg-card)] rounded-3xl border border-[var(--border-subtle)] p-5 sm:p-6 shadow-2xs">
+            <div className="bg-[var(--bg-card)] rounded-[var(--radius-card)] border border-[var(--border-subtle)] p-5 sm:p-6 shadow-2xs">
               <div className="flex flex-wrap items-center justify-between gap-2 mb-4">
                 <div>
                   <h3
-                    className="text-lg font-bold text-neutral-900 dark:text-neutral-100"
+                    className="text-lg font-bold text-[var(--text-main)]"
                     style={{
                     }}
                   >
                     Frequently bought together
                   </h3>
-                  <p className="text-xs text-neutral-500">
+                  <p className="text-xs text-[var(--text-muted)]">
                     Pair this edition with companion reads & save 12% automatically
                   </p>
                 </div>
@@ -1265,7 +1146,7 @@ function ProductDetailContent() {
                   {BUNDLE_BOOKS.map((book, idx) => (
                     <React.Fragment key={book.id}>
                       {idx > 0 && (
-                        <span className="text-lg sm:text-xl font-bold text-neutral-400">+</span>
+                        <span className="text-lg sm:text-xl font-bold text-[var(--text-dim)]">+</span>
                       )}
                       <div
                         onClick={() =>
@@ -1276,8 +1157,8 @@ function ProductDetailContent() {
                         }
                         className={`relative w-20 sm:w-28 aspect-[3/4] rounded-xl overflow-hidden border-2 cursor-pointer transition ${
                           selectedBundleIds[book.id]
-                            ? 'border-[#23382C] dark:border-emerald-500 shadow-md'
-                            : 'border-neutral-200 dark:border-neutral-700 opacity-45'
+                            ? 'border-[var(--color-primary)] shadow-md'
+                            : 'border-[var(--border-subtle)] opacity-45'
                         }`}
                       >
                         <img
@@ -1287,7 +1168,7 @@ function ProductDetailContent() {
                         />
                         <div className="absolute top-1.5 right-1.5 w-5 h-5 rounded-md bg-white shadow-xs flex items-center justify-center">
                           {selectedBundleIds[book.id] && (
-                            <Check className="w-3.5 h-3.5 text-[#23382C] stroke-[3]" />
+                            <Check className="w-3.5 h-3.5 text-[var(--color-primary)] stroke-[3]" />
                           )}
                         </div>
                       </div>
@@ -1296,7 +1177,7 @@ function ProductDetailContent() {
                 </div>
 
                 {/* Bundle Total & CTA */}
-                <div className="flex-1 w-full md:w-auto border-t md:border-t-0 md:border-l border-neutral-200 dark:border-neutral-800 pt-4 md:pt-0 md:pl-6 space-y-3">
+                <div className="flex-1 w-full md:w-auto border-t md:border-t-0 md:border-l border-[var(--border-subtle)] pt-4 md:pt-0 md:pl-6 space-y-3">
                   <div className="space-y-1.5">
                     {BUNDLE_BOOKS.map((book, idx) => (
                       <label
@@ -1312,16 +1193,16 @@ function ProductDetailContent() {
                               [book.id]: !prev[book.id],
                             }))
                           }
-                          className="mt-0.5 rounded border-neutral-400 text-[#23382C] focus:ring-[#23382C]"
+                          className="mt-0.5 rounded border-[var(--border-strong)] text-[var(--color-primary)] focus:ring-[var(--color-primary)]"
                         />
-                        <span className="flex-1 text-neutral-700 dark:text-neutral-300 leading-snug">
+                        <span className="flex-1 text-[var(--text-body)] leading-snug">
                           {idx === 0 && (
-                            <strong className="text-neutral-900 dark:text-white">This item: </strong>
+                            <strong className="text-[var(--text-main)]">This item: </strong>
                           )}
                           {book.title}{' '}
-                          <span className="text-neutral-400">({book.format})</span>
+                          <span className="text-[var(--text-dim)]">({book.format})</span>
                         </span>
-                        <span className="font-bold text-neutral-900 dark:text-neutral-100 shrink-0">
+                        <span className="font-bold text-[var(--text-main)] shrink-0">
                           LKR {book.price.toLocaleString()}
                         </span>
                       </label>
@@ -1385,7 +1266,7 @@ function ProductDetailContent() {
                     <span className="text-2xl font-bold text-[var(--text-main)]">
                       {activeBook.rating}
                     </span>
-                    <Star className="w-5 h-5 fill-[#F59E0B] text-[#F59E0B]" />
+                    <Star className="w-5 h-5 fill-amber-400 text-amber-400" />
                     <span className="text-xs text-[var(--text-muted)]">
                       ({activeBook.reviewsCount})
                     </span>
@@ -1467,7 +1348,7 @@ function ProductDetailContent() {
                       {Array.from({ length: rev.rating }).map((_, idx) => (
                         <Star
                           key={idx}
-                          className="w-3.5 h-3.5 fill-[#F59E0B] text-[#F59E0B]"
+                          className="w-3.5 h-3.5 fill-amber-400 text-amber-400"
                         />
                       ))}
                     </div>
@@ -1507,47 +1388,43 @@ function ProductDetailContent() {
           </div>
 
           {/* -----------------------------------------------------------------
-              RIGHT COLUMN (lg:col-span-5): Buy Box, Formats, CTAs, Accordions
+              RIGHT COLUMN (lg:col-span-5): Buy Box, Single Edition Info, CTAs, Accordions
               Ordered 2nd on Mobile (immediately below Gallery Card)
              ----------------------------------------------------------------- */}
           <div className="order-2 lg:order-none lg:col-span-5 lg:col-start-8 lg:row-start-1 lg:row-span-2 space-y-6">
             <div className="bg-[var(--bg-card)] rounded-3xl border border-[var(--border-subtle)] p-5 sm:p-7 shadow-xs space-y-5">
               {/* Urgency Callout */}
               <div className="flex items-center justify-between gap-2">
-                <span className="inline-flex items-center gap-1.5 text-xs font-bold text-[#F1641E] bg-[#F1641E]/10 px-3 py-1 rounded-full">
+                <span className="inline-flex items-center gap-1.5 text-xs font-bold text-[var(--color-primary)] bg-[var(--color-primary-subtle)] px-3 py-1 rounded-full">
                   <Sparkles className="w-3.5 h-3.5" /> In 24+ readers&apos; bags right now
                 </span>
-                <span className="text-xs font-medium text-neutral-500">
+                <span className="text-xs font-medium text-[var(--text-muted)]">
                   {activeBook.series}
                 </span>
               </div>
 
               {/* Title & Subtitle */}
               <div>
-                <h1
-                  className="text-xl sm:text-2xl font-bold text-neutral-900 dark:text-white leading-snug"
-                  style={{
-                  }}
-                >
+                <h1 className="text-xl sm:text-2xl font-bold text-[var(--text-main)] leading-snug">
                   {activeBook.title}
                 </h1>
-                <p className="text-xs sm:text-sm text-neutral-600 dark:text-neutral-400 mt-1.5 leading-relaxed">
+                <p className="text-xs sm:text-sm text-[var(--text-muted)] mt-1.5 leading-relaxed">
                   {activeBook.subtitle}
                 </p>
               </div>
 
               {/* Author & Rating */}
-              <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-xs pb-3 border-b border-neutral-100 dark:border-neutral-800">
+              <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-xs pb-3 border-b border-[var(--border-subtle)]">
                 <div>
-                  <span className="text-neutral-500">by </span>
+                  <span className="text-[var(--text-muted)]">by </span>
                   <a
                     href="#author-bio"
-                    className="font-bold text-[#23382C] dark:text-emerald-400 hover:underline"
+                    className="font-bold text-[var(--color-primary)] hover:underline"
                   >
                     {activeBook.author}
                   </a>
-                  <span className="text-neutral-400"> (Author), </span>
-                  <span className="text-neutral-700 dark:text-neutral-300 font-medium">
+                  <span className="text-[var(--text-dim)]"> (Author), </span>
+                  <span className="text-[var(--text-body)] font-medium">
                     {activeBook.coAuthor}
                   </span>
                 </div>
@@ -1557,73 +1434,32 @@ function ProductDetailContent() {
                     {Array.from({ length: 5 }).map((_, i) => (
                       <Star
                         key={i}
-                        className="w-3.5 h-3.5 fill-[#F59E0B] text-[#F59E0B]"
+                        className="w-3.5 h-3.5 fill-amber-400 text-amber-400"
                       />
                     ))}
                   </div>
-                  <span className="font-bold text-neutral-900 dark:text-white ml-1">
+                  <span className="font-bold text-[var(--text-main)] ml-1">
                     {activeBook.rating}
                   </span>
-                  <span className="text-neutral-500">
+                  <span className="text-[var(--text-muted)]">
                     ({activeBook.reviewsCount} ratings)
                   </span>
                 </div>
               </div>
 
-              {/* FORMAT SELECTOR GRID */}
-              <div>
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-xs font-bold uppercase tracking-wider text-neutral-500">
-                    Select Edition Format
-                  </span>
-                  <button
-                    type="button"
-                    onClick={() => setIsLookInsideOpen(true)}
-                    className="text-xs font-semibold text-[#F1641E] hover:underline flex items-center gap-1 cursor-pointer"
-                  >
-                    <Eye className="w-3.5 h-3.5" /> Preview interior typography
-                  </button>
-                </div>
-
-                <div className="grid grid-cols-2 gap-2.5">
-                  {bookFormats.map((fmt) => {
-                    const isSelected = selectedFormat === fmt.key;
-                    return (
-                      <button
-                        key={fmt.key}
-                        type="button"
-                        onClick={() => setSelectedFormat(fmt.key)}
-                        className={`relative text-left p-3 rounded-2xl border-2 transition flex flex-col justify-between cursor-pointer ${
-                          isSelected
-                            ? 'border-[#23382C] dark:border-emerald-500 bg-[#23382C]/5 dark:bg-emerald-950/20 shadow-2xs'
-                            : 'border-neutral-200 dark:border-neutral-700 hover:border-neutral-400 bg-white dark:bg-[#1a1a20]'
-                        }`}
-                      >
-                        {fmt.badge && (
-                          <span className="absolute -top-2 right-2.5 px-2 py-0.5 rounded-full bg-[#23382C] text-white text-[9px] font-bold uppercase tracking-wider">
-                            {fmt.badge}
-                          </span>
-                        )}
-                        <div>
-                          <div className="text-xs font-bold text-neutral-900 dark:text-white">
-                            {fmt.label}
-                          </div>
-                          <div className="text-[11px] text-neutral-500 truncate">
-                            {fmt.sublabel}
-                          </div>
-                        </div>
-                        <div className="mt-2 flex items-baseline gap-1.5">
-                          <span className="text-sm font-bold text-neutral-900 dark:text-white">
-                            LKR {fmt.price.toLocaleString()}
-                          </span>
-                          <span className="text-[11px] text-neutral-400 line-through">
-                            LKR {fmt.originalPrice.toLocaleString()}
-                          </span>
-                        </div>
-                      </button>
-                    );
-                  })}
-                </div>
+              {/* Single Edition Summary Header (No Multi-Format Selector) */}
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-[var(--text-body)] bg-[var(--bg-wash)] border border-[var(--border-subtle)] px-3 py-1.5 rounded-[var(--radius-badge)]">
+                  <BookOpen className="w-3.5 h-3.5 text-[var(--color-primary)]" />
+                  <span>{editionLabel}</span>
+                </span>
+                <button
+                  type="button"
+                  onClick={() => setIsLookInsideOpen(true)}
+                  className="text-xs font-semibold text-[var(--color-primary)] hover:underline flex items-center gap-1 cursor-pointer"
+                >
+                  <Eye className="w-3.5 h-3.5" /> Preview interior typography
+                </button>
               </div>
 
               {/* Price & Bookstore Quantity Box */}
@@ -1631,17 +1467,21 @@ function ProductDetailContent() {
                 <div className="flex flex-wrap items-center justify-between gap-3">
                   <div>
                     <div className="flex flex-wrap items-baseline gap-2">
-                      <span className="text-2xl sm:text-3xl font-bold text-[#0F743B] dark:text-[#76d691]">
-                        LKR {(currentFormatObj.price * quantity).toLocaleString()}
+                      <span className="text-2xl sm:text-3xl font-bold text-[var(--color-success)]">
+                        LKR {(activeBook.price * quantity).toLocaleString()}
                       </span>
-                      <span className="text-sm text-[var(--text-dim)] line-through">
-                        LKR {(currentFormatObj.originalPrice * quantity).toLocaleString()}
-                      </span>
-                      <Badge variant="sale" size="sm" text={`Save ${savingsPercent}%`} />
+                      {activeBook.originalPrice > activeBook.price && (
+                        <>
+                          <span className="text-sm text-[var(--text-dim)] line-through">
+                            LKR {(activeBook.originalPrice * quantity).toLocaleString()}
+                          </span>
+                          <Badge variant="sale" size="sm" text={`Save ${savingsPercent}%`} />
+                        </>
+                      )}
                     </div>
                     {quantity > 1 && (
                       <p className="text-[11px] font-medium text-[var(--text-muted)] mt-0.5">
-                        LKR {currentFormatObj.price.toLocaleString()} each × {quantity} copies
+                        LKR {activeBook.price.toLocaleString()} each × {quantity} copies
                       </p>
                     )}
                   </div>
@@ -1687,7 +1527,7 @@ function ProductDetailContent() {
                   return (
                     <div className="flex flex-wrap items-center justify-between gap-2 pt-2.5 border-t border-[var(--border-subtle)] text-xs">
                       <span className="inline-flex items-center gap-1.5 font-semibold text-[var(--text-main)]">
-                        <Handbag className="w-3.5 h-3.5 text-[#F1641E]" />
+                        <Handbag className="w-3.5 h-3.5 text-[var(--color-primary)]" />
                         <span>
                           In your Bag: <strong>{existingBagItem.quantity}</strong>{' '}
                           {existingBagItem.quantity === 1 ? 'copy' : 'copies'}
@@ -1728,7 +1568,7 @@ function ProductDetailContent() {
                         </button>
                         <Link
                           href="/bag"
-                          className="ml-1 text-[11px] font-semibold text-[#F1641E] hover:underline"
+                          className="ml-1 text-[11px] font-semibold text-[var(--color-primary)] hover:underline"
                         >
                           View Bag →
                         </Link>
@@ -1737,24 +1577,24 @@ function ProductDetailContent() {
                   );
                 })()}
 
-                <p className="text-xs font-semibold text-amber-800 dark:text-amber-400 flex items-center gap-1.5">
+                <p className="text-xs font-semibold text-[var(--color-warning)] flex items-center gap-1.5">
                   <Sparkles className="w-3.5 h-3.5" />
-                  <span>{currentFormatObj.stockText}</span>
+                  <span>In Stock — Only 7 collector copies left at Colombo Scriptorium</span>
                 </p>
                 <p className="text-xs text-[var(--text-muted)] flex items-center gap-1.5">
                   <Truck className="w-3.5 h-3.5 text-[var(--text-main)] shrink-0" />
-                  <span>{currentFormatObj.deliveryText}</span>
+                  <span>FREE islandwide delivery on orders over LKR 3,500</span>
                 </p>
               </div>
 
-              {/* Primary Action Buttons */}
-              <div className="space-y-2.5">
+              {/* Primary Action Buttons (Tracked via inlineCtaRef to hide mobile fixed bar on scroll) */}
+              <div ref={inlineCtaRef} className="space-y-2.5">
                 <Button
                   variant="primary"
                   size="lg"
                   fullWidth
                   iconStart={<Handbag className="w-4 h-4" />}
-                  text={`Add ${currentFormatObj.label} to Bag — LKR ${(currentFormatObj.price * quantity).toLocaleString()}`}
+                  text={`Add to Bag — LKR ${(activeBook.price * quantity).toLocaleString()}`}
                   onClick={() => handleAddToBag(undefined, quantity)}
                 />
 
@@ -1775,33 +1615,44 @@ function ProductDetailContent() {
                     iconStart={
                       <Bookmark
                         className={`w-3.5 h-3.5 ${
-                          isMainPinSaved ? 'fill-[#F1641E] text-[#F1641E]' : ''
+                          isMainPinSaved ? 'fill-[var(--color-primary)] text-[var(--color-primary)]' : ''
                         }`}
                       />
                     }
-                    text={isMainPinSaved ? 'Saved on Board' : 'Pin to Reading List'}
+                    text={isMainPinSaved ? 'Saved on Board' : 'Save to Reading List'}
                     onClick={() => {
                       saveToBoard(activeBook.id);
                       triggerToast(
                         !isMainPinSaved
-                          ? `Pinned to "${selectedBoard}"`
+                          ? `Saved to "${selectedBoard}"`
                           : `Removed from "${selectedBoard}"`
                       );
                     }}
                   />
                 </div>
+
+                {/* Read Sample PDF (Cloudflare R2 preview) */}
+                <a
+                  href={activeBook.samplePdfUrl || "https://assets.shastraloka.lk/samples/sample-folio.pdf"}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-full h-11 rounded-[var(--radius-btn)] border border-[var(--border-strong)] bg-[var(--bg-card)] hover:bg-[var(--bg-wash)] text-[var(--text-main)] font-semibold text-xs flex items-center justify-center gap-2 transition cursor-pointer"
+                >
+                  <FileText className="w-4 h-4 text-[var(--color-primary)]" />
+                  <span>Read Sample PDF (Cloudflare R2 Preview)</span>
+                </a>
               </div>
 
               {/* Reader Protection */}
-              <div className="flex items-start gap-3 pt-2 text-xs text-neutral-600 dark:text-neutral-400">
-                <ShieldCheck className="w-5 h-5 text-[#23382C] dark:text-emerald-400 shrink-0 mt-0.5" />
+              <div className="flex items-start gap-3 pt-2 text-xs text-[var(--text-muted)]">
+                <ShieldCheck className="w-5 h-5 text-[var(--color-emerald)] shrink-0 mt-0.5" />
                 <p className="leading-relaxed">
                   <strong>Shastraloka Reader Protection:</strong> Get the exact collector’s edition you ordered, damage-free in archival kraft packaging, or receive a prompt replacement or refund.
                 </p>
               </div>
 
               {/* Accordions */}
-              <div className="divide-y divide-neutral-200 dark:divide-neutral-800 border-t border-neutral-200 dark:border-neutral-800 pt-2">
+              <div className="divide-y divide-[var(--border-subtle)] border-t border-[var(--border-subtle)] pt-2">
                 <Accordion
                   title="Item details & editorial synopsis"
                   isOpen={openAccordions.highlights}
@@ -1812,19 +1663,19 @@ function ProductDetailContent() {
                     }))
                   }
                 >
-                  <div className="space-y-3 text-xs text-neutral-600 dark:text-neutral-400 leading-relaxed">
-                    <div className="space-y-1.5 font-medium text-neutral-800 dark:text-neutral-200">
+                  <div className="space-y-3 text-xs text-[var(--text-muted)] leading-relaxed">
+                    <div className="space-y-1.5 font-medium text-[var(--text-main)]">
                       <div className="flex items-center gap-2">
-                        <Sparkles className="w-3.5 h-3.5 text-[#23382C] dark:text-emerald-400" />
+                        <Sparkles className="w-3.5 h-3.5 text-[var(--color-primary)]" />
                         <span>Curated by <strong>Shastraloka Scriptorium Guild</strong></span>
                       </div>
                       <div className="flex items-center gap-2">
-                        <Layers className="w-3.5 h-3.5 text-[#23382C] dark:text-emerald-400" />
+                        <Layers className="w-3.5 h-3.5 text-[var(--color-primary)]" />
                         <span>Smyth-sewn linen binding • 100gsm Munken cream acid-free paper</span>
                       </div>
                       <div className="flex items-center gap-2">
-                        <BookOpen className="w-3.5 h-3.5 text-[#23382C] dark:text-emerald-400" />
-                        <span>Includes complimentary digital companion & brass bookmark</span>
+                        <BookOpen className="w-3.5 h-3.5 text-[var(--color-primary)]" />
+                        <span>Includes complimentary botanical brass bookmark & ex-libris card</span>
                       </div>
                     </div>
                     <p>
@@ -1834,7 +1685,7 @@ function ProductDetailContent() {
                 </Accordion>
 
                 <Accordion
-                  title="Delivery, packaging & instant eBook access"
+                  title="Delivery & archival kraft packaging"
                   isOpen={openAccordions.shipping}
                   onToggle={() =>
                     setOpenAccordions((prev) => ({
@@ -1843,12 +1694,12 @@ function ProductDetailContent() {
                     }))
                   }
                 >
-                  <div className="space-y-2 text-xs text-neutral-600 dark:text-neutral-400 leading-relaxed">
+                  <div className="space-y-2 text-xs text-[var(--text-muted)] leading-relaxed">
                     <p>
-                      <strong>Physical Editions:</strong> Wrapped in moisture-resistant archival kraft paper with reinforced corner guards so your books arrive in pristine collector condition.
+                      <strong>Archival Packaging:</strong> Wrapped in moisture-resistant archival kraft paper with reinforced corner guards so your book arrives in pristine collector condition.
                     </p>
                     <p>
-                      <strong>Digital & Audio Editions:</strong> Delivered instantly via email and synced automatically to your Shastraloka profile library.
+                      <strong>Islandwide Courier Dispatch:</strong> Dispatched within 24 hours from our Colombo Scriptorium with live tracking and Cash on Delivery support.
                     </p>
                   </div>
                 </Accordion>
@@ -1864,16 +1715,16 @@ function ProductDetailContent() {
                   }
                 >
                   <div className="space-y-3">
-                    <div className="flex items-center justify-between gap-3 p-3 rounded-2xl bg-[#FAF8F5] dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-700">
+                    <div className="flex items-center justify-between gap-3 p-3 rounded-2xl bg-[var(--bg-wash)] border border-[var(--border-subtle)]">
                       <div className="flex items-center gap-3">
-                        <div className="w-11 h-11 rounded-full bg-[#23382C] text-white flex items-center justify-center font-bold text-sm">
+                        <div className="w-11 h-11 rounded-full bg-[var(--pill-active-bg)] text-[var(--pill-active-text)] flex items-center justify-center font-bold text-sm">
                           {activeBook.author[0]}
                         </div>
                         <div>
-                          <h4 className="text-xs font-bold text-neutral-900 dark:text-white">
+                          <h4 className="text-xs font-bold text-[var(--text-main)]">
                             {activeBook.author}
                           </h4>
-                          <p className="text-[11px] text-neutral-500">
+                          <p className="text-[11px] text-[var(--text-muted)]">
                             Classical Scribe & Translator • 18.4k Followers
                           </p>
                         </div>
@@ -1892,7 +1743,7 @@ function ProductDetailContent() {
                         }}
                       />
                     </div>
-                    <p className="text-xs text-neutral-600 dark:text-neutral-400 leading-relaxed">
+                    <p className="text-xs text-[var(--text-muted)] leading-relaxed">
                       <strong>Shastraloka Guild Press</strong> partners with independent translators, monastic libraries, and traditional bookbinders to publish definitive classical editions.
                     </p>
                   </div>
@@ -1988,10 +1839,10 @@ className="text-base sm:text-lg font-heading italic leading-relaxed text-[var(--
 
                 <div className="p-3 rounded-2xl bg-[var(--bg-wash)] border border-[var(--border-subtle)] space-y-1">
                   <h4 className="font-bold text-[var(--text-main)]">
-                    Can I read the digital companion on mobile & e-readers?
+                    Can I include a personalized dedication card for gifting?
                   </h4>
                   <p className="leading-relaxed">
-                    Instant downloads include standard DRM-free EPUB and PDF files compatible with Kindle, Apple Books, Kobo, and Android tablets.
+                    Yes. Every physical book edition is wrapped in archival kraft paper and can include a complimentary wax-sealed dedication note at checkout.
                   </p>
                 </div>
               </div>
@@ -2034,24 +1885,24 @@ className="text-base sm:text-lg font-heading italic leading-relaxed text-[var(--
         </section>
 
         {/* ===================================================================
-            PINTEREST VISUAL BOOK DISCOVERY & MASONRY FEED
+            CURATED VISUAL BOOK DISCOVERY & MASONRY FEED
            =================================================================== */}
-        <section id="masonry-discovery" className="pt-6 border-t border-neutral-200 dark:border-neutral-800">
+        <section id="masonry-discovery" className="pt-6 border-t border-[var(--border-subtle)]">
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-6">
             <div>
-              <div className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-widest text-[#F1641E] mb-1">
+              <div className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-widest text-[var(--color-primary)] mb-1">
                 <Sparkles className="w-3.5 h-3.5" />
-                <span>Pinterest-Style Visual Book Discovery</span>
+                <span>Curated Visual Book Discovery</span>
               </div>
               <h2
-                className="text-2xl sm:text-3xl font-bold text-neutral-900 dark:text-white"
+                className="text-2xl sm:text-3xl font-bold text-[var(--text-main)]"
                 style={{
                 }}
               >
                 Explore similar covers, editions & reading boards
               </h2>
-              <p className="text-xs sm:text-sm text-neutral-600 dark:text-neutral-400 mt-1">
-                Click any Book Pin to load it into the main Shastraloka showcase above, or save it directly to your reading board.
+              <p className="text-xs sm:text-sm text-[var(--text-muted)] mt-1">
+                Click any book edition to load it into the main Shastraloka showcase above, or save it directly to your reading board.
               </p>
             </div>
 
@@ -2068,10 +1919,10 @@ className="text-base sm:text-lg font-heading italic leading-relaxed text-[var(--
                   key={cat}
                   type="button"
                   onClick={() => setSelectedMasonryCategory(cat)}
-                  className={`px-4 py-2 rounded-full text-xs font-bold transition shrink-0 cursor-pointer ${
+                  className={`px-4 py-2 rounded-[var(--radius-btn)] text-xs font-bold transition shrink-0 cursor-pointer ${
                     selectedMasonryCategory === cat
-                      ? 'bg-[#222222] dark:bg-white text-white dark:text-neutral-900 shadow-xs'
-                      : 'bg-white dark:bg-neutral-800 border border-neutral-300 dark:border-neutral-700 text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100'
+                      ? 'bg-[var(--pill-active-bg)] text-[var(--pill-active-text)] shadow-xs'
+                      : 'bg-[var(--bg-card)] border border-[var(--border-subtle)] text-[var(--text-body)] hover:bg-[var(--bg-hover)]'
                   }`}
                 >
                   {cat}
@@ -2082,9 +1933,9 @@ className="text-base sm:text-lg font-heading italic leading-relaxed text-[var(--
 
           {/* Active explore query indicator */}
           {searchQuery && (
-            <div className="mb-5 flex flex-wrap items-center justify-between gap-3 bg-amber-50/90 dark:bg-amber-950/40 border border-amber-200/90 dark:border-amber-800/60 rounded-2xl px-4 py-2.5 text-xs text-amber-950 dark:text-amber-200">
+            <div className="mb-5 flex flex-wrap items-center justify-between gap-3 bg-[var(--surface-cream)] border border-[var(--border-subtle)] rounded-2xl px-4 py-2.5 text-xs text-[var(--text-main)]">
               <div className="flex items-center gap-2">
-                <Sparkles className="w-4 h-4 text-[#F1641E]" />
+                <Sparkles className="w-4 h-4 text-[var(--color-primary)]" />
                 <span>
                   Filtering visual discovery by explore query: <strong>&ldquo;{searchQuery}&rdquo;</strong> ({filteredMasonryPins.length} books found)
                 </span>
@@ -2096,13 +1947,13 @@ className="text-base sm:text-lg font-heading italic leading-relaxed text-[var(--
                     setSearchQuery('');
                     setGlobalSearchQuery('');
                   }}
-                  className="font-bold underline hover:text-[#F1641E] cursor-pointer"
+                  className="font-bold underline hover:text-[var(--color-primary)] cursor-pointer"
                 >
                   Clear filter
                 </button>
                 <Link
                   href={`/search?q=${encodeURIComponent(searchQuery)}`}
-                  className="inline-flex items-center gap-1 font-bold text-[#F1641E] hover:underline"
+                  className="inline-flex items-center gap-1 font-bold text-[var(--color-primary)] hover:underline"
                 >
                   <span>Open Full Masonry Search</span>
                   <ArrowUpRight className="w-3.5 h-3.5" />
@@ -2111,15 +1962,15 @@ className="text-base sm:text-lg font-heading italic leading-relaxed text-[var(--
             </div>
           )}
 
-          {/* Pinterest Columns */}
+          {/* Masonry Columns */}
           <div className="columns-2 sm:columns-3 lg:columns-5 gap-4 space-y-4">
             {/* Visual Topic Cards */}
-            <div className="break-inside-avoid bg-white dark:bg-[#1a1a20] rounded-3xl p-3.5 border border-neutral-200/90 dark:border-neutral-800 shadow-2xs space-y-2.5">
+            <div className="break-inside-avoid bg-[var(--bg-card)] rounded-[var(--radius-card)] p-3.5 border border-[var(--border-subtle)] shadow-2xs space-y-2.5">
               <div className="flex items-center justify-between px-1">
-                <h3 className="text-xs sm:text-sm font-bold text-neutral-900 dark:text-white">
+                <h3 className="text-xs sm:text-sm font-bold text-[var(--text-main)]">
                   Ideas you might love
                 </h3>
-                <Filter className="w-3.5 h-3.5 text-neutral-400" />
+                <Filter className="w-3.5 h-3.5 text-[var(--text-dim)]" />
               </div>
 
               <div className="space-y-2">
@@ -2129,7 +1980,7 @@ className="text-base sm:text-lg font-heading italic leading-relaxed text-[var(--
                     type="button"
                     onClick={() => {
                       setSelectedMasonryCategory(idea.tag);
-                      triggerToast(`Filtered Pinboard by "${idea.title}"`);
+                      triggerToast(`Filtered collection by "${idea.title}"`);
                     }}
                     className="relative w-full h-16 rounded-2xl overflow-hidden group text-left flex items-center justify-center p-3 shadow-2xs cursor-pointer"
                   >
@@ -2147,18 +1998,17 @@ className="text-base sm:text-lg font-heading italic leading-relaxed text-[var(--
               </div>
             </div>
 
-            {/* Staggered Pins */}
+            {/* Staggered Editions */}
             {filteredMasonryPins.map((pin) => {
               const isSaved = isBookSaved(pin.id) || !!savedPinIds[pin.id];
               return (
                 <div
                   key={pin.id}
                   onClick={() => handleSelectPinAsProduct(pin)}
-                  className="break-inside-avoid group cursor-pointer bg-white dark:bg-[#1a1a20] rounded-3xl p-2.5 border border-neutral-200/70 dark:border-neutral-800 hover:border-neutral-300 hover:shadow-xl transition-all duration-300"
+                  className="break-inside-avoid group cursor-pointer bg-[var(--bg-card)] rounded-[var(--radius-card)] p-2.5 border border-[var(--border-subtle)] hover:border-[var(--border-strong)] hover:shadow-xl transition-all duration-300"
                 >
                   <div
-                    className={`relative w-full ${pin.aspectClass} rounded-2xl overflow-hidden mb-2.5`}
-                    style={{ backgroundColor: pin.bgAccent }}
+                    className={`relative w-full ${pin.aspectClass} rounded-2xl overflow-hidden mb-2.5 bg-[var(--bg-wash)]`}
                   >
                     <img
                       src={pin.image}
@@ -2177,10 +2027,10 @@ className="text-base sm:text-lg font-heading italic leading-relaxed text-[var(--
                     <button
                       type="button"
                       onClick={(e) => handleTogglePinSave(pin.id, pin.title, e)}
-                      className={`absolute top-2.5 right-2.5 z-10 px-3 py-1.5 rounded-full text-xs font-bold shadow-md transition ${
+                      className={`absolute top-2.5 right-2.5 z-10 px-3 py-1.5 rounded-[var(--radius-btn)] text-xs font-bold shadow-md transition ${
                         isSaved
-                          ? 'bg-[#222222] text-white opacity-100'
-                          : 'bg-[#e60023] hover:bg-[#ad081b] text-white opacity-95 sm:opacity-0 sm:group-hover:opacity-100'
+                          ? 'bg-[var(--pill-active-bg)] text-[var(--pill-active-text)] opacity-100'
+                          : 'bg-[var(--color-primary)] hover:bg-[var(--color-primary-hover)] text-white opacity-95 sm:opacity-0 sm:group-hover:opacity-100'
                       }`}
                     >
                       {isSaved ? 'Saved' : 'Save'}
@@ -2204,7 +2054,7 @@ className="text-base sm:text-lg font-heading italic leading-relaxed text-[var(--
                         handleAddToBag(pin.title, 1);
                       }}
                       title="Quick Add to Bag"
-                      className="absolute bottom-2.5 right-2.5 z-10 w-8 h-8 rounded-full bg-white/95 dark:bg-neutral-800 hover:bg-[#23382C] text-neutral-900 dark:text-white hover:text-white shadow-md flex items-center justify-center opacity-95 sm:opacity-0 sm:group-hover:opacity-100 transition"
+                      className="absolute bottom-2.5 right-2.5 z-10 w-8 h-8 rounded-full bg-white/95 dark:bg-neutral-800 hover:bg-[var(--color-primary)] text-neutral-900 dark:text-white hover:text-white shadow-md flex items-center justify-center opacity-95 sm:opacity-0 sm:group-hover:opacity-100 transition"
                     >
                       <Plus className="w-4 h-4 stroke-[2.5]" />
                     </button>
@@ -2212,17 +2062,17 @@ className="text-base sm:text-lg font-heading italic leading-relaxed text-[var(--
 
                   <div className="px-1 space-y-1">
                     <div className="flex items-start justify-between gap-1">
-                      <h4 className="text-xs font-bold text-neutral-900 dark:text-white leading-snug line-clamp-2 group-hover:text-[#F1641E] transition-colors">
+                      <h4 className="text-xs font-bold text-[var(--text-main)] leading-snug line-clamp-2 group-hover:text-[var(--color-primary)] transition-colors">
                         {pin.title}
                       </h4>
-                      <ArrowUpRight className="w-3.5 h-3.5 text-neutral-400 shrink-0 mt-0.5 opacity-0 group-hover:opacity-100 transition" />
+                      <ArrowUpRight className="w-3.5 h-3.5 text-[var(--text-dim)] shrink-0 mt-0.5 opacity-0 group-hover:opacity-100 transition" />
                     </div>
 
-                    <p className="text-[11px] text-neutral-500 truncate">
-                      {pin.author} • <span className="text-neutral-400">{pin.format}</span>
+                    <p className="text-[11px] text-[var(--text-muted)] truncate">
+                      {pin.author} • <span className="text-[var(--text-dim)]">{pin.format}</span>
                     </p>
 
-                    <div className="pt-1 flex items-center justify-between text-[11px] text-neutral-500">
+                    <div className="pt-1 flex items-center justify-between text-[11px] text-[var(--text-muted)]">
                       <div className="flex items-center gap-1">
                         <img
                           src={pin.curatorAvatar}
@@ -2232,8 +2082,8 @@ className="text-base sm:text-lg font-heading italic leading-relaxed text-[var(--
                         <span className="truncate max-w-[95px]">{pin.curator}</span>
                       </div>
 
-                      <div className="flex items-center gap-1 font-semibold text-neutral-700 dark:text-neutral-300">
-                        <Star className="w-3 h-3 fill-[#F59E0B] text-[#F59E0B]" />
+                      <div className="flex items-center gap-1 font-semibold text-[var(--text-body)]">
+                        <Star className="w-3 h-3 fill-amber-400 text-amber-400" />
                         <span>{pin.rating}</span>
                       </div>
                     </div>
@@ -2243,12 +2093,12 @@ className="text-base sm:text-lg font-heading italic leading-relaxed text-[var(--
             })}
 
             {filteredMasonryPins.length === 0 && (
-              <div className="col-span-full py-12 px-4 text-center bg-white dark:bg-[#1a1a20] rounded-3xl border border-dashed border-neutral-300 dark:border-neutral-700 space-y-3">
-                <Compass className="w-8 h-8 text-neutral-400 mx-auto" />
-                <h4 className="text-sm font-bold text-neutral-800 dark:text-neutral-200">
-                  No visual pins found matching &ldquo;{searchQuery}&rdquo;
+              <div className="col-span-full py-12 px-4 text-center bg-[var(--bg-card)] rounded-[var(--radius-card)] border border-dashed border-[var(--border-strong)] space-y-3">
+                <Compass className="w-8 h-8 text-[var(--text-dim)] mx-auto" />
+                <h4 className="text-sm font-bold text-[var(--text-main)]">
+                  No curated editions found matching &ldquo;{searchQuery}&rdquo;
                 </h4>
-                <p className="text-xs text-neutral-500 max-w-md mx-auto">
+                <p className="text-xs text-[var(--text-muted)] max-w-md mx-auto">
                   Try selecting another explore topic from the bar above or view all classical treatises.
                 </p>
                 <button
@@ -2258,7 +2108,7 @@ className="text-base sm:text-lg font-heading italic leading-relaxed text-[var(--
                     setGlobalSearchQuery('');
                     setSelectedMasonryCategory('All');
                   }}
-                  className="px-4 py-2 rounded-full bg-[#222222] text-white text-xs font-bold hover:bg-neutral-800 transition cursor-pointer"
+                  className="px-4 py-2 rounded-[var(--radius-btn)] bg-[var(--pill-active-bg)] text-[var(--pill-active-text)] text-xs font-bold hover:opacity-90 transition cursor-pointer"
                 >
                   Reset Explore Filter
                 </button>
@@ -2268,10 +2118,10 @@ className="text-base sm:text-lg font-heading italic leading-relaxed text-[var(--
         </section>
 
         {/* ===================================================================
-            ETSY-STYLE RELATED SEARCH TAGS
+            RELATED SEARCH TAGS
            =================================================================== */}
-        <section className="pt-6 border-t border-neutral-200 dark:border-neutral-800 space-y-4">
-          <h3 className="text-sm font-bold text-neutral-900 dark:text-white">
+        <section className="pt-6 border-t border-[var(--border-subtle)] space-y-4">
+          <h3 className="text-sm font-bold text-[var(--text-main)]">
             Explore related literary searches on Shastraloka
           </h3>
           <div className="flex flex-wrap gap-2">
@@ -2291,7 +2141,7 @@ className="text-base sm:text-lg font-heading italic leading-relaxed text-[var(--
                 key={term}
                 type="button"
                 onClick={() => router.push(`/search?q=${encodeURIComponent(term.split(' ')[0])}`)}
-                className="px-3.5 py-2 rounded-full bg-white dark:bg-neutral-800 border border-neutral-300 dark:border-neutral-700 hover:border-neutral-800 text-xs font-medium text-neutral-700 dark:text-neutral-300 transition cursor-pointer"
+                className="px-3.5 py-2 rounded-[var(--radius-btn)] bg-[var(--bg-card)] border border-[var(--border-subtle)] hover:border-[var(--border-focus)] text-xs font-medium text-[var(--text-body)] transition cursor-pointer"
               >
                 {term}
               </button>
@@ -2301,23 +2151,23 @@ className="text-base sm:text-lg font-heading italic leading-relaxed text-[var(--
       </main>
 
       {/* =====================================================================
-          AMAZON "LOOK INSIDE / READ SAMPLE" INTERACTIVE BOOK READER MODAL
+          "LOOK INSIDE / READ SAMPLE" INTERACTIVE BOOK READER MODAL
          ===================================================================== */}
       {isLookInsideOpen && (
         <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-xs flex items-center justify-center p-4">
           <div
-            className={`w-full max-w-3xl rounded-3xl shadow-2xl border overflow-hidden transition-colors ${
+            className={`w-full max-w-3xl rounded-[var(--radius-modal)] shadow-2xl border overflow-hidden transition-colors ${
               readerTheme === 'cream'
-                ? 'bg-[#F6F1E5] text-[#26231E] border-stone-300'
+                ? 'bg-[var(--surface-cream)] text-[var(--text-main)] border-[var(--border-subtle)]'
                 : readerTheme === 'white'
-                ? 'bg-white text-neutral-900 border-neutral-200'
-                : 'bg-[#181816] text-[#E5E0D5] border-neutral-800'
+                ? 'bg-[var(--bg-card)] text-[var(--text-main)] border-[var(--border-subtle)]'
+                : 'bg-[var(--banner-guild-bg)] text-[var(--banner-guild-text)] border-[var(--banner-guild-border)]'
             }`}
           >
             {/* Header */}
             <div className="px-4 sm:px-6 py-4 border-b border-black/10 dark:border-white/10 flex flex-wrap items-center justify-between gap-3">
               <div className="flex items-center gap-2.5">
-                <BookOpen className="w-5 h-5 text-[#F1641E] shrink-0" />
+                <BookOpen className="w-5 h-5 text-[var(--color-primary)] shrink-0" />
                 <div>
                   <h3 className="text-sm font-bold leading-none">
                     Look Inside: {activeBook.title}
@@ -2338,7 +2188,7 @@ className="text-base sm:text-lg font-heading italic leading-relaxed text-[var(--
                       onClick={() => setReaderTheme(t)}
                       className={`px-2.5 py-1 rounded-full capitalize font-semibold cursor-pointer ${
                         readerTheme === t
-                          ? 'bg-[#F1641E] text-white'
+                          ? 'bg-[var(--color-primary)] text-white'
                           : 'opacity-70 hover:opacity-100'
                       }`}
                     >
@@ -2355,7 +2205,7 @@ className="text-base sm:text-lg font-heading italic leading-relaxed text-[var(--
                       onClick={() => setReaderFontSize(sz)}
                       className={`px-2 py-1 rounded-full uppercase font-bold cursor-pointer ${
                         readerFontSize === sz
-                          ? 'bg-[#23382C] text-white'
+                          ? 'bg-[var(--pill-active-bg)] text-[var(--pill-active-text)]'
                           : 'opacity-70'
                       }`}
                     >
@@ -2390,8 +2240,6 @@ className="text-base sm:text-lg font-heading italic leading-relaxed text-[var(--
                       ? 'text-base sm:text-[17px]'
                       : 'text-lg sm:text-xl'
                   }`}
-                  style={{
-                  }}
                 >
                   {SAMPLE_PAGES[samplePageIndex].content}
                 </div>
@@ -2422,7 +2270,7 @@ className="text-base sm:text-lg font-heading italic leading-relaxed text-[var(--
               <Button
                 variant="orange"
                 size="md"
-                text={`Buy Full Edition — LKR ${currentFormatObj.price.toLocaleString()}`}
+                text={`Add to Bag — LKR ${activeBook.price.toLocaleString()}`}
                 onClick={() => {
                   setIsLookInsideOpen(false);
                   handleAddToBag();
@@ -2432,6 +2280,59 @@ className="text-base sm:text-lg font-heading italic leading-relaxed text-[var(--
           </div>
         </div>
       )}
+
+      {/* =====================================================================
+          MOBILE FIXED BOTTOM "ADD TO BAG" BAR
+          Visible on initial load on mobile; hides smoothly once the user
+          scrolls down to the real inline "Add to Bag" button section.
+         ===================================================================== */}
+      <div
+        aria-hidden={!showMobileFixedBar}
+        className={`lg:hidden fixed bottom-0 inset-x-0 z-40 bg-[var(--bg-card)]/95 backdrop-blur-md border-t border-[var(--border-strong)] px-4 py-3 shadow-2xl transition-all duration-300 ease-out ${
+          showMobileFixedBar && !isLookInsideOpen
+            ? 'translate-y-0 opacity-100'
+            : 'translate-y-full opacity-0 pointer-events-none'
+        }`}
+      >
+        <div className="flex items-center justify-between gap-3 max-w-lg mx-auto">
+          <div className="min-w-0">
+            <div className="flex items-baseline gap-1.5">
+              <span className="text-base font-bold text-[var(--color-success)]">
+                LKR {(activeBook.price * quantity).toLocaleString()}
+              </span>
+              {activeBook.originalPrice > activeBook.price && (
+                <span className="text-[11px] text-[var(--text-dim)] line-through">
+                  LKR {(activeBook.originalPrice * quantity).toLocaleString()}
+                </span>
+              )}
+            </div>
+            <p className="text-[11px] text-[var(--text-muted)] truncate">
+              {editionLabel} • Free Delivery
+            </p>
+          </div>
+
+          <div className="flex items-center gap-2 shrink-0">
+            <button
+              type="button"
+              onClick={() => handleAddToBag(undefined, quantity)}
+              className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-[var(--radius-btn)] bg-[var(--color-primary)] hover:bg-[var(--color-primary-hover)] text-[var(--text-on-accent)] text-xs font-bold shadow-sm active:scale-95 transition cursor-pointer"
+            >
+              <Handbag className="w-4 h-4 shrink-0" />
+              <span>Add to Bag</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                handleAddToBag(undefined, quantity);
+                router.push('/checkout');
+              }}
+              className="inline-flex items-center justify-center px-3.5 py-2.5 rounded-[var(--radius-btn)] bg-[var(--pill-active-bg)] text-[var(--pill-active-text)] text-xs font-bold shadow-sm active:scale-95 transition cursor-pointer"
+            >
+              Buy Now
+            </button>
+          </div>
+        </div>
+      </div>
 
       {/* Floating Toast Notification */}
       {toastMessage && (

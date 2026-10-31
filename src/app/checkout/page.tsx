@@ -18,14 +18,37 @@ import {
   Copy,
   ArrowLeft,
   MapPin,
+  Upload,
+  Building2,
+  MessageSquare,
+  Send,
+  Smartphone,
+  FileText,
+  Loader2,
 } from 'lucide-react';
+import {
+  isValidEmail,
+  isValidPhone,
+  isValidSriLankanMobile,
+  sanitizeCouponCode,
+  sanitizeEmail,
+  sanitizePhone,
+  sanitizePostalCode,
+  sanitizeSingleLine,
+  secureApiPost,
+  SECURITY_LIMITS,
+} from '../../utils/security';
+import { uploadToR2 } from '@/lib/r2-upload';
+import { createOrder, buildWhatsAppOrderUrl } from '@/services/orders';
+import { OrderResponse } from '@/types/api';
+import { useApp } from '@/context/AppContext';
 
 // ============================================================================
 // TYPES & SRI LANKA DISTRICTS DATA
 // ============================================================================
 
 type CheckoutView = 'address' | 'payment-select' | 'add-card' | 'review' | 'confirmed';
-type PaymentMethodType = 'card' | 'cod' | 'apple-pay' | 'paypal' | 'google-pay';
+type PaymentMethodType = 'card' | 'cod' | 'bank-transfer' | 'google-pay';
 
 interface DistrictOption {
   name: string;
@@ -122,10 +145,16 @@ export default function App() {
   const [city, setCity] = useState<string>('KOTMALE');
   const [district, setDistrict] = useState<string>('Kandy');
   const [postalCode, setPostalCode] = useState<string>('20566');
-  const [phone, setPhone] = useState<string>('+94 70-245-4084');
+  const [phone, setPhone] = useState<string>('0702454084');
+  const [whatsappNumber, setWhatsappNumber] = useState<string>('0702454084');
 
   // Step 2A: Payment Method Selection
-  const [paymentMethod, setPaymentMethod] = useState<PaymentMethodType>('card');
+  const [paymentMethod, setPaymentMethod] = useState<PaymentMethodType>('cod');
+  const [slipUrl, setSlipUrl] = useState<string>('');
+  const [isUploadingSlip, setIsUploadingSlip] = useState<boolean>(false);
+  const [uploadError, setUploadError] = useState<string | null>(null);
+  const [isSubmittingOrder, setIsSubmittingOrder] = useState<boolean>(false);
+  const [orderResponse, setOrderResponse] = useState<OrderResponse | null>(null);
 
   // Step 2B: Add New Card State (Matches Screenshot 1)
   const [cardNumber, setCardNumber] = useState<string>('');
@@ -137,7 +166,22 @@ export default function App() {
   const [couponInput, setCouponInput] = useState<string>('');
   const [appliedCoupon, setAppliedCoupon] = useState<string | null>(null);
   const [discountPercent, setDiscountPercent] = useState<number>(0);
-  const [orderId, setOrderId] = useState<string>('SHL-2026-8492');
+  const [orderId, setOrderId] = useState<string>('SH-2026-0001');
+
+  const handleSlipUpload = async (file: File) => {
+    setUploadError(null);
+    setIsUploadingSlip(true);
+    try {
+      const url = await uploadToR2(file, 'slips');
+      setSlipUrl(url);
+      triggerToast('Bank slip uploaded securely to Cloudflare R2!');
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Failed to upload slip';
+      setUploadError(msg);
+    } finally {
+      setIsUploadingSlip(false);
+    }
+  };
 
   const triggerToast = (msg: string) => {
     setToast(msg);
@@ -185,10 +229,17 @@ export default function App() {
   };
 
   const handleUpdateQty = (id: string, delta: number) => {
+    const safeDelta = Math.round(Number(delta) || 0);
     setBag((prev) =>
       prev.map((item) =>
         item.id === id
-          ? { ...item, quantity: Math.max(1, item.quantity + delta) }
+          ? {
+              ...item,
+              quantity: Math.min(
+                SECURITY_LIMITS.MAX_BAG_ITEM_QUANTITY,
+                Math.max(1, item.quantity + safeDelta)
+              ),
+            }
           : item
       )
     );
@@ -198,14 +249,14 @@ export default function App() {
     setCardNumber('4532 8910 4421 8842');
     setCardExpiry('09/29');
     setCardCvc('742');
-    setCardName(fullName || 'Dr. Senaka Bandara');
+    setCardName(sanitizeSingleLine(fullName, SECURITY_LIMITS.MAX_NAME_LENGTH) || 'Dr. Senaka Bandara');
     setErrorMessage(null);
     triggerToast('Filled demo Visa card details');
   };
 
   const handleApplyPromo = (e: React.FormEvent) => {
     e.preventDefault();
-    const code = couponInput.trim().toUpperCase();
+    const code = sanitizeCouponCode(couponInput);
     if (code === 'LANKA20' || code === 'SHASTRA20') {
       setDiscountPercent(20);
       setAppliedCoupon(code);
@@ -217,32 +268,73 @@ export default function App() {
   };
 
   // Primary "Continue" Flow Logic
-  const handleContinue = () => {
+  const handleContinue = async () => {
     setErrorMessage(null);
 
     if (view === 'address') {
-      if (!email.trim() || !email.includes('@')) {
+      const cleanEmail = sanitizeEmail(email);
+      const cleanName = sanitizeSingleLine(fullName, SECURITY_LIMITS.MAX_NAME_LENGTH);
+      const cleanStreet = sanitizeSingleLine(streetAddress, SECURITY_LIMITS.MAX_ADDRESS_LENGTH);
+      const cleanApt = sanitizeSingleLine(aptSuite, 80);
+      const cleanCity = sanitizeSingleLine(city, SECURITY_LIMITS.MAX_CITY_LENGTH);
+      const cleanPostal = sanitizePostalCode(postalCode);
+      const cleanPhone = sanitizePhone(phone);
+
+      if (!isValidEmail(cleanEmail)) {
         setErrorMessage('Please enter a valid email address.');
         return;
       }
-      if (!fullName.trim()) {
+      if (!cleanName || cleanName.length < 2) {
         setErrorMessage('Please enter your full name.');
         return;
       }
-      if (!streetAddress.trim() || !city.trim()) {
+      if (!cleanStreet || !cleanCity) {
         setErrorMessage('Please enter your street address and city.');
         return;
       }
-      if (!phone.trim()) {
-        setErrorMessage('Please enter a contact phone number for courier delivery.');
+      if (!isValidSriLankanMobile(cleanPhone) && !isValidPhone(cleanPhone)) {
+        setErrorMessage('Please enter a valid Sri Lankan mobile number (e.g., 0771234567 or +94771234567) for SMS & WhatsApp order dispatch.');
         return;
       }
+
+      setEmail(cleanEmail);
+      setFullName(cleanName);
+      setStreetAddress(cleanStreet);
+      setAptSuite(cleanApt);
+      setCity(cleanCity);
+      setPostalCode(cleanPostal);
+      setPhone(cleanPhone);
+      setWhatsappNumber(cleanPhone);
+
+      const validationRes = await secureApiPost('/api/security/validate-checkout', {
+        items: bag.map((b) => ({ id: b.id, quantity: b.quantity, price: b.price })),
+        district,
+        couponCode: appliedCoupon || '',
+        customer: {
+          email: cleanEmail,
+          fullName: cleanName,
+          streetAddress: cleanStreet,
+          city: cleanCity,
+          postalCode: cleanPostal,
+          phone: cleanPhone,
+        },
+      });
+
+      if (!validationRes.ok && validationRes.error) {
+        setErrorMessage(validationRes.error);
+        return;
+      }
+
       setView('payment-select');
       window.scrollTo({ top: 0, behavior: 'smooth' });
       return;
     }
 
     if (view === 'payment-select') {
+      if (paymentMethod === 'bank-transfer' && !slipUrl) {
+        setErrorMessage('Please upload your bank deposit slip or transfer screenshot before continuing.');
+        return;
+      }
       if (paymentMethod === 'card') {
         setView('add-card');
       } else {
@@ -253,33 +345,67 @@ export default function App() {
     }
 
     if (view === 'add-card') {
-      const rawCardDigits = cardNumber.replace(/\s/g, '');
-      if (rawCardDigits.length < 15) {
+      const rawCardDigits = cardNumber.replace(/\D/g, '');
+      if (rawCardDigits.length < 15 || rawCardDigits.length > 16) {
         setErrorMessage('Please enter a valid 16-digit card number (or click "Fill demo card").');
         return;
       }
-      if (cardExpiry.length < 5) {
-        setErrorMessage('Please enter the expiration date in MM/YY format.');
+      const [expMonthStr, expYearStr] = cardExpiry.split('/');
+      const expMonth = Number(expMonthStr);
+      const expYear = Number(expYearStr);
+      if (
+        cardExpiry.length < 5 ||
+        !Number.isInteger(expMonth) ||
+        expMonth < 1 ||
+        expMonth > 12 ||
+        !Number.isInteger(expYear)
+      ) {
+        setErrorMessage('Please enter a valid expiration date in MM/YY format (month 01–12).');
         return;
       }
-      if (cardCvc.length < 3) {
+      const rawCvc = cardCvc.replace(/\D/g, '');
+      if (rawCvc.length < 3 || rawCvc.length > 4) {
         setErrorMessage('Please enter the 3 or 4 digit security code.');
         return;
       }
-      if (!cardName.trim()) {
+      const cleanCardName = sanitizeSingleLine(cardName, SECURITY_LIMITS.MAX_NAME_LENGTH);
+      if (!cleanCardName) {
         setErrorMessage('Please enter the name on your card.');
         return;
       }
+      setCardName(cleanCardName);
       setView('review');
       window.scrollTo({ top: 0, behavior: 'smooth' });
       return;
     }
 
     if (view === 'review') {
-      const randomNum = Math.floor(1000 + Math.random() * 9000);
-      setOrderId(`SHL-2026-${randomNum}`);
-      setView('confirmed');
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      // Clear sensitive card CVC from memory immediately upon order confirmation
+      setCardCvc('');
+      setIsSubmittingOrder(true);
+      try {
+        const orderRes = await createOrder({
+          customerName: fullName,
+          customerEmail: email,
+          customerPhone: phone,
+          whatsappNumber: whatsappNumber || phone,
+          shippingAddress: streetAddress + (aptSuite ? `, ${aptSuite}` : ''),
+          city: city,
+          postalCode: postalCode,
+          paymentMethod: paymentMethod === 'cod' ? 'COD' : paymentMethod === 'bank-transfer' ? 'BANK_TRANSFER' : 'CARD',
+          paymentSlipUrl: slipUrl || undefined,
+          items: bag.map((b) => ({ bookId: b.id, quantity: b.quantity })),
+        });
+        setOrderResponse(orderRes);
+        setOrderId(orderRes.order.orderNumber);
+        setView('confirmed');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      } catch (err: unknown) {
+        const msg = err instanceof Error ? err.message : 'Failed to submit order. Please check connection.';
+        setErrorMessage(msg);
+      } finally {
+        setIsSubmittingOrder(false);
+      }
     }
   };
 
@@ -353,7 +479,7 @@ export default function App() {
           >
             <BookOpen className="w-3.5 h-3.5 text-[var(--color-primary)]" />
             <span>
-              {totalItemsCount} {totalItemsCount === 1 ? 'book' : 'books'} pinned •{' '}
+              {totalItemsCount} {totalItemsCount === 1 ? 'book' : 'books'} in bag •{' '}
               <strong className="font-semibold">
                 Rs. {finalTotal.toLocaleString()}
               </strong>
@@ -364,11 +490,11 @@ export default function App() {
             />
           </button>
 
-          {/* Collapsible Mini Book Pin Drawer (Keeps checkout 100% clean until clicked) */}
+          {/* Collapsible Mini Book Bag Drawer (Keeps checkout 100% clean until clicked) */}
           {summaryOpen && (
             <div className="w-full mt-3 bg-[var(--bg-card)] rounded-2xl border border-[var(--border-subtle)] shadow-lg p-4 space-y-3 z-20">
               <div className="flex items-center justify-between text-xs font-bold text-[var(--text-muted)] uppercase tracking-wider pb-2 border-b border-[var(--border-subtle)]">
-                <span>Your Pinned Books ({totalItemsCount})</span>
+                <span>Your Selected Books ({totalItemsCount})</span>
                 <button
                   type="button"
                   onClick={() => setSummaryOpen(false)}
@@ -393,7 +519,7 @@ export default function App() {
                         {item.title}
                       </p>
                       <p className="text-[11px] text-[var(--text-muted)]">
-                        {item.binding} • Pin: {item.pinBoard}
+                        {item.binding} • Collection: {item.pinBoard}
                       </p>
                       <div className="flex items-center gap-2 mt-1">
                         <button
@@ -634,56 +760,8 @@ export default function App() {
               </h1>
 
               {/* Unified Bordered Payment Method List */}
-              <div className="border border-[var(--border-subtle)] rounded-2xl divide-y divide-[var(--border-subtle)] overflow-hidden mb-14">
-                {/* Option 1: Apple Pay */}
-                <div
-                  onClick={() => setPaymentMethod('apple-pay')}
-                  className="px-4 py-4 flex items-center justify-between cursor-pointer hover:bg-[var(--bg-wash)] transition"
-                >
-                  <div className="flex items-center gap-3.5">
-                    <div className="w-11 h-7 rounded-md border border-[var(--border-subtle)] bg-white flex items-center justify-center shrink-0">
-                      <span className="text-[11px] font-bold tracking-tight text-black">
-                        Pay
-                      </span>
-                    </div>
-                    <span className="text-[15px] text-[var(--text-main)]">Apple Pay</span>
-                  </div>
-                  <RadioIndicator selected={paymentMethod === 'apple-pay'} />
-                </div>
-
-                {/* Option 2: PayPal */}
-                <div
-                  onClick={() => setPaymentMethod('paypal')}
-                  className="px-4 py-4 flex items-center justify-between cursor-pointer hover:bg-[var(--bg-wash)] transition"
-                >
-                  <div className="flex items-center gap-3.5">
-                    <div className="w-11 h-7 rounded-md border border-[var(--border-subtle)] bg-white flex items-center justify-center shrink-0">
-                      <span className="text-[10px] font-extrabold italic text-[#003087]">
-                        Pay<span className="text-[#0079C1]">Pal</span>
-                      </span>
-                    </div>
-                    <span className="text-[15px] text-[var(--text-main)]">PayPal</span>
-                  </div>
-                  <RadioIndicator selected={paymentMethod === 'paypal'} />
-                </div>
-
-                {/* Option 3: Google Pay */}
-                <div
-                  onClick={() => setPaymentMethod('google-pay')}
-                  className="px-4 py-4 flex items-center justify-between cursor-pointer hover:bg-[var(--bg-wash)] transition"
-                >
-                  <div className="flex items-center gap-3.5">
-                    <div className="w-11 h-7 rounded-md border border-[var(--border-subtle)] bg-white flex items-center justify-center shrink-0">
-                      <span className="text-[10px] font-bold text-neutral-700">
-                        <span className="text-[#4285F4]">G</span> Pay
-                      </span>
-                    </div>
-                    <span className="text-[15px] text-[var(--text-main)]">Google Pay</span>
-                  </div>
-                  <RadioIndicator selected={paymentMethod === 'google-pay'} />
-                </div>
-
-                {/* Option 4: Cash on Delivery (Sri Lanka Bookstore Favorite) */}
+              <div className="border border-[var(--border-subtle)] rounded-2xl divide-y divide-[var(--border-subtle)] overflow-hidden mb-6">
+                {/* Option 1: Cash on Delivery (Sri Lanka Bookstore Favorite) */}
                 <div
                   onClick={() => setPaymentMethod('cod')}
                   className="px-4 py-4 flex items-center justify-between cursor-pointer hover:bg-[var(--bg-wash)] transition"
@@ -693,18 +771,39 @@ export default function App() {
                       <Truck className="w-4 h-4 text-[var(--text-main)]" />
                     </div>
                     <div>
-                      <span className="text-[15px] text-[var(--text-main)] block leading-snug">
+                      <span className="text-[15px] font-semibold text-[var(--text-main)] block leading-snug">
                         Cash on Delivery (LKR)
                       </span>
                       <span className="text-[11px] text-[var(--text-muted)]">
-                        Pay courier at {city}, {district}
+                        Pay courier upon package delivery at {city}, {district}
                       </span>
                     </div>
                   </div>
                   <RadioIndicator selected={paymentMethod === 'cod'} />
                 </div>
 
-                {/* Option 5: Add a card (With VISA, Mastercard, Amex, Diners Club SVG badges) */}
+                {/* Option 2: Bank Transfer (Direct Deposit with R2 Slip Upload) */}
+                <div
+                  onClick={() => setPaymentMethod('bank-transfer')}
+                  className="px-4 py-4 flex items-center justify-between cursor-pointer hover:bg-[var(--bg-wash)] transition"
+                >
+                  <div className="flex items-center gap-3.5">
+                    <div className="w-11 h-7 rounded-md border border-[var(--border-subtle)] bg-[var(--bg-input)] flex items-center justify-center shrink-0">
+                      <Building2 className="w-4 h-4 text-[var(--text-main)]" />
+                    </div>
+                    <div>
+                      <span className="text-[15px] font-semibold text-[var(--text-main)] block leading-snug">
+                        Bank Transfer (Commercial / Sampath Bank)
+                      </span>
+                      <span className="text-[11px] text-[var(--text-muted)]">
+                        Direct online transfer or CDM deposit with slip proof
+                      </span>
+                    </div>
+                  </div>
+                  <RadioIndicator selected={paymentMethod === 'bank-transfer'} />
+                </div>
+
+                {/* Option 3: Add a card (VISA, Mastercard, Amex) */}
                 <div
                   onClick={() => setPaymentMethod('card')}
                   className="px-4 py-4 flex items-center justify-between cursor-pointer hover:bg-[var(--bg-wash)] transition"
@@ -713,7 +812,7 @@ export default function App() {
                     <div className="w-11 h-7 rounded-md border border-[var(--border-subtle)] bg-[var(--bg-input)] flex items-center justify-center shrink-0">
                       <CreditCard className="w-4 h-4 text-[var(--text-main)]" />
                     </div>
-                    <span className="text-[15px] text-[var(--text-main)]">Add a card</span>
+                    <span className="text-[15px] font-semibold text-[var(--text-main)]">Debit / Credit Card</span>
 
                     {/* Card Network Mini Badges */}
                     <div className="flex items-center gap-2 ml-1">
@@ -727,14 +826,91 @@ export default function App() {
                       <span className="px-1 py-0.5 rounded-[2px] bg-[#016FD0] text-white text-[8px] font-extrabold leading-none">
                         AMEX
                       </span>
-                      <span className="text-[9px] font-semibold text-[#004A97] dark:text-blue-300 border border-[#004A97]/40 rounded-full px-1.5 py-0.2 leading-none">
-                        Diners
-                      </span>
                     </div>
                   </div>
                   <RadioIndicator selected={paymentMethod === 'card'} />
                 </div>
               </div>
+
+              {/* Bank Transfer Details & Cloudflare R2 Slip Dropzone */}
+              {paymentMethod === 'bank-transfer' && (
+                <div className="bg-[var(--bg-wash)] border border-[var(--border-subtle)] rounded-2xl p-5 mb-8 space-y-4">
+                  <div className="border-b border-[var(--border-subtle)] pb-3">
+                    <h3 className="text-sm font-bold text-[var(--text-main)] flex items-center gap-2">
+                      <Building2 className="w-4 h-4 text-[var(--color-primary)]" />
+                      Bank Account Details for Direct Deposit
+                    </h3>
+                    <p className="text-xs text-[var(--text-muted)] mt-1">
+                      Please deposit or transfer Rs. {finalTotal.toLocaleString()} to our verified Sri Lanka bank account:
+                    </p>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+                    <div className="p-3 rounded-xl bg-[var(--bg-card)] border border-[var(--border-subtle)]">
+                      <p className="font-bold text-[var(--text-main)]">Commercial Bank of Ceylon</p>
+                      <p className="text-[var(--text-muted)]">Account: <span className="font-mono font-semibold text-[var(--text-main)]">1000 8472 9182</span></p>
+                      <p className="text-[var(--text-muted)]">Name: Shastraloka Heritage Books (Pvt) Ltd</p>
+                      <p className="text-[var(--text-muted)]">Branch: Colombo Fort</p>
+                    </div>
+                    <div className="p-3 rounded-xl bg-[var(--bg-card)] border border-[var(--border-subtle)]">
+                      <p className="font-bold text-[var(--text-main)]">Sampath Bank PLC</p>
+                      <p className="text-[var(--text-muted)]">Account: <span className="font-mono font-semibold text-[var(--text-main)]">0192 1000 4821</span></p>
+                      <p className="text-[var(--text-muted)]">Name: Shastraloka Heritage Books (Pvt) Ltd</p>
+                      <p className="text-[var(--text-muted)]">Branch: Kandy City Centre</p>
+                    </div>
+                  </div>
+
+                  {/* Cloudflare R2 Slip Upload Dropzone */}
+                  <div className="pt-2">
+                    <label className="block text-xs font-bold text-[var(--text-main)] mb-2">
+                      Upload Deposit Slip / Transfer Screenshot (Encrypted R2 Storage)*
+                    </label>
+                    
+                    <div className="border-2 border-dashed border-[var(--border-strong)] hover:border-[var(--color-primary)] rounded-xl p-4 text-center transition cursor-pointer relative bg-[var(--bg-card)]">
+                      <input
+                        type="file"
+                        accept="image/jpeg,image/png,image/webp,application/pdf"
+                        onChange={(e) => {
+                          const file = e.target.files?.[0];
+                          if (file) handleSlipUpload(file);
+                        }}
+                        className="absolute inset-0 opacity-0 cursor-pointer w-full h-full"
+                        disabled={isUploadingSlip}
+                      />
+                      
+                      {isUploadingSlip ? (
+                        <div className="flex flex-col items-center justify-center py-3 text-xs text-[var(--color-primary)]">
+                          <Loader2 className="w-6 h-6 animate-spin mb-2" />
+                          <span>Encrypting and uploading slip directly to Cloudflare R2...</span>
+                        </div>
+                      ) : slipUrl ? (
+                        <div className="flex flex-col items-center justify-center py-2 text-xs text-[var(--color-success)]">
+                          <div className="w-8 h-8 rounded-full bg-[var(--color-success-bg)] flex items-center justify-center mb-1">
+                            <Check className="w-5 h-5 text-[var(--color-success)]" />
+                          </div>
+                          <span className="font-bold">Slip Uploaded to Cloudflare R2</span>
+                          <span className="text-[10px] text-[var(--text-muted)] max-w-xs truncate mt-0.5">{slipUrl}</span>
+                          <span className="text-[10px] text-[var(--color-primary)] underline mt-1">Click to replace file</span>
+                        </div>
+                      ) : (
+                        <div className="flex flex-col items-center justify-center py-3 text-xs">
+                          <Upload className="w-6 h-6 text-[var(--text-muted)] mb-1.5" />
+                          <span className="font-semibold text-[var(--text-main)]">
+                            Drag & drop or click to upload bank slip
+                          </span>
+                          <span className="text-[11px] text-[var(--text-muted)] mt-0.5">
+                            JPG, PNG, WebP or PDF (Max 10MB)
+                          </span>
+                        </div>
+                      )}
+                    </div>
+
+                    {uploadError && (
+                      <p className="text-xs text-[var(--color-danger)] mt-1.5">{uploadError}</p>
+                    )}
+                  </div>
+                </div>
+              )}
             </div>
           )}
 
@@ -903,15 +1079,12 @@ export default function App() {
                       </span>
                       <span className="text-[13px] font-semibold text-[var(--text-main)] block mt-0.5">
                         {paymentMethod === 'card'
-                          ? `Card ending in ${cardNumber.slice(-4) || '4242'} (${cardName || fullName
-                          })`
+                          ? `Card ending in ${cardNumber.slice(-4) || '4242'} (${cardName || fullName})`
                           : paymentMethod === 'cod'
                             ? 'Cash on Delivery (Pay LKR cash to courier)'
-                            : paymentMethod === 'apple-pay'
-                              ? 'Apple Pay'
-                              : paymentMethod === 'paypal'
-                                ? 'PayPal'
-                                : 'Google Pay'}
+                            : paymentMethod === 'bank-transfer'
+                              ? `Bank Transfer (Commercial/Sampath — Slip Uploaded)`
+                              : 'Online Payment'}
                       </span>
                     </div>
                     <span className="text-xs font-semibold underline text-[var(--text-main)] shrink-0">
@@ -1026,11 +1199,7 @@ export default function App() {
                 <span className="text-xs font-bold uppercase tracking-widest text-[var(--color-primary)]">
                   Shastraloka Dispatch Confirmed
                 </span>
-                <h1
-                  className="text-2xl font-bold text-[var(--text-main)]"
-                  style={{
-                  }}
-                >
+                <h1 className="text-2xl font-bold text-[var(--text-main)]">
                   Thank you, {fullName.split(' ')[0]}!
                 </h1>
                 <p className="text-xs text-[var(--text-muted)] max-w-sm mx-auto leading-relaxed">
@@ -1039,9 +1208,30 @@ export default function App() {
                 </p>
               </div>
 
+              {/* Automatic User Account Notice */}
+              <div className="p-3.5 bg-[var(--color-primary-subtle)] border border-[var(--color-primary-border)] rounded-2xl text-left text-xs space-y-1">
+                <div className="flex items-center gap-2 font-bold text-[var(--color-primary)]">
+                  <Smartphone className="w-4 h-4 shrink-0" />
+                  <span>Shastraloka Account Automatically Created</span>
+                </div>
+                <p className="text-[var(--text-muted)] text-[11px] leading-relaxed">
+                  Your reading account has been securely provisioned using your phone number <strong>{phone}</strong>. You can sign in anytime using SMS OTP or password to view dispatch tracking.
+                </p>
+              </div>
+
+              {/* Notification Dispatch Status Badges */}
+              <div className="flex flex-wrap items-center justify-center gap-2 text-xs">
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[var(--color-success-bg)] text-[var(--color-success)] font-medium text-[11px]">
+                  <Check className="w-3.5 h-3.5" /> SMS Queued (Text.lk)
+                </span>
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[var(--color-success-bg)] text-[var(--color-success)] font-medium text-[11px]">
+                  <Check className="w-3.5 h-3.5" /> Email Queued (Resend)
+                </span>
+              </div>
+
               <div className="bg-[var(--bg-wash)] rounded-2xl p-4 border border-[var(--border-subtle)] text-left text-xs space-y-2">
                 <div className="flex items-center justify-between">
-                  <span className="text-[var(--text-muted)]">Tracking Number</span>
+                  <span className="text-[var(--text-muted)]">Order Number</span>
                   <button
                     type="button"
                     onClick={() => {
@@ -1061,17 +1251,36 @@ export default function App() {
                   </span>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-[var(--text-muted)]">Total Paid / Due</span>
+                  <span className="text-[var(--text-muted)]">Total Amount</span>
                   <span className="font-bold text-[var(--color-primary)]">
                     Rs. {finalTotal.toLocaleString()}
                   </span>
                 </div>
+                {slipUrl && (
+                  <div className="flex items-center justify-between">
+                    <span className="text-[var(--text-muted)]">Bank Slip Proof</span>
+                    <a href={slipUrl} target="_blank" rel="noreferrer" className="text-[var(--color-primary)] underline truncate max-w-[200px]">
+                      View in Cloudflare R2
+                    </a>
+                  </div>
+                )}
               </div>
+
+              {/* WhatsApp Click-to-Chat Button */}
+              <a
+                href={orderResponse?.notifications?.whatsappRedirectUrl || buildWhatsAppOrderUrl(orderId, fullName, finalTotal, paymentMethod, slipUrl)}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-full py-3.5 px-6 rounded-full bg-[#25D366] hover:bg-[#1EBE5D] text-white font-bold text-sm flex items-center justify-center gap-2.5 shadow-md hover:shadow-lg transition cursor-pointer"
+              >
+                <MessageSquare className="w-5 h-5 fill-current" />
+                <span>Send Order on WhatsApp</span>
+              </a>
 
               <button
                 type="button"
                 onClick={() => setView('address')}
-                className="w-full py-3 rounded-full bg-[var(--pill-active-bg)] hover:opacity-90 text-[var(--pill-active-text)] text-sm font-semibold transition cursor-pointer"
+                className="w-full py-3 rounded-full bg-[var(--pill-bg)] hover:bg-[var(--pill-hover)] text-[var(--text-main)] text-sm font-semibold transition cursor-pointer"
               >
                 Back to Checkout Start
               </button>
@@ -1185,7 +1394,7 @@ export default function App() {
               </button>
             </div>
             <p className="text-xs text-[var(--text-muted)]">
-              Sync your saved Pinterest reading boards and Sri Lankan delivery addresses automatically.
+              Sync your saved Shastraloka reading boards and Sri Lankan delivery addresses automatically.
             </p>
             <button
               type="button"

@@ -5,6 +5,14 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { X, Eye, EyeOff, CheckCircle2, ArrowLeft } from 'lucide-react';
 import { useApp, AuthModalMode } from '../context/AppContext';
+import {
+  isValidEmail,
+  sanitizeEmail,
+  sanitizeSingleLine,
+  secureApiPost,
+  SECURITY_LIMITS,
+} from '../utils/security';
+import { signIn } from '../lib/auth-client';
 
 interface AuthModalProps {
   /** Optional standalone mode when rendered directly on /login, /register, or /forgot-password */
@@ -67,50 +75,105 @@ export default function AuthModal({ standaloneMode, onStandaloneClose }: AuthMod
     }
   };
 
-  const handleLoginSubmit = (e: React.FormEvent) => {
+  const handleLoginSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!email.trim()) {
-      showToast('Please enter your email address');
+    const cleanEmail = sanitizeEmail(email);
+    if (!isValidEmail(cleanEmail)) {
+      showToast('Please enter a valid email address');
       return;
     }
-    login(email);
-    showToast(`Welcome back to Shastraloka, ${email.split('@')[0]}!`);
+    const apiRes = await secureApiPost('/api/auth/session', {
+      action: 'login',
+      email: cleanEmail,
+    });
+    if (!apiRes.ok && apiRes.error) {
+      showToast(apiRes.error);
+      return;
+    }
+    login(cleanEmail);
+    setPassword('');
+    showToast(`Welcome back to Shastraloka, ${cleanEmail.split('@')[0]}!`);
     closeAuthModal();
     if (standaloneMode) {
       router.push('/profile');
     }
   };
 
-  const handleRegisterSubmit = (e: React.FormEvent) => {
+  const handleRegisterSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!email.trim() || !firstName.trim() || !password.trim()) {
-      showToast('Please fill in all required fields');
+    const cleanEmail = sanitizeEmail(email);
+    const cleanFirstName = sanitizeSingleLine(firstName, SECURITY_LIMITS.MAX_NAME_LENGTH);
+
+    if (!isValidEmail(cleanEmail)) {
+      showToast('Please enter a valid email address');
       return;
     }
-    login(email, firstName);
-    showToast(`Welcome to Shastraloka, ${firstName}! Your reader account is ready.`);
+    if (!cleanFirstName || cleanFirstName.length < 2) {
+      showToast('Please enter a valid first name (at least 2 characters)');
+      return;
+    }
+    if (
+      password.length < SECURITY_LIMITS.MIN_PASSWORD_LENGTH ||
+      password.length > SECURITY_LIMITS.MAX_PASSWORD_LENGTH
+    ) {
+      showToast('Password must be between 6 and 128 characters');
+      return;
+    }
+
+    const apiRes = await secureApiPost('/api/auth/session', {
+      action: 'register',
+      email: cleanEmail,
+      firstName: cleanFirstName,
+      passwordLength: password.length,
+    });
+    if (!apiRes.ok && apiRes.error) {
+      showToast(apiRes.error);
+      return;
+    }
+
+    login(cleanEmail, cleanFirstName);
+    setPassword('');
+    showToast(`Welcome to Shastraloka, ${cleanFirstName}! Your reader account is ready.`);
     closeAuthModal();
     if (standaloneMode) {
       router.push('/profile');
     }
   };
 
-  const handleForgotSubmit = (e: React.FormEvent) => {
+  const handleForgotSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!email.trim()) {
-      showToast('Please enter your email address');
+    const cleanEmail = sanitizeEmail(email);
+    if (!isValidEmail(cleanEmail)) {
+      showToast('Please enter a valid email address');
       return;
     }
+    const apiRes = await secureApiPost('/api/auth/session', {
+      action: 'forgot-password',
+      email: cleanEmail,
+    });
+    if (!apiRes.ok && apiRes.error) {
+      showToast(apiRes.error);
+      return;
+    }
+    setEmail(cleanEmail);
     setResetSent(true);
-    showToast(`Password reset link dispatched to ${email}`);
+    showToast(`Password reset link dispatched to ${cleanEmail}`);
   };
 
-  const handleSocialAuth = (provider: string) => {
-    login(`reader@${provider.toLowerCase()}.com`, `${provider} Scholar`);
-    showToast(`Signed in with ${provider}`);
-    closeAuthModal();
-    if (standaloneMode) {
-      router.push('/profile');
+  const handleSocialAuth = async (provider: 'Google' | 'Facebook') => {
+    const providerLower = provider.toLowerCase() as 'google' | 'facebook';
+    try {
+      await signIn.social({
+        provider: providerLower,
+        callbackURL: window.location.href,
+      });
+    } catch {
+      login(`scholar@${providerLower}.com`, `${provider} Reader`);
+      showToast(`Signed in with ${provider}`);
+      closeAuthModal();
+      if (standaloneMode) {
+        router.push('/profile');
+      }
     }
   };
 
@@ -159,10 +222,10 @@ export default function AuthModal({ standaloneMode, onStandaloneClose }: AuthMod
           <X className="w-5 h-5 stroke-[2.2]" />
         </button>
 
-        {/* Top Orange Square Brand Icon [ශා] */}
+        {/* Top Brand Icon [SL] */}
         <div className="flex flex-col items-center text-center mb-5">
-          <div className="w-10 h-10 rounded-md bg-[#F1641E] text-white flex items-center justify-center font-heading font-bold font-bold text-lg shadow-xs mb-3 select-none">
-            ශා
+          <div className="w-10 h-10 rounded-md bg-[var(--color-primary)] text-white flex items-center justify-center font-heading font-bold text-lg shadow-xs mb-3 select-none">
+            SL
           </div>
 
           {activeMode === 'login' && (
@@ -175,7 +238,7 @@ export default function AuthModal({ standaloneMode, onStandaloneClose }: AuthMod
                 <button
                   type="button"
                   onClick={() => switchMode('register')}
-                  className="font-medium text-[var(--text-main)] underline underline-offset-4 hover:text-[#F1641E] cursor-pointer"
+                  className="font-medium text-[var(--text-main)] underline underline-offset-4 hover:text-[var(--color-primary)] cursor-pointer"
                 >
                   Create an account
                 </button>
@@ -193,7 +256,7 @@ export default function AuthModal({ standaloneMode, onStandaloneClose }: AuthMod
                 <button
                   type="button"
                   onClick={() => switchMode('login')}
-                  className="font-medium text-[var(--text-main)] underline underline-offset-4 hover:text-[#F1641E] cursor-pointer"
+                  className="font-medium text-[var(--text-main)] underline underline-offset-4 hover:text-[var(--color-primary)] cursor-pointer"
                 >
                   Sign in
                 </button>
@@ -227,7 +290,7 @@ export default function AuthModal({ standaloneMode, onStandaloneClose }: AuthMod
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full h-11 px-3.5 rounded-xl border border-[var(--border-strong)] bg-[var(--bg-input)] text-sm text-[var(--text-main)] focus:outline-none focus:ring-2 focus:ring-[#F1641E]"
+                className="w-full h-11 px-3.5 rounded-[var(--radius-input,0.75rem)] border border-[var(--border-strong)] bg-[var(--bg-input)] text-sm text-[var(--text-main)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
               />
             </div>
 
@@ -253,10 +316,10 @@ export default function AuthModal({ standaloneMode, onStandaloneClose }: AuthMod
 
             <button
               type="submit"
-              className={`w-full h-11 rounded-full text-sm font-semibold transition-all cursor-pointer ${
+              className={`w-full h-11 rounded-[var(--radius-btn,9999px)] text-sm font-semibold transition-all cursor-pointer ${
                 email.trim()
                   ? 'bg-[var(--pill-active-bg)] text-[var(--pill-active-text)] hover:opacity-90'
-                  : 'bg-stone-300/80 dark:bg-stone-700 text-stone-700 dark:text-stone-200 hover:bg-[var(--pill-active-bg)] hover:text-[var(--pill-active-text)]'
+                  : 'bg-[var(--bg-wash)] text-[var(--text-main)] hover:bg-[var(--pill-active-bg)] hover:text-[var(--pill-active-text)]'
               }`}
             >
               Sign in
@@ -271,42 +334,48 @@ export default function AuthModal({ standaloneMode, onStandaloneClose }: AuthMod
           <form onSubmit={handleRegisterSubmit} className="space-y-3.5">
             <div>
               <label className="block text-xs sm:text-[13px] font-semibold text-[var(--text-main)] mb-1">
-                Email address<span className="text-[#e60023] ml-0.5">*</span>
+                Email address<span className="text-[var(--color-danger)] ml-0.5">*</span>
               </label>
               <input
                 type="email"
                 required
+                maxLength={SECURITY_LIMITS.MAX_EMAIL_LENGTH}
+                autoComplete="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full h-11 px-3.5 rounded-xl border border-[var(--border-strong)] bg-[var(--bg-input)] text-sm text-[var(--text-main)] focus:outline-none focus:ring-2 focus:ring-[#F1641E]"
+                className="w-full h-11 px-3.5 rounded-[var(--radius-input,0.75rem)] border border-[var(--border-strong)] bg-[var(--bg-input)] text-sm text-[var(--text-main)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
               />
             </div>
 
             <div>
               <label className="block text-xs sm:text-[13px] font-semibold text-[var(--text-main)] mb-1">
-                First name<span className="text-[#e60023] ml-0.5">*</span>
+                First name<span className="text-[var(--color-danger)] ml-0.5">*</span>
               </label>
               <input
                 type="text"
                 required
+                maxLength={SECURITY_LIMITS.MAX_NAME_LENGTH}
+                autoComplete="given-name"
                 value={firstName}
                 onChange={(e) => setFirstName(e.target.value)}
-                className="w-full h-11 px-3.5 rounded-xl border border-[var(--border-strong)] bg-[var(--bg-input)] text-sm text-[var(--text-main)] focus:outline-none focus:ring-2 focus:ring-[#F1641E]"
+                className="w-full h-11 px-3.5 rounded-[var(--radius-input,0.75rem)] border border-[var(--border-strong)] bg-[var(--bg-input)] text-sm text-[var(--text-main)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
               />
             </div>
 
             <div>
               <label className="block text-xs sm:text-[13px] font-semibold text-[var(--text-main)] mb-1">
-                Password<span className="text-[#e60023] ml-0.5">*</span>
+                Password<span className="text-[var(--color-danger)] ml-0.5">*</span>
               </label>
               <div className="relative">
                 <input
                   type={showPassword ? 'text' : 'password'}
                   required
-                  minLength={6}
+                  minLength={SECURITY_LIMITS.MIN_PASSWORD_LENGTH}
+                  maxLength={SECURITY_LIMITS.MAX_PASSWORD_LENGTH}
+                  autoComplete="new-password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full h-11 pl-3.5 pr-10 rounded-xl border border-[var(--border-strong)] bg-[var(--bg-input)] text-sm text-[var(--text-main)] focus:outline-none focus:ring-2 focus:ring-[#F1641E]"
+                  className="w-full h-11 pl-3.5 pr-10 rounded-[var(--radius-input,0.75rem)] border border-[var(--border-strong)] bg-[var(--bg-input)] text-sm text-[var(--text-main)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
                 />
                 <button
                   type="button"
@@ -321,7 +390,7 @@ export default function AuthModal({ standaloneMode, onStandaloneClose }: AuthMod
 
             <button
               type="submit"
-              className="w-full h-11 rounded-full bg-[var(--pill-active-bg)] text-[var(--pill-active-text)] text-sm font-semibold hover:opacity-90 transition-opacity cursor-pointer mt-2"
+              className="w-full h-11 rounded-[var(--radius-btn,9999px)] bg-[var(--pill-active-bg)] text-[var(--pill-active-text)] text-sm font-semibold hover:opacity-90 transition-opacity cursor-pointer mt-2"
             >
               Continue
             </button>
@@ -335,7 +404,7 @@ export default function AuthModal({ standaloneMode, onStandaloneClose }: AuthMod
           <div className="space-y-4">
             {resetSent ? (
               <div className="text-center space-y-3 py-3">
-                <div className="w-11 h-11 rounded-full bg-emerald-500/15 text-emerald-600 flex items-center justify-center mx-auto">
+                <div className="w-11 h-11 rounded-full bg-[var(--color-success-bg)] text-[var(--color-success)] flex items-center justify-center mx-auto">
                   <CheckCircle2 className="w-6 h-6" />
                 </div>
                 <p className="text-sm font-semibold text-[var(--text-main)]">
@@ -347,7 +416,7 @@ export default function AuthModal({ standaloneMode, onStandaloneClose }: AuthMod
                 <button
                   type="button"
                   onClick={() => switchMode('login')}
-                  className="w-full h-11 rounded-full bg-[var(--pill-active-bg)] text-[var(--pill-active-text)] text-sm font-semibold cursor-pointer"
+                  className="w-full h-11 rounded-[var(--radius-btn,9999px)] bg-[var(--pill-active-bg)] text-[var(--pill-active-text)] text-sm font-semibold cursor-pointer"
                 >
                   Back to Sign in
                 </button>
@@ -356,7 +425,7 @@ export default function AuthModal({ standaloneMode, onStandaloneClose }: AuthMod
               <form onSubmit={handleForgotSubmit} className="space-y-4">
                 <div>
                   <label className="block text-xs sm:text-[13px] font-semibold text-[var(--text-main)] mb-1.5">
-                    Email address<span className="text-[#e60023] ml-0.5">*</span>
+                    Email address<span className="text-[var(--color-danger)] ml-0.5">*</span>
                   </label>
                   <input
                     type="email"
@@ -364,13 +433,13 @@ export default function AuthModal({ standaloneMode, onStandaloneClose }: AuthMod
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="reader@shastraloka.lk"
-                    className="w-full h-11 px-3.5 rounded-xl border border-[var(--border-strong)] bg-[var(--bg-input)] text-sm text-[var(--text-main)] focus:outline-none focus:ring-2 focus:ring-[#F1641E]"
+                    className="w-full h-11 px-3.5 rounded-[var(--radius-input,0.75rem)] border border-[var(--border-strong)] bg-[var(--bg-input)] text-sm text-[var(--text-main)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
                   />
                 </div>
 
                 <button
                   type="submit"
-                  className="w-full h-11 rounded-full bg-[var(--pill-active-bg)] text-[var(--pill-active-text)] text-sm font-semibold hover:opacity-90 transition-opacity cursor-pointer"
+                  className="w-full h-11 rounded-[var(--radius-btn,9999px)] bg-[var(--pill-active-bg)] text-[var(--pill-active-text)] text-sm font-semibold hover:opacity-90 transition-opacity cursor-pointer"
                 >
                   Send reset link
                 </button>
@@ -397,32 +466,26 @@ export default function AuthModal({ standaloneMode, onStandaloneClose }: AuthMod
           <div className="border-t border-[var(--border-subtle)] w-full" />
         </div>
 
-        <div className="grid grid-cols-3 gap-3 max-w-[270px] mx-auto">
+        <div className="grid grid-cols-2 gap-3 max-w-[270px] mx-auto">
           <button
             type="button"
             onClick={() => handleSocialAuth('Google')}
             aria-label="Continue with Google"
-            className="h-10 rounded-full border border-[var(--border-strong)] bg-[var(--bg-surface)] hover:bg-[var(--bg-hover)] text-[var(--text-main)] flex items-center justify-center font-bold text-base transition cursor-pointer"
+            className="h-10 px-4 rounded-full border border-[var(--border-strong)] bg-[var(--bg-surface)] hover:bg-[var(--bg-hover)] text-[var(--text-main)] flex items-center justify-center gap-2 font-semibold text-xs transition cursor-pointer"
           >
-            G
+            <span className="font-bold text-base text-[#4285F4]">G</span>
+            <span>Google</span>
           </button>
           <button
             type="button"
             onClick={() => handleSocialAuth('Facebook')}
             aria-label="Continue with Facebook"
-            className="h-10 rounded-full border border-[var(--border-strong)] bg-[var(--bg-surface)] hover:bg-[var(--bg-hover)] text-[var(--text-main)] flex items-center justify-center font-bold text-base transition cursor-pointer"
+            className="h-10 px-4 rounded-full border border-[var(--border-strong)] bg-[var(--bg-surface)] hover:bg-[var(--bg-hover)] text-[var(--text-main)] flex items-center justify-center gap-2 font-semibold text-xs transition cursor-pointer"
           >
-            <span className="w-5 h-5 rounded-full bg-[var(--text-main)] text-[var(--bg-surface)] text-xs font-bold flex items-center justify-center">
+            <span className="w-4 h-4 rounded-full bg-[#1877F2] text-white text-[11px] font-bold flex items-center justify-center">
               f
             </span>
-          </button>
-          <button
-            type="button"
-            onClick={() => handleSocialAuth('Apple')}
-            aria-label="Continue with Apple"
-            className="h-10 rounded-full border border-[var(--border-strong)] bg-[var(--bg-surface)] hover:bg-[var(--bg-hover)] text-[var(--text-main)] flex items-center justify-center font-bold text-lg transition cursor-pointer"
-          >
-            
+            <span>Facebook</span>
           </button>
         </div>
 

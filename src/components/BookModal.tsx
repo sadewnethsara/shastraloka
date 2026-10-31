@@ -9,22 +9,16 @@ import {
   IconClose,
   IconStar,
   IconCheck,
-  IconAudioPlay,
-  IconAudioPause,
-  IconShieldCheck,
-  IconTruck,
-  IconBookmark,
   IconZoomIn,
 } from './Icons';
 import { Handbag, Minus, Plus } from 'lucide-react';
+import { sanitizeText, SECURITY_LIMITS } from '../utils/security';
 
 export default function BookModal() {
   const router = useRouter();
   const { selectedBook, closeBookModal, addToBag, saveToBoard, isBookSaved, boards, showToast } = useApp();
 
-  const [selectedBinding, setSelectedBinding] = useState<string>('Deluxe Gold Embossed');
   const [quantity, setQuantity] = useState<number>(1);
-  const [isPlayingChant, setIsPlayingChant] = useState(false);
   const [activeTab, setActiveTab] = useState<'overview' | 'verses' | 'reviews'>('overview');
 
   // Interactive reviews in Sri Lankan literary context
@@ -43,14 +37,16 @@ export default function BookModal() {
 
   const handleAddReview = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!newComment.trim()) return;
+    const cleanComment = sanitizeText(newComment, SECURITY_LIMITS.MAX_REVIEW_COMMENT_LENGTH);
+    if (!cleanComment) return;
+    const safeRating = Math.min(5, Math.max(1, Math.round(Number(newRating) || 5)));
     setReviews([
       {
         id: `rev-${Date.now()}`,
         user: 'You (Reader)',
         date: 'Just now',
-        rating: newRating,
-        comment: newComment.trim(),
+        rating: safeRating,
+        comment: cleanComment,
       },
       ...reviews,
     ]);
@@ -58,12 +54,7 @@ export default function BookModal() {
     showToast('Your commentary has been published on this treatise!');
   };
 
-  const bindingsOptions = [
-    'Clothbound Hardcover',
-    'Deluxe Gold Embossed',
-    'Ola Leaf Collector Box',
-    'Royal Silkbound Edition',
-  ];
+  const editionBinding = selectedBook.binding || 'Archival Collector Edition';
 
   return (
     <div
@@ -72,7 +63,7 @@ export default function BookModal() {
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className="relative w-full max-w-5xl bg-[var(--bg-card)] text-[var(--text-main)] rounded-2xl sm:rounded-3xl shadow-2xl border border-[var(--border-subtle)] overflow-hidden my-auto animate-slide-up"
+        className="relative w-full max-w-5xl bg-[var(--bg-card)] text-[var(--text-main)] rounded-[var(--radius-modal)] shadow-2xl border border-[var(--border-subtle)] overflow-hidden my-auto animate-slide-up"
       >
         {/* Floating Close Button */}
         <button
@@ -86,51 +77,25 @@ export default function BookModal() {
 
         <div className="grid grid-cols-1 lg:grid-cols-12 max-h-[85vh] overflow-y-auto">
 
-          {/* Left Column: Visual Cover & Recitation Audio */}
+          {/* Left Column: Visual Cover & Edition Specs */}
           <div className="lg:col-span-5 bg-[var(--bg-wash)] p-6 sm:p-8 flex flex-col justify-between border-b lg:border-b-0 lg:border-r border-[var(--border-subtle)]">
             <div className="flex flex-col items-center">
-              <div className="w-full max-w-xs shadow-md rounded-lg overflow-hidden">
+              <div className="w-full max-w-xs shadow-md rounded-[var(--radius-card)] overflow-hidden">
                 <BookCover book={selectedBook} size="lg" />
-              </div>
-
-              {/* Chanting Audio Recitation */}
-              <div className="w-full mt-5 p-3.5 rounded-xl bg-[var(--bg-card)] border border-[var(--border-subtle)] flex items-center justify-between gap-3 shadow-xs">
-                <div className="flex items-center gap-3">
-                  <button
-                    onClick={() => {
-                      setIsPlayingChant(!isPlayingChant);
-                      showToast(isPlayingChant ? 'Recitation paused' : 'Playing sacred chanting...');
-                    }}
-                    className="w-9 h-9 rounded-full bg-[#e60023] hover:bg-[#ad081b] text-white flex items-center justify-center cursor-pointer shadow-xs transition-colors"
-                  >
-                    {isPlayingChant ? <IconAudioPause size={15} /> : <IconAudioPlay size={15} />}
-                  </button>
-                  <div className="flex flex-col">
-                    <span className="text-xs font-bold text-[var(--text-main)]">
-                      {isPlayingChant ? 'Chanting in progress...' : 'Listen: Sacred Verses'}
-                    </span>
-                    <span className="text-[11px] text-[var(--text-muted)]">
-                      Traditional temple recitation
-                    </span>
-                  </div>
-                </div>
-                <span className="text-[11px] font-mono px-2 py-0.5 rounded bg-[var(--bg-input)] text-[var(--text-dim)]">
-                  1:42
-                </span>
               </div>
             </div>
 
             {/* Quick Specs */}
             <div className="grid grid-cols-3 gap-2 pt-6 mt-6 border-t border-[var(--border-subtle)] text-center">
-              <div className="p-2 rounded-lg bg-[var(--bg-card)] border border-[var(--border-subtle)]">
-                <div className="text-[10px] font-bold uppercase tracking-wider text-[var(--text-dim)]">Format</div>
-                <div className="font-semibold text-[var(--text-main)] text-sm">{selectedBook.binding}</div>
+              <div className="p-2 rounded-[var(--radius-badge)] bg-[var(--bg-card)] border border-[var(--border-subtle)]">
+                <div className="text-[10px] font-bold uppercase tracking-wider text-[var(--text-dim)]">Edition</div>
+                <div className="font-semibold text-[var(--text-main)] text-xs truncate">{editionBinding}</div>
               </div>
-              <div className="p-2 rounded-lg bg-[var(--bg-card)] border border-[var(--border-subtle)]">
+              <div className="p-2 rounded-[var(--radius-badge)] bg-[var(--bg-card)] border border-[var(--border-subtle)]">
                 <div className="text-[10px] font-bold uppercase tracking-wider text-[var(--text-dim)]">Pages</div>
                 <div className="font-semibold text-[var(--text-main)] text-sm">{selectedBook.pages}</div>
               </div>
-              <div className="p-2 rounded-lg bg-[var(--bg-card)] border border-[var(--border-subtle)]">
+              <div className="p-2 rounded-[var(--radius-badge)] bg-[var(--bg-card)] border border-[var(--border-subtle)]">
                 <div className="text-[10px] font-bold uppercase tracking-wider text-[var(--text-dim)]">Language</div>
                 <div className="font-semibold text-[var(--text-main)] text-sm">{selectedBook.language}</div>
               </div>
@@ -140,10 +105,10 @@ export default function BookModal() {
           {/* Right Column: Details & Actions */}
           <div className="lg:col-span-7 p-6 sm:p-8 flex flex-col justify-between">
             <div>
-              {/* Header: Board info & Red "Save" button */}
+              {/* Header: Board info & Save button */}
               <div className="flex items-center justify-between gap-3 pb-3 border-b border-[var(--border-subtle)]">
                 <div className="flex items-center gap-2">
-                  <span className="text-xs font-semibold text-[var(--text-muted)]">Board:</span>
+                  <span className="text-xs font-semibold text-[var(--text-muted)]">Reading Board:</span>
                   <span className="text-xs font-semibold px-3 py-1 rounded-full bg-[var(--bg-input)] text-[var(--text-main)]">
                     {boards[0].name}
                   </span>
@@ -152,10 +117,10 @@ export default function BookModal() {
                 <div className="flex items-center gap-2">
                   <button
                     onClick={() => saveToBoard(selectedBook.id)}
-                    className={`px-4 py-2 rounded-full text-xs font-bold cursor-pointer transition-colors flex items-center gap-1.5 ${
+                    className={`px-4 py-2 rounded-[var(--radius-btn,9999px)] text-xs font-bold cursor-pointer transition-colors flex items-center gap-1.5 ${
                       saved
-                        ? 'bg-neutral-900 text-white'
-                        : 'bg-[#e60023] hover:bg-[#ad081b] text-white shadow-xs'
+                        ? 'bg-[var(--pill-active-bg)] text-[var(--pill-active-text)]'
+                        : 'bg-[var(--color-primary)] hover:bg-[var(--color-primary-hover)] text-[var(--text-on-accent)] shadow-xs'
                     }`}
                   >
                     {saved ? (
@@ -172,7 +137,7 @@ export default function BookModal() {
 
               {/* Title & Author Info */}
               <div className="pt-4 pb-2">
-                <div className="inline-block px-2.5 py-0.5 rounded text-[11px] font-semibold bg-[#fdf6e8] text-[#a66523] border border-[#f5e8c8] mb-2">
+                <div className="inline-block px-2.5 py-0.5 rounded-[var(--radius-badge)] text-[11px] font-semibold bg-[var(--surface-cream)] text-[var(--brand-brown)] border border-[var(--surface-cream-strong)] mb-2">
                   {selectedBook.category}
                 </div>
 
@@ -210,41 +175,19 @@ export default function BookModal() {
                 <span className="text-sm line-through text-[var(--text-dim)]">
                   Rs. {selectedBook.originalPrice.toLocaleString()}
                 </span>
-                <span className="px-2 py-0.5 rounded text-emerald-700 bg-emerald-50 dark:bg-emerald-950/40 dark:text-emerald-300 font-semibold text-xs">
+                <span className="px-2 py-0.5 rounded-[var(--radius-badge)] text-emerald-700 bg-emerald-50 dark:bg-emerald-950/40 dark:text-emerald-300 font-semibold text-xs">
                   Save {discountPercent}% Today
                 </span>
                 {selectedBook.inStock === false ? (
-                  <span className="ml-auto text-xs font-bold text-rose-600 dark:text-rose-400 bg-rose-500/10 px-2.5 py-0.5 rounded-full">
+                  <span className="ml-auto text-xs font-bold text-[var(--color-danger)] bg-[var(--color-danger-subtle)] px-2.5 py-0.5 rounded-full">
                     Out of Stock
                   </span>
                 ) : (
                   <span className="ml-auto text-xs font-semibold text-emerald-700 dark:text-emerald-400 flex items-center gap-1">
                     <IconCheck size={13} />
-                    <span>In Stock</span>
+                    <span>In Stock • {editionBinding}</span>
                   </span>
                 )}
-              </div>
-
-              {/* Edition Selector */}
-              <div className="mb-4">
-                <label className="block text-xs font-bold uppercase tracking-wider text-[var(--text-muted)] mb-1.5">
-                  Select Edition Binding:
-                </label>
-                <div className="grid grid-cols-2 gap-2">
-                  {bindingsOptions.map((b) => (
-                    <button
-                      key={b}
-                      onClick={() => setSelectedBinding(b)}
-                      className={`p-2 rounded-lg text-xs font-semibold border text-left transition-all cursor-pointer ${
-                        selectedBinding === b
-                          ? 'border-[var(--pill-active-bg)] bg-[var(--pill-active-bg)] text-[var(--pill-active-text)]'
-                          : 'border-[var(--border-subtle)] bg-[var(--bg-card)] hover:bg-[var(--bg-hover)]'
-                      }`}
-                    >
-                      {b}
-                    </button>
-                  ))}
-                </div>
               </div>
 
               {/* Tabs: Overview, Verses, Reviews */}
@@ -253,39 +196,39 @@ export default function BookModal() {
                   onClick={() => setActiveTab('overview')}
                   className={`pb-2 text-xs sm:text-sm font-semibold transition-colors cursor-pointer relative whitespace-nowrap shrink-0 ${
                     activeTab === 'overview'
-                      ? 'text-[#e60023]'
+                      ? 'text-[var(--color-primary)]'
                       : 'text-[var(--text-muted)] hover:text-[var(--text-main)]'
                   }`}
                 >
                   Treatise Overview
                   {activeTab === 'overview' && (
-                    <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#e60023]" />
+                    <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-[var(--color-primary)]" />
                   )}
                 </button>
                 <button
                   onClick={() => setActiveTab('verses')}
                   className={`pb-2 text-xs sm:text-sm font-semibold transition-colors cursor-pointer relative whitespace-nowrap shrink-0 ${
                     activeTab === 'verses'
-                      ? 'text-[#e60023]'
+                      ? 'text-[var(--color-primary)]'
                       : 'text-[var(--text-muted)] hover:text-[var(--text-main)]'
                   }`}
                 >
                   Sacred Verses &amp; Chants
                   {activeTab === 'verses' && (
-                    <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#e60023]" />
+                    <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-[var(--color-primary)]" />
                   )}
                 </button>
                 <button
                   onClick={() => setActiveTab('reviews')}
                   className={`pb-2 text-xs sm:text-sm font-semibold transition-colors cursor-pointer relative whitespace-nowrap shrink-0 ${
                     activeTab === 'reviews'
-                      ? 'text-[#e60023]'
+                      ? 'text-[var(--color-primary)]'
                       : 'text-[var(--text-muted)] hover:text-[var(--text-main)]'
                   }`}
                 >
                   Reader Comments ({reviews.length})
                   {activeTab === 'reviews' && (
-                    <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#e60023]" />
+                    <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-[var(--color-primary)]" />
                   )}
                 </button>
               </div>
@@ -347,7 +290,7 @@ export default function BookModal() {
                     />
                     <button
                       type="submit"
-                      className="px-4 py-1.5 rounded-full text-xs font-semibold bg-[#e60023] text-white hover:bg-[#ad081b] cursor-pointer"
+                      className="px-4 py-1.5 rounded-[var(--radius-btn,9999px)] text-xs font-semibold bg-[var(--color-primary)] text-white hover:bg-[var(--color-primary-hover)] cursor-pointer"
                     >
                       Post
                     </button>
@@ -361,7 +304,7 @@ export default function BookModal() {
               <Link
                 href={`/books/${selectedBook.id}`}
                 onClick={closeBookModal}
-                className="py-2.5 px-3.5 rounded-full text-xs font-semibold bg-[var(--bg-input)] hover:bg-[var(--bg-hover)] text-[var(--text-main)] flex items-center justify-center gap-1.5"
+                className="py-2.5 px-3.5 rounded-[var(--radius-btn,9999px)] text-xs font-semibold bg-[var(--bg-input)] hover:bg-[var(--bg-hover)] text-[var(--text-main)] flex items-center justify-center gap-1.5"
                 title="Open full page"
               >
                 <IconZoomIn size={14} />
@@ -369,7 +312,7 @@ export default function BookModal() {
               </Link>
 
               {/* Bookstore Quantity Stepper */}
-              <div className="inline-flex items-center rounded-full border border-[var(--border-strong)] bg-[var(--bg-card)] overflow-hidden shrink-0">
+              <div className="inline-flex items-center rounded-[var(--radius-btn,9999px)] border border-[var(--border-strong)] bg-[var(--bg-card)] overflow-hidden shrink-0">
                 <button
                   type="button"
                   onClick={() => setQuantity((q) => Math.max(1, q - 1))}
@@ -395,11 +338,11 @@ export default function BookModal() {
 
               <button
                 onClick={() => {
-                  addToBag(selectedBook, selectedBinding, quantity);
+                  addToBag(selectedBook, editionBinding, quantity);
                   setQuantity(1);
                   closeBookModal();
                 }}
-                className="flex-1 py-2.5 px-3.5 rounded-full text-xs sm:text-sm font-semibold bg-[var(--bg-input)] hover:bg-[var(--bg-hover)] text-[var(--text-main)] cursor-pointer flex items-center justify-center gap-1.5 border border-[var(--border-subtle)] whitespace-nowrap"
+                className="flex-1 py-2.5 px-3.5 rounded-[var(--radius-btn,9999px)] text-xs sm:text-sm font-semibold bg-[var(--bg-input)] hover:bg-[var(--bg-hover)] text-[var(--text-main)] cursor-pointer flex items-center justify-center gap-1.5 border border-[var(--border-subtle)] whitespace-nowrap"
               >
                 <Handbag size={15} />
                 <span>Add to Bag</span>
@@ -407,12 +350,12 @@ export default function BookModal() {
 
               <button
                 onClick={() => {
-                  addToBag(selectedBook, selectedBinding, quantity);
+                  addToBag(selectedBook, editionBinding, quantity);
                   setQuantity(1);
                   closeBookModal();
                   router.push('/checkout');
                 }}
-                className="w-full sm:w-auto sm:flex-1 py-2.5 px-4 rounded-full text-xs sm:text-sm font-bold bg-[#F1641E] hover:bg-[#d45314] text-white cursor-pointer shadow-sm flex items-center justify-center gap-1.5 whitespace-nowrap"
+                className="w-full sm:w-auto sm:flex-1 py-2.5 px-4 rounded-[var(--radius-btn,9999px)] text-xs sm:text-sm font-bold bg-[var(--color-primary)] hover:bg-[var(--color-primary-hover)] text-[var(--text-on-accent)] cursor-pointer shadow-sm flex items-center justify-center gap-1.5 whitespace-nowrap"
               >
                 <span>Buy Now (Rs. {(selectedBook.price * quantity).toLocaleString()})</span>
               </button>

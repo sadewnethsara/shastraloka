@@ -9,15 +9,26 @@
   --color-primary-hover: #115e59;
   --color-primary-subtle: rgba(15, 118, 110, 0.12);
   --color-primary-border: rgba(15, 118, 110, 0.40);
-  --color-accent-badge: #b91c1c;
+  --color-accent-badge: #047857;
+  --color-accent-badge-hover: #065f46;
   --color-accent-badge-text: #ffffff;
+
+  /* Theme Typography & Shape Tokens */
+  --theme-font-heading: var(--font-heading), system-ui, -apple-system, sans-serif;
+  --theme-font-sans: var(--font-sans), system-ui, -apple-system, sans-serif;
+  --theme-heading-tracking: -0.02em;
+  --radius-card: 1rem;
+  --radius-btn: 9999px;
+  --radius-input: 0.75rem;
+  --radius-modal: 1.5rem;
+  --radius-badge: 9999px;
 
   /* Header Design Tokens */
   --header-bg: #f0fdfa;
   --header-bg-glass: rgba(240, 253, 250, 0.95);
   --header-border: #ccfbf1;
   --header-text: #134e4a;
-  --header-text-muted: #14b8a6;
+  --header-text-muted: #0f766e;
   --header-hover-bg: #e6fffa;
   --header-dropdown-bg: #ffffff;
   --header-dropdown-border: #99f6e4;
@@ -27,7 +38,7 @@
 
   /* Header Badges & Shopping Bag Pill */
   --header-badge-fav-bg: #0f766e;
-  --header-badge-bag-bg: #b91c1c;
+  --header-badge-bag-bg: #047857;
   --header-badge-text: #ffffff;
   --bag-btn-bg: #ccfbf1;
   --bag-btn-border: rgba(15, 118, 110, 0.45);
@@ -47,8 +58,8 @@
   /* Global Text Colors */
   --text-main: #134e4a;
   --text-body: #115e59;
-  --text-muted: #14b8a6;
-  --text-dim: #5eead4;
+  --text-muted: #0f766e;
+  --text-dim: #14b8a6;
 
   /* Global Borders */
   --border-subtle: #ccfbf1;

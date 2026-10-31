@@ -28,15 +28,15 @@ export function Toast({
   }, [duration, onDismiss]);
 
   const bgStyles = {
-    info: 'bg-[#222222] text-white',
-    success: 'bg-[#0F743B] text-white',
-    error: 'bg-[#e60023] text-white',
+    info: 'bg-[var(--pill-active-bg)] text-[var(--pill-active-text)]',
+    success: 'bg-[var(--color-success)] text-white',
+    error: 'bg-[var(--color-danger)] text-white',
   }[type];
 
   return (
     <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 animate-slideUp">
       <div
-        className={`flex items-center gap-3 px-5 py-3 rounded-2xl shadow-xl font-medium text-xs sm:text-sm ${bgStyles}`}
+        className={`flex items-center gap-3 px-5 py-3 rounded-[var(--radius-card,1rem)] shadow-xl font-medium text-xs sm:text-sm ${bgStyles}`}
       >
         <span>{text}</span>
         {action && (

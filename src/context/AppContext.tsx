@@ -3,6 +3,32 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { Book, BOOKS } from '../data/books';
 import { CelebrationEvent, CELEBRATION_EVENTS } from '../data/celebrations';
+import {
+  isValidEmail,
+  safeJsonParse,
+  sanitizeEmail,
+  sanitizeOrderCustomer,
+  sanitizeSearchQuery,
+  sanitizeSingleLine,
+  sanitizeText,
+  SECURITY_LIMITS,
+  validateAndReconcileBagItems,
+  validateBoards,
+  validateLikedBookIds,
+  validateOrders,
+  validateReviewsMap,
+  validateThemeId,
+  validateUserProfile,
+} from '../utils/security';
+import {
+  DataSaverMode,
+  DEFAULT_NETWORK_PROFILE,
+  detectNetworkAndDeviceProfile,
+  getNavigatorConnection,
+  NetworkDeviceProfile,
+  resolveIsLowDataActive,
+  validateDataSaverMode,
+} from '../utils/networkOptimization';
 
 export interface BagItem {
   book: Book;
@@ -64,6 +90,8 @@ export type ThemeMode =
   | 'light'
   | 'sepia'
   | 'emerald'
+  | 'datacamp'
+  | 'aws-skillbuilder'
   | 'womens-day'
   | 'childrens-day'
   | 'teachers-day'
@@ -85,6 +113,8 @@ export const AVAILABLE_THEMES: ThemeOption[] = [
   { id: 'light', label: 'Classical Light', isDark: false },
   { id: 'sepia', label: 'Palm Leaf Sepia', isDark: false },
   { id: 'emerald', label: 'Royal Temple Emerald', isDark: false },
+  { id: 'datacamp', label: 'DataCamp Studio', isDark: false },
+  { id: 'aws-skillbuilder', label: 'AWS Skill Builder', isDark: false },
   {
     id: 'womens-day',
     label: "Women's Day Rose",
@@ -235,6 +265,13 @@ interface AppContextType {
   confirmDialog: ConfirmDialogOptions | null;
   requestConfirmation: (options: ConfirmDialogOptions) => void;
   closeConfirmation: () => void;
+
+  // Network & Low-End Device Optimization
+  dataSaverMode: DataSaverMode;
+  setDataSaverMode: (mode: DataSaverMode) => void;
+  isLowDataActive: boolean;
+  isLowEndDevice: boolean;
+  networkProfile: NetworkDeviceProfile;
 }
 
 const DEFAULT_BOARDS: Board[] = [
@@ -392,6 +429,23 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const [selectedCategory, setSelectedCategory] = useState('All Books');
   const [selectedBook, setSelectedBook] = useState<Book | null>(null);
 
+  // Network & Low-End Device State (Initialized to DEFAULT_NETWORK_PROFILE for SSR/hydration parity; updated in useEffect)
+  const [dataSaverMode, setDataSaverModeState] = useState<DataSaverMode>('auto');
+  const [networkProfile, setNetworkProfile] = useState<NetworkDeviceProfile>(
+    DEFAULT_NETWORK_PROFILE
+  );
+
+  const isLowDataActive = resolveIsLowDataActive(dataSaverMode, networkProfile);
+  const isLowEndDevice = networkProfile.isLowEndDevice;
+
+  const setDataSaverMode = useCallback((mode: DataSaverMode) => {
+    const validMode = validateDataSaverMode(mode);
+    setDataSaverModeState(validMode);
+    try {
+      localStorage.setItem('shastraloka-data-saver', validMode);
+    } catch { }
+  }, []);
+
   const requestConfirmation = useCallback((options: ConfirmDialogOptions) => {
     setConfirmDialog(options);
   }, []);
@@ -413,10 +467,15 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const isLoggedIn = Boolean(user);
 
   const login = useCallback((email: string, name?: string) => {
-    const rawName = name || email.split('@')[0] || 'Scholar';
+    const cleanEmail = sanitizeEmail(email);
+    if (!isValidEmail(cleanEmail)) return;
+    const rawName =
+      sanitizeSingleLine(name, SECURITY_LIMITS.MAX_NAME_LENGTH) ||
+      cleanEmail.split('@')[0] ||
+      'Scholar';
     const capitalized = rawName.charAt(0).toUpperCase() + rawName.slice(1);
     const newUser: UserProfile = {
-      email,
+      email: cleanEmail,
       name: capitalized,
       role: 'Scholar Reader',
     };
@@ -458,7 +517,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const [showMiniBagRail, setShowMiniBagRail] = useState(false);
 
   const applyTheme = useCallback((targetTheme: string) => {
-    const resolvedTheme = targetTheme === 'dark' ? 'light' : targetTheme;
+    const resolvedTheme = validateThemeId(targetTheme);
     setThemeState(resolvedTheme);
     setIsDark(false);
 
@@ -483,7 +542,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         localStorage.setItem('shastraloka-celebration', matchedThemeOption.celebrationId);
         localStorage.setItem('shastraloka-celebration-mode', 'true');
       } catch { }
-    } else if (['light', 'sepia', 'emerald'].includes(resolvedTheme)) {
+    } else if (['light', 'sepia', 'emerald', 'datacamp', 'aws-skillbuilder'].includes(resolvedTheme)) {
       setIsCelebrationMode(false);
       try {
         localStorage.setItem('shastraloka-celebration-mode', 'false');
@@ -519,7 +578,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     applyTheme('light');
   }, [applyTheme]);
 
-  // Hydrate from LocalStorage on mount
+  // Hydrate from LocalStorage on mount with Prototype Pollution & Schema Validation Guards
   useEffect(() => {
     const timer = setTimeout(() => {
       // Theme & Celebration
@@ -527,7 +586,10 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         const savedCelebration = localStorage.getItem('shastraloka-celebration');
         const savedCelebMode = localStorage.getItem('shastraloka-celebration-mode');
         if (savedCelebration) {
-          setActiveCelebrationId(savedCelebration);
+          const validCeleb = CELEBRATION_EVENTS.find((ev) => ev.id === savedCelebration);
+          if (validCeleb) {
+            setActiveCelebrationId(validCeleb.id);
+          }
         }
         if (savedCelebMode === 'true') {
           setIsCelebrationMode(true);
@@ -535,7 +597,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
 
         const savedTheme = localStorage.getItem('shastraloka-theme');
         if (savedTheme && savedTheme !== 'dark') {
-          applyTheme(savedTheme);
+          applyTheme(validateThemeId(savedTheme));
         } else {
           applyTheme('light');
         }
@@ -543,45 +605,99 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         applyTheme('light');
       }
 
-      // Bag
+      // Bag (Validated & Reconciled against canonical BOOKS catalog prices)
       try {
         const savedBag = localStorage.getItem('shastraloka-bag') || localStorage.getItem('shastraloka-cart');
-        if (savedBag) setBag(JSON.parse(savedBag));
+        if (savedBag) {
+          const parsedBag = safeJsonParse<unknown>(savedBag, null);
+          if (Array.isArray(parsedBag)) {
+            setBag(validateAndReconcileBagItems(parsedBag));
+          }
+        }
       } catch { }
 
       // Boards
       try {
         const savedBoards = localStorage.getItem('shastraloka-boards');
-        if (savedBoards) setBoards(JSON.parse(savedBoards));
+        if (savedBoards) {
+          const parsedBoards = safeJsonParse<unknown>(savedBoards, null);
+          setBoards(validateBoards(parsedBoards, DEFAULT_BOARDS));
+        }
       } catch { }
 
       // Likes
       try {
         const savedLikes = localStorage.getItem('shastraloka-likes');
-        if (savedLikes) setLikedBookIds(JSON.parse(savedLikes));
+        if (savedLikes) {
+          const parsedLikes = safeJsonParse<unknown>(savedLikes, null);
+          setLikedBookIds(validateLikedBookIds(parsedLikes, ['mahawamsa-great-chronicle', 'selalihini-sandeshaya']));
+        }
       } catch { }
 
       // Orders
       try {
         const savedOrders = localStorage.getItem('shastraloka-orders');
-        if (savedOrders) setOrders(JSON.parse(savedOrders));
+        if (savedOrders) {
+          const parsedOrders = safeJsonParse<unknown>(savedOrders, null);
+          setOrders(validateOrders(parsedOrders, [DEFAULT_SAMPLE_ORDER]));
+        }
       } catch { }
 
       // User
       try {
         const savedUser = localStorage.getItem('shastraloka-user');
-        if (savedUser) setUser(JSON.parse(savedUser));
+        if (savedUser) {
+          const parsedUser = safeJsonParse<unknown>(savedUser, null);
+          const validUser = validateUserProfile(parsedUser);
+          if (validUser) setUser(validUser);
+        }
       } catch { }
 
       // Reviews
       try {
         const savedReviews = localStorage.getItem('shastraloka-reviews');
-        if (savedReviews) setBookReviews(JSON.parse(savedReviews));
+        if (savedReviews) {
+          const parsedReviews = safeJsonParse<unknown>(savedReviews, null);
+          setBookReviews(validateReviewsMap(parsedReviews, INITIAL_REVIEWS));
+        }
+      } catch { }
+
+      // Data Saver Mode & Network / Device Profile
+      try {
+        const savedDataSaver = localStorage.getItem('shastraloka-data-saver');
+        if (savedDataSaver) {
+          setDataSaverModeState(validateDataSaverMode(savedDataSaver));
+        }
+        setNetworkProfile(detectNetworkAndDeviceProfile());
       } catch { }
     }, 0);
 
     return () => clearTimeout(timer);
   }, [applyTheme]);
+
+  // Listen for live network connection changes (2G/3G/4G/Save-Data transitions)
+  useEffect(() => {
+    const conn = getNavigatorConnection();
+    if (!conn || typeof conn.addEventListener !== 'function') return;
+
+    const handleConnectionChange = () => {
+      setNetworkProfile(detectNetworkAndDeviceProfile());
+    };
+
+    conn.addEventListener('change', handleConnectionChange);
+    return () => {
+      if (typeof conn.removeEventListener === 'function') {
+        conn.removeEventListener('change', handleConnectionChange);
+      }
+    };
+  }, []);
+
+  // Apply data-low-data and data-low-end attributes on <html> for CSS optimization
+  useEffect(() => {
+    if (typeof document === 'undefined') return;
+    document.documentElement.setAttribute('data-low-data', isLowDataActive ? 'true' : 'false');
+    document.documentElement.setAttribute('data-low-end', isLowEndDevice ? 'true' : 'false');
+  }, [isLowDataActive, isLowEndDevice]);
 
   // Sync state to LocalStorage
   useEffect(() => {
@@ -631,20 +747,30 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       showToast(`"${book.title}" is currently out of stock. We'll notify you when it returns!`);
       return;
     }
-    const selectedBinding = binding || book.binding;
+    const safeQuantity = Math.min(
+      SECURITY_LIMITS.MAX_BAG_ITEM_QUANTITY,
+      Math.max(1, Math.floor(Number(quantity) || 1))
+    );
+    const selectedBinding = sanitizeSingleLine(binding, 80) || book.binding;
     setBag((prev) => {
       const existing = prev.find((item) => item.book.id === book.id && item.binding === selectedBinding);
       if (existing) {
         return prev.map((item) =>
           item.book.id === book.id && item.binding === selectedBinding
-            ? { ...item, quantity: item.quantity + quantity }
+            ? {
+                ...item,
+                quantity: Math.min(
+                  SECURITY_LIMITS.MAX_BAG_ITEM_QUANTITY,
+                  item.quantity + safeQuantity
+                ),
+              }
             : item
         );
       }
-      return [...prev, { book, quantity, binding: selectedBinding }];
+      return [...prev, { book, quantity: safeQuantity, binding: selectedBinding }];
     });
     setShowMiniBagRail(true);
-    showToast(`Added ${quantity > 1 ? `${quantity}x ` : ''}"${book.title}" to Bag`);
+    showToast(`Added ${safeQuantity > 1 ? `${safeQuantity}x ` : ''}"${book.title}" to Bag`);
   };
 
   const removeFromBag = (bookId: string, skipConfirm = false) => {
@@ -666,8 +792,9 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   };
 
   const updateBagQuantity = (bookId: string, delta: number) => {
+    const safeDelta = Math.round(Number(delta) || 0);
     const targetItem = bag.find((item) => item.book.id === bookId);
-    if (targetItem && targetItem.quantity + delta <= 0) {
+    if (targetItem && targetItem.quantity + safeDelta <= 0) {
       removeFromBag(bookId, false);
       return;
     }
@@ -675,7 +802,10 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       prev
         .map((item) => {
           if (item.book.id === bookId) {
-            const newQty = item.quantity + delta;
+            const newQty = Math.min(
+              SECURITY_LIMITS.MAX_BAG_ITEM_QUANTITY,
+              item.quantity + safeDelta
+            );
             return newQty > 0 ? { ...item, quantity: newQty } : null;
           }
           return item;
@@ -770,14 +900,17 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   };
 
   const createBoard = (name: string, description = '') => {
+    const cleanName = sanitizeSingleLine(name, SECURITY_LIMITS.MAX_BOARD_NAME_LENGTH);
+    if (!cleanName) return;
+    const cleanDesc = sanitizeSingleLine(description, SECURITY_LIMITS.MAX_BOARD_DESC_LENGTH);
     const newBoard: Board = {
       id: `board-${Date.now()}`,
-      name,
-      description,
+      name: cleanName,
+      description: cleanDesc,
       bookIds: [],
     };
     setBoards((prev) => [...prev, newBoard]);
-    showToast(`Created collection: "${name}"`);
+    showToast(`Created collection: "${cleanName}"`);
   };
 
   const deleteBoard = (boardId: string) => {
@@ -832,12 +965,15 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     shippingFee?: number;
     shippingDistrict?: string;
   }): Order => {
+    const cleanCustomer = sanitizeOrderCustomer(customer);
     const randomNum = Math.floor(100000 + Math.random() * 900000);
     const orderId = `LK-${randomNum}`;
-    const subtotal = bagTotal;
-    const finalTotal = subtotal - discount + shippingFee;
+    const subtotal = Math.max(0, bagTotal);
+    const safeDiscount = Math.min(subtotal, Math.max(0, Math.round(Number(discount) || 0)));
+    const safeShipping = Math.max(0, Math.round(Number(shippingFee) || 0));
+    const finalTotal = Math.max(0, subtotal - safeDiscount + safeShipping);
 
-    const estimatedDays = customer.district.toLowerCase() === 'colombo' ? 2 : 3;
+    const estimatedDays = cleanCustomer.district.toLowerCase() === 'colombo' ? 2 : 3;
     const deliveryDate = new Date();
     deliveryDate.setDate(deliveryDate.getDate() + estimatedDays);
     const dateFormatted = deliveryDate.toLocaleDateString('en-US', {
@@ -846,18 +982,20 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       year: 'numeric',
     });
 
+    const districtPrefix = (cleanCustomer.district.replace(/[^a-zA-Z]/g, '').substring(0, 3) || 'COL').toUpperCase();
+
     const newOrder: Order = {
       id: orderId,
       createdAt: new Date().toISOString(),
       items: [...bag],
       subtotal,
-      discount,
-      shipping: shippingFee,
+      discount: safeDiscount,
+      shipping: safeShipping,
       total: finalTotal,
       status: 'confirmed',
-      customer,
+      customer: cleanCustomer,
       paymentMethod,
-      trackingNumber: `SLP-${customer.district.substring(0, 3).toUpperCase()}-${Math.floor(100000 + Math.random() * 900000)}`,
+      trackingNumber: `SLP-${districtPrefix}-${Math.floor(100000 + Math.random() * 900000)}`,
       estimatedDelivery: dateFormatted,
     };
 
@@ -871,12 +1009,21 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
 
   // Reviews
   const addBookReview = (bookId: string, reviewData: Omit<Review, 'id' | 'date'>) => {
+    const cleanComment = sanitizeText(
+      reviewData.comment,
+      SECURITY_LIMITS.MAX_REVIEW_COMMENT_LENGTH
+    );
+    if (!cleanComment) return;
+    const cleanUser =
+      sanitizeSingleLine(reviewData.user, SECURITY_LIMITS.MAX_NAME_LENGTH) || 'Reader';
+    const safeRating = Math.min(5, Math.max(1, Math.round(Number(reviewData.rating) || 5)));
+
     const newRev: Review = {
       id: `rev-${Date.now()}`,
-      user: reviewData.user || 'Reader',
+      user: cleanUser,
       date: 'Just now',
-      rating: reviewData.rating,
-      comment: reviewData.comment,
+      rating: safeRating,
+      comment: cleanComment,
     };
 
     setBookReviews((prev) => ({
@@ -961,6 +1108,11 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         getReviewsForBook,
         toastMessage,
         showToast,
+        dataSaverMode,
+        setDataSaverMode,
+        isLowDataActive,
+        isLowEndDevice,
+        networkProfile,
       }}
     >
       {children}

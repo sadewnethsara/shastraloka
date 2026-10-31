@@ -54,17 +54,17 @@ export default function TermsPage() {
         </h2>
         <ul className="list-disc pl-6 space-y-1.5 text-sm">
           <li>
-            <Link href="/privacy" className="underline text-[var(--text-main)] hover:text-[#F1641E]">
+            <Link href="/privacy" className="underline text-[var(--text-main)] hover:text-[var(--color-primary)]">
               Shastraloka Global Privacy Policy
             </Link>
           </li>
           <li>
-            <Link href="/shipping-returns" className="underline text-[var(--text-main)] hover:text-[#F1641E]">
+            <Link href="/shipping-returns" className="underline text-[var(--text-main)] hover:text-[var(--color-primary)]">
               Islandwide Shipping, Courier &amp; Returns Charter
             </Link>
           </li>
           <li>
-            <Link href="/help" className="underline text-[var(--text-main)] hover:text-[#F1641E]">
+            <Link href="/help" className="underline text-[var(--text-main)] hover:text-[var(--color-primary)]">
               Help Center &amp; Scholarly Support
             </Link>
           </li>

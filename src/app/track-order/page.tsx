@@ -6,6 +6,7 @@ import { useApp } from '../../context/AppContext';
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
 import { Truck, Search, PackageCheck, MapPin, CheckCircle2, ArrowRight } from 'lucide-react';
+import { sanitizeOrderId } from '../../utils/security';
 
 export default function TrackOrderPage() {
   const { orders } = useApp();
@@ -18,8 +19,10 @@ export default function TrackOrderPage() {
 
   const handleLookup = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!orderInput.trim()) return;
-    setSearchedId(orderInput.trim());
+    const cleanId = sanitizeOrderId(orderInput);
+    if (!cleanId) return;
+    setOrderInput(cleanId);
+    setSearchedId(cleanId);
   };
 
   return (
@@ -28,9 +31,9 @@ export default function TrackOrderPage() {
 
       <main className="flex-1 pb-20">
         <section className="bg-[var(--hero-banner-bg)] border-b border-[var(--border-subtle)] py-12">
-          <div className="max-w-[960px] mx-auto px-4 sm:px-6 text-center">
-            <span className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-[#F1641E] mb-2">
-              <Truck className="w-4 h-4" /> Islandwide Courier Telemetry
+          <div className="page-container text-center">
+            <span className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-[var(--color-primary)] mb-2">
+              <Truck className="w-4 h-4" /> Islandwide Courier Dispatch
             </span>
             <h1 className="font-heading font-bold text-3xl sm:text-4xl font-normal text-[var(--text-main)]">
               Track Your Shastraloka Book Dispatch
@@ -61,8 +64,8 @@ export default function TrackOrderPage() {
           </div>
         </section>
 
-        <div className="max-w-[900px] mx-auto px-4 sm:px-6 pt-10">
-          <div className="p-6 sm:p-8 rounded-3xl bg-[var(--bg-surface)] border border-[var(--border-subtle)] space-y-6">
+        <div className="page-container pt-10">
+          <div className="max-w-4xl mx-auto p-6 sm:p-8 rounded-[var(--radius-card)] bg-[var(--bg-surface)] border border-[var(--border-subtle)] space-y-6">
             <div className="flex flex-wrap items-center justify-between gap-4 pb-5 border-b border-[var(--border-subtle)]">
               <div>
                 <span className="text-xs text-[var(--text-muted)]">Dispatch Reference</span>
@@ -120,7 +123,7 @@ export default function TrackOrderPage() {
                 >
                   <div className="flex items-center justify-between mb-2">
                     <CheckCircle2
-                      className={`w-5 h-5 ${checkpoint.done ? 'text-[#F1641E]' : 'text-[var(--text-dim)]'}`}
+                      className={`w-5 h-5 ${checkpoint.done ? 'text-[var(--color-primary)]' : 'text-[var(--text-dim)]'}`}
                     />
                     <span className="text-[11px] font-medium text-[var(--text-muted)]">{checkpoint.time}</span>
                   </div>
@@ -132,11 +135,11 @@ export default function TrackOrderPage() {
 
             <div className="pt-4 border-t border-[var(--border-subtle)] flex flex-wrap items-center justify-between gap-4 text-xs text-[var(--text-muted)]">
               <span className="inline-flex items-center gap-1.5">
-                <MapPin className="w-4 h-4 text-[#F1641E]" /> Insured islandwide courier across all 25 districts
+                <MapPin className="w-4 h-4 text-[var(--color-primary)]" /> Insured islandwide courier across all 25 districts
               </span>
               <Link
                 href="/orders"
-                className="inline-flex items-center gap-1 font-semibold text-[var(--text-main)] hover:text-[#F1641E] underline"
+                className="inline-flex items-center gap-1 font-semibold text-[var(--text-main)] hover:text-[var(--color-primary)] underline"
               >
                 View full Orders History <ArrowRight className="w-3.5 h-3.5" />
               </Link>

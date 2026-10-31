@@ -30,8 +30,8 @@ export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElemen
 const variantStyles: Record<ButtonVariant, string> = {
   primary: 'bg-[var(--pill-active-bg)] hover:opacity-90 text-[var(--pill-active-text)] active:scale-[0.98]',
   dark: 'bg-[var(--pill-active-bg)] hover:opacity-90 text-[var(--pill-active-text)] active:scale-[0.98]',
-  red: 'bg-[#e60023] hover:bg-[#ad081b] text-white shadow-xs active:scale-[0.98]',
-  orange: 'bg-[#F1641E] hover:bg-[#d95616] text-white shadow-xs active:scale-[0.98]',
+  red: 'bg-[var(--color-primary)] hover:bg-[var(--color-primary-hover)] text-white shadow-xs active:scale-[0.98]',
+  orange: 'bg-[var(--color-primary)] hover:bg-[var(--color-primary-hover)] text-white shadow-xs active:scale-[0.98]',
   secondary: 'bg-[var(--bg-input)] hover:bg-[var(--bg-hover)] text-[var(--text-main)] active:scale-[0.98]',
   tertiary: 'bg-transparent hover:bg-[var(--bg-hover)] text-[var(--text-main)]',
   outline: 'bg-transparent border border-[var(--border-subtle)] hover:bg-[var(--bg-hover)] text-[var(--text-main)]',
@@ -63,14 +63,14 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
   },
   ref
 ) {
-  const roundedClass = pill ? 'rounded-full' : 'rounded-xl';
+  const roundedClass = pill ? 'rounded-[var(--radius-btn,9999px)]' : 'rounded-[var(--radius-input,0.75rem)]';
 
   return (
     <button
       ref={ref}
       aria-label={accessibilityLabel || (typeof text === 'string' ? text : undefined)}
       disabled={disabled || loading}
-      className={`inline-flex items-center justify-center font-medium transition-all duration-150 select-none cursor-pointer focus:outline-hidden focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[#F1641E] disabled:opacity-50 disabled:cursor-not-allowed disabled:pointer-events-none ${variantStyles[variant]} ${sizeStyles[size]} ${roundedClass} ${
+      className={`inline-flex items-center justify-center font-medium transition-all duration-150 select-none cursor-pointer focus:outline-hidden focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[var(--color-primary)] disabled:opacity-50 disabled:cursor-not-allowed disabled:pointer-events-none ${variantStyles[variant]} ${sizeStyles[size]} ${roundedClass} ${
         fullWidth ? 'w-full' : ''
       } ${className}`}
       {...props}

@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { useApp } from '../context/AppContext';
 import { BOOKS } from '../data/books';
 import { IconBookmark, IconClose, IconBook, IconArrowLeft } from './Icons';
+import { sanitizeSingleLine, SECURITY_LIMITS } from '../utils/security';
 
 export default function BoardsModal() {
   const {
@@ -24,8 +25,10 @@ export default function BoardsModal() {
 
   const handleCreate = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!newBoardName.trim()) return;
-    createBoard(newBoardName.trim(), newBoardDesc.trim());
+    const cleanName = sanitizeSingleLine(newBoardName, SECURITY_LIMITS.MAX_BOARD_NAME_LENGTH);
+    const cleanDesc = sanitizeSingleLine(newBoardDesc, SECURITY_LIMITS.MAX_BOARD_DESC_LENGTH);
+    if (!cleanName) return;
+    createBoard(cleanName, cleanDesc);
     setNewBoardName('');
     setNewBoardDesc('');
     setIsCreating(false);
@@ -51,7 +54,7 @@ export default function BoardsModal() {
         {/* Header */}
         <div className="flex items-center justify-between pb-4 border-b border-[var(--border-subtle)]">
           <div className="flex items-center gap-2">
-            <IconBookmark size={18} className="text-[#a66523]" />
+            <IconBookmark size={18} className="text-[var(--brand-brown)]" />
             <h3 className="font-heading font-bold text-xl sm:text-2xl">
               {selectedBoardId && currentBoard ? currentBoard.name : 'Your Saved Reading Boards'}
             </h3>
@@ -91,7 +94,7 @@ export default function BoardsModal() {
                   setActiveBoardFilter(currentBoard.id);
                   setIsBoardsModalOpen(false);
                 }}
-                className="px-4 py-1.5 rounded-full text-xs font-semibold bg-[#e60023] text-white hover:bg-[#ad081b] cursor-pointer transition-colors"
+                className="px-4 py-1.5 rounded-[var(--radius-btn,9999px)] text-xs font-semibold bg-[var(--color-primary)] text-white hover:bg-[var(--color-primary-hover)] cursor-pointer transition-colors"
               >
                 Filter Main Feed
               </button>
@@ -143,7 +146,7 @@ export default function BoardsModal() {
               </span>
               <button
                 onClick={() => setIsCreating(!isCreating)}
-                className="px-3.5 py-1.5 rounded-full text-xs font-semibold bg-[var(--bg-input)] hover:bg-[#e60023] hover:text-white cursor-pointer transition-colors"
+                className="px-3.5 py-1.5 rounded-[var(--radius-btn,9999px)] text-xs font-semibold bg-[var(--bg-input)] hover:bg-[var(--color-primary)] hover:text-white cursor-pointer transition-colors"
               >
                 {isCreating ? 'Cancel' : '+ Create New Board'}
               </button>
@@ -158,7 +161,7 @@ export default function BoardsModal() {
                   placeholder="Board Name (e.g. Historical Chronicles, Buddhist Treatises)"
                   value={newBoardName}
                   onChange={(e) => setNewBoardName(e.target.value)}
-                  className="w-full px-3.5 py-2 text-xs rounded-full bg-[var(--bg-card)] text-[var(--text-main)] border border-[var(--border-subtle)] outline-none"
+                  className="w-full px-3.5 py-2 text-xs rounded-[var(--radius-input,0.75rem)] bg-[var(--bg-card)] text-[var(--text-main)] border border-[var(--border-subtle)] outline-none"
                   required
                 />
                 <input
@@ -166,11 +169,11 @@ export default function BoardsModal() {
                   placeholder="Description (optional)"
                   value={newBoardDesc}
                   onChange={(e) => setNewBoardDesc(e.target.value)}
-                  className="w-full px-3.5 py-2 text-xs rounded-full bg-[var(--bg-card)] text-[var(--text-main)] border border-[var(--border-subtle)] outline-none"
+                  className="w-full px-3.5 py-2 text-xs rounded-[var(--radius-input,0.75rem)] bg-[var(--bg-card)] text-[var(--text-main)] border border-[var(--border-subtle)] outline-none"
                 />
                 <button
                   type="submit"
-                  className="px-4 py-1.5 rounded-full text-xs font-semibold bg-[#e60023] text-white hover:bg-[#ad081b] cursor-pointer"
+                  className="px-4 py-1.5 rounded-[var(--radius-btn,9999px)] text-xs font-semibold bg-[var(--color-primary)] text-white hover:bg-[var(--color-primary-hover)] cursor-pointer"
                 >
                   Create Board
                 </button>
@@ -192,12 +195,12 @@ export default function BoardsModal() {
                     <p className="text-xs text-[var(--text-muted)] line-clamp-1 mt-0.5">
                       {board.description || 'Collection of scriptures'}
                     </p>
-                    <span className="inline-block mt-2 text-[11px] font-semibold text-[#e60023]">
+                    <span className="inline-block mt-2 text-[11px] font-semibold text-[var(--color-primary)]">
                       {board.bookIds.length} Saved Treatises &rarr;
                     </span>
                   </div>
 
-                  <div className="w-10 h-10 rounded-lg bg-[var(--bg-card)] border border-[var(--border-subtle)] flex items-center justify-center text-[#a66523] shrink-0">
+                  <div className="w-10 h-10 rounded-lg bg-[var(--bg-card)] border border-[var(--border-subtle)] flex items-center justify-center text-[var(--brand-brown)] shrink-0">
                     <IconBook size={18} />
                   </div>
                 </div>

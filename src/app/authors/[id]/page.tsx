@@ -35,11 +35,11 @@ export default function AuthorDetailPage({ params }: { params: Promise<{ id: str
           </Link>
 
           <div className="flex flex-col sm:flex-row sm:items-center gap-5">
-            <div className="w-20 h-20 rounded-full bg-[var(--bg-surface)] border-2 border-[#F1641E] flex items-center justify-center font-heading font-bold text-2xl font-bold text-[var(--text-main)] shrink-0">
+            <div className="w-20 h-20 rounded-full bg-[var(--bg-surface)] border-2 border-[var(--color-primary)] flex items-center justify-center font-heading font-bold text-2xl text-[var(--text-main)] shrink-0">
               {primaryAuthorName.charAt(0).toUpperCase()}
             </div>
             <div>
-              <div className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#F1641E]">
+              <div className="inline-flex items-center gap-1.5 text-xs font-semibold text-[var(--color-primary)]">
                 <CheckCircle2 className="w-3.5 h-3.5" /> Verified Shastraloka Scholar &amp; Lineage Author
               </div>
               <h1 className="font-heading font-bold text-3xl sm:text-4xl font-normal text-[var(--text-main)] capitalize mt-0.5">
@@ -56,10 +56,10 @@ export default function AuthorDetailPage({ params }: { params: Promise<{ id: str
       <section className="page-container pt-10">
         <div className="flex items-center justify-between mb-6">
           <h2 className="font-heading font-bold text-xl sm:text-2xl text-[var(--text-main)] flex items-center gap-2">
-            <BookOpen className="w-5 h-5 text-[#F1641E]" /> Published Treatises &amp; Editions ({displayBooks.length})
+            <BookOpen className="w-5 h-5 text-[var(--color-primary)]" /> Published Treatises &amp; Editions ({displayBooks.length})
           </h2>
           <span className="inline-flex items-center gap-1.5 text-xs text-[var(--text-muted)]">
-            <Award className="w-4 h-4 text-[#F1641E]" /> Archival Seal Editions
+            <Award className="w-4 h-4 text-[var(--color-primary)]" /> Archival Seal Editions
           </span>
         </div>
 

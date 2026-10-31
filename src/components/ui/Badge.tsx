@@ -43,9 +43,9 @@ const variantStyles: Record<BadgeVariant, string> = {
 };
 
 const sizeStyles = {
-  sm: 'text-[10px] px-2 py-0.5 rounded-full',
-  md: 'text-xs px-2.5 py-0.5 rounded-full',
-  lg: 'text-sm px-3 py-1 rounded-full',
+  sm: 'text-[10px] px-2 py-0.5 rounded-[var(--radius-badge)]',
+  md: 'text-xs px-2.5 py-0.5 rounded-[var(--radius-badge)]',
+  lg: 'text-sm px-3 py-1 rounded-[var(--radius-badge)]',
 };
 
 export function Badge({

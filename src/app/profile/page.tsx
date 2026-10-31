@@ -56,7 +56,7 @@ export default function ProfilePage() {
             <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-full bg-[var(--banner-guild-bg)] text-[var(--banner-guild-accent)] border-2 border-[var(--banner-guild-border)] font-bold text-3xl flex items-center justify-center shadow-md mx-auto ring-4 ring-[var(--bg-surface)]">
               SB
             </div>
-            <div className="absolute bottom-0 right-0 w-7 h-7 rounded-full bg-[#e60023] text-white flex items-center justify-center shadow-xs">
+            <div className="absolute bottom-0 right-0 w-7 h-7 rounded-full bg-[var(--color-accent-badge)] text-[var(--color-accent-badge-text)] flex items-center justify-center shadow-xs">
               <IconCheck size={14} />
             </div>
           </div>
@@ -66,7 +66,7 @@ export default function ProfilePage() {
             <h1 className="font-heading font-bold text-2xl sm:text-3xl text-[var(--text-main)]">
               Dr. Senaka Bandara
             </h1>
-            <p className="text-xs sm:text-sm text-[#a66523] dark:text-amber-400 font-semibold">
+            <p className="text-xs sm:text-sm text-[var(--brand-brown)] font-semibold">
               Prof. Emeritus Senaka Bandara • Royal Archaeological Society
             </p>
             <p className="text-xs sm:text-sm text-[var(--text-muted)] max-w-lg mx-auto pt-1 leading-relaxed">
@@ -100,7 +100,7 @@ export default function ProfilePage() {
 
             <button
               onClick={() => setIsCreateBoardOpen(true)}
-              className="px-5 py-2 rounded-full bg-[#e60023] hover:bg-[#ad081b] text-white font-semibold text-xs cursor-pointer shadow-xs transition-colors flex items-center gap-1.5"
+              className="px-5 py-2 rounded-[var(--radius-btn)] bg-[var(--color-primary)] hover:bg-[var(--color-primary-hover)] text-white font-semibold text-xs cursor-pointer shadow-xs transition-colors flex items-center gap-1.5"
             >
               <span>+ Create Board</span>
             </button>
@@ -153,9 +153,9 @@ export default function ProfilePage() {
               {/* Create Board Prompt Card */}
               <div
                 onClick={() => setIsCreateBoardOpen(true)}
-                className="h-72 rounded-2xl border-2 border-dashed border-[var(--border-subtle)] hover:border-[#e60023] bg-[var(--bg-wash)] flex flex-col items-center justify-center p-6 text-center cursor-pointer transition-colors group"
+                className="h-72 rounded-[var(--radius-card)] border-2 border-dashed border-[var(--border-subtle)] hover:border-[var(--color-primary)] bg-[var(--bg-wash)] flex flex-col items-center justify-center p-6 text-center cursor-pointer transition-colors group"
               >
-                <div className="w-12 h-12 rounded-full bg-[var(--bg-input)] group-hover:bg-[#e60023] group-hover:text-white flex items-center justify-center text-xl font-bold transition-colors mb-3">
+                <div className="w-12 h-12 rounded-full bg-[var(--bg-input)] group-hover:bg-[var(--color-primary)] group-hover:text-white flex items-center justify-center text-xl font-bold transition-colors mb-3">
                   +
                 </div>
                 <h3 className="font-heading font-bold text-base text-[var(--text-main)]">
@@ -187,7 +187,7 @@ export default function ProfilePage() {
                           {mainBook ? (
                             <img src={mainBook.coverImage} alt={mainBook.title} className="w-full h-full object-cover" />
                           ) : (
-                            <div className="h-full w-full bg-[var(--bg-wash)] flex items-center justify-center text-[#a66523]">
+                            <div className="h-full w-full bg-[var(--bg-wash)] flex items-center justify-center text-[var(--brand-brown)]">
                               <IconBook size={24} />
                             </div>
                           )}
@@ -216,11 +216,11 @@ export default function ProfilePage() {
                       {/* Board Info */}
                       <div className="px-1">
                         <div className="flex items-center justify-between">
-                          <h3 className="font-heading font-bold text-sm text-[var(--text-main)] group-hover:text-[#e60023] transition-colors truncate">
+                          <h3 className="font-heading font-bold text-sm text-[var(--text-main)] group-hover:text-[var(--color-primary)] transition-colors truncate">
                             {board.name}
                           </h3>
                           <span className="text-[11px] font-semibold text-[var(--text-muted)]">
-                            {board.bookIds.length} Pins
+                            {board.bookIds.length} Books
                           </span>
                         </div>
                         <p className="text-xs text-[var(--text-muted)] line-clamp-1">
@@ -252,16 +252,16 @@ export default function ProfilePage() {
           </div>
         )}
 
-        {/* Tab 2: All Saved Pins Masonry Feed */}
+        {/* Tab 2: All Saved Treatises Masonry Feed */}
         {activeTab === 'all-pins' && (
           <div className="pt-6">
             {allSavedBooks.length === 0 ? (
               <div className="py-20 text-center space-y-3">
-                <div className="w-16 h-16 rounded-full bg-[var(--bg-input)] text-[#a66523] flex items-center justify-center mx-auto">
+                <div className="w-16 h-16 rounded-full bg-[var(--bg-input)] text-[var(--brand-brown)] flex items-center justify-center mx-auto">
                   <IconBookmark size={28} />
                 </div>
                 <h3 className="font-heading font-bold text-xl text-[var(--text-main)]">
-                  No Saved Pins Yet
+                  No Saved Books Yet
                 </h3>
                 <p className="text-xs text-[var(--text-muted)]">
                   Click &ldquo;Save&rdquo; on any book card to store it here.
@@ -332,7 +332,7 @@ export default function ProfilePage() {
                     placeholder="e.g. Royal Inscriptions of Anuradhapura"
                     value={newBoardName}
                     onChange={(e) => setNewBoardName(e.target.value)}
-                    className="w-full px-3.5 py-2 rounded-lg bg-[var(--bg-input)] border border-[var(--border-subtle)] text-xs sm:text-sm outline-none focus:border-[#e60023]"
+                    className="w-full px-3.5 py-2 rounded-lg bg-[var(--bg-input)] border border-[var(--border-subtle)] text-xs sm:text-sm outline-none focus:border-[var(--color-primary)]"
                     required
                   />
                 </div>
@@ -344,7 +344,7 @@ export default function ProfilePage() {
                     placeholder="What is this collection about?"
                     value={newBoardDesc}
                     onChange={(e) => setNewBoardDesc(e.target.value)}
-                    className="w-full px-3.5 py-2 rounded-lg bg-[var(--bg-input)] border border-[var(--border-subtle)] text-xs sm:text-sm outline-none resize-none focus:border-[#e60023]"
+                    className="w-full px-3.5 py-2 rounded-lg bg-[var(--bg-input)] border border-[var(--border-subtle)] text-xs sm:text-sm outline-none resize-none focus:border-[var(--color-primary)]"
                   />
                 </div>
 
@@ -352,13 +352,13 @@ export default function ProfilePage() {
                   <button
                     type="button"
                     onClick={() => setIsCreateBoardOpen(false)}
-                    className="px-4 py-2 rounded-full bg-[var(--bg-input)] text-[var(--text-main)] text-xs font-semibold cursor-pointer"
+                    className="px-4 py-2 rounded-[var(--radius-btn)] bg-[var(--bg-input)] text-[var(--text-main)] text-xs font-semibold cursor-pointer"
                   >
                     Cancel
                   </button>
                   <button
                     type="submit"
-                    className="px-5 py-2 rounded-full bg-[#e60023] hover:bg-[#ad081b] text-white text-xs font-semibold cursor-pointer shadow-xs"
+                    className="px-5 py-2 rounded-[var(--radius-btn)] bg-[var(--color-primary)] hover:bg-[var(--color-primary-hover)] text-white text-xs font-semibold cursor-pointer shadow-xs"
                   >
                     Create
                   </button>
