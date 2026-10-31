@@ -351,91 +351,81 @@ export default function CategoriesMegaMenu({ isOpen, onClose }: CategoriesMegaMe
   };
 
   return (
-    <>
-      {/* Background Page Backdrop Overlay (dims the body content like Etsy) */}
-      <div
-        aria-hidden="true"
-        onClick={onClose}
-        className="fixed inset-0 z-40 bg-black/25 backdrop-blur-[1px] animate-in fade-in duration-150"
-      />
+    <div
+      role="menu"
+      aria-label="Category Navigation"
+      className="absolute left-0 top-full mt-2.5 w-[calc(100vw-3rem)] lg:w-[765px] max-w-[765px] bg-[var(--bg-card)] rounded-b-xl rounded-tr-xl shadow-[0_10px_36px_rgba(0,0,0,0.16)] border border-[var(--border-subtle)] z-50 animate-in fade-in duration-150 flex select-none"
+    >
+      {/* Top Indicator Bar + Upward Caret correctly aligned under Categories button */}
+      <div className="absolute -top-[1px] left-0 w-[230px] lg:w-[254px] h-[2.5px] bg-[var(--color-primary)] z-30 pointer-events-none">
+        <div className="absolute -top-[5px] left-[52px] w-2.5 h-2.5 bg-[var(--color-primary)] rotate-45 transform" />
+      </div>
 
-      {/* Mega Menu Popup Box */}
-      <div
-        role="menu"
-        aria-label="Category Navigation"
-        className="absolute left-0 top-full mt-2.5 w-[calc(100vw-3rem)] lg:w-[765px] max-w-[765px] bg-white dark:bg-[#121215] rounded-b-xl rounded-tr-xl shadow-[0_10px_36px_rgba(0,0,0,0.16)] border border-stone-200/80 dark:border-stone-800 z-50 animate-in fade-in duration-150 flex select-none"
-      >
-        {/* Top Blue Indicator Bar + Upward Caret correctly aligned under Categories button */}
-        <div className="absolute -top-[1px] left-0 w-[230px] lg:w-[254px] h-[2.5px] bg-[#2563eb] z-30 pointer-events-none">
-          <div className="absolute -top-[5px] left-[52px] w-2.5 h-2.5 bg-[#2563eb] rotate-45 transform" />
-        </div>
+      {/* Left Column: Vertical Category List */}
+      <div className="w-[230px] lg:w-[254px] shrink-0 bg-[var(--bg-surface)] h-[520px] lg:h-[548px] overflow-y-scroll rounded-bl-xl border-r border-[var(--border-subtle)]">
+        {MEGA_MENU_CATEGORIES.map((item) => {
+          const isSelected = selectedId === item.id;
+          return (
+            <button
+              key={item.id}
+              type="button"
+              onMouseEnter={() => setSelectedId(item.id)}
+              onClick={() => handleCategoryNavigate(item)}
+              className={`w-full text-left px-4 py-[11px] text-[13.5px] leading-snug flex items-center justify-between transition-colors cursor-pointer ${
+                item.isRecommended ? 'border-b border-[var(--border-subtle)]' : ''
+              } ${
+                isSelected
+                  ? 'bg-[var(--bg-wash)] text-[var(--text-main)] font-semibold'
+                  : 'bg-[var(--bg-surface)] text-[var(--text-main)] hover:bg-[var(--bg-hover)]'
+              }`}
+            >
+              <span className="flex items-center gap-2 truncate">
+                {item.isRecommended && (
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                    className="w-4 h-4 text-[var(--color-primary)] shrink-0"
+                    aria-hidden="true"
+                  >
+                    <path d="M14.5 4.5c0 4.14 3.36 7.5 7.5 7.5-4.14 0-7.5 3.36-7.5 7.5 0-4.14-3.36-7.5-7.5-7.5 4.14 0 7.5-3.36 7.5-7.5zm-9-2.5c.83 0 1.5.67 1.5 1.5v1h1c.83 0 1.5.67 1.5 1.5S8.83 7.5 8 7.5H7v1c0 .83-.67 1.5-1.5 1.5S4 9.33 4 8.5v-1H3c-.83 0-1.5-.67-1.5-1.5S2.17 4.5 3 4.5h1v-1C4 2.67 4.67 2 5.5 2z" />
+                  </svg>
+                )}
+                <span className="truncate font-normal">{item.label}</span>
+              </span>
+              <ChevronRight
+                strokeWidth={2}
+                className="w-3.5 h-3.5 shrink-0 ml-2 text-[var(--text-main)]"
+              />
+            </button>
+          );
+        })}
+      </div>
 
-        {/* Left Column: Vertical Category List */}
-        <div className="w-[230px] lg:w-[254px] shrink-0 bg-white dark:bg-[#18181b] h-[520px] lg:h-[548px] overflow-y-scroll rounded-bl-xl border-r border-stone-200 dark:border-stone-800">
-          {MEGA_MENU_CATEGORIES.map((item) => {
-            const isSelected = selectedId === item.id;
-            return (
-              <button
-                key={item.id}
-                type="button"
-                onMouseEnter={() => setSelectedId(item.id)}
-                onClick={() => handleCategoryNavigate(item)}
-                className={`w-full text-left px-4 py-[11px] text-[13.5px] leading-snug flex items-center justify-between transition-colors cursor-pointer ${item.isRecommended
-                    ? 'border-b border-stone-300 dark:border-stone-700'
-                    : ''
-                  } ${isSelected
-                    ? 'bg-[#eff1f5] dark:bg-stone-800 text-[#222222] dark:text-white'
-                    : 'bg-white dark:bg-[#18181b] text-[#222222] dark:text-stone-200 hover:bg-[#f4f5f7] dark:hover:bg-stone-800/60'
-                  }`}
-              >
-                <span className="flex items-center gap-2 truncate">
-                  {item.isRecommended && (
-                    <svg
-                      viewBox="0 0 24 24"
-                      fill="currentColor"
-                      className="w-4 h-4 text-[#F1641E] shrink-0"
-                      aria-hidden="true"
-                    >
-                      <path d="M14.5 4.5c0 4.14 3.36 7.5 7.5 7.5-4.14 0-7.5 3.36-7.5 7.5 0-4.14-3.36-7.5-7.5-7.5 4.14 0 7.5-3.36 7.5-7.5zm-9-2.5c.83 0 1.5.67 1.5 1.5v1h1c.83 0 1.5.67 1.5 1.5S8.83 7.5 8 7.5H7v1c0 .83-.67 1.5-1.5 1.5S4 9.33 4 8.5v-1H3c-.83 0-1.5-.67-1.5-1.5S2.17 4.5 3 4.5h1v-1C4 2.67 4.67 2 5.5 2z" />
-                    </svg>
-                  )}
-                  <span className="truncate font-normal">{item.label}</span>
-                </span>
-                <ChevronRight
-                  strokeWidth={2}
-                  className="w-3.5 h-3.5 shrink-0 ml-2 text-[#222222] dark:text-stone-300"
+      {/* Right Column: 3 Square Cards at Top + Clean Canvas */}
+      <div className="flex-1 p-5 lg:p-7 bg-[var(--bg-card)] h-[520px] lg:h-[548px] rounded-r-xl">
+        <div className="grid grid-cols-3 gap-4">
+          {currentCategory.cards.map((card, idx) => (
+            <Link
+              key={idx}
+              href={card.href}
+              onClick={onClose}
+              className="group block text-center"
+            >
+              <div className="aspect-square w-full rounded-[14px] overflow-hidden bg-[var(--bg-wash)] transition-shadow duration-200 group-hover:shadow-md">
+                <img
+                  src={card.image}
+                  alt={card.title}
+                  referrerPolicy="no-referrer"
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                 />
-              </button>
-            );
-          })}
-        </div>
-
-        {/* Right Column: 3 Square Cards at Top + Clean White Canvas */}
-        <div className="flex-1 p-5 lg:p-7 bg-white dark:bg-[#121215] h-[520px] lg:h-[548px] rounded-r-xl">
-          <div className="grid grid-cols-3 gap-4">
-            {currentCategory.cards.map((card, idx) => (
-              <Link
-                key={idx}
-                href={card.href}
-                onClick={onClose}
-                className="group block text-center"
-              >
-                <div className="aspect-square w-full rounded-[14px] overflow-hidden bg-[#f5f5f5] dark:bg-stone-800/80 transition-shadow duration-200 group-hover:shadow-md">
-                  <img
-                    src={card.image}
-                    alt={card.title}
-                    referrerPolicy="no-referrer"
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                  />
-                </div>
-                <p className="font-bold text-[13px] text-[#222222] dark:text-stone-100 mt-2.5 line-clamp-1 group-hover:underline">
-                  {card.title}
-                </p>
-              </Link>
-            ))}
-          </div>
+              </div>
+              <p className="font-bold text-[13px] text-[var(--text-main)] mt-2.5 line-clamp-1 group-hover:underline">
+                {card.title}
+              </p>
+            </Link>
+          ))}
         </div>
       </div>
-    </>
+    </div>
   );
 }

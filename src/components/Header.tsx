@@ -6,8 +6,6 @@ import { useRouter, usePathname } from 'next/navigation';
 import {
   Menu,
   ChevronRight,
-  Sun,
-  Moon,
   User,
   Heart,
   Gift,
@@ -134,8 +132,6 @@ export default function Header({ isSticky = false }: HeaderProps = {}) {
   const router = useRouter();
   const pathname = usePathname();
   const {
-    isDark,
-    toggleTheme,
     searchQuery,
     setSearchQuery,
     bag,
@@ -1054,6 +1050,7 @@ export default function Header({ isSticky = false }: HeaderProps = {}) {
               type="button"
               onClick={() => {
                 setProfileMenuOpen(false);
+                setNotificationsOpen(false);
                 logout();
               }}
               className="w-full flex items-center gap-3.5 px-4 py-2.5 text-sm text-[var(--text-main)] hover:bg-[var(--bg-hover)] transition cursor-pointer text-left"
@@ -1142,22 +1139,6 @@ export default function Header({ isSticky = false }: HeaderProps = {}) {
 
             {/* Right User Actions */}
             <div className="flex items-center gap-1.5 shrink-0">
-              {/* Theme Toggle */}
-              <Tooltip text={isDark ? 'Switch to Light Mode' : 'Switch to Dark Mode'}>
-                <button
-                  type="button"
-                  onClick={toggleTheme}
-                  aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
-                  className="p-2.5 rounded-full hover:bg-[var(--header-hover-bg)] text-[var(--header-text)] transition cursor-pointer"
-                >
-                  {isDark ? (
-                    <Sun className="w-5 h-5 text-amber-300" />
-                  ) : (
-                    <Moon className="w-5 h-5 text-[var(--header-text)]" />
-                  )}
-                </button>
-              </Tooltip>
-
               {/* Favorites / Saved Reading List */}
               <Tooltip text="Favorites & Saved Boards">
                 <Link
@@ -1174,32 +1155,34 @@ export default function Header({ isSticky = false }: HeaderProps = {}) {
                 </Link>
               </Tooltip>
 
-              {/* Notifications / Deals Bell Dropdown */}
-              <div className="relative" ref={desktopNotificationsRef}>
-                <Tooltip text="Deals & Notifications">
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setNotificationsOpen(!notificationsOpen);
-                      setProfileMenuOpen(false);
-                    }}
-                    aria-label="Deals and Notifications"
-                    aria-expanded={notificationsOpen}
-                    className={`h-10 px-3 rounded-full flex items-center gap-1 transition cursor-pointer ${
-                      notificationsOpen
-                        ? 'bg-[var(--color-primary-subtle)] text-[var(--color-primary)] ring-2 ring-[var(--color-primary-border)]'
-                        : 'hover:bg-[var(--header-hover-bg)] text-[var(--header-text)]'
-                    }`}
-                  >
-                    <div className="relative">
-                      <Bell className="w-5 h-5" />
-                      <span className="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full bg-[var(--header-badge-fav-bg)]" />
-                    </div>
-                    <ChevronDown className="w-3.5 h-3.5" />
-                  </button>
-                </Tooltip>
-                {renderNotificationsDropdown(false)}
-              </div>
+              {/* Notifications / Deals Bell Dropdown (Signed-In Users Only) */}
+              {isLoggedIn && (
+                <div className="relative" ref={desktopNotificationsRef}>
+                  <Tooltip text="Deals & Notifications">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setNotificationsOpen(!notificationsOpen);
+                        setProfileMenuOpen(false);
+                      }}
+                      aria-label="Deals and Notifications"
+                      aria-expanded={notificationsOpen}
+                      className={`h-10 px-3 rounded-full flex items-center gap-1 transition cursor-pointer ${
+                        notificationsOpen
+                          ? 'bg-[var(--color-primary-subtle)] text-[var(--color-primary)] ring-2 ring-[var(--color-primary-border)]'
+                          : 'hover:bg-[var(--header-hover-bg)] text-[var(--header-text)]'
+                      }`}
+                    >
+                      <div className="relative">
+                        <Bell className="w-5 h-5" />
+                        <span className="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full bg-[var(--header-badge-fav-bg)]" />
+                      </div>
+                      <ChevronDown className="w-3.5 h-3.5" />
+                    </button>
+                  </Tooltip>
+                  {renderNotificationsDropdown(false)}
+                </div>
+              )}
 
               {/* Signed-Out: Sign in Button | Signed-In: Profile Avatar Pill + Dropdown Box */}
               {!isLoggedIn ? (
@@ -1296,31 +1279,33 @@ export default function Header({ isSticky = false }: HeaderProps = {}) {
               </Link>
 
               <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
-                {/* Mobile/Tablet Notifications Bell Dropdown (Centered Full-Width Card like Search Bar) */}
-                <div ref={mobileNotificationsRef}>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setNotificationsOpen(!notificationsOpen);
-                      setProfileMenuOpen(false);
-                      setSuggestionsOpen(false);
-                    }}
-                    aria-label="Deals and Notifications"
-                    aria-expanded={notificationsOpen}
-                    className={`h-9 px-2.5 rounded-full flex items-center gap-1 transition cursor-pointer ${
-                      notificationsOpen
-                        ? 'bg-[var(--color-primary-subtle)] text-[var(--color-primary)] ring-2 ring-[var(--color-primary-border)]'
-                        : 'hover:bg-[var(--header-hover-bg)] text-[var(--header-text)]'
-                    }`}
-                  >
-                    <div className="relative">
-                      <Bell className="w-4.5 h-4.5" />
-                      <span className="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full bg-[var(--header-badge-fav-bg)]" />
-                    </div>
-                    <ChevronDown className="w-3 h-3" />
-                  </button>
-                  {renderNotificationsDropdown(true)}
-                </div>
+                {/* Mobile/Tablet Notifications Bell Dropdown (Signed-In Users Only) */}
+                {isLoggedIn && (
+                  <div ref={mobileNotificationsRef}>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setNotificationsOpen(!notificationsOpen);
+                        setProfileMenuOpen(false);
+                        setSuggestionsOpen(false);
+                      }}
+                      aria-label="Deals and Notifications"
+                      aria-expanded={notificationsOpen}
+                      className={`h-9 px-2.5 rounded-full flex items-center gap-1 transition cursor-pointer ${
+                        notificationsOpen
+                          ? 'bg-[var(--color-primary-subtle)] text-[var(--color-primary)] ring-2 ring-[var(--color-primary-border)]'
+                          : 'hover:bg-[var(--header-hover-bg)] text-[var(--header-text)]'
+                      }`}
+                    >
+                      <div className="relative">
+                        <Bell className="w-4.5 h-4.5" />
+                        <span className="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full bg-[var(--header-badge-fav-bg)]" />
+                      </div>
+                      <ChevronDown className="w-3 h-3" />
+                    </button>
+                    {renderNotificationsDropdown(true)}
+                  </div>
+                )}
 
                 {/* If user is NOT signed in: show "Sign in" button matching Bag button height, shape and theme */}
                 {!isLoggedIn ? (
@@ -1440,6 +1425,19 @@ export default function Header({ isSticky = false }: HeaderProps = {}) {
           </div>
         </div>
       </header>
+
+      {/* =====================================================================
+          DESKTOP & TABLET CATEGORIES MEGA-MENU BACKDROP OVERLAY
+          Dims page body, footer, and all elements below/outside the header
+          without dimming or blurring the <header> (which sits at z-40).
+         ===================================================================== */}
+      {categoriesOpen && (
+        <div
+          aria-hidden="true"
+          onClick={() => setCategoriesOpen(false)}
+          className="hidden md:block fixed inset-0 z-30 bg-black/30 backdrop-blur-[1.5px] animate-fade-in"
+        />
+      )}
 
       {/* =====================================================================
           MOBILE CATEGORY BOTTOM SHEET (< md)

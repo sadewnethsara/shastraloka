@@ -269,12 +269,12 @@ export default function Footer() {
         </div>
 
         {/* SRI LANKA ONLINE BOOKSTORE & AI DISCOVERY SEO DIRECTORY */}
-        <div className="pt-5 pb-4 border-t border-[var(--border-subtle)] text-[11px] text-[var(--text-muted)] space-y-2">
+        <div className="pt-5 pb-4 border-t border-[var(--border-subtle)] text-[11px] text-[var(--text-muted)]">
           <div className="flex flex-wrap items-center justify-between gap-2">
-<p className="font-bold text-[var(--text-main)]">
+            <p className="font-bold text-[var(--text-main)]">
               Shastraloka (ශාස්ත්රාලෝක | ශාස්ත්‍රලෝක) — Sri Lanka&apos;s Premier Online Bookstore
             </p>
-            <div className="flex items-center gap-3 font-semibold text-[#F1641E]">
+            <div className="flex items-center gap-3 font-semibold text-[var(--color-primary)]">
               <a href="https://shastraloka.lk" className="hover:underline">
                 shastraloka.lk
               </a>
@@ -284,29 +284,6 @@ export default function Footer() {
               </a>
             </div>
           </div>
-          <p className="leading-relaxed">
-            Discover and order authentic Sinhala &amp; English books,{' '}
-            <button type="button" onClick={() => navigateToSearch('gajaga')} className="underline hover:text-[#F1641E] cursor-pointer">
-              Gajaga Wannama
-            </button>
-            ,{' '}
-            <button type="button" onClick={() => navigateToSearch('Mahavamsa')} className="underline hover:text-[#F1641E] cursor-pointer">
-              The Mahavamsa
-            </button>
-            ,{' '}
-            <button type="button" onClick={() => navigateToSearch('Visuddhimagga')} className="underline hover:text-[#F1641E] cursor-pointer">
-              Visuddhimagga
-            </button>
-            ,{' '}
-            <button type="button" onClick={() => navigateToSearch('Jataka')} className="underline hover:text-[#F1641E] cursor-pointer">
-              Pansiya Panas Jataka Potha
-            </button>
-            , and{' '}
-            <button type="button" onClick={() => navigateToSearch('Ayurveda')} className="underline hover:text-[#F1641E] cursor-pointer">
-              Deshiya Wedakama Ayurveda
-            </button>{' '}
-            with up to 28% OFF in LKR. Serving readers across Colombo, Kandy, Galle, Gampaha, Kurunegala &amp; all 25 districts who search for Sri Lanka&apos;s finest editions alongside Sarasavi, M.D. Gunasena, Grantha.lk, Books.lk, Rasakatha, Vijitha Yapa, Makeen Books, Godage &amp; Samudra collections.
-          </p>
         </div>
 
         {/* BOTTOM LEGAL & REGION BAR */}

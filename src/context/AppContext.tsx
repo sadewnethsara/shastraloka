@@ -62,7 +62,6 @@ export interface UserProfile {
 
 export type ThemeMode =
   | 'light'
-  | 'dark'
   | 'sepia'
   | 'emerald'
   | 'womens-day'
@@ -84,7 +83,6 @@ export interface ThemeOption {
 
 export const AVAILABLE_THEMES: ThemeOption[] = [
   { id: 'light', label: 'Classical Light', isDark: false },
-  { id: 'dark', label: 'Sacred Dark', isDark: true },
   { id: 'sepia', label: 'Palm Leaf Sepia', isDark: false },
   { id: 'emerald', label: 'Royal Temple Emerald', isDark: false },
   {
@@ -460,27 +458,24 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const [showMiniBagRail, setShowMiniBagRail] = useState(false);
 
   const applyTheme = useCallback((targetTheme: string) => {
-    setThemeState(targetTheme);
-    const darkActive = targetTheme === 'dark';
-    setIsDark(darkActive);
+    const resolvedTheme = targetTheme === 'dark' ? 'light' : targetTheme;
+    setThemeState(resolvedTheme);
+    setIsDark(false);
 
     if (typeof document !== 'undefined') {
-      document.documentElement.setAttribute('data-theme', targetTheme);
-      if (darkActive) {
-        document.documentElement.classList.add('dark');
-      } else {
-        document.documentElement.classList.remove('dark');
-      }
+      document.documentElement.setAttribute('data-theme', resolvedTheme);
+      document.documentElement.classList.remove('dark');
     }
 
     try {
-      localStorage.setItem('shastraloka-theme', targetTheme);
+      localStorage.setItem('shastraloka-theme', resolvedTheme);
     } catch { }
   }, []);
 
   const setTheme = useCallback((targetTheme: string) => {
-    applyTheme(targetTheme);
-    const matchedThemeOption = AVAILABLE_THEMES.find((t) => t.id === targetTheme);
+    const resolvedTheme = targetTheme === 'dark' ? 'light' : targetTheme;
+    applyTheme(resolvedTheme);
+    const matchedThemeOption = AVAILABLE_THEMES.find((t) => t.id === resolvedTheme);
     if (matchedThemeOption?.celebrationId) {
       setActiveCelebrationId(matchedThemeOption.celebrationId);
       setIsCelebrationMode(true);
@@ -488,7 +483,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         localStorage.setItem('shastraloka-celebration', matchedThemeOption.celebrationId);
         localStorage.setItem('shastraloka-celebration-mode', 'true');
       } catch { }
-    } else if (['light', 'dark', 'sepia', 'emerald'].includes(targetTheme)) {
+    } else if (['light', 'sepia', 'emerald'].includes(resolvedTheme)) {
       setIsCelebrationMode(false);
       try {
         localStorage.setItem('shastraloka-celebration-mode', 'false');
@@ -521,8 +516,8 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     CELEBRATION_EVENTS.find((ev) => ev.id === activeCelebrationId) || CELEBRATION_EVENTS[0];
 
   const toggleTheme = useCallback(() => {
-    applyTheme(isDark ? 'light' : 'dark');
-  }, [isDark, applyTheme]);
+    applyTheme('light');
+  }, [applyTheme]);
 
   // Hydrate from LocalStorage on mount
   useEffect(() => {
@@ -539,10 +534,8 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         }
 
         const savedTheme = localStorage.getItem('shastraloka-theme');
-        if (savedTheme) {
+        if (savedTheme && savedTheme !== 'dark') {
           applyTheme(savedTheme);
-        } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-          applyTheme('dark');
         } else {
           applyTheme('light');
         }

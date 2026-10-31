@@ -31,7 +31,6 @@ export default function ProfileSettingsPage() {
 
   const standardThemes: { id: ThemeMode; label: string; desc: string; swatch: string }[] = [
     { id: 'light', label: 'Warm Parchment (Light)', desc: 'Clean ivory & classic ink', swatch: '#FAF8F5' },
-    { id: 'dark', label: 'Midnight Archive (Dark)', desc: 'Low-glare obsidian reading mode', swatch: '#0F1012' },
     { id: 'sepia', label: 'Palm-Leaf Ola (Sepia)', desc: 'Traditional warm manuscript tone', swatch: '#F4ECD8' },
     { id: 'emerald', label: 'Ceylon Sanctuary (Emerald)', desc: 'Deep monastic forest palette', swatch: '#0D2118' },
   ];
